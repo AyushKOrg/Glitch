@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<title>Glitch</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  :root {
+    --bg: #0b0d12; --panel: #12151c; --line: #222733; --text: #e6e9ef; --muted: #8a93a6;
+    --accent: #d9a46f; --user: #1b2230; --bad: #ff6b6b;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: flex; flex-direction: column;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  header {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    border-bottom: 1px solid var(--line); background: var(--panel);
+  }
+  .mark { width: 32px; height: 32px; border-radius: 8px; display: block; }
+  .logo { font-family: var(--mono); font-weight: 700; letter-spacing: .08em; color: var(--accent); }
+  .modes { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .modes button {
+    background: none; border: 0; color: var(--muted); padding: 6px 10px; font: 12px var(--mono); cursor: pointer;
+  }
+  .modes button[aria-pressed="true"] { background: var(--accent); color: #2a1608; font-weight: 700; }
+  @media (max-width: 520px) { .pill #status { display: none; } }
+  .pill { font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .dot.pc { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .dot.fb { background: #f5c451; }
+  .dot.off { background: var(--bad); }
+  header .spacer { flex: 1; }
+  button.ghost {
+    background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px;
+    padding: 6px 10px; font: 12px var(--mono); cursor: pointer;
+  }
+  button.ghost:hover { color: var(--text); border-color: var(--muted); }
+  #log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: min(720px, 92%); padding: 10px 14px; border-radius: 14px; white-space: pre-wrap; word-break: break-word; }
+  .msg.user { align-self: flex-end; background: var(--user); border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: var(--panel); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .msg.err { align-self: center; color: var(--bad); font: 13px var(--mono); }
+  .msg .tag { display: block; margin-top: 6px; font: 11px var(--mono); color: var(--muted); }
+  .empty { margin: auto; text-align: center; color: var(--muted); font-family: var(--mono); font-size: 13px; }
+  form { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--panel); }
+  textarea {
+    flex: 1; resize: none; max-height: 140px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font: inherit;
+  }
+  textarea:focus, input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  button.send {
+    background: var(--accent); color: #2a1608; border: 0; border-radius: 12px; padding: 0 18px;
+    font-weight: 700; cursor: pointer;
+  }
+  button.send:disabled { opacity: .5; cursor: wait; }
+  #gate {
+    position: fixed; inset: 0; background: rgba(5, 6, 9, .92); display: none;
+    align-items: center; justify-content: center; padding: 20px; z-index: 10;
+  }
+  #gate.open { display: flex; }
+  .iconbtn { padding: 0 12px; font-size: 18px; line-height: 1; border-radius: 12px; }
+  #chips { display: none; flex-wrap: wrap; gap: 6px; padding: 8px 16px 0; background: var(--panel); }
+  #chips.has { display: flex; }
+  .chip {
+    display: flex; align-items: center; gap: 6px; max-width: 100%; padding: 4px 8px;
+    border: 1px solid var(--line); border-radius: 999px; font: 12px var(--mono); color: var(--muted);
+  }
+  .chip span.n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; color: var(--text); }
+  .chip button { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0; }
+  .chip.uploading { opacity: .6; }
+  body.dragging::after {
+    content: 'Drop files to attach'; position: fixed; inset: 12px; z-index: 9; display: flex;
+    align-items: center; justify-content: center; border: 2px dashed var(--accent); border-radius: 16px;
+    background: rgba(11, 13, 18, .85); color: var(--accent); font: 16px var(--mono); pointer-events: none;
+  }
+  #files {
+    position: fixed; inset: 0; background: rgba(5, 6, 9, .85); display: none;
+    align-items: center; justify-content: center; padding: 16px; z-index: 10;
+  }
+  #files.open { display: flex; }
+  #files .box {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    width: min(560px, 100%); max-height: 80vh; display: flex; flex-direction: column;
+  }
+  #files .top { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  #fileList { overflow-y: auto; padding: 6px 16px 12px; }
+  .frow { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .frow .fn { flex: 1; min-width: 0; word-break: break-all; font: 13px var(--mono); }
+  .frow .fm { color: var(--muted); font: 11px var(--mono); white-space: nowrap; }
+  #newdot { display: none; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-left: 6px; vertical-align: middle; }
+  #gate form {
+    flex-direction: column; border: 1px solid var(--line); border-radius: 16px; width: min(380px, 100%); padding: 20px;
+  }
+  #gate input {
+    background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; font: 15px var(--mono);
+  }
+  #gate p { margin: 0; color: var(--muted); font-size: 13px; }
+  #gate .err { color: var(--bad); min-height: 1.2em; font: 12px var(--mono); }
+  #gate .tabs { display: flex; gap: 6px; }
+  #gate .tabs button {
+    flex: 1; background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 10px;
+    padding: 8px; font: 13px var(--mono); cursor: pointer;
+  }
+  #gate .tabs button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  #gate .brand { display: flex; align-items: center; gap: 10px; }
+  #gate .brand img { width: 36px; height: 36px; border-radius: 9px; }
+  #who { font: 12px var(--mono); color: var(--muted); max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  @media (max-width: 520px) { #who { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <img class="mark" src="/logo.png" alt="Glitch logo">
+  <span class="logo">GLITCH</span>
+  <span class="pill"><span id="dot" class="dot"></span><span id="status">checking…</span></span>
+  <span class="spacer"></span>
+  <div class="modes" role="group" aria-label="Mode">
+    <button type="button" data-mode="flash" aria-pressed="true" title="Fast, light chat; can also view images and PDF pages">flash</button>
+    <button type="button" data-mode="cognition" aria-pressed="false" title="Deeper reasoning and coding (text only)">cognition</button>
+  </div>
+  <button class="ghost" id="filesBtn" type="button">files<span id="newdot"></span></button>
+  <button class="ghost" id="clear" type="button">clear</button>
+  <span id="who"></span>
+  <button class="ghost" id="lock" type="button">sign out</button>
+</header>
+
+<main id="log" aria-live="polite"></main>
+
+<div id="chips"></div>
+<form id="chat">
+  <button class="ghost iconbtn" id="attach" type="button" title="Attach files (PDF, Word, text, code, images; up to 4 MB each)" aria-label="Attach files">+</button>
+  <input type="file" id="fileInput" multiple hidden>
+  <textarea id="input" rows="1" placeholder="Ask Glitch something. Try to make it worth my time." autocomplete="off"></textarea>
+  <button class="send" id="send" type="submit">Send</button>
+</form>
+
+<div id="files" role="dialog" aria-label="Files">
+  <div class="box">
+    <div class="top"><strong>Files Glitch made</strong><button class="ghost" id="filesClose" type="button">close</button></div>
+    <div id="fileList"></div>
+  </div>
+</div>
+
+<div id="gate">
+  <form id="gateForm" autocomplete="on">
+    <div class="brand"><img src="/logo.png" alt=""><strong>Glitch</strong></div>
+    <div class="tabs" role="group" aria-label="Account">
+      <button type="button" data-tab="login" aria-pressed="true">Sign in</button>
+      <button type="button" data-tab="register" aria-pressed="false">Create account</button>
+    </div>
+    <p id="gateHint">Prove you're allowed to bother me.</p>
+    <input id="username" type="text" autocomplete="username" placeholder="username" autocapitalize="none" spellcheck="false" required>
+    <input id="password" type="password" autocomplete="current-password" placeholder="password" required>
+    <input id="code" type="password" autocomplete="off" placeholder="sign-up code" hidden>
+    <div class="err" id="gateErr"></div>
+    <button class="send" id="gateSubmit" type="submit" style="padding:10px">Sign in</button>
+  </form>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const log = $('log'), input = $('input'), sendBtn = $('send');
+  const MODE_KEY = 'glitch_mode';
+  const MODES = ['flash', 'cognition'];
+  let me = null;                                    // signed-in username, or null
+  const signedIn = () => me !== null;
+  const histKey = () => 'glitch_history_' + (me || 'anon') + '_' + mode;   // per account, per mode
+  let mode = 'flash';
+  try { const m = localStorage.getItem(MODE_KEY); if (MODES.includes(m)) mode = m; } catch {}
+  let history = [];
+  let busy = false;
+
+
+  function saveHistory() {
+    try { localStorage.setItem(histKey(), JSON.stringify(history.slice(-40))); } catch {}
+  }
+  function loadHistory() {
+    history = [];
+    try {
+      const h = JSON.parse(localStorage.getItem(histKey()) || '[]');
+      if (Array.isArray(h)) history = h.filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string');
+    } catch {}
+  }
+
+  function add(role, text, tag) {
+    const el = document.createElement('div');
+    el.className = 'msg ' + role;
+    el.textContent = text;           // textContent: model output is never parsed as HTML
+    if (tag) {
+      const t = document.createElement('span');
+      t.className = 'tag'; t.textContent = tag;
+      el.appendChild(t);
+    }
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  }
+
+  function render() {
+    log.textContent = '';
+    if (!history.length) {
+      const e = document.createElement('div');
+      e.className = 'empty';
+      e.textContent = 'Nothing here yet. Riveting.';
+      log.appendChild(e);
+      return;
+    }
+    history.forEach(m => add(m.role === 'user' ? 'user' : 'bot', m.content, m.tag));
+  }
+
+  function setWho(name) {
+    me = name;
+    $('who').textContent = name || '';
+  }
+
+  function openGate(msg) {
+    $('gateErr').textContent = msg || '';
+    $('gate').classList.add('open');
+    $('username').focus();
+  }
+
+  function sessionLost(msg) {                 // cookie expired or revoked
+    setWho(null); applyMode();
+    openGate(msg || 'Session expired. Sign in again.');
+    refreshStatus();
+  }
+
+  async function api(path, opts = {}) {
+    const r = await fetch(path, {
+      ...opts,
+      headers: { 'Content-Type': 'application/json', 'x-glitch-csrf': '1', ...(opts.headers || {}) },
+    });
+    let data = {};
+    try { data = await r.json(); } catch {}
+    return { ok: r.ok, status: r.status, data };
+  }
+
+  async function refreshStatus() {
+    const dot = $('dot'), label = $('status');
+    if (!signedIn()) { dot.className = 'dot'; label.textContent = 'signed out'; return; }
+    const { ok, status, data } = await api('/api/health').catch(() => ({ ok: false, status: 0, data: {} }));
+    if (status === 401) { sessionLost(); return; }
+    if (!ok) { dot.className = 'dot off'; label.textContent = 'server error'; return; }
+    if (data.pc) { dot.className = 'dot pc'; label.textContent = 'PC online'; }
+    else if (data.fallback) { dot.className = 'dot fb'; label.textContent = 'PC offline · chat only'; }
+    else { dot.className = 'dot off'; label.textContent = 'PC offline'; }
+  }
+
+  async function send(text) {
+    busy = true; sendBtn.disabled = true;
+    history.push({ role: 'user', content: text });
+    render();
+    const wait = add('bot', 'Fine, thinking…');
+    const payload = history.map(({ role, content }) => ({ role, content }));
+    try {   // mode buttons are locked while busy, so `mode` can't change mid-request
+      const { ok, status, data } = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: payload, mode }) });
+      wait.remove();
+      if (status === 401) { history.pop(); saveHistory(); sessionLost(); return; }
+      if (!ok) throw new Error(data.error || 'Request failed (' + status + ')');
+      const tag = data.source === 'fallback' ? 'chat-only fallback: PC is offline' : '';
+      history.push({ role: 'assistant', content: data.reply, tag });
+      saveHistory();
+      render();
+    } catch (e) {
+      wait.remove();
+      add('err', e.message);
+    } finally {
+      busy = false; sendBtn.disabled = false; input.focus();
+      refreshStatus(); checkNewFiles();
+    }
+  }
+
+  $('chat').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const typed = input.value.trim();
+    const ready = pending.filter(f => f.status === 'ready');
+    if ((!typed && !ready.length) || busy) return;
+    if (!signedIn()) return openGate();
+    if (pending.some(f => f.status === 'uploading')) { add('err', 'Still uploading. Patience.'); return; }
+    const note = ready.map(f => '[Attached file: ' + f.path + ']').join('\n');
+    const text = (note ? note + '\n' : '') + (typed || 'Have a look at the attached file(s).');
+    input.value = ''; input.style.height = 'auto';
+    pending.length = 0; renderChips();
+    send(text);
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('chat').requestSubmit(); }
+  });
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+  });
+
+  let tab = 'login';
+  function setTab(t) {
+    tab = t;
+    document.querySelectorAll('#gate .tabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tab === t)));
+    $('code').hidden = t !== 'register';
+    $('code').required = t === 'register';
+    $('password').autocomplete = t === 'register' ? 'new-password' : 'current-password';
+    $('gateSubmit').textContent = t === 'register' ? 'Create account' : 'Sign in';
+    $('gateHint').textContent = t === 'register'
+      ? 'Invite only. Use the sign-up code you were given. 10+ character password.'
+      : "Prove you're allowed to bother me.";
+    $('gateErr').textContent = '';
+  }
+  document.querySelectorAll('#gate .tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+  $('gateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('gateSubmit'); btn.disabled = true; $('gateErr').textContent = '';
+    const body = { username: $('username').value.trim(), password: $('password').value };
+    if (tab === 'register') body.code = $('code').value;
+    try {
+      const { ok, data } = await api('/api/auth/' + tab, { method: 'POST', body: JSON.stringify(body) });
+      if (!ok) throw new Error(data.error || 'Something went wrong.');
+      $('password').value = ''; $('code').value = '';
+      $('gate').classList.remove('open');
+      setWho(data.user.username); applyMode();
+      refreshStatus(); checkNewFiles();
+    } catch (err) {
+      $('gateErr').textContent = err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+  $('clear').addEventListener('click', () => { history = []; saveHistory(); render(); });
+  $('lock').addEventListener('click', async () => {
+    try { await api('/api/auth/logout', { method: 'POST', body: '{}' }); } catch {}
+    pending.length = 0; renderChips();
+    $('newdot').style.display = 'none';
+    setWho(null); applyMode(); openGate(); refreshStatus();
+  });
+
+  // ---- attachments ------------------------------------------------------
+  const MAX_UPLOAD = 4 * 1024 * 1024;
+  const pending = [];                       // {name, path, status: uploading|ready}
+
+  function renderChips() {
+    const box = $('chips');
+    box.textContent = '';
+    box.classList.toggle('has', pending.length > 0);
+    pending.forEach((f) => {
+      const chip = document.createElement('div');
+      chip.className = 'chip' + (f.status === 'uploading' ? ' uploading' : '');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = f.name;
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.title = 'Remove';
+      x.addEventListener('click', () => { pending.splice(pending.indexOf(f), 1); renderChips(); });
+      chip.append(n, x);
+      box.appendChild(chip);
+    });
+  }
+
+  async function uploadFile(file) {
+    if (!signedIn()) return openGate();
+    if (file.size > MAX_UPLOAD) { add('err', file.name + ' is over 4 MB, which is the most Vercel will pass along.'); return; }
+    if (!file.size) { add('err', file.name + ' is empty.'); return; }
+    const item = { name: file.name, path: '', status: 'uploading' };
+    pending.push(item); renderChips();
+    try {
+      const r = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/octet-stream', 'x-glitch-csrf': '1', 'x-filename': encodeURIComponent(file.name) },
+        body: file,
+      });
+      let data = {}; try { data = await r.json(); } catch {}
+      if (r.status === 401) { sessionLost(); throw new Error('Signed out.'); }
+      if (!r.ok) throw new Error(data.error || data.detail || 'Upload failed (' + r.status + ')');
+      item.path = data.path; item.status = 'ready';
+    } catch (e) {
+      pending.splice(pending.indexOf(item), 1);
+      add('err', file.name + ': ' + e.message);
+    }
+    renderChips();
+  }
+
+  $('attach').addEventListener('click', () => $('fileInput').click());
+  $('fileInput').addEventListener('change', (e) => {
+    [...e.target.files].forEach(uploadFile);
+    e.target.value = '';
+  });
+  let dragDepth = 0;
+  window.addEventListener('dragenter', (e) => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) { dragDepth++; document.body.classList.add('dragging'); } });
+  window.addEventListener('dragleave', () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) document.body.classList.remove('dragging'); });
+  window.addEventListener('dragover', (e) => e.preventDefault());
+  window.addEventListener('drop', (e) => {
+    e.preventDefault(); dragDepth = 0; document.body.classList.remove('dragging');
+    [...(e.dataTransfer ? e.dataTransfer.files : [])].forEach(uploadFile);
+  });
+
+  // ---- generated files --------------------------------------------------
+  const seenKey = () => 'glitch_files_seen_' + (me || 'anon');
+  const getSeen = () => { try { return Number(localStorage.getItem(seenKey()) || 0); } catch { return 0; } };
+  const fmtSize = (n) => n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(1) + ' KB' : (n / 1048576).toFixed(1) + ' MB';
+
+  async function fetchFiles() {
+    const { ok, status, data } = await api('/api/files').catch(() => ({ ok: false, status: 0, data: {} }));
+    if (status === 401 && signedIn()) sessionLost();
+    return ok ? (data.files || []) : null;
+  }
+
+  async function checkNewFiles() {
+    if (!signedIn()) return;
+    const files = await fetchFiles();
+    if (!files) return;
+    const seen = getSeen();
+    $('newdot').style.display = files.some(f => f.modified > seen) ? 'inline-block' : 'none';
+  }
+
+  async function downloadFile(path, name) {
+    const r = await fetch('/api/download?path=' + encodeURIComponent(path), { headers: { 'x-glitch-csrf': '1' } });
+    if (!r.ok) {
+      let msg = 'Download failed (' + r.status + ')';
+      try { msg = (await r.json()).error || msg; } catch {}
+      add('err', name + ': ' + msg);
+      return;
+    }
+    const url = URL.createObjectURL(await r.blob());
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  async function openFiles() {
+    const list = $('fileList');
+    $('files').classList.add('open');
+    list.textContent = 'Loading…';
+    const files = await fetchFiles();
+    list.textContent = '';
+    if (!files) { list.textContent = 'Could not reach your PC.'; return; }
+    if (!files.length) { list.textContent = 'Nothing yet. Ask me to write some code.'; return; }
+    files.forEach((f) => {
+      const row = document.createElement('div'); row.className = 'frow';
+      const name = document.createElement('div'); name.className = 'fn'; name.textContent = f.path;
+      const meta = document.createElement('div'); meta.className = 'fm';
+      meta.textContent = fmtSize(f.size) + ' · ' + new Date(f.modified * 1000).toLocaleString();
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'ghost';
+      btn.textContent = f.downloadable ? 'download' : 'too big';
+      btn.disabled = !f.downloadable;
+      btn.addEventListener('click', () => downloadFile(f.path, f.path.split('/').pop()));
+      row.append(name, meta, btn);
+      list.appendChild(row);
+    });
+    try { localStorage.setItem(seenKey(), String(Math.max(...files.map(f => f.modified)))); } catch {}
+    $('newdot').style.display = 'none';
+  }
+
+  $('filesBtn').addEventListener('click', openFiles);
+  $('filesClose').addEventListener('click', () => $('files').classList.remove('open'));
+  $('files').addEventListener('click', (e) => { if (e.target === $('files')) $('files').classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('files').classList.remove('open'); });
+
+  function applyMode() {
+    document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+    loadHistory(); render();
+  }
+  document.querySelectorAll('.modes button').forEach(b => b.addEventListener('click', () => {
+    if (busy || b.dataset.mode === mode) return;
+    mode = b.dataset.mode;
+    try { localStorage.setItem(MODE_KEY, mode); } catch {}
+    applyMode();
+  }));
+
+  applyMode();
+  setInterval(() => { if (!document.hidden && signedIn()) refreshStatus(); }, 60000);
+
+  (async () => {                            // already signed in? (cookie from an earlier visit)
+    const { ok, data } = await api('/api/auth/me').catch(() => ({ ok: false, data: {} }));
+    if (ok) { setWho(data.user.username); applyMode(); refreshStatus(); checkNewFiles(); }
+    else { openGate(); refreshStatus(); }
+  })();
+})();
+</script>
+</body>
+</html>

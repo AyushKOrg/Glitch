@@ -76,3 +76,11 @@ Not available on the web edition: executing generated code, opening apps, mouse/
 - Email-account chat history is temporarily stored in localStorage in this browser, separately by Supabase user ID and mode; it does not sync across devices and is not server-side storage. Guests do not get persistent chat history. The user can clear the current mode’s history with **New chat**.
 - A chat request has about 60 seconds on Vercel (`vercel.json`). Long tool chains may time out.
 - Test the migration and endpoints against your own Supabase project before announcing the deployment.
+
+## Web search troubleshooting
+
+Search tries, in order: Google Search grounding (Gemini 3.5 Flash-Lite, 3.1 Flash-Lite, 3.5 Flash, 2.5 Flash-Lite), then Tavily (if `TAVILY_API_KEY` is set), then Wikipedia (no key, encyclopedia-only).
+
+- Gemini 2.5 Flash shut down on 2026-10-16; it is no longer used.
+- Google Search grounding on Gemini 3.x is **not available on the free tier**. Enable billing on the Google project (5,000 grounded searches/month are free after that), or set `TAVILY_API_KEY`.
+- While signed in, open `/api/search-check` (send your bearer token) to see which provider answered and why the others failed.

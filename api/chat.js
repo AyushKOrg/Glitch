@@ -28,6 +28,15 @@ function needsLiveSearch(text) {
   return true;
 }
 
+// Strip correction phrasing ("i meant iphone duo" -> "iphone duo"). Earlier messages are passed separately
+// as context to the grounded search, so the query itself stays clean for every provider.
+function buildSearchQuery(messages) {
+  const users = messages.filter((m) => m.role === 'user').map((m) => m.text);
+  const last = users[users.length - 1] || '';
+  const cleaned = last.replace(/^(no[, ]+|sorry[, ]+)?(i\s+(meant|mean)|(i\s+)?was\s+(asking|talking)\s+about|what\s+about)\s+/i, '').trim() || last;
+  return cleaned.slice(0, 300);
+}
+
 function clean(raw) {
   if (!Array.isArray(raw)) return null;
   const out = [];
@@ -82,19 +91,20 @@ module.exports = async (req, res) => {
       });
     }
 
-    const ctx = { userId: user.id };
+    const ctx = { userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
     let system = systemPrompt(mode);
     // Run search server-side whenever the request may benefit from outside facts, so both models
     // receive grounded context even if they do not call the tool themselves. Search failure does not block chat.
     if (needsLiveSearch(lastUserText)) {
       const searchContext = await Promise.race([
-        runTool(ctx, 'web_search', { query: lastUserText.slice(0, 300) }),
-        new Promise((resolve) => setTimeout(() => resolve('Google Search did not return in time; answer cautiously and state uncertainty.'), 18000)),
-      ]).catch(() => 'Google Search failed; answer cautiously and state uncertainty.');
-      const searchFailed = /SEARCH_UNAVAILABLE|Search failed|did not return in time|returned no readable answer/i.test(searchContext);
+        runTool(ctx, 'web_search', { query: buildSearchQuery(messages) }),
+        new Promise((resolve) => setTimeout(() => resolve('SEARCH_UNAVAILABLE: Search did not return in time.'), 20000)),
+      ]).catch((e) => `SEARCH_UNAVAILABLE: ${String(e && e.message || e).slice(0, 150)}`);
+      const searchFailed = String(searchContext).startsWith('SEARCH_UNAVAILABLE');
+      if (searchFailed) ctx.searchFailedText = ctx.searchFailedText || String(searchContext);
       system += searchFailed
-        ? `\n\nGOOGLE SEARCH STATUS: Live search failed or returned no usable results. Do not make the failure the whole answer. Answer the user's likely intent using your existing knowledge, especially for recognizable people, products, projects, and terms. Clearly label details you cannot verify live, never invent sources, and only ask a follow-up if the term truly has multiple plausible meanings after a best-effort answer. Search error details: ${searchContext}`
-        : `\n\nLIVE GOOGLE SEARCH RESULTS (retrieved for this request):\n${searchContext}\nUse these results wherever relevant, including for casual factual questions; distinguish verified facts from uncertainty and include source URLs when relevant. If the results do not answer the question, provide useful known context and explain only which details remain unverified.`;
+        ? `\n\nGOOGLE SEARCH STATUS: Live search failed or returned no usable results. Do not call web_search again this turn. Do not make the failure the whole answer, and never blame or tease the user. Answer the user's likely intent using your existing knowledge, especially for recognizable people, products, projects, and terms (for a follow-up like "I meant X", use the earlier messages to work out what they are asking). Clearly label details you cannot verify live, never invent sources, and only ask a follow-up if the term truly has multiple plausible meanings after a best-effort answer. Internal error details (do not recite them to the user): ${searchContext}`
+        : `\n\nLIVE SEARCH RESULTS (retrieved for this request):\n${searchContext}\nUse these results wherever relevant, including for casual factual questions; distinguish verified facts from uncertainty and include source URLs when relevant. If the results do not answer the question, provide useful known context and explain only which details remain unverified.`;
     }
     const reply = mode === 'cognition'
       ? await runOpenRouter(ctx, system, messages)

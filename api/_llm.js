@@ -86,7 +86,7 @@ async function runTool(ctx, name, args) {
       if (!filename) return `Refused: file name must be a plain name ending in one of ${[...ALLOWED_EXT].join(' ')}.`;
       const content = String(args.content == null ? '' : args.content);
       if (content.length > MAX_FILE_CHARS) return 'Refused: file is over 200,000 characters.';
-      await storagePut(`${ctx.userId}/generated/${filename}`, Buffer.from(content, 'utf8'), 'text/plain; charset=utf-8');
+      await storagePut(`${ctx.userId}/generated/${filename}`, Buffer.from(content, 'utf8'), 'text/plain; charset=utf-8', ctx.accessToken);
       if (!ctx.created.includes(filename)) ctx.created.push(filename);
       return `Saved generated/${filename} (${content.length} characters). It's in the user's Files panel.`;
     }
@@ -95,7 +95,7 @@ async function runTool(ctx, name, args) {
       const path = `${ctx.userId}/${String(args.path || '').replace(/^\/+/, '')}`;
       if (!validPath(ctx.userId, path)) return 'Refused: use a path like "generated/main.py" or "uploads/notes.txt".';
       if (!TEXT_EXT.has(extOf(path))) return 'Only text and code files can be read this way. (Attached PDFs and Word files are already included in the message.)';
-      const buf = await storageGet(path);
+      const buf = await storageGet(path, ctx.accessToken);
       if (!buf) return 'No such file.';
       const text = buf.toString('utf8');
       return text.length > 60000 ? text.slice(0, 60000) + '\n…[truncated]' : text;
@@ -104,7 +104,7 @@ async function runTool(ctx, name, args) {
     if (name === 'list_files') {
       const out = [];
       for (const folder of ['uploads', 'generated']) {
-        for (const o of await storageList(`${ctx.userId}/${folder}`)) out.push(`${folder}/${o.name}`);
+        for (const o of await storageList(`${ctx.userId}/${folder}`, ctx.accessToken)) out.push(`${folder}/${o.name}`);
       }
       return out.length ? out.join('\n') : 'No files yet.';
     }

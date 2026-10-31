@@ -26,10 +26,10 @@ async function extractDocxText(buffer) {
 }
 
 // -> { name, kind: 'text'|'pdf'|'image', text?, buffer?, mime?, note? }
-async function loadFile(userId, path) {
+async function loadFile(userId, path, accessToken) {
   const name = String(path).split('/').pop();
   if (!validPath(userId, path)) return { name, kind: 'text', text: '', note: 'invalid path' };
-  const buffer = await storageGet(path);
+  const buffer = await storageGet(path, accessToken);
   if (!buffer) return { name, kind: 'text', text: '', note: 'file not found' };
 
   const ext = extOf(name);

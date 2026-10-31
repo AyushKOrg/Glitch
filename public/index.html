@@ -213,6 +213,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   let history = [];                                             // [{role, content, attachments?, tag?}]
   let busy = false;
   let sb = null;
+  let authInitError = 'Supabase is still initializing. Please try again in a moment.';
   const pending = [];                                           // attachments waiting to be sent
 
   const histKey = () => 'glitch_history_' + (user ? user.id : 'anon') + '_' + mode;
@@ -289,7 +290,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   $('gateForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = $('email').value.trim(), password = $('password').value;
-    if (!sb) return;
+    if (!sb) return gateMsg(authInitError);
     if (tab === 'register' && password.length < 8) return gateMsg('Password must be at least 8 characters.');
     $('gateSubmit').disabled = true; gateMsg('');
     try {
@@ -323,7 +324,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     applyMode(); openGate();
   }
   $('guestSignIn').addEventListener('click', async () => {
-    if (!sb) return;
+    if (!sb) return gateMsg(authInitError);
     const button = $('guestSignIn'); button.disabled = true; gateMsg('Starting a guest session…');
     try {
       const { error } = await sb.auth.signInAnonymously();
@@ -526,20 +527,35 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   // ---- start ----------------------------------------------------------------------
   applyMode();
   let cfg = null;
-  try { cfg = await (await fetch('/api/config')).json(); } catch {}
-  if (!cfg) return openGate("Can't reach the server.");
-  if (!cfg.configured) return openGate("Not set up yet. Missing on the server: " + cfg.missing.join(', '));
-  if (!cfg.cognition) { const b = document.querySelector('[data-mode="cognition"]'); b.classList.add('off'); b.title += ' (not configured on the server)'; }
-  if (!cfg.flash) { const b = document.querySelector('[data-mode="flash"]'); b.classList.add('off'); b.title += ' (not configured on the server)'; }
+  try {
+    const response = await fetch('/api/config', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Configuration endpoint returned HTTP ' + response.status + '.');
+    cfg = await response.json();
+    if (!cfg.configured) {
+      authInitError = 'Supabase is not configured on Vercel. Missing: ' + (cfg.missing || []).join(', ') + '. Add SUPABASE_URL and SUPABASE_ANON_KEY in Vercel → Settings → Environment Variables, then redeploy.';
+      return openGate(authInitError);
+    }
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+      throw new Error('Supabase browser library failed to load (/vendor/supabase.js).');
+    }
+    sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } });
+    authInitError = 'Supabase could not initialize. Refresh the page; if it persists, check /api/config and /vendor/supabase.js.';
+    if (!cfg.cognition) { const b = document.querySelector('[data-mode="cognition"]'); b.classList.add('off'); b.title += ' (not configured on the server)'; }
+    if (!cfg.flash) { const b = document.querySelector('[data-mode="flash"]'); b.classList.add('off'); b.title += ' (not configured on the server)'; }
 
-  sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } });
-  sb.auth.onAuthStateChange((event, session) => {
-    // Never await Supabase calls inside this callback (it can deadlock the client); just update the UI.
-    if (session && session.user) { if (!user || user.id !== session.user.id) onSignedIn(session.user); }
-    else if (event === 'SIGNED_OUT') onSignedOut();
-  });
-  const { data } = await sb.auth.getSession();
-  if (!data.session) openGate();
+    sb.auth.onAuthStateChange((event, session) => {
+      // Never await Supabase calls inside this callback (it can deadlock the client); just update the UI.
+      if (session && session.user) { if (!user || user.id !== session.user.id) onSignedIn(session.user); }
+      else if (event === 'SIGNED_OUT') onSignedOut();
+    });
+    const { data, error } = await sb.auth.getSession();
+    if (error) throw error;
+    authInitError = 'Supabase authentication is unavailable. Check your Supabase project URL and anon key.';
+    if (!data.session) openGate();
+  } catch (error) {
+    authInitError = 'Authentication setup failed: ' + (error && error.message ? error.message : 'unknown error') + '. Check Vercel environment variables and /vendor/supabase.js.';
+    openGate(authInitError);
+  }
 })();
 </script>
 </body>

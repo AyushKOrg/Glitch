@@ -4,9 +4,9 @@ const DEADLINE_MS = 48000;
 const GEMINI_MODEL = 'gemini-3.5-flash-lite';
 const OPENROUTER_MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
 // Use a stable model for Google Search grounding independently of the selected chat model.
-const GOOGLE_SEARCH_MODEL = 'gemini-2.5-flash';
+const GOOGLE_SEARCH_MODELS = ['gemini-2.5-flash', 'gemini-2.5-flash-lite'];
 
-const PERSONA = `You are Glitch, a friendly, sharp, practical AI assistant. Be conversational and warm, with occasional light wit, but never insult, scold, mock, or blame the user for an unclear question or a failed search. Answer the likely intent first; if a term is unfamiliar, search for it and explain what the evidence says. If search fails, say briefly that the lookup failed, give any useful qualified answer you can, and offer a clear next step. Never pretend to have searched or invent sources. Be especially considerate on health, grief, safety, or other serious topics.
+const PERSONA = `You are Glitch, a friendly, sharp, practical AI assistant. Be conversational and warm, with occasional light wit, but never insult, scold, mock, or blame the user for an unclear question or a failed search. Answer the likely intent first; if a term is unfamiliar, search for it and explain what the evidence says. If search fails, do NOT stop at announcing a technical problem or ask the user to explain a recognizable name/topic. First give the best-effort answer based on your existing knowledge, label what is unverified, and then briefly mention that live verification failed. For a named entity or product, explain the most likely referent and distinguish confirmed facts from rumors; ask a follow-up only if multiple interpretations remain genuinely plausible after that. Be especially considerate on health, grief, safety, or other serious topics.
 
 You are running on a website. Your web tool is available in both Flash and Cognition modes:
 - web_search(query): search Google for current information and return a concise summary with source URLs. Use it whenever external information would materially improve accuracy or completeness—not only for news or time-sensitive facts. This includes casual factual questions, unfamiliar names/products/terms, recommendations, comparisons, claims that may need verification, and follow-up questions where context is uncertain. Search when in doubt; skip only for greetings, purely creative tasks, or self-contained reasoning that needs no external facts. Never pretend you searched if no search results were returned.
@@ -32,29 +32,42 @@ const TOOLS = [
 // ---- tool execution ---------------------------------------------------------
 async function webSearch(query) {
   const key = process.env.GOOGLE_API_KEY;
-  if (!key) return 'Web search is unavailable (GOOGLE_API_KEY is not set).';
-  const model = GOOGLE_SEARCH_MODEL;
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({
-      contents: [{ role: 'user', parts: [{ text: `Search the web and answer concisely with the key facts: ${query}` }] }],
-      tools: [{ google_search: {} }],
-      generationConfig: { maxOutputTokens: 1200 },
-    }),
-    signal: AbortSignal.timeout(20000),
-  });
-  if (!r.ok) {
-    const detail = (await r.text().catch(() => '')).slice(0, 240);
-    return `Google Search failed (HTTP ${r.status})${detail ? `: ${detail}` : ''}. Do not blame the user; answer cautiously and say the lookup could not be verified.`;
+  if (!key) return 'SEARCH_UNAVAILABLE: GOOGLE_API_KEY is not set. Give a useful best-effort answer from existing knowledge, clearly mark anything unverified, and do not ask the user to explain a recognizable name or topic unless genuinely ambiguous.';
+
+  let lastFailure = 'Google Search did not return results.';
+  // Retry with a second supported model if the primary grounding model is unavailable or errors.
+  for (const model of GOOGLE_SEARCH_MODELS) {
+    try {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: `Search Google for this query. Summarize reliable findings, distinguish confirmed information from rumors, and include relevant source URLs: ${query}` }] }],
+          tools: [{ google_search: {} }],
+          generationConfig: { maxOutputTokens: 1200 },
+        }),
+        signal: AbortSignal.timeout(16000),
+      });
+      if (!r.ok) {
+        const detail = (await r.text().catch(() => '')).slice(0, 180);
+        lastFailure = `Google Search failed using ${model} (HTTP ${r.status})${detail ? `: ${detail}` : ''}.`;
+        continue;
+      }
+      const data = await r.json();
+      const cand = data.candidates && data.candidates[0];
+      const answer = ((cand && cand.content && cand.content.parts) || []).map((p) => p.text || '').join('').trim();
+      const sources = ((cand && cand.groundingMetadata && cand.groundingMetadata.groundingChunks) || [])
+        .map((c) => c.web && c.web.uri ? `- ${c.web.title || c.web.uri}: ${c.web.uri}` : '')
+        .filter(Boolean).slice(0, 5);
+      if (answer || sources.length) {
+        return (answer || 'Google Search returned sources but no summary.') + (sources.length ? `\n\nSources:\n${sources.join('\n')}` : '');
+      }
+      lastFailure = `Google Search returned no readable answer from ${model}.`;
+    } catch (e) {
+      lastFailure = `Google Search request failed using ${model}: ${String(e && e.message || e).slice(0, 140)}.`;
+    }
   }
-  const data = await r.json();
-  const cand = data.candidates && data.candidates[0];
-  const text = ((cand && cand.content && cand.content.parts) || []).map((p) => p.text || '').join('').trim();
-  const sources = ((cand && cand.groundingMetadata && cand.groundingMetadata.groundingChunks) || [])
-    .map((c) => c.web && c.web.uri ? `- ${c.web.title || c.web.uri}: ${c.web.uri}` : '')
-    .filter(Boolean).slice(0, 5);
-  return (text || 'Google Search returned no readable answer. Do not imply the query was verified.') + (sources.length ? `\n\nSources:\n${sources.join('\n')}` : '');
+  return `SEARCH_UNAVAILABLE: ${lastFailure} Give the best-effort answer you can from existing knowledge, clearly say what cannot be verified live, and do not respond only with an apology or ask the user to explain a recognizable topic.`;
 }
 
 async function runTool(ctx, name, args) {

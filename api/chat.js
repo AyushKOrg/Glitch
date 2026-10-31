@@ -91,7 +91,10 @@ module.exports = async (req, res) => {
         runTool(ctx, 'web_search', { query: lastUserText.slice(0, 300) }),
         new Promise((resolve) => setTimeout(() => resolve('Google Search did not return in time; answer cautiously and state uncertainty.'), 18000)),
       ]).catch(() => 'Google Search failed; answer cautiously and state uncertainty.');
-      system += `\n\nLIVE GOOGLE SEARCH RESULTS (retrieved for this request):\n${searchContext}\nUse these results wherever relevant, including for casual factual questions; distinguish verified facts from uncertainty and include source URLs when relevant. If the results do not answer the question, say so rather than guessing.`;
+      const searchFailed = /SEARCH_UNAVAILABLE|Search failed|did not return in time|returned no readable answer/i.test(searchContext);
+      system += searchFailed
+        ? `\n\nGOOGLE SEARCH STATUS: Live search failed or returned no usable results. Do not make the failure the whole answer. Answer the user's likely intent using your existing knowledge, especially for recognizable people, products, projects, and terms. Clearly label details you cannot verify live, never invent sources, and only ask a follow-up if the term truly has multiple plausible meanings after a best-effort answer. Search error details: ${searchContext}`
+        : `\n\nLIVE GOOGLE SEARCH RESULTS (retrieved for this request):\n${searchContext}\nUse these results wherever relevant, including for casual factual questions; distinguish verified facts from uncertainty and include source URLs when relevant. If the results do not answer the question, provide useful known context and explain only which details remain unverified.`;
     }
     const reply = mode === 'cognition'
       ? await runOpenRouter(ctx, system, messages)

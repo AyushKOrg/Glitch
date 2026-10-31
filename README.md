@@ -16,11 +16,9 @@ your computer is off.
    `glitch-files` bucket and the rules that keep each user to their own folder.
 3. **Authentication → Sign In / Providers → Email**: decide on **Confirm email**.
    - **Off**: people can sign in the moment they create an account.
-   - **On** (Supabase's default): they must click a link in an email first. Supabase's built-in
-     mailer only sends a few emails an hour, so turn this off while you're testing.
-4. **Project Settings → API Keys**: copy the Project URL, the `anon` key and the `service_role`
-   key. If your dashboard shows the newer "publishable" and "secret" keys, those work too.
-   (Vercel's Supabase integration under Storage/Integrations can add these variables for you; check the names match below.)
+   - **On**: users must click a link in an email first. Supabase's built-in mailer has rate limits.
+4. **Authentication → Sign In / Providers → Anonymous Sign-Ins**: enable this to allow guest mode.
+5. **Project Settings → API Keys**: copy only the Project URL and the public `anon` (publishable) key. Never add a service-role or secret key to this app.
 
 ## 2. Deploy
 
@@ -30,7 +28,6 @@ cd glitch-vercel
 vercel
 vercel env add SUPABASE_URL
 vercel env add SUPABASE_ANON_KEY
-vercel env add SUPABASE_SERVICE_ROLE_KEY
 vercel env add GOOGLE_API_KEY          # flash mode + web search
 vercel env add GEMINI_MODEL            # optional, default gemini-3.5-flash-lite
 vercel env add OPENROUTER_API_KEY      # cognition mode
@@ -42,13 +39,13 @@ Or push the folder to GitHub, import it in the Vercel dashboard and add the same
 variables under Settings → Environment Variables. **Redeploy after adding variables.**
 `npm install` runs automatically (the PDF and Word readers).
 
-Open the site, click **Create account**, and use it.
+Open the site and choose **Create account** or **Continue as guest**.
 
 ## What it does
 
 | | |
 |---|---|
-| **Sign in** | Supabase email + password. No sign-up code. Sessions refresh automatically. |
+| **Sign in / guest** | Supabase email + password or anonymous guest sessions. Sessions refresh automatically. |
 | **Upload** | `+` or drag-and-drop, up to 25 MB each, straight from the browser into your private folder. PDF, Word, text/code, images. |
 | **Download / delete** | **files** button: everything you uploaded and everything Glitch made. |
 | **Glitch's tools** | `web_search`, `create_file` (writes code/text files for you), `read_file`, `list_files`. |
@@ -73,9 +70,8 @@ OpenRouter credit and store files (Supabase free tier: 1 GB). Pick one:
 
 - The bucket is private. Rules in `supabase.sql` only let you read, upload to and delete from the
   folder named after your own user id, and uploads only go in `uploads/` and only for allowed file types.
-- Glitch's files are written by the server (with the service key) into `<your id>/generated/`. The server
-  checks every path it reads or writes belongs to the signed-in user.
-- The `service_role` key lives only in Vercel's environment variables. The browser only ever gets the `anon` key.
+- Glitch's files are written using the current user's access token into `<your id>/generated/`.
+- Storage Row Level Security checks that every read, upload, update and delete stays inside that user's folder. The server never receives a service-role key.
 
 ## Notes
 

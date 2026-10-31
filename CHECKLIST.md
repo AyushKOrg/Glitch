@@ -34,3 +34,19 @@
 - [ ] Sign out and sign in as account B in the same browser; verify B sees a separate history.
 - [ ] Verify history does not sync to another browser/device (temporary limitation).
 - [ ] Verify New chat clears the current mode's local history.
+
+## Chat history v2
+- [x] One history per account (not per mode); each chat remembers its mode
+- [x] New chat reuses an empty chat instead of piling up blanks
+- [x] Search, date groups, inline rename, delete with Undo, cross-tab sync
+- [x] Failed message stays in the chat with a Retry button; replies go to the chat they were sent from
+- [x] Token refresh no longer resets the open chat
+- [ ] Manually test with a real attached file (stored as a short marker, shown as a chip)
+
+## Interface pass
+- [x] Replies render markdown (headings, lists, bold/italic, links, code blocks) without parsing HTML
+- [x] Copy button on replies and code blocks; plain code snippets are no longer shown as fake file downloads
+- [x] Attachments shown as removable chips; total size budget; Send waits while a file is being read
+- [x] Enter no longer sends while composing text with an input method (IME)
+- [x] Clear messages for timeouts, offline, and oversized messages; long replies open at their start
+- [ ] Manually check on a phone: sidebar, keyboard height (uses 100dvh), copy buttons

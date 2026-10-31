@@ -31,7 +31,7 @@ button,input,textarea{font:inherit;color:inherit}button{white-space:nowrap}
 @keyframes dots{0%,60%,100%{transform:none;opacity:.6}30%{transform:translateY(-5px) scale(1.15);opacity:1}}
 @keyframes shake{0%,100%{transform:none}20%{transform:translateX(-5px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
 @keyframes ripple{to{transform:scale(2.6);opacity:0}}
-.layout{display:flex;height:100%}
+.layout{display:flex;height:100%;height:100dvh}
 /* sidebar */
 .side{width:268px;flex:none;background:var(--panel-alt);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:12px 10px;gap:2px;transition:transform .25s ease}
 .side-brand{display:flex;align-items:center;gap:10px;padding:6px 10px 14px}
@@ -45,7 +45,7 @@ button,input,textarea{font:inherit;color:inherit}button{white-space:nowrap}
 html[data-scheme=dark] .nav[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--text)}
 .nav.off{opacity:.5}
 .side h4{margin:18px 10px 6px;font-size:.74rem;font-weight:600;color:var(--muted)}
-.history-head{display:flex;align-items:center;justify-content:space-between;margin:16px 8px 5px}.history-head h4{margin:0}.history-list{display:flex;flex-direction:column;gap:3px;overflow:auto;max-height:30vh;padding:0 2px}.history-item{display:flex;align-items:center;gap:4px;border-radius:9px;min-width:0}.history-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:9px;padding:8px;color:var(--text-dim);cursor:pointer;font-size:.84rem}.history-open:hover,.history-item.active .history-open{background:var(--accent-soft);color:var(--text)}.history-actions{display:flex;gap:2px}.history-action{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 6px}.history-action:hover{background:var(--panel);color:var(--text)}.history-empty{padding:8px 10px;color:var(--muted);font-size:.78rem}.swatches{display:flex;gap:.6rem;padding:2px 10px}
+.history-head{display:flex;align-items:center;justify-content:space-between;margin:16px 8px 5px}.history-head h4{margin:0}.history-list{display:flex;flex-direction:column;gap:3px;overflow:auto;flex:1 1 120px;min-height:90px;max-height:46vh;padding:0 2px}.history-item{display:flex;align-items:center;gap:4px;border-radius:9px;min-width:0}.history-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:9px;padding:8px;color:var(--text-dim);cursor:pointer;font-size:.84rem}.history-open:hover,.history-item.active .history-open{background:var(--accent-soft);color:var(--text)}.history-actions{display:flex;gap:2px}.history-action{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 6px}.history-action:hover{background:var(--panel);color:var(--text)}.history-empty{padding:8px 10px;color:var(--muted);font-size:.78rem}.swatches{display:flex;gap:.6rem;padding:2px 10px}
 .swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer;position:relative;animation:bob 3.6s ease-in-out infinite;transition:transform .2s var(--ease)}
 .swatch:nth-child(2){animation-delay:.15s}.swatch:nth-child(3){animation-delay:.3s}.swatch:nth-child(4){animation-delay:.45s}
 .swatch[data-theme=default]{background:linear-gradient(135deg,#7c3aed,#ec4899)}.swatch[data-theme=matrix]{background:linear-gradient(135deg,#10b981,#06b6d4)}
@@ -149,6 +149,36 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 @media(prefers-reduced-motion:reduce){.stage::before,.nav::after,#chat,.cta{animation:none!important}}
 
 @media(prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
+.history-search{padding:0 4px 6px}.history-search input{width:100%;box-sizing:border-box;padding:7px 10px;border-radius:9px;border:1px solid var(--border);background:var(--panel);color:var(--text);font:inherit;font-size:.82rem}
+.history-search input:focus,.history-rename:focus{outline:2px solid var(--accent);outline-offset:1px}
+.history-group{margin:10px 8px 3px;font-size:.72rem;font-weight:600;color:var(--muted)}
+.history-rename{flex:1;min-width:0;padding:7px 8px;border-radius:9px;border:1px solid var(--accent);background:var(--panel);color:var(--text);font:inherit;font-size:.84rem}
+.history-actions{opacity:0;transition:opacity .15s}.history-item:hover .history-actions,.history-item:focus-within .history-actions,.history-item.active .history-actions{opacity:1}
+@media(hover:none){.history-actions{opacity:1}}
+.history-action{min-width:28px;min-height:28px}
+.file-chip{display:inline-block;margin:6px 6px 0 0;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--text);font-size:.78rem}
+.msg.err .code-download{background:transparent}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;display:flex;gap:14px;align-items:center;max-width:min(92vw,460px);padding:10px 14px;border-radius:12px;background:var(--panel);color:var(--text);border:1px solid var(--border);box-shadow:0 8px 28px rgba(0,0,0,.28);font-size:.86rem;transition:opacity .2s,transform .2s;z-index:50}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{border:0;background:transparent;color:var(--accent-strong);font:inherit;font-weight:600;cursor:pointer;padding:2px 4px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.msg .md{white-space:normal}.md>*:first-child{margin-top:0}.md>*:last-child{margin-bottom:0}
+.md p{margin:0 0 .65em}.md h3,.md h4,.md h5,.md h6{margin:.9em 0 .35em;line-height:1.3;font-size:1em;font-weight:700}.md h3{font-size:1.08em}
+.md ul,.md ol{margin:.2em 0 .7em;padding-left:1.35em}.md li{margin:.15em 0}.md hr{border:0;border-top:1px solid var(--border);margin:.9em 0}
+.md blockquote{margin:.5em 0;padding:.1em .9em;border-left:3px solid var(--accent);color:var(--text-dim)}
+.md a{color:var(--accent-strong);text-decoration:underline;text-underline-offset:2px;word-break:break-all}
+.md code{font:.88em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:.12em .38em;border-radius:6px;background:var(--accent-soft)}
+.md-code{margin:.55em 0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--panel)}
+.md-code-head{display:flex;justify-content:space-between;align-items:center;padding:5px 6px 5px 12px;font-size:.74rem;color:var(--muted);border-bottom:1px solid var(--border)}
+.md-code-head button,.msg-copy{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;cursor:pointer;padding:3px 8px;border-radius:6px}
+.md-code-head button:hover,.msg-copy:hover{background:var(--accent-soft);color:var(--text)}
+.md-code pre{margin:0;padding:10px 12px;overflow:auto;white-space:pre;font-size:.84rem;line-height:1.5}.md-code pre code{padding:0;background:none;font-size:inherit}
+.msg-actions{margin:6px -6px -4px;display:flex;opacity:0;transition:opacity .15s}.msg.bot:hover .msg-actions,.msg.bot:focus-within .msg-actions,.msg.bot:last-of-type .msg-actions{opacity:1}
+@media(hover:none){.msg-actions{opacity:1}}
+#fileStatus{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#fileStatus:empty{display:none}
+.attach-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--text);font-size:.8rem}
+.attach-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:1rem;line-height:1;padding:0 6px;border-radius:50%}.attach-chip button:hover{background:var(--panel)}
+.attach-note{font-size:.8rem;color:var(--text-dim)}.attach-note.err{color:var(--error)}
 </style>
 </head>
 <body class="empty">
@@ -158,6 +188,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   <button class="nav primary" id="newChat" type="button" title="Start a new conversation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New chat</button>
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <div class="history-head"><h4>Recent chats</h4></div>
+  <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
   <div id="historyList" class="history-list" aria-label="Recent chats"></div>
   <h4>Mode</h4>
   <div class="modes" role="group" aria-label="Mode">
@@ -198,6 +229,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 </div>
 </div>
 
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="gate" class="overlay">
   <form id="gateForm">
     <div class="brand"><img src="/logo.png" alt=""><strong>Glitch</strong></div>
@@ -234,66 +266,227 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   let sb = null;
   let authInitError = 'Supabase is still initializing. Please try again in a moment.';
 
-  const chatsKey = () => 'glitch_chats_' + (user ? user.id : 'anon') + '_' + mode;
-  const histKey = () => 'glitch_history_' + (user ? user.id : 'anon') + '_' + mode; // legacy migration
+  // ---- chats & history ----------------------------------------------------------
+  // One history list per account (not per mode); each chat remembers its mode. Email accounts are saved in
+  // localStorage; guests use sessionStorage (lost when the tab closes). Storage is browser-local only.
+  const STORE_V = 'glitch_chats_v2_';
+  const MAX_CHATS = 60, MAX_STORED_MSGS = 40, MAX_STORED_CHARS = 12000;
+  const storeKey = () => STORE_V + (user ? user.id : 'anon');
+  const store = () => (canPersistChats() ? localStorage : sessionStorage);
   const canPersistChats = () => Boolean(user && !user.isAnonymous && user.email);
-  const makeChat = () => ({ id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)), title: 'New chat', messages: [], updatedAt: Date.now() });
+  const newId = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+  const makeChat = () => ({ id: newId(), title: 'New chat', messages: [], updatedAt: Date.now(), mode });
+  const activeChat = () => conversations.find(c => c.id === activeChatId);
+  let pending = null;            // {chatId, el} while a reply is in flight
+  let histFilter = '';
+  let undo = null;               // {chat, index, timer} for the last deleted chat
 
-  // Browser-local conversation history for signed-in email accounts only. Guests remain session-only.
-  function persistChats() {
-    if (!canPersistChats()) { renderHistoryList(); return; }
-    try { localStorage.setItem(chatsKey(), JSON.stringify(conversations.slice(0, 60))); } catch (e) { console.warn('Could not save chat history:', e); }
-    renderHistoryList();
+  // Attached files are huge; store a short marker instead (the live session keeps the full text).
+  const FILE_RE = /\n*--- Attached file: (.*?) ---\n[\s\S]*?\n--- End file ---/g;
+  const compact = (t) => String(t).replace(FILE_RE, (_, n) => '\n[Attached file: ' + n + ']').slice(0, MAX_STORED_CHARS);
+  const titleFrom = (t) => compact(t).replace(/\[Attached file: .*?\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 42);
+
+  function sanitize(list) {
+    return (Array.isArray(list) ? list : []).filter(c => c && typeof c.id === 'string' && Array.isArray(c.messages)).map(c => ({
+      id: c.id, title: String(c.title || 'New chat').slice(0, 60), updatedAt: Number(c.updatedAt) || Date.now(),
+      mode: MODES.includes(c.mode) ? c.mode : 'flash',
+      messages: c.messages.filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+        .slice(-MAX_STORED_MSGS).map(m => ({ role: m.role, content: m.content }))
+    })).sort((x, y) => y.updatedAt - x.updatedAt).slice(0, MAX_CHATS);
   }
-  function saveHistory() {
-    const chat = conversations.find(c => c.id === activeChatId);
-    if (chat) {
-      chat.messages = history.slice(-40).map(m => ({ role: m.role, content: m.content }));
-      chat.updatedAt = Date.now();
-      const firstUser = chat.messages.find(m => m.role === 'user');
-      if (firstUser && (!chat.title || chat.title === 'New chat')) chat.title = firstUser.content.replace(/\s+/g, ' ').slice(0, 42) || 'New chat';
-      conversations = [chat, ...conversations.filter(c => c.id !== chat.id)].slice(0, 60);
+  function writeStore() {
+    // Empty chats other than the open one are not worth saving. Shrink on quota errors instead of failing silently.
+    let list = conversations.filter(c => c.messages.length || c.id === activeChatId).slice(0, MAX_CHATS)
+      .map(c => ({ ...c, messages: c.messages.slice(-MAX_STORED_MSGS).map(m => ({ role: m.role, content: compact(m.content) })) }));
+    for (let guard = 0; guard < 80; guard++) {
+      try { store().setItem(storeKey(), JSON.stringify(list)); return; }
+      catch (e) { if (list.length <= 1) break; list = list.slice(0, -1); }
     }
+    showToast('Storage is full, so this chat may not be saved after a refresh.');
+  }
+  function persistChats() { if (user) writeStore(); renderHistoryList(); }
+
+  // Bring the live in-memory history up to date with what the chat object holds.
+  function syncActiveFromHistory() {
+    const chat = activeChat(); if (!chat) return;
+    chat.messages = history.map(m => ({ role: m.role, content: m.content }));
+    chat.mode = mode;
+    const firstUser = chat.messages.find(m => m.role === 'user');
+    if (firstUser && (!chat.title || chat.title === 'New chat')) chat.title = titleFrom(firstUser.content) || 'New chat';
+  }
+  function saveHistory(touch = true) {
+    const chat = activeChat();
+    if (chat) { syncActiveFromHistory(); if (touch) { chat.updatedAt = Date.now(); conversations = [chat, ...conversations.filter(c => c.id !== chat.id)]; } }
     persistChats();
+  }
+  function openChat(id, quiet) {
+    const chat = conversations.find(c => c.id === id); if (!chat) return;
+    if (activeChatId && activeChatId !== id) syncActiveFromHistory();
+    activeChatId = id; history = chat.messages.map(m => ({ ...m }));
+    if (chat.messages.length && MODES.includes(chat.mode) && chat.mode !== mode) { mode = chat.mode; try { localStorage.setItem(MODE_KEY, mode); } catch {} markMode(); }
+    render(); renderHistoryList(); if (!quiet) { document.body.classList.remove('nav-open'); input.focus(); }
   }
   function loadHistory() {
     history = []; conversations = []; activeChatId = null;
-    if (!canPersistChats()) { renderHistoryList(); return; }
-    try {
-      const saved = JSON.parse(localStorage.getItem(chatsKey()) || 'null');
-      if (Array.isArray(saved)) conversations = saved.filter(c => c && typeof c.id === 'string' && Array.isArray(c.messages)).map(c => ({
-        id: c.id, title: String(c.title || 'New chat').slice(0, 60), updatedAt: Number(c.updatedAt) || Date.now(),
-        messages: c.messages.filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string').slice(-40).map(m => ({ role: m.role, content: m.content }))
-      })).sort((a,b) => b.updatedAt-a.updatedAt).slice(0,60);
-      // Migrate the previous single-chat storage once, without discarding it.
-      if (!conversations.length) {
-        const legacy = JSON.parse(localStorage.getItem(histKey()) || '[]');
-        if (Array.isArray(legacy) && legacy.length) conversations = [{ ...makeChat(), title: String(legacy.find(m=>m.role==='user')?.content || 'Previous chat').replace(/\s+/g,' ').slice(0,42), messages: legacy.filter(m=>m && (m.role==='user'||m.role==='assistant') && typeof m.content==='string').slice(-40), updatedAt: Date.now() }];
+    if (user) {
+      try { conversations = sanitize(JSON.parse(store().getItem(storeKey()) || 'null')); } catch {}
+      // One-time migration of the old per-mode storage (glitch_chats_<uid>_<mode>), without deleting it.
+      if (canPersistChats() && !conversations.length) {
+        for (const m of MODES) {
+          try { conversations = conversations.concat(sanitize(JSON.parse(localStorage.getItem('glitch_chats_' + user.id + '_' + m) || 'null')).map(c => ({ ...c, mode: m }))); } catch {}
+        }
+        conversations = conversations.sort((x, y) => y.updatedAt - x.updatedAt).slice(0, MAX_CHATS);
       }
-    } catch {}
-    if (!conversations.length) conversations = [makeChat()];
-    activeChatId = conversations[0].id;
-    history = conversations[0].messages.map(m => ({...m}));
+    }
+    // Always land on a fresh empty chat, like other chat apps; old chats stay in the list.
+    const fresh = makeChat(); conversations.unshift(fresh); activeChatId = fresh.id;
     persistChats();
   }
+
+  // ---- history sidebar ----------------------------------------------------------
+  function groupOf(ts) {
+    const d = new Date(ts), now = new Date(), day = 86400000;
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    if (ts >= start) return 'Today';
+    if (ts >= start - day) return 'Yesterday';
+    if (ts >= start - 7 * day) return 'Previous 7 days';
+    return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  }
+  function note(list, text) { const n = document.createElement('div'); n.className = 'history-empty'; n.textContent = text; list.appendChild(n); }
   function renderHistoryList() {
     const list = $('historyList'); if (!list) return;
     list.textContent = '';
-    if (!canPersistChats()) { const note=document.createElement('div'); note.className='history-empty'; note.textContent='Sign in with email to save chats'; list.appendChild(note); return; }
-    if (!conversations.length) { const note=document.createElement('div'); note.className='history-empty'; note.textContent='No chats yet'; list.appendChild(note); return; }
-    conversations.forEach(chat => {
-      const row=document.createElement('div'); row.className='history-item'+(chat.id===activeChatId?' active':'');
-      const open=document.createElement('button'); open.type='button'; open.className='history-open'; open.textContent=chat.title || 'New chat'; open.title=chat.title || 'New chat'; open.addEventListener('click',()=>{ if(busy || chat.id===activeChatId)return; activeChatId=chat.id; history=chat.messages.map(m=>({...m})); render(); renderHistoryList(); document.body.classList.remove('nav-open'); });
-      const rename=document.createElement('button'); rename.type='button'; rename.className='history-action'; rename.textContent='✎'; rename.title='Rename chat'; rename.setAttribute('aria-label','Rename chat'); rename.addEventListener('click',()=>{ const title=prompt('Rename conversation',chat.title||'New chat'); if(title===null)return; const clean=title.trim().slice(0,60); if(clean){chat.title=clean; persistChats();} });
-      const del=document.createElement('button'); del.type='button'; del.className='history-action'; del.textContent='×'; del.title='Delete chat'; del.setAttribute('aria-label','Delete chat'); del.addEventListener('click',()=>{ if(busy)return; if(!confirm('Delete this conversation? This cannot be undone.'))return; conversations=conversations.filter(c=>c.id!==chat.id); if(activeChatId===chat.id){ if(!conversations.length)conversations=[makeChat()]; activeChatId=conversations[0].id; history=conversations[0].messages.map(m=>({...m})); render(); } persistChats(); });
-      const actions=document.createElement('span'); actions.className='history-actions'; actions.append(rename,del); row.append(open,actions); list.appendChild(row);
+    $('histSearchWrap').hidden = !user;
+    if (!user) { note(list, 'Sign in to see your chats'); return; }
+    const q = histFilter.trim().toLowerCase();
+    const shown = conversations.filter(c => (c.messages.length || c.id === activeChatId) &&
+      (!q || c.title.toLowerCase().includes(q) || c.messages.some(m => m.content.toLowerCase().includes(q))));
+    if (!shown.length) note(list, q ? 'No chats match your search' : 'No chats yet');
+    let lastGroup = '';
+    shown.forEach(chat => {
+      const g = groupOf(chat.updatedAt);
+      if (g !== lastGroup && chat.messages.length) { const h = document.createElement('div'); h.className = 'history-group'; h.textContent = g; list.appendChild(h); lastGroup = g; }
+      list.appendChild(chatRow(chat));
+    });
+    if (!canPersistChats()) note(list, 'Guest chats are not saved after you close this tab. Sign in with email to keep them.');
+  }
+  function chatRow(chat) {
+    const row = document.createElement('div'); row.className = 'history-item' + (chat.id === activeChatId ? ' active' : '');
+    const open = document.createElement('button'); open.type = 'button'; open.className = 'history-open';
+    open.textContent = chat.title || 'New chat'; open.title = chat.title || 'New chat';
+    if (chat.id === activeChatId) open.setAttribute('aria-current', 'true');
+    open.addEventListener('click', () => { if (chat.id !== activeChatId) openChat(chat.id); else document.body.classList.remove('nav-open'); });
+    const rename = actionBtn('✎', 'Rename chat', () => startRename(chat, row, open));
+    const del = actionBtn('×', 'Delete chat', () => deleteChat(chat.id));
+    const actions = document.createElement('span'); actions.className = 'history-actions'; actions.append(rename, del);
+    row.append(open, actions); return row;
+  }
+  function actionBtn(label, title, fn) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'history-action'; b.textContent = label; b.title = title; b.setAttribute('aria-label', title);
+    b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b;
+  }
+  function startRename(chat, row, openBtn) {
+    const field = document.createElement('input'); field.className = 'history-rename'; field.value = chat.title; field.maxLength = 60; field.setAttribute('aria-label', 'Chat name');
+    let done = false;
+    const finish = (save) => { if (done) return; done = true; const v = field.value.trim().slice(0, 60); if (save && v) { chat.title = v; persistChats(); } else renderHistoryList(); };
+    field.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); finish(true); } else if (e.key === 'Escape') finish(false); });
+    field.addEventListener('blur', () => finish(true));
+    row.replaceChild(field, openBtn); field.focus(); field.select();
+  }
+  function deleteChat(id) {
+    const index = conversations.findIndex(c => c.id === id); if (index < 0) return;
+    if (pending && pending.chatId === id) { showToast('Wait for the reply to finish before deleting this chat.'); return; }
+    const [chat] = conversations.splice(index, 1);
+    if (undo) clearTimeout(undo.timer);
+    undo = { chat, index, timer: setTimeout(() => { undo = null; }, 6000) };
+    if (activeChatId === id) {
+      const next = conversations.find(c => c.messages.length);
+      if (next) { activeChatId = null; openChat(next.id, true); }
+      else { const fresh = makeChat(); conversations.unshift(fresh); activeChatId = fresh.id; history = []; render(); }
+    }
+    persistChats();
+    showToast('Chat deleted', 'Undo', () => {
+      if (!undo || undo.chat.id !== chat.id) return;
+      conversations.splice(Math.min(undo.index, conversations.length), 0, undo.chat); clearTimeout(undo.timer); undo = null;
+      persistChats(); openChat(chat.id, true);
     });
   }
   function startNewChat() {
-    if (busy) return;
-    saveHistory();
-    const chat=makeChat(); conversations=[chat,...conversations.filter(c=>c.id!==activeChatId)].slice(0,60);
-    activeChatId=chat.id; history=[]; persistChats(); render(); input.focus(); document.body.classList.remove('nav-open');
+    document.body.classList.remove('nav-open');
+    const cur = activeChat();
+    // Already on an empty chat: don't pile up blank entries.
+    if (cur && !history.length && !(pending && pending.chatId === cur.id)) { histFilter = ''; $('histSearch').value = ''; renderHistoryList(); input.focus(); return; }
+    syncActiveFromHistory();
+    const chat = makeChat(); conversations.unshift(chat); activeChatId = chat.id; history = [];
+    histFilter = ''; $('histSearch').value = '';
+    persistChats(); render(); input.focus();
+  }
+
+  // ---- toast ---------------------------------------------------------------------
+  let toastTimer = null;
+  function showToast(text, actionLabel, action) {
+    const t = $('toast'); t.textContent = ''; const span = document.createElement('span'); span.textContent = text; t.appendChild(span);
+    if (actionLabel) { const b = document.createElement('button'); b.type = 'button'; b.textContent = actionLabel; b.addEventListener('click', () => { t.classList.remove('show'); action(); }); t.appendChild(b); }
+    t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 6000);
+  }
+  // Keep other tabs in sync: the other tab's write is the newest state, so adopt it.
+  window.addEventListener('storage', (e) => {
+    if (!user || e.key !== storeKey() || e.storageArea !== store()) return;
+    try {
+      const incoming = sanitize(JSON.parse(e.newValue || 'null')), mine = activeChat();
+      const keepMine = mine && (pending || history.length) && !incoming.some(c => c.id === mine.id);
+      conversations = keepMine ? [mine, ...incoming] : incoming;
+      if (!conversations.some(c => c.id === activeChatId)) { const c = conversations.find(x => x.messages.length); if (c && !pending) openChat(c.id, true); else if (!conversations.length) { const f = makeChat(); conversations = [f]; activeChatId = f.id; history = []; render(); } }
+      renderHistoryList();
+    } catch {}
+  });
+
+  // ---- safe markdown: built with DOM nodes, so model text is never parsed as HTML ----------------
+  const INLINE_SRC = '(`[^`\\n]+`)|(\\*\\*(?!\\s)[^*\\n]+?(?<!\\s)\\*\\*)|(\\[[^\\]\\n]+\\]\\(https?:\\/\\/[^\\s)]+\\))|(https?:\\/\\/[^\\s<>()]*[^\\s<>().,;:!?\'"*])|(\\*(?!\\s)[^*\\n]+?(?<!\\s)\\*)';
+  function mdLink(url, label) { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = label; return a; }
+  function inline(parent, text) {
+    const re = new RegExp(INLINE_SRC, 'g'); let last = 0, m;
+    while ((m = re.exec(text))) {
+      if (m.index > last) parent.append(text.slice(last, m.index));
+      const tok = m[0];
+      if (m[1]) { const c = document.createElement('code'); c.textContent = tok.slice(1, -1); parent.append(c); }
+      else if (m[2]) { const b = document.createElement('strong'); inline(b, tok.slice(2, -2)); parent.append(b); }
+      else if (m[3]) { const mm = tok.match(/^\[([^\]]+)\]\((.+)\)$/); parent.append(mdLink(mm[2], mm[1])); }
+      else if (m[4]) parent.append(mdLink(tok, tok));
+      else { const i = document.createElement('em'); inline(i, tok.slice(1, -1)); parent.append(i); }
+      last = m.index + tok.length;
+    }
+    if (last < text.length) parent.append(text.slice(last));
+  }
+  async function copyText(t, btn) {
+    try { await navigator.clipboard.writeText(t); }
+    catch { const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch {} ta.remove(); }
+    if (btn) { const old = btn.dataset.label || btn.textContent; btn.dataset.label = old; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = old; }, 1400); }
+  }
+  function codeBlock(code, lang) {
+    const box = document.createElement('section'); box.className = 'md-code';
+    const head = document.createElement('div'); head.className = 'md-code-head';
+    const label = document.createElement('span'); label.textContent = lang || 'code';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'Copy'; btn.addEventListener('click', () => copyText(code, btn));
+    head.append(label, btn);
+    const pre = document.createElement('pre'), c = document.createElement('code'); c.textContent = code; pre.appendChild(c);
+    box.append(head, pre); return box;
+  }
+  function renderMarkdown(parent, text) {
+    const lines = String(text).replace(/\r\n?/g, '\n').split('\n'); let i = 0, para = [], m;
+    const LI = /^\s*([-*+]|\d+[.)])\s+(.*)$/, QUOTE = /^\s*>\s?/;
+    const flush = () => { if (!para.length) return; const p = document.createElement('p'); para.forEach((ln, k) => { if (k) p.append(document.createElement('br')); inline(p, ln); }); parent.append(p); para = []; };
+    while (i < lines.length) {
+      const line = lines[i];
+      if ((m = line.match(/^\s*```\s*([\w+#.-]*)/))) { flush(); const buf = []; i++; while (i < lines.length && !/^\s*```\s*$/.test(lines[i])) buf.push(lines[i++]); i++; parent.append(codeBlock(buf.join('\n'), m[1])); continue; }
+      if (!line.trim()) { flush(); i++; continue; }
+      if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { flush(); const h = document.createElement('h' + (m[1].length + 2)); inline(h, m[2]); parent.append(h); i++; continue; }
+      if (/^\s*([-*_]\s*){3,}$/.test(line)) { flush(); parent.append(document.createElement('hr')); i++; continue; }
+      if (QUOTE.test(line)) { flush(); const q = document.createElement('blockquote'), buf = []; while (i < lines.length && QUOTE.test(lines[i])) buf.push(lines[i++].replace(QUOTE, '')); inline(q, buf.join(' ')); parent.append(q); continue; }
+      if (LI.test(line)) { flush(); const list = document.createElement(/\d/.test(line.match(LI)[1]) ? 'ol' : 'ul'); while (i < lines.length && (m = lines[i].match(LI))) { const li = document.createElement('li'); inline(li, m[2]); list.append(li); i++; } parent.append(list); continue; }
+      para.push(line); i++;
+    }
+    flush();
   }
 
   const LANG_EXT = { javascript:'js', js:'js', typescript:'ts', ts:'ts', tsx:'tsx', jsx:'jsx', python:'py', py:'py', html:'html', css:'css', json:'json', jsonc:'json', bash:'sh', sh:'sh', shell:'sh', java:'java', c:'c', cpp:'cpp', csharp:'cs', csharp:'cs', go:'go', rust:'rs', ruby:'rb', php:'php', sql:'sql', yaml:'yml', yml:'yml', markdown:'md', md:'md', xml:'xml', text:'txt', plaintext:'txt', toml:'toml', kotlin:'kt', swift:'swift', powershell:'ps1', r:'r', vue:'vue', svelte:'svelte' };
@@ -312,6 +505,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
       const lang = (header.split(/\s+/)[0] || '').toLowerCase();
       const code = match[2].replace(/^\n+|\n+$/g, '');
       const explicit = filenameMatch ? filenameMatch[1].replace(/^['"`]|['"`]$/g, '') : '';
+      if (!explicit) continue;                 // plain snippets stay normal code blocks (with Copy), not fake downloads
       const filename = safeFilename(explicit, `generated-${++index}.${LANG_EXT[lang] || 'txt'}`);
       artifacts.push({ start: match.index, end: re.lastIndex, raw: match[0], filename, code, lang });
     }
@@ -325,11 +519,11 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   }
   function renderBotContent(el, text) {
     const artifacts = findArtifacts(text);
-    if (!artifacts.length) { el.textContent = text; return; }
+    if (!artifacts.length) { const body = document.createElement('div'); body.className = 'md'; renderMarkdown(body, text); el.appendChild(body); return; }
     let cursor = 0;
     const all = [];
     artifacts.forEach((a) => {
-      if (a.start > cursor) { const before = text.slice(cursor, a.start); if (before) { const p = document.createElement('div'); p.textContent = before; el.appendChild(p); } }
+      if (a.start > cursor) { const before = text.slice(cursor, a.start); if (before) { const p = document.createElement('div'); p.className = 'md'; renderMarkdown(p, before); el.appendChild(p); } }
       const card = document.createElement('section'); card.className = 'code-artifact';
       const head = document.createElement('div'); head.className = 'code-artifact-head';
       const name = document.createElement('span'); name.className = 'code-artifact-name'; name.textContent = '📄 ' + a.filename;
@@ -340,7 +534,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
       card.append(head, pre); el.appendChild(card);
       all.push(a); cursor = a.end;
     });
-    const after = text.slice(cursor); if (after.trim()) { const p = document.createElement('div'); p.textContent = after; el.appendChild(p); }
+    const after = text.slice(cursor); if (after.trim()) { const p = document.createElement('div'); p.className = 'md'; renderMarkdown(p, after); el.appendChild(p); }
     if (all.length > 1) {
       const note = document.createElement('div'); note.className = 'tag'; note.textContent = all.length + ' downloadable files generated. Use each Download file button.'; el.appendChild(note);
     }
@@ -349,7 +543,17 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     const el = document.createElement('div');
     document.body.classList.remove('empty');
     el.className = 'msg ' + role;
-    if (role === 'bot') renderBotContent(el, text); else el.textContent = text;
+    if (role === 'bot') renderBotContent(el, text);
+    else if (role === 'user') {
+      const names = []; const body = String(text).replace(FILE_RE, (_, n) => { names.push(n); return ''; }).replace(/\n*\[Attached file: (.*?)\]/g, (_, n) => { names.push(n); return ''; }).trim();
+      el.textContent = body;
+      names.forEach(n => { const chip = document.createElement('div'); chip.className = 'file-chip'; chip.textContent = '📎 ' + n; el.appendChild(chip); });
+    } else el.textContent = text;
+    if (role === 'bot' && text) {
+      const bar = document.createElement('div'); bar.className = 'msg-actions';
+      const cp = document.createElement('button'); cp.type = 'button'; cp.className = 'msg-copy'; cp.textContent = 'Copy'; cp.setAttribute('aria-label', 'Copy reply');
+      cp.addEventListener('click', () => copyText(text, cp)); bar.appendChild(cp); el.appendChild(bar);
+    }
     if (tag) { const t = document.createElement('span'); t.className = 'tag'; t.textContent = tag; el.appendChild(t); }
     log.appendChild(el);
     log.scrollTop = log.scrollHeight;
@@ -361,13 +565,25 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     document.body.classList.toggle('empty', !history.length);
     if (!history.length) return;
     history.forEach(m => add(m.role === 'user' ? 'user' : 'bot', m.content));
+    if (pending && pending.chatId === activeChatId) { pending.el = add('bot', ''); pending.el.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; }
   }
 
   // ---- talking to the server ------------------------------------------------
   async function api(path, opts = {}) {
     const token = user && user.accessToken ? user.accessToken : '';
-    const r = await fetch(path, { ...opts, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token, ...(opts.headers || {}) } });
+    let r;
+    try {
+      r = await fetch(path, { ...opts, signal: AbortSignal.timeout(70000), headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token, ...(opts.headers || {}) } });
+    } catch (e) {
+      const slow = e && (e.name === 'TimeoutError' || e.name === 'AbortError');
+      throw new Error(slow ? 'The reply took too long. Try again, or ask for something shorter.' : 'Can’t reach the server. Check your connection and try again.');
+    }
     let body = {}; try { body = await r.json(); } catch {}
+    if (!r.ok && !body.error) {
+      body.error = r.status === 504 || r.status === 524 ? 'The reply took too long. Try again, or ask for something shorter.'
+        : r.status === 413 ? 'That message is too large. Shorten it or attach less.'
+        : r.status >= 500 ? 'The server had a problem (' + r.status + '). Try again in a moment.' : 'Request failed (' + r.status + ').';
+    }
     return { ok: r.ok, status: r.status, data: body };
   }
 
@@ -414,13 +630,15 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous), accessToken };
     $('who').textContent = user.isAnonymous ? 'Guest' : user.email; $('avatar').textContent = user.isAnonymous ? 'G' : (user.email[0] || 'U').toUpperCase(); $('dot').classList.add('on');
     $('gate').classList.remove('open');
-    if (changedUser) history = [];
-    applyMode(); refreshUsage();
+    markMode();
+    // Token refreshes call this again; only (re)load chats when the account really changed.
+    if (changedUser) { pending = null; loadHistory(); render(); }
+    refreshUsage();
   }
   function onSignedOut() {
-    user = null; history = [];
+    user = null; pending = null; undo = null; history = []; conversations = []; activeChatId = null;
     $('who').textContent = 'Signed out'; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
-    applyMode(); openGate();
+    render(); renderHistoryList(); openGate();
   }
   $('guestSignIn').addEventListener('click', async () => {
     if (!sb) return gateMsg(authInitError);
@@ -474,20 +692,37 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     if (TEXT_EXTS.has(ext) || !file.name.includes('.')) return (await file.text()).slice(0, MAX_EXTRACTED_CHARS);
     throw new Error('Unsupported file type. Try PDF, DOCX, XLSX/XLS/ODS, CSV, TXT, or a source-code/text file.');
   }
+  let reading = 0;
+  const TOTAL_ATTACH_CHARS = 24000;
+  function renderAttachments(note, isErr) {
+    const box = $('fileStatus'); box.textContent = '';
+    attachedFiles.forEach((f, idx) => {
+      const chip = document.createElement('span'); chip.className = 'attach-chip';
+      chip.append(document.createTextNode('📎 ' + f.name + (f.trimmed ? ' (trimmed)' : '')));
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + f.name);
+      x.addEventListener('click', () => { attachedFiles.splice(idx, 1); renderAttachments(); });
+      chip.append(x); box.append(chip);
+    });
+    if (note) { const n = document.createElement('span'); n.className = 'attach-note' + (isErr ? ' err' : ''); n.textContent = note; box.append(n); }
+  }
   $('attach').addEventListener('click', () => $('filePicker').click());
   $('filePicker').addEventListener('change', async (e) => {
     const files = Array.from(e.target.files || []); e.target.value = '';
+    reading++; sendBtn.disabled = true;
+    let problem = '';
     for (const file of files) {
-      $('fileStatus').textContent = 'Reading ' + file.name + '…';
+      renderAttachments('Reading ' + file.name + '…');
       try {
-        const content = await extractFile(file);
-        attachedFiles.push({ name: file.name, content });
-      } catch (err) { add('err', file.name + ': ' + (err.message || 'Could not read this file.')); }
+        let content = await extractFile(file), trimmed = false;
+        const used = attachedFiles.reduce((n, f) => n + f.content.length, 0), room = TOTAL_ATTACH_CHARS - used;
+        if (room < 500) throw new Error('attachment limit reached (about 24,000 characters in total).');
+        if (content.length > room) { content = content.slice(0, room); trimmed = true; }
+        attachedFiles.push({ name: file.name, content, trimmed });
+      } catch (err) { problem = file.name + ': ' + (err.message || 'Could not read this file.'); }
     }
-    $('fileStatus').textContent = attachedFiles.length ? attachedFiles.length + ' file(s) ready: ' + attachedFiles.map(f => f.name).join(', ') + ' — click × to clear all' : '';
-    if (attachedFiles.length) $('fileStatus').style.cursor = 'pointer';
+    reading--; if (!reading && !busy) sendBtn.disabled = false;
+    renderAttachments(problem, Boolean(problem));
   });
-  $('fileStatus').addEventListener('click', () => { attachedFiles = []; $('fileStatus').textContent = ''; });
 
   // ---- sending a message --------------------------------------------------------
   async function refreshUsage() {
@@ -499,50 +734,68 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     } catch {}
   }
 
-  async function send(text) {
+  async function send(text, retry) {
+    if (busy) return;
+    const chat = activeChat(); if (!chat) return;
+    const chatId = chat.id, sentMode = mode;
     busy = true; sendBtn.disabled = true;
-    history.push({ role: 'user', content: text });
-    saveHistory(); render();
-    const wait = add('bot', '');
-    wait.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
+    if (!retry) history.push({ role: 'user', content: text });
+    chat.mode = sentMode; saveHistory(); render();
+    pending = { chatId, el: null }; render();
     const payload = history.map(m => ({ role: m.role, content: m.content }));
+    const inActive = () => activeChatId === chatId;
+    // Put a message into the right chat even if the person has opened another chat while waiting.
+    const note = (kind, msg) => { if (inActive()) { pending = null; render(); showError(msg, kind === 'retry'); } else { pending = null; showToast(msg); } };
     try {
-      const { ok, status, data } = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: payload, mode }) });
-      wait.remove();
-      if (status === 401) { history.pop(); saveHistory(); await sb.auth.signOut(); return; }
+      const { ok, status, data } = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: payload, mode: sentMode }) });
+      if (status === 401) { pending = null; await sb.auth.signOut(); return; }
       if (!ok) {
-        if (status === 429) {
-          $('quota').textContent = '0/30 guest messages left';
-          add('err', data.error || 'Guest message limit reached.');
-          return;
-        }
+        if (status === 429) { $('quota').textContent = '0/30 guest messages left'; note('plain', data.error || 'Guest message limit reached.'); return; }
         throw new Error(data.error || 'Request failed (' + status + ')');
       }
-      history.push({ role: 'assistant', content: data.reply });
-      saveHistory(); render();
-      if (data.suggestCognition) {
+      const target = conversations.find(c => c.id === chatId);
+      if (!target) { pending = null; return; }                     // chat was deleted meanwhile
+      if (inActive()) history.push({ role: 'assistant', content: data.reply });
+      else target.messages.push({ role: 'assistant', content: data.reply });
+      pending = null;
+      target.updatedAt = Date.now();
+      if (inActive()) saveHistory(); else { conversations = [target, ...conversations.filter(c => c.id !== chatId)]; persistChats(); showToast('Reply ready in “' + target.title + '”', 'Open', () => openChat(chatId)); }
+      if (inActive()) {
+        render();
+        const lastMsg = log.lastElementChild;   // a long reply should open at its start, not its end
+        if (lastMsg && lastMsg.classList.contains('bot') && lastMsg.offsetHeight > log.clientHeight * 0.7) lastMsg.scrollIntoView({ block: 'start' });
+      }
+      if (data.suggestCognition && inActive()) {
         const lastBot = log.querySelector('.msg.bot:last-of-type');
         if (lastBot) {
           const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'code-download';
-          button.style.marginTop = '10px';
+          button.type = 'button'; button.className = 'code-download'; button.style.marginTop = '10px';
           button.textContent = 'Switch to Cognition and try again';
           button.addEventListener('click', () => {
             if (busy) return;
-            mode = 'cognition';
-            try { localStorage.setItem(MODE_KEY, mode); } catch {}
-            applyMode();
-            send(text);
+            mode = 'cognition'; try { localStorage.setItem(MODE_KEY, mode); } catch {}
+            markMode();
+            // Replace the Flash redirect reply with the real answer: drop it, then resend the same question.
+            if (history.length && history[history.length - 1].role === 'assistant') history.pop();
+            send(text, true);
           });
           lastBot.appendChild(button);
         }
       }
       if (data.usage) $('quota').textContent = `${data.usage.remaining}/${data.usage.limit} guest messages left`;
     } catch (e) {
-      wait.remove(); add('err', e.message);
+      note('retry', e.message || 'Something went wrong.');
     } finally {
-      busy = false; sendBtn.disabled = false; input.focus();
+      busy = false; sendBtn.disabled = reading > 0; if (inActive()) input.focus();
+    }
+  }
+  // The question stays in the chat after a failure; Retry sends it again without duplicating it.
+  function showError(msg, canRetry) {
+    const el = add('err', msg);
+    if (canRetry && history.length && history[history.length - 1].role === 'user') {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'code-download'; b.style.marginLeft = '10px'; b.textContent = 'Retry';
+      b.addEventListener('click', () => { if (!busy) { el.remove(); send(null, true); } });
+      el.appendChild(b);
     }
   }
 
@@ -550,31 +803,40 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     e.preventDefault();
     const typed = input.value.trim();
     if ((!typed && !attachedFiles.length) || busy || !user) return;
-    const fileContext = attachedFiles.map(f => '\n\n--- Attached file: ' + f.name + ' ---\n' + f.content + '\n--- End file ---').join('');
+    if (reading) { showToast('Still reading your file. Try again in a moment.'); return; }
+    const LIMIT = 29000;                                           // the server cuts messages at 30,000 characters
+    if (typed.length > LIMIT - 500) { showToast('That message is too long. Please shorten it.'); return; }
+    let room = LIMIT - typed.length - 200 * attachedFiles.length, trimmedAny = false;
+    const fileContext = attachedFiles.map(f => {
+      let c = f.content; if (c.length > room) { c = c.slice(0, Math.max(0, room)); trimmedAny = true; } room -= c.length;
+      return '\n\n--- Attached file: ' + f.name + ' ---\n' + c + '\n--- End file ---';
+    }).join('');
+    if (trimmedAny) showToast('Attachments were trimmed to fit the message size limit.');
     const message = (typed || 'Please read and analyze the attached file(s).') + fileContext;
-    attachedFiles = []; $('fileStatus').textContent = '';
+    attachedFiles = []; renderAttachments();
     input.value = ''; input.style.height = 'auto';
     send(message);
   });
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('chat').requestSubmit(); } });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); $('chat').requestSubmit(); } });
   input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 140) + 'px'; });
   $('newChat').addEventListener('click', startNewChat);
   $('clear').addEventListener('click', () => {
-    if (busy) return;
-    if (history.length && !confirm('Clear messages in this conversation? The conversation will remain in Recent chats.')) return;
-    history = []; saveHistory(); render(); document.body.classList.remove('nav-open'); input.focus();
+    if (pending && pending.chatId === activeChatId) return;
+    if (history.length && !confirm('Clear the messages in this chat? It stays in Recent chats with an empty history.')) return;
+    history = []; const c = activeChat(); if (c) c.title = 'New chat'; saveHistory(false); render(); document.body.classList.remove('nav-open'); input.focus();
   });
+  $('histSearch').addEventListener('input', (e) => { histFilter = e.target.value; renderHistoryList(); });
+  // Ctrl/Cmd+K focuses chat search.
+  document.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k' && user) { e.preventDefault(); document.body.classList.add('nav-open'); $('histSearch').focus(); } });
 
   // ---- modes ------------------------------------------------------------------
-  function applyMode() {
-    document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
-    loadHistory(); render();
-  }
+  // The mode is a setting for the next message; it no longer swaps out your whole history.
+  function markMode() { document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode))); }
   document.querySelectorAll('.modes button').forEach(b => b.addEventListener('click', () => {
     if (busy || b.dataset.mode === mode) return;
     mode = b.dataset.mode;
     try { localStorage.setItem(MODE_KEY, mode); } catch {}
-    applyMode();
+    markMode(); const c = activeChat(); if (c) { c.mode = mode; if (c.messages.length) persistChats(); }
   }));
 
   // ---- look & feel: accent, light/dark, mobile menu, suggestions, send ripple ----------
@@ -601,7 +863,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   });
 
   // ---- start ----------------------------------------------------------------------
-  applyMode();
+  markMode(); render(); renderHistoryList();
   let cfg = null;
   try {
     const response = await fetch('/api/config', { cache: 'no-store' });

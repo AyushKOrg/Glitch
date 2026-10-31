@@ -61,7 +61,7 @@ Redeploy after changing environment variables. Open the site and choose **Create
 | File reading | Reads PDFs, code, text, DOCX, XLSX/XLS/ODS and other supported formats in the browser |
 | Cognition code generation | Creates named code files with per-file Download buttons in chat |
 | Flash code-request routing | Detects clear code-writing requests before calling Gemini and offers a one-click switch to Cognition |
-| Chat history | Email accounts: saved locally in this browser, separately for each account and mode. Guests: session-only and not saved. Local history does not sync across devices. |
+| Chat history | One list per account with date groups, search (Ctrl+K), inline rename, and delete with Undo. Email accounts: saved in this browser's localStorage. Guests: kept only until the tab closes. Each chat remembers its mode. Does not sync across devices. |
 | Personal memory | Temporarily disabled. |
 
 Not available on the web edition: executing generated code, opening apps, mouse/screen control, email, and YouTube. Generated files are downloaded by the user from the code cards in chat; they are not published to a remote file host automatically.

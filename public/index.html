@@ -45,7 +45,7 @@ button,input,textarea{font:inherit;color:inherit}button{white-space:nowrap}
 html[data-scheme=dark] .nav[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--text)}
 .nav.off{opacity:.5}
 .side h4{margin:18px 10px 6px;font-size:.74rem;font-weight:600;color:var(--muted)}
-.swatches{display:flex;gap:.6rem;padding:2px 10px}
+.history-head{display:flex;align-items:center;justify-content:space-between;margin:16px 8px 5px}.history-head h4{margin:0}.history-list{display:flex;flex-direction:column;gap:3px;overflow:auto;max-height:30vh;padding:0 2px}.history-item{display:flex;align-items:center;gap:4px;border-radius:9px;min-width:0}.history-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:9px;padding:8px;color:var(--text-dim);cursor:pointer;font-size:.84rem}.history-open:hover,.history-item.active .history-open{background:var(--accent-soft);color:var(--text)}.history-actions{display:flex;gap:2px}.history-action{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 6px}.history-action:hover{background:var(--panel);color:var(--text)}.history-empty{padding:8px 10px;color:var(--muted);font-size:.78rem}.swatches{display:flex;gap:.6rem;padding:2px 10px}
 .swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer;position:relative;animation:bob 3.6s ease-in-out infinite;transition:transform .2s var(--ease)}
 .swatch:nth-child(2){animation-delay:.15s}.swatch:nth-child(3){animation-delay:.3s}.swatch:nth-child(4){animation-delay:.45s}
 .swatch[data-theme=default]{background:linear-gradient(135deg,#7c3aed,#ec4899)}.swatch[data-theme=matrix]{background:linear-gradient(135deg,#10b981,#06b6d4)}
@@ -155,7 +155,10 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 <div class="layout">
 <aside class="side" id="side">
   <div class="side-brand"><img src="/logo.png" alt=""><strong>Glitch</strong></div>
-  <button class="nav primary" id="clear" type="button"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>New chat</button>
+  <button class="nav primary" id="newChat" type="button" title="Start a new conversation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New chat</button>
+  <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
+  <div class="history-head"><h4>Recent chats</h4></div>
+  <div id="historyList" class="history-list" aria-label="Recent chats"></div>
   <h4>Mode</h4>
   <div class="modes" role="group" aria-label="Mode">
     <button class="nav" type="button" data-mode="flash" aria-pressed="true" title="Fast and light; can also look at images and PDFs"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Flash</button>
@@ -225,25 +228,72 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   try { const m = localStorage.getItem(MODE_KEY); if (MODES.includes(m)) mode = m; } catch {}
   let user = null;                                              // {id, email} when signed in
   let history = [];                                             // [{role, content}]
+  let conversations = [];
+  let activeChatId = null;
   let busy = false;
   let sb = null;
   let authInitError = 'Supabase is still initializing. Please try again in a moment.';
 
-  const histKey = () => 'glitch_history_' + (user ? user.id : 'anon') + '_' + mode;
+  const chatsKey = () => 'glitch_chats_' + (user ? user.id : 'anon') + '_' + mode;
+  const histKey = () => 'glitch_history_' + (user ? user.id : 'anon') + '_' + mode; // legacy migration
+  const canPersistChats = () => Boolean(user && !user.isAnonymous && user.email);
+  const makeChat = () => ({ id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)), title: 'New chat', messages: [], updatedAt: Date.now() });
 
-  // ---- temporary local chat history (email accounts only) ----------------------
-  // Stored only in this browser/device; guests are never persisted.
+  // Browser-local conversation history for signed-in email accounts only. Guests remain session-only.
+  function persistChats() {
+    if (!canPersistChats()) { renderHistoryList(); return; }
+    try { localStorage.setItem(chatsKey(), JSON.stringify(conversations.slice(0, 60))); } catch (e) { console.warn('Could not save chat history:', e); }
+    renderHistoryList();
+  }
   function saveHistory() {
-    if (!user || user.isAnonymous || !user.email) return;
-    try { localStorage.setItem(histKey(), JSON.stringify(history.slice(-40))); } catch (e) { console.warn('Could not save local chat history:', e); }
+    const chat = conversations.find(c => c.id === activeChatId);
+    if (chat) {
+      chat.messages = history.slice(-40).map(m => ({ role: m.role, content: m.content }));
+      chat.updatedAt = Date.now();
+      const firstUser = chat.messages.find(m => m.role === 'user');
+      if (firstUser && (!chat.title || chat.title === 'New chat')) chat.title = firstUser.content.replace(/\s+/g, ' ').slice(0, 42) || 'New chat';
+      conversations = [chat, ...conversations.filter(c => c.id !== chat.id)].slice(0, 60);
+    }
+    persistChats();
   }
   function loadHistory() {
-    history = [];
-    if (!user || user.isAnonymous || !user.email) return;
+    history = []; conversations = []; activeChatId = null;
+    if (!canPersistChats()) { renderHistoryList(); return; }
     try {
-      const h = JSON.parse(localStorage.getItem(histKey()) || '[]');
-      if (Array.isArray(h)) history = h.filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string').slice(-40).map(m => ({ role: m.role, content: m.content }));
+      const saved = JSON.parse(localStorage.getItem(chatsKey()) || 'null');
+      if (Array.isArray(saved)) conversations = saved.filter(c => c && typeof c.id === 'string' && Array.isArray(c.messages)).map(c => ({
+        id: c.id, title: String(c.title || 'New chat').slice(0, 60), updatedAt: Number(c.updatedAt) || Date.now(),
+        messages: c.messages.filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string').slice(-40).map(m => ({ role: m.role, content: m.content }))
+      })).sort((a,b) => b.updatedAt-a.updatedAt).slice(0,60);
+      // Migrate the previous single-chat storage once, without discarding it.
+      if (!conversations.length) {
+        const legacy = JSON.parse(localStorage.getItem(histKey()) || '[]');
+        if (Array.isArray(legacy) && legacy.length) conversations = [{ ...makeChat(), title: String(legacy.find(m=>m.role==='user')?.content || 'Previous chat').replace(/\s+/g,' ').slice(0,42), messages: legacy.filter(m=>m && (m.role==='user'||m.role==='assistant') && typeof m.content==='string').slice(-40), updatedAt: Date.now() }];
+      }
     } catch {}
+    if (!conversations.length) conversations = [makeChat()];
+    activeChatId = conversations[0].id;
+    history = conversations[0].messages.map(m => ({...m}));
+    persistChats();
+  }
+  function renderHistoryList() {
+    const list = $('historyList'); if (!list) return;
+    list.textContent = '';
+    if (!canPersistChats()) { const note=document.createElement('div'); note.className='history-empty'; note.textContent='Sign in with email to save chats'; list.appendChild(note); return; }
+    if (!conversations.length) { const note=document.createElement('div'); note.className='history-empty'; note.textContent='No chats yet'; list.appendChild(note); return; }
+    conversations.forEach(chat => {
+      const row=document.createElement('div'); row.className='history-item'+(chat.id===activeChatId?' active':'');
+      const open=document.createElement('button'); open.type='button'; open.className='history-open'; open.textContent=chat.title || 'New chat'; open.title=chat.title || 'New chat'; open.addEventListener('click',()=>{ if(busy || chat.id===activeChatId)return; activeChatId=chat.id; history=chat.messages.map(m=>({...m})); render(); renderHistoryList(); document.body.classList.remove('nav-open'); });
+      const rename=document.createElement('button'); rename.type='button'; rename.className='history-action'; rename.textContent='✎'; rename.title='Rename chat'; rename.setAttribute('aria-label','Rename chat'); rename.addEventListener('click',()=>{ const title=prompt('Rename conversation',chat.title||'New chat'); if(title===null)return; const clean=title.trim().slice(0,60); if(clean){chat.title=clean; persistChats();} });
+      const del=document.createElement('button'); del.type='button'; del.className='history-action'; del.textContent='×'; del.title='Delete chat'; del.setAttribute('aria-label','Delete chat'); del.addEventListener('click',()=>{ if(busy)return; if(!confirm('Delete this conversation? This cannot be undone.'))return; conversations=conversations.filter(c=>c.id!==chat.id); if(activeChatId===chat.id){ if(!conversations.length)conversations=[makeChat()]; activeChatId=conversations[0].id; history=conversations[0].messages.map(m=>({...m})); render(); } persistChats(); });
+      const actions=document.createElement('span'); actions.className='history-actions'; actions.append(rename,del); row.append(open,actions); list.appendChild(row);
+    });
+  }
+  function startNewChat() {
+    if (busy) return;
+    saveHistory();
+    const chat=makeChat(); conversations=[chat,...conversations.filter(c=>c.id!==activeChatId)].slice(0,60);
+    activeChatId=chat.id; history=[]; persistChats(); render(); input.focus(); document.body.classList.remove('nav-open');
   }
 
   const LANG_EXT = { javascript:'js', js:'js', typescript:'ts', ts:'ts', tsx:'tsx', jsx:'jsx', python:'py', py:'py', html:'html', css:'css', json:'json', jsonc:'json', bash:'sh', sh:'sh', shell:'sh', java:'java', c:'c', cpp:'cpp', csharp:'cs', csharp:'cs', go:'go', rust:'rs', ruby:'rb', php:'php', sql:'sql', yaml:'yml', yml:'yml', markdown:'md', md:'md', xml:'xml', text:'txt', plaintext:'txt', toml:'toml', kotlin:'kt', swift:'swift', powershell:'ps1', r:'r', vue:'vue', svelte:'svelte' };
@@ -508,9 +558,10 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   });
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('chat').requestSubmit(); } });
   input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 140) + 'px'; });
+  $('newChat').addEventListener('click', startNewChat);
   $('clear').addEventListener('click', () => {
     if (busy) return;
-    if (history.length && !confirm('Start a new chat? This replaces the saved ' + mode + ' conversation.')) return;
+    if (history.length && !confirm('Clear messages in this conversation? The conversation will remain in Recent chats.')) return;
     history = []; saveHistory(); render(); document.body.classList.remove('nav-open'); input.focus();
   });
 

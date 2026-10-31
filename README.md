@@ -1,96 +1,84 @@
 # Glitch on Vercel
 
 ```
-Browser ──> Vercel: public/index.html + api/*  ──> Postgres (accounts, sessions)
-                         │  after sign-in, tries the PC first
-                         ├──> Cloudflare Tunnel ──> pc_bridge.py ──> main.py (real Glitch + tools)
-                         └──> if PC is off: Gemini plain chat (no tools)
+Browser ──> Vercel: public/index.html + api/*  ──> Gemini (flash)  /  OpenRouter (cognition)
+   │
+   └──────> Supabase: sign-in (email + password) and file storage (uploads, files Glitch makes)
 ```
 
-Vercel is serverless, so it can't run mouse control, Selenium, voice or anything
-else that needs your PC. Those stay on the PC; Vercel hosts the UI, the accounts
-and a thin API.
+No PC, no tunnel, no bridge. Everything runs on Vercel and Supabase, so it works while
+your computer is off.
 
-## 1. Database
+## 1. Supabase (free tier is fine)
 
-Vercel dashboard → your project → **Storage** → **Create** → **Neon** (free tier).
-It adds `DATABASE_URL` to the project automatically. Any other Postgres works too:
-paste its connection string into `DATABASE_URL`. No migration step; the tables
-(`users`, `sessions`, `auth_attempts`) are created on first request (`schema.sql`
-shows them).
+1. Create a project at supabase.com.
+2. **SQL Editor → New query**: paste `supabase.sql` and run it. This creates a private
+   `glitch-files` bucket and the rules that keep each user to their own folder.
+3. **Authentication → Sign In / Providers → Email**: decide on **Confirm email**.
+   - **Off**: people can sign in the moment they create an account.
+   - **On** (Supabase's default): they must click a link in an email first. Supabase's built-in
+     mailer only sends a few emails an hour, so turn this off while you're testing.
+4. **Project Settings → API Keys**: copy the Project URL, the `anon` key and the `service_role`
+   key. If your dashboard shows the newer "publishable" and "secret" keys, those work too.
+   (Vercel's Supabase integration under Storage/Integrations can add these variables for you; check the names match below.)
 
-## 2. PC side
-
-1. Copy `pc_bridge.py` next to `main.py`.
-2. `pip install fastapi uvicorn`
-3. Add to your `.env`: `GLITCH_BRIDGE_SECRET=<long random string>`
-4. `python pc_bridge.py` (listens on 127.0.0.1:8787)
-5. `cloudflared tunnel --url http://localhost:8787`, then copy the
-   `https://….trycloudflare.com` URL. (Quick tunnels change URL each restart;
-   use a named tunnel for a fixed one.)
-
-## 3. Deploy
+## 2. Deploy
 
 ```
 npm i -g vercel
 cd glitch-vercel
 vercel
-vercel env add PASSWORD_PEPPER         # 32+ random characters
-vercel env add GLITCH_SIGNUP_CODE      # invite code
-vercel env add GLITCH_PC_URL           # the tunnel URL
-vercel env add GLITCH_BRIDGE_SECRET    # same value as on the PC
-vercel env add GOOGLE_API_KEY          # optional fallback
+vercel env add SUPABASE_URL
+vercel env add SUPABASE_ANON_KEY
+vercel env add SUPABASE_SERVICE_ROLE_KEY
+vercel env add GOOGLE_API_KEY          # flash mode + web search
+vercel env add GEMINI_MODEL            # optional, default gemini-3.5-flash-lite
+vercel env add OPENROUTER_API_KEY      # cognition mode
+vercel env add OPENROUTER_MODEL        # e.g. the Nemotron model id you use on OpenRouter
 vercel --prod
 ```
 
-(`DATABASE_URL` is already there if you used the Neon integration.) Or push the
-folder to GitHub, import it in the dashboard and add the same variables under
-Settings → Environment Variables. Redeploy after adding variables.
+Or push the folder to GitHub, import it in the Vercel dashboard and add the same
+variables under Settings → Environment Variables. **Redeploy after adding variables.**
+`npm install` runs automatically (the PDF and Word readers).
 
-Open the site → **Create account** → enter your sign-up code. **The first account
-becomes the admin.** Create yours before sharing the code with anyone.
+Open the site, click **Create account**, and use it.
 
-## How accounts work
+## What it does
 
-- **Passwords are hashed, not encrypted.** Encryption can be reversed by whoever has
-  the key; a hash can't. Each password goes through HMAC-SHA256 with `PASSWORD_PEPPER`
-  (kept outside the database), then scrypt (N=32768, r=8, p=1) with its own random salt.
-  A leaked database alone doesn't expose passwords. Neon also encrypts the data at
-  rest, and connections use TLS.
-- **Sessions:** a random token in an `HttpOnly`, `Secure`, `SameSite=Strict` cookie,
-  valid 7 days. Only its SHA-256 is stored, so a database leak can't be used to log in.
-  Sign-out deletes it server-side.
-- **CSRF:** every state-changing request needs a custom header the browser won't add
-  to cross-site requests, on top of `SameSite=Strict`.
-- **Brute force:** 5 failed sign-ins per username or 20 per IP in 15 minutes locks that
-  username/IP for the rest of the window. Unknown usernames take the same time as wrong passwords.
-- **Passwords:** 10-128 characters, can't contain the username. Usernames: 3-32 of `a-z 0-9 . _ -`.
-- Don't change `PASSWORD_PEPPER` after people have signed up, or nobody's password will match.
+| | |
+|---|---|
+| **Sign in** | Supabase email + password. No sign-up code. Sessions refresh automatically. |
+| **Upload** | `+` or drag-and-drop, up to 25 MB each, straight from the browser into your private folder. PDF, Word, text/code, images. |
+| **Download / delete** | **files** button: everything you uploaded and everything Glitch made. |
+| **Glitch's tools** | `web_search`, `create_file` (writes code/text files for you), `read_file`, `list_files`. |
+| **Flash** (Gemini) | Reads PDFs and images natively, including scans. |
+| **Cognition** (OpenRouter) | Text only. PDFs and Word files are converted to text first; it can't see images. |
 
-Manage users with SQL in the Neon console, for example:
+Not available on the web edition (they need your PC): running code, opening apps, mouse and screen
+control, the browser, YouTube, Gmail, Word-notes output.
 
-```sql
-SELECT username, role, created_at FROM users;
-DELETE FROM users WHERE username = 'someone';      -- also ends their sessions
-```
+## ⚠ Read this about sign-ups
 
-## Important: accounts share one Glitch
+Anyone who finds the site can create an account, and every account can spend your Gemini and
+OpenRouter credit and store files (Supabase free tier: 1 GB). Pick one:
 
-Every account talks to the same Glitch on your PC: the same Gmail, the same
-`web_uploads/` folder, the same workspace and Files panel. Chat history is kept in each
-person's own browser, but nothing on the PC is separated per user. Only give the
-sign-up code to people you'd trust with your Glitch.
+- **`ALLOWED_EMAILS`**: set it to a comma-separated list (`me@gmail.com,friend@x.com`). Others can
+  sign up but get an error when they chat. Redeploy after changing it.
+- **Turn sign-ups off** in Supabase (Authentication → Sign In / Providers → turn off *Allow new users to sign up*)
+  after you've made your accounts. This also stops them filling your storage.
+- Or turn on **Vercel Authentication** under Deployment Protection to put a login in front of the whole site.
 
-## Files
+## How your files are kept private
 
-- **Upload:** `+` button or drag-and-drop. Files go to `<GLITCH_READ_ROOT>/web_uploads/`
-  on the PC and Glitch opens them with its document/image tools.
-- **Download:** anything Glitch writes into its code workspace (code files,
-  `notes/*.docx`) appears under the **files** button.
-- Both directions are capped at 4 MB, which is what a Vercel function accepts.
+- The bucket is private. Rules in `supabase.sql` only let you read, upload to and delete from the
+  folder named after your own user id, and uploads only go in `uploads/` and only for allowed file types.
+- Glitch's files are written by the server (with the service key) into `<your id>/generated/`. The server
+  checks every path it reads or writes belongs to the signed-in user.
+- The `service_role` key lives only in Vercel's environment variables. The browser only ever gets the `anon` key.
 
 ## Notes
 
-- The web edition has two modes only: flash and cognition (see CHECKLIST.md for the
-  exact tool list). PC, screen, browser and YouTube tools are removed.
-- `maxDuration` is 60s in `vercel.json` (Hobby limit). Longer tool runs time out.
+- Chat history is stored in the browser (localStorage), per account and mode. Clearing site data erases it.
+- A chat request has about 60 s on Vercel (`vercel.json`). Long tool chains time out.
+- Not tested against a live Supabase project, only against a stand-in for its API.

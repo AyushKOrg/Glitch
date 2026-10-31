@@ -1,69 +1,33 @@
-// POST /api/chat
-// 1) Tries your PC (the real Glitch with tools) through GLITCH_PC_URL.
-// 2) If the PC is off/unreachable, falls back to plain Gemini chat (no tools).
-const { requireUser } = require('./_auth');
-
-const PERSONA = `You are Glitch, an AI assistant with the personality of an annoyed, passive-aggressive secretary: a little arrogant, but never over the top. You are witty, a bit sarcastic, and light on teasing for vague or lazy questions, but you stay technically accurate and genuinely useful. Answer the actual question directly. Admit uncertainty instead of inventing facts. Drop the sarcasm completely for health, grief, safety, or other serious topics. In this fallback mode you have no tools: you cannot control the PC, open apps, read email, or browse. If asked, say your PC side is offline right now.`;
+// POST /api/chat  { mode: 'flash'|'cognition', messages: [{role, content, attachments?: ['<uid>/uploads/x.pdf']}] }
+// Needs a signed-in Supabase user (Authorization: Bearer <access token>).
+const { requireUser } = require('./_lib');
+const { validPath, loadFile } = require('./_files');
+const { systemPrompt, runGemini, runOpenRouter } = require('./_llm');
 
 const MAX_MESSAGES = 20;
-const MAX_CHARS = 4000;
+const MAX_CHARS = 8000;
+const MAX_FILES = 4;               // newest attachments across the whole conversation
 
-function cleanMessages(raw) {
+function clean(raw, userId) {
   if (!Array.isArray(raw)) return null;
   const out = [];
   for (const m of raw.slice(-MAX_MESSAGES)) {
     if (!m || (m.role !== 'user' && m.role !== 'assistant')) continue;
-    const content = String(m.content || '').slice(0, MAX_CHARS).trim();
-    if (content) out.push({ role: m.role, content });
+    const text = String(m.content || '').slice(0, MAX_CHARS).trim();
+    const attachments = m.role === 'user' && Array.isArray(m.attachments)
+      ? m.attachments.map(String).filter((p) => validPath(userId, p)).slice(0, MAX_FILES)
+      : [];
+    if (text || attachments.length) out.push({ role: m.role, text: text || '(no text)', attachments });
   }
   if (!out.length || out[out.length - 1].role !== 'user') return null;
+
+  // Only the newest few files are loaded, so a long chat can't balloon the prompt.
+  let budget = MAX_FILES;
+  for (let i = out.length - 1; i >= 0; i--) {
+    out[i].attachments = out[i].attachments.slice(0, budget);
+    budget -= out[i].attachments.length;
+  }
   return out;
-}
-
-async function askPc(messages, mode, username) {
-  const base = (process.env.GLITCH_PC_URL || '').replace(/\/+$/, '');
-  if (!base) throw new Error('GLITCH_PC_URL not set');
-  const r = await fetch(`${base}/chat`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.GLITCH_BRIDGE_SECRET || ''}`,
-      'ngrok-skip-browser-warning': '1',
-    },
-    body: JSON.stringify({ messages, mode, user: username }),
-    signal: AbortSignal.timeout(50000),
-  });
-  if (!r.ok) throw new Error(`PC bridge returned ${r.status}`);
-  const data = await r.json();
-  if (!data || typeof data.reply !== 'string') throw new Error('Bad bridge reply');
-  return data.reply;
-}
-
-async function askGemini(messages) {
-  const key = process.env.GOOGLE_API_KEY;
-  if (!key) throw new Error('GOOGLE_API_KEY not set');
-  const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
-  const r = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: PERSONA }] },
-        contents: messages.map((m) => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: m.content }],
-        })),
-        generationConfig: { maxOutputTokens: 1500 },
-      }),
-      signal: AbortSignal.timeout(50000),
-    }
-  );
-  if (!r.ok) throw new Error(`Gemini returned ${r.status}`);
-  const data = await r.json();
-  const text = (data.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('');
-  if (!text.trim()) throw new Error('Empty Gemini reply');
-  return text;
 }
 
 module.exports = async (req, res) => {
@@ -73,20 +37,32 @@ module.exports = async (req, res) => {
   const user = await requireUser(req, res);
   if (!user) return;
 
-  const messages = cleanMessages(req.body && req.body.messages);
+  const messages = clean(req.body && req.body.messages, user.id);
   if (!messages) return res.status(400).json({ error: 'Send {messages:[...]} ending with a user message.' });
-
-  const mode = req.body && req.body.mode === 'cognition' ? 'cognition' : 'flash'; // only these two exist
+  const mode = req.body && req.body.mode === 'cognition' ? 'cognition' : 'flash';
 
   try {
-    return res.status(200).json({ reply: await askPc(messages, mode, user.username), source: 'pc' });
-  } catch (pcError) {
-    try {
-      return res.status(200).json({ reply: await askGemini(messages), source: 'fallback' });
-    } catch (fallbackError) {
-      return res.status(502).json({
-        error: `PC side: ${pcError.message}. Fallback: ${fallbackError.message}.`,
-      });
+    // Load attachments and fold them into the messages they belong to.
+    for (const m of messages) {
+      m.files = await Promise.all(m.attachments.map((p) => loadFile(user.id, p)));
+      for (const f of m.files) {
+        if (f.note) m.text += `\n\n[Attached file "${f.name}": ${f.note}]`;
+        else if (mode === 'cognition' && f.kind === 'image') m.text += `\n\n[Attached image "${f.name}": this mode can't view images; switch to flash.]`;
+        else if (f.kind === 'image') m.text += `\n\n[Attached image: ${f.name}]`;
+        else if (f.kind === 'pdf' && mode === 'flash' && f.buffer) m.text += `\n\n[Attached PDF: ${f.name}]`;
+        else if (f.text) m.text += `\n\n[Attached file "${f.name}" contents]\n${f.text}\n[end of ${f.name}]`;
+        else m.text += `\n\n[Attached file "${f.name}": no readable text found (it may be a scan; try flash mode).]`;
+      }
     }
+
+    const ctx = { userId: user.id, created: [] };
+    const system = systemPrompt(mode);
+    const reply = mode === 'cognition'
+      ? await runOpenRouter(ctx, system, messages)
+      : await runGemini(ctx, system, messages);
+
+    return res.status(200).json({ reply, files: ctx.created, mode });
+  } catch (e) {
+    return res.status(502).json({ error: e.message });
   }
 };

@@ -191,6 +191,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
     <div class="msgline" id="gateMsg"></div>
     <button class="cta" id="gateSubmit" type="submit">Sign in</button>
+    <button class="mini" id="guestSignIn" type="button" style="width:100%;padding:10px">Continue as guest</button>
   </form>
 </div>
 
@@ -295,7 +296,8 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
       if (tab === 'register') {
         const { data, error } = await sb.auth.signUp({ email, password });
         if (error) throw error;
-        if (!data.session) { setTab('login'); gateMsg('Check your email to confirm the account, then sign in.', true); }
+        if (!data.session) { setTab('login'); gateMsg('Account created. Check your email to confirm it, then sign in.', true); }
+        else { gateMsg('Account created. You are signed in.', true); }
       } else {
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -309,8 +311,8 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   });
 
   function onSignedIn(u) {
-    user = { id: u.id, email: u.email || '' };
-    $('who').textContent = user.email; $('avatar').textContent = (user.email[0] || 'G').toUpperCase(); $('dot').classList.add('on');
+    user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous) };
+    $('who').textContent = user.isAnonymous ? 'Guest' : user.email; $('avatar').textContent = user.isAnonymous ? 'G' : (user.email[0] || 'U').toUpperCase(); $('dot').classList.add('on');
     $('gate').classList.remove('open');
     applyMode(); checkNewFiles();
   }
@@ -320,6 +322,20 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     $('files').classList.remove('open');
     applyMode(); openGate();
   }
+  $('guestSignIn').addEventListener('click', async () => {
+    if (!sb) return;
+    const button = $('guestSignIn'); button.disabled = true; gateMsg('Starting a guest session…');
+    try {
+      const { error } = await sb.auth.signInAnonymously();
+      if (error) throw error;
+      $('password').value = '';
+    } catch (err) {
+      const message = /anonymous|disabled/i.test(err.message || '')
+        ? 'Guest sign-in is not enabled yet. Enable Anonymous Sign-Ins in Supabase → Authentication → Sign In / Providers.'
+        : (err.message || 'Could not start a guest session.');
+      gateMsg(message);
+    } finally { button.disabled = false; }
+  });
   $('signout').addEventListener('click', () => sb && sb.auth.signOut());
 
   // ---- sending a message --------------------------------------------------------

@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
   try {
     // Load attachments and fold them into the messages they belong to.
     for (const m of messages) {
-      m.files = await Promise.all(m.attachments.map((p) => loadFile(user.id, p)));
+      m.files = await Promise.all(m.attachments.map((p) => loadFile(user.id, p, user.accessToken)));
       for (const f of m.files) {
         if (f.note) m.text += `\n\n[Attached file "${f.name}": ${f.note}]`;
         else if (mode === 'cognition' && f.kind === 'image') m.text += `\n\n[Attached image "${f.name}": this mode can't view images; switch to flash.]`;
@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    const ctx = { userId: user.id, created: [] };
+    const ctx = { userId: user.id, accessToken: user.accessToken, created: [] };
     const system = systemPrompt(mode);
     const reply = mode === 'cognition'
       ? await runOpenRouter(ctx, system, messages)

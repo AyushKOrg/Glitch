@@ -26,7 +26,7 @@ function safeName(raw) {
 }
 
 function missingEnv() {
-  return ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'SUPABASE_SERVICE_ROLE_KEY'].filter((k) => !process.env[k]);
+  return ['SUPABASE_URL', 'SUPABASE_ANON_KEY'].filter((k) => !process.env[k]);
 }
 
 const supabaseUrl = () => (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
@@ -43,7 +43,7 @@ async function getUser(req) {
   });
   if (!r.ok) return null;
   const u = await r.json();
-  return u && u.id ? { id: u.id, email: String(u.email || '').toLowerCase() } : null;
+  return u && u.id ? { id: u.id, email: String(u.email || '').toLowerCase(), isAnonymous: Boolean(u.is_anonymous), accessToken: token } : null;
 }
 
 // ALLOWED_EMAILS (comma separated) is optional. Empty = any signed-in account may chat.
@@ -70,25 +70,24 @@ async function requireUser(req, res) {
     res.status(401).json({ error: 'Please sign in.' });
     return null;
   }
-  if (!emailAllowed(user.email)) {
+  if (!user.isAnonymous && !emailAllowed(user.email)) {
     res.status(403).json({ error: "This account isn't on the allow-list." });
     return null;
   }
   return user;
 }
 
-// ---- Storage (server side, service role: bypasses RLS, so we check paths ourselves) ----
+// ---- Storage (caller JWT: RLS enforces per-user access) -------------------
 const encodePath = (p) => p.split('/').map(encodeURIComponent).join('/');
-// Legacy service_role keys are JWTs and go in both headers. Newer "sb_secret_…" keys are not JWTs
-// and must only be sent as the apikey header.
-const serviceHeaders = (extra = {}) => {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-  return { apikey: key, ...(key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {}), ...extra };
-};
+const userHeaders = (accessToken, extra = {}) => ({
+  apikey: process.env.SUPABASE_ANON_KEY,
+  Authorization: `Bearer ${accessToken}`,
+  ...extra,
+});
 
-async function storageGet(path) {
+async function storageGet(path, accessToken) {
   const r = await fetch(`${supabaseUrl()}/storage/v1/object/${BUCKET}/${encodePath(path)}`, {
-    headers: serviceHeaders(),
+    headers: userHeaders(accessToken),
     signal: AbortSignal.timeout(20000),
   });
   if (r.status === 404 || r.status === 400) return null;
@@ -96,20 +95,20 @@ async function storageGet(path) {
   return Buffer.from(await r.arrayBuffer());
 }
 
-async function storagePut(path, buffer, contentType) {
+async function storagePut(path, buffer, contentType, accessToken) {
   const r = await fetch(`${supabaseUrl()}/storage/v1/object/${BUCKET}/${encodePath(path)}`, {
     method: 'POST',
-    headers: serviceHeaders({ 'Content-Type': contentType || 'application/octet-stream', 'x-upsert': 'true' }),
+    headers: userHeaders(accessToken, { 'Content-Type': contentType || 'application/octet-stream', 'x-upsert': 'true' }),
     body: buffer,
     signal: AbortSignal.timeout(20000),
   });
   if (!r.ok) throw new Error(`Storage returned ${r.status}: ${(await r.text()).slice(0, 200)}`);
 }
 
-async function storageList(prefix) {
+async function storageList(prefix, accessToken) {
   const r = await fetch(`${supabaseUrl()}/storage/v1/object/list/${BUCKET}`, {
     method: 'POST',
-    headers: serviceHeaders({ 'Content-Type': 'application/json' }),
+    headers: userHeaders(accessToken, { 'Content-Type': 'application/json' }),
     body: JSON.stringify({ prefix, limit: 100, sortBy: { column: 'created_at', order: 'desc' } }),
     signal: AbortSignal.timeout(10000),
   });

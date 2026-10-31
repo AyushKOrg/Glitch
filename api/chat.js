@@ -14,10 +14,18 @@ function isCodeWritingRequest(text) {
   return asksToCreate && codeSubject;
 }
 
-// Queries that depend on changing facts should get Google Search context before either model answers.
+// Search for nearly all factual/entity questions up front; models can also call web_search for follow-ups.
 function needsLiveSearch(text) {
-  const t = String(text || '').toLowerCase();
-  return /\b(latest|current|currently|today|tonight|right now|right-now|real[ -]?time|up[ -]?to[ -]?date|recent|breaking|news|weather|forecast|temperature|stock price|share price|crypto price|exchange rate|currency rate|live score|score now|standings|schedule|traffic|election|polls|price of|cost of|availability|opening hours|released|release date|new version|version of|updates?|search the web|look up|google search|who won|what happened)\b/.test(t);
+  const t = String(text || '').toLowerCase().trim();
+  if (!t) return false;
+  // Always search explicitly time-sensitive or web-requested queries.
+  if (/\b(latest|current|currently|today|tonight|right now|right-now|real[ -]?time|up[ -]?to [ -]?date|recent|breaking|news|weather|forecast|temperature|stock price|share price|crypto price|exchange rate|currency rate|live score|score now|standings|schedule|traffic|election|polls|price of|cost of|availability|opening hours|released|release date|new version|version of|updates?|search the web|look up|google search|who won|what happened)\b/.test(t)) return true;
+  // Default to searching ordinary questions too, including casual factual questions and short entity/product lookups.
+  // Skip only clear greetings, purely creative prompts, and code-writing requests handled by Cognition.
+  if (/^(hi|hello|hey|thanks|thank you|good morning|good night|bye|ok|okay|lol)[!. ]*$/.test(t)) return false;
+  if (/\b(write|draft|compose|poem|story|lyrics|roleplay|brainstorm)\b/.test(t) && !/\b(who|what|when|where|why|how|is|are|does|did|latest|current)\b/.test(t)) return false;
+  if (/\b(write|generate|create|build|make|implement|code|program|develop|scaffold|fix|debug|refactor)\b/.test(t) && /\b(code|script|function|class|component|website|web app|application|app|html|css|javascript|typescript|python|react|node|api endpoint|sql|bug|repository|repo|project)\b/.test(t)) return false;
+  return true;
 }
 
 function clean(raw) {
@@ -76,14 +84,14 @@ module.exports = async (req, res) => {
 
     const ctx = { userId: user.id };
     let system = systemPrompt(mode);
-    // Run search server-side for time-sensitive requests, so even a model that skips
-    // tool-calling receives grounded results. Search failure should not block the chat.
+    // Run search server-side whenever the request may benefit from outside facts, so both models
+    // receive grounded context even if they do not call the tool themselves. Search failure does not block chat.
     if (needsLiveSearch(lastUserText)) {
       const searchContext = await Promise.race([
         runTool(ctx, 'web_search', { query: lastUserText.slice(0, 300) }),
         new Promise((resolve) => setTimeout(() => resolve('Google Search did not return in time; answer cautiously and state uncertainty.'), 18000)),
       ]).catch(() => 'Google Search failed; answer cautiously and state uncertainty.');
-      system += `\n\nLIVE GOOGLE SEARCH RESULTS (retrieved for this request):\n${searchContext}\nUse these results for current claims, distinguish facts from uncertainty, and include source URLs when relevant. If the results do not answer the question, say so rather than guessing.`;
+      system += `\n\nLIVE GOOGLE SEARCH RESULTS (retrieved for this request):\n${searchContext}\nUse these results wherever relevant, including for casual factual questions; distinguish verified facts from uncertainty and include source URLs when relevant. If the results do not answer the question, say so rather than guessing.`;
     }
     const reply = mode === 'cognition'
       ? await runOpenRouter(ctx, system, messages)

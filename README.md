@@ -1,7 +1,7 @@
 # Glitch on Vercel
 
 ```text
-Browser ──> Vercel: public/index.html + api/* ──> Gemini 2.5 Flash-Lite / OpenRouter Nemotron
+Browser ──> Vercel: public/index.html + api/* ──> Gemini 3.5 Flash-Lite / OpenRouter Nemotron
    │                                              └── Google Search grounding
    └──────> Supabase: email sign-in, anonymous guests, guest message counters
 ```
@@ -32,7 +32,7 @@ ALLOWED_EMAILS=
 
 - `GOOGLE_API_KEY` powers Flash and web search.
 - `OPENROUTER_API_KEY` powers Cognition.
-- The model IDs are hardcoded in `api/_llm.js`: `gemini-2.5-flash-lite` and `nvidia/nemotron-3-ultra-550b-a55b:free`.
+- The model IDs are hardcoded in `api/_llm.js`: `gemini-3.5-flash-lite` and `nvidia/nemotron-3-ultra-550b-a55b:free`.
 - `ALLOWED_EMAILS` is optional. Empty means any registered account can chat.
 
 Push the folder to GitHub, import it into Vercel, add the variables, then deploy. Or use the Vercel CLI:
@@ -55,7 +55,7 @@ Redeploy after changing environment variables. Open the site and choose **Create
 |---|---|
 | Sign in / guest | Supabase email + password or anonymous guest sessions |
 | Guest limit | 30 messages per anonymous Supabase account, enforced atomically on the server using Supabase RPC |
-| Flash | Google Gemini 2.5 Flash-Lite (Google AI free tier, subject to availability and quotas) |
+| Flash | Google Gemini 3.5 Flash-Lite (Google AI free tier, subject to availability and quotas) |
 | Cognition | NVIDIA Nemotron 3 Ultra free endpoint through OpenRouter |
 | Web search | Both modes can call `web_search`, powered by Gemini Google Search grounding; time-sensitive requests also trigger a server-side search before the model answers |
 | File reading | Reads PDFs, code, text, DOCX, XLSX/XLS/ODS and other supported formats in the browser |
@@ -70,7 +70,7 @@ Not available on the web edition: executing generated code, opening apps, mouse/
 
 - A guest gets 30 messages total for that anonymous account. Creating a new anonymous account creates a separate quota.
 - The limit is enforced in the database, not localStorage, so refreshing or editing browser storage does not reset it.
-- Google AI free-tier model access and request limits depend on your account, region, and current Google availability. Gemini 2.5 Flash-Lite access may be restricted for some new projects. OpenRouter free model endpoints are also rate-limited and can be temporarily unavailable. “Free” does not mean unlimited.
+- Google AI free-tier model access and request limits depend on your account, region, and current Google availability. Gemini 3.5 Flash-Lite access may be restricted for some new projects. OpenRouter free model endpoints are also rate-limited and can be temporarily unavailable. “Free” does not mean unlimited.
 - The free Nemotron endpoint may log requests for service/security purposes. Do not send confidential information or personal data to it.
 - Keep provider API keys in Vercel server-side environment variables. Never hardcode a real API key into frontend JavaScript or a public GitHub repository.
 - Email-account chat history is temporarily stored in localStorage in this browser, separately by Supabase user ID and mode; it does not sync across devices and is not server-side storage. Guests do not get persistent chat history. The user can clear the current mode’s history with **New chat**.

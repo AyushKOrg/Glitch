@@ -333,7 +333,9 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     startup: { typeset: false }
   };
 </script>
-<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  onload="window.dispatchEvent(new Event('glitch-mathjax-ready'))"
+  onerror="(function(){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js';s.onload=function(){window.dispatchEvent(new Event('glitch-mathjax-ready'))};document.head.appendChild(s)})()"></script>
 <script>
 (async () => {
   const $ = (id) => document.getElementById(id);
@@ -723,15 +725,50 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
       const note = document.createElement('div'); note.className = 'tag'; note.textContent = all.length + ' downloadable files generated. Use each Download file button.'; el.appendChild(note);
     }
   }
+  // MathJax is loaded asynchronously from a CDN. Queue typesetting until it is
+  // actually ready, then typeset newly-added messages (including restored history).
+  let mathJaxReadyPromise = null;
+  function waitForMathJax() {
+    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+      return Promise.resolve();
+    }
+    if (!mathJaxReadyPromise) {
+      mathJaxReadyPromise = new Promise((resolve) => {
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+            settled = true;
+            window.removeEventListener('glitch-mathjax-ready', check);
+            clearInterval(timer);
+            resolve();
+          }
+        };
+        const check = () => finish();
+        window.addEventListener('glitch-mathjax-ready', check);
+        const timer = setInterval(finish, 150);
+        // Do not leave a permanent timer if both CDNs are unavailable.
+        setTimeout(() => {
+          if (!settled) {
+            settled = true;
+            window.removeEventListener('glitch-mathjax-ready', check);
+            clearInterval(timer);
+            resolve();
+          }
+        }, 12000);
+        finish();
+      });
+    }
+    return mathJaxReadyPromise;
+  }
   function typesetMath(root) {
     if (!root) return;
-    const run = () => {
-      if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
-        window.MathJax.typesetPromise([root]).catch(() => {});
+    waitForMathJax().then(() => {
+      if (window.MathJax && typeof window.MathJax.typesetPromise === 'function' && root.isConnected) {
+        if (typeof window.MathJax.typesetClear === 'function') window.MathJax.typesetClear([root]);
+        return window.MathJax.typesetPromise([root]);
       }
-    };
-    if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) window.MathJax.startup.promise.then(run).catch(() => {});
-    else if (window.MathJax && window.MathJax.typesetPromise) run();
+    }).catch((err) => console.warn('Glitch math rendering failed:', err));
   }
 
   function add(role, text, tag) {

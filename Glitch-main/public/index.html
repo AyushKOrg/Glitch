@@ -314,6 +314,26 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
 </div>
 
 <script src="/vendor/supabase.js"></script>
+<style>
+  .math-source { white-space: normal; }
+  .math-display { overflow-x: auto; overflow-y: hidden; max-width: 100%; padding: .45rem 0; text-align: center; }
+  .math-display mjx-container { max-width: 100%; }
+  mjx-container { color: inherit; }
+  mjx-container[jax="CHTML"][display="true"] { margin: .7em 0 !important; }
+</style>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      packages: {'[+]': ['ams']}
+    },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
+    startup: { typeset: false }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <script>
 (async () => {
   const $ = (id) => document.getElementById(id);
@@ -569,12 +589,13 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
   // Build DOM nodes only: model/user text is never assigned to innerHTML.
   function mdLink(url, label) { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = label; return a; }
   function inline(parent, value) {
-    const text = String(value); const re = /(`[^`\n]+`|\*\*(?=\S)(?:[^*]|\*(?!\*))+?\*\*|__(?=\S)(?:[^_]|_(?!_))+?__|~~(?=\S)(?:[^~]|~(?!~))+?~~|\[[^\]\n]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?\'"*]|\*(?=\S)(?:[^*]|\*(?!\*))+?\*|_(?=\S)(?:[^_]|_(?!_))+?_)/g;
+    const text = String(value); const re = /(`[^`\n]+`|\$\$[\s\S]+?\$\$|\\\([\s\S]+?\\\)|\\\[[\s\S]+?\\\]|\$(?!\s)[^$\n]+?\$|\*\*(?=\S)(?:[^*]|\*(?!\*))+?\*\*|__(?=\S)(?:[^_]|_(?!_))+?__|~~(?=\S)(?:[^~]|~(?!~))+?~~|\[[^\]\n]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?\'"*]|\*(?=\S)(?:[^*]|\*(?!\*))+?\*|_(?=\S)(?:[^_]|_(?!_))+?_)/g;
     let last = 0, m;
     while ((m = re.exec(text))) {
       if (m.index > last) parent.append(text.slice(last, m.index));
       const tok = m[0];
       if (tok[0] === '`') { const c = document.createElement('code'); c.textContent = tok.slice(1, -1); parent.append(c); }
+      else if (tok.startsWith('$$') || tok.startsWith('$') || tok.startsWith('\\(') || tok.startsWith('\\[')) { const math = document.createElement('span'); math.className = 'math-source'; math.textContent = tok; parent.append(math); }
       else if (tok.startsWith('**') || tok.startsWith('__')) { const b = document.createElement('strong'); inline(b, tok.slice(2, -2)); parent.append(b); }
       else if (tok.startsWith('~~')) { const d = document.createElement('del'); inline(d, tok.slice(2, -2)); parent.append(d); }
       else if (tok[0] === '[') { const mm = tok.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/); if (mm) parent.append(mdLink(mm[2], mm[1])); else parent.append(tok); }
@@ -625,6 +646,12 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     const flush = () => { if (!para.length) return; const p = document.createElement('p'); para.forEach((ln, k) => { if (k) p.append(document.createElement('br')); inline(p, ln.replace(/ {2,}$/g, '')); }); parent.append(p); para = []; };
     while (i < lines.length) {
       const line = lines[i];
+      if (/^\s*(\$\$|\\\[)\s*$/.test(line)) {
+        flush(); const opener = line.trim(), closer = opener === '$$' ? '$$' : '\\]'; const buf = [opener]; i++;
+        while (i < lines.length && lines[i].trim() !== closer) buf.push(lines[i++]);
+        if (i < lines.length) { buf.push(closer); i++; }
+        const display = document.createElement('div'); display.className = 'math-display'; display.textContent = buf.join('\\n'); parent.append(display); continue;
+      }
       if ((m = line.match(/^\s*```\s*([\w+#.-]*)/))) { flush(); const buf = []; i++; while (i < lines.length && !/^\s*```\s*$/.test(lines[i])) buf.push(lines[i++]); if (i < lines.length) i++; parent.append(codeBlock(buf.join('\n'), m[1])); continue; }
       if (i + 1 < lines.length && line.includes('|') && isTableSeparator(lines[i + 1])) { flush(); const header = line, sep = lines[i + 1], rows = []; i += 2; while (i < lines.length && lines[i].trim() && lines[i].includes('|')) rows.push(lines[i++]); renderTable(parent, header, sep, rows); continue; }
       if (!line.trim()) { flush(); i++; continue; }
@@ -696,6 +723,17 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
       const note = document.createElement('div'); note.className = 'tag'; note.textContent = all.length + ' downloadable files generated. Use each Download file button.'; el.appendChild(note);
     }
   }
+  function typesetMath(root) {
+    if (!root) return;
+    const run = () => {
+      if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+        window.MathJax.typesetPromise([root]).catch(() => {});
+      }
+    };
+    if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) window.MathJax.startup.promise.then(run).catch(() => {});
+    else if (window.MathJax && window.MathJax.typesetPromise) run();
+  }
+
   function add(role, text, tag) {
     const el = document.createElement('div');
     document.body.classList.remove('empty');
@@ -713,6 +751,7 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     }
     if (tag) { const t = document.createElement('span'); t.className = 'tag'; t.textContent = tag; el.appendChild(t); }
     log.appendChild(el);
+    typesetMath(el);
     log.scrollTop = log.scrollHeight;
     return el;
   }

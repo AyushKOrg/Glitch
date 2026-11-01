@@ -284,8 +284,8 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
   <h2 class="hero">Ready when <b>you are.</b></h2>
   <div id="fileStatus" role="status" aria-live="polite" style="width:min(780px,calc(100% - 2.8rem));margin:0 auto 6px;color:var(--text-dim);font-size:.82rem"></div>
   <form id="chat">
-    <input id="filePicker" type="file" multiple hidden accept=".pdf,.txt,.md,.markdown,.json,.jsonl,.xml,.html,.htm,.css,.scss,.less,.js,.mjs,.cjs,.ts,.tsx,.jsx,.py,.ipynb,.java,.c,.h,.cpp,.hpp,.cs,.go,.rs,.php,.rb,.swift,.kt,.kts,.sql,.sh,.bash,.ps1,.bat,.yml,.yaml,.toml,.ini,.cfg,.conf,.env,.log,.csv,.tsv,.rtf,.docx,.xlsx,.xls,.ods,.odt,.tex,.vue,.svelte,.dart,.lua,.r,.R,.pl,.ex,.exs,.erl,.hs,.scala,.clj,.dockerfile,.makefile,.gradle,.properties,.gitignore,.diff,.patch">
-    <button class="round" id="attach" type="button" title="Attach files (PDF, code, documents, data)" aria-label="Attach files" style="background:var(--panel);border:1px solid var(--border);font-size:22px">＋</button>
+    <input id="filePicker" type="file" multiple hidden accept="image/png,image/jpeg,image/gif,image/webp,.png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.md,.markdown,.json,.jsonl,.xml,.html,.htm,.css,.scss,.less,.js,.mjs,.cjs,.ts,.tsx,.jsx,.py,.ipynb,.java,.c,.h,.cpp,.hpp,.cs,.go,.rs,.php,.rb,.swift,.kt,.kts,.sql,.sh,.bash,.ps1,.bat,.yml,.yaml,.toml,.ini,.cfg,.conf,.env,.log,.csv,.tsv,.rtf,.docx,.xlsx,.xls,.ods,.odt,.tex,.vue,.svelte,.dart,.lua,.r,.R,.pl,.ex,.exs,.erl,.hs,.scala,.clj,.dockerfile,.makefile,.gradle,.properties,.gitignore,.diff,.patch">
+    <button class="round" id="attach" type="button" title="Attach multiple PNG, JPG, GIF, WebP images, PDFs, documents and code" aria-label="Attach files" style="background:var(--panel);border:1px solid var(--border);font-size:22px">＋</button>
     <textarea id="input" rows="1" placeholder="Ask Glitch" autocomplete="off"></textarea>
     <button class="round" id="send" type="submit" title="Send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12L20 4L14 20L11 13L4 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg></button>
   </form>
@@ -358,7 +358,25 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
   stageEl.addEventListener('pointermove', e => { const r=stageEl.getBoundingClientRect(); stageEl.style.setProperty('--pointer-x',(e.clientX-r.left)+'px'); stageEl.style.setProperty('--pointer-y',(e.clientY-r.top)+'px'); }, {passive:true});
 
   let attachedFiles = [];
+  let retryImages = []; // Kept in memory only so a failed image request can be retried.
   const MAX_FILE_BYTES = 8 * 1024 * 1024, MAX_EXTRACTED_CHARS = 24000;
+  const IMAGE_TYPES = new Set(['image/png','image/jpeg','image/gif','image/webp']);
+  const MAX_IMAGE_PAYLOAD = 2.8 * 1024 * 1024; // Keep the JSON request comfortably below common serverless body limits.
+  function readDataURL(file) { return new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(String(r.result || '')); r.onerror = () => reject(new Error('Could not read this image.')); r.readAsDataURL(file); }); }
+  async function prepareImage(file) {
+    if (!IMAGE_TYPES.has(file.type)) throw new Error('Use PNG, JPG, GIF, or WebP images.');
+    if (file.size > MAX_FILE_BYTES) throw new Error('Image is larger than 8 MB.');
+    // Keep the original GIF as the animated preview; send its first frame as JPEG for broad vision-model compatibility.
+    if (file.type === 'image/gif' && file.size > 2 * 1024 * 1024) throw new Error('GIFs must be 2 MB or smaller.');
+    const dataUrl = await readDataURL(file);
+    const img = new Image(); img.src = dataUrl;
+    await new Promise((resolve,reject) => { img.onload=resolve; img.onerror=()=>reject(new Error('This image could not be opened.')); });
+    const scale = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+    const canvas = document.createElement('canvas'); canvas.width=Math.max(1,Math.round(img.naturalWidth*scale)); canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+    const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    const compressed = canvas.toDataURL('image/jpeg',0.82);
+    return { name:file.name, mimeType:'image/jpeg', data:compressed.split(',')[1], preview:file.type === 'image/gif' ? dataUrl : compressed, isImage:true, isGif:file.type === 'image/gif' };
+  }
   const MODES = ['flash', 'cognition'];
   const MODE_KEY = 'glitch_mode';
 
@@ -772,6 +790,7 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
   async function extractFile(file) {
     if (file.size > MAX_FILE_BYTES) throw new Error('File is larger than 8 MB.');
     const ext = extOf(file.name);
+    if (IMAGE_TYPES.has(file.type) || ['png','jpg','jpeg','gif','webp'].includes(ext)) return await prepareImage(file);
     if (ext === 'pdf') {
       await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'pdfjsLib');
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -804,7 +823,8 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     const box = $('fileStatus'); box.textContent = '';
     attachedFiles.forEach((f, idx) => {
       const chip = document.createElement('span'); chip.className = 'attach-chip';
-      chip.append(document.createTextNode('📎 ' + f.name + (f.trimmed ? ' (trimmed)' : '')));
+      if (f.isImage && f.preview) { const thumb=document.createElement('img'); thumb.src=f.preview; thumb.alt=''; thumb.style.cssText='width:30px;height:30px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:6px'; chip.append(thumb); }
+      chip.append(document.createTextNode((f.isImage ? (f.isGif ? '🎞️ ' : '🖼️ ') : '📎 ') + f.name + (f.trimmed ? ' (trimmed)' : '')));
       const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + f.name);
       x.addEventListener('click', () => { attachedFiles.splice(idx, 1); renderAttachments(); });
       chip.append(x); box.append(chip);
@@ -820,10 +840,18 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
       renderAttachments('Reading ' + file.name + '…');
       try {
         let content = await extractFile(file), trimmed = false;
-        const used = attachedFiles.reduce((n, f) => n + f.content.length, 0), room = TOTAL_ATTACH_CHARS - used;
-        if (room < 500) throw new Error('attachment limit reached (about 24,000 characters in total).');
-        if (content.length > room) { content = content.slice(0, room); trimmed = true; }
-        attachedFiles.push({ name: file.name, content, trimmed });
+        if (content && content.isImage) {
+          if (attachedFiles.filter(f => f.isImage).length >= 4) throw new Error('You can attach up to 4 images per message.');
+          const usedBytes = attachedFiles.reduce((n,f) => n + (f.isImage ? f.data.length : 0), 0);
+          if (usedBytes + content.data.length > MAX_IMAGE_PAYLOAD) throw new Error('Image attachments exceed the 2.8 MB total limit. Remove an image or choose smaller files.');
+          attachedFiles.push(content);
+          if (content.isGif) problem = 'GIF preview stays animated; Glitch analyzes its first frame.';
+        } else {
+          const used = attachedFiles.reduce((n, f) => n + (f.content || '').length, 0), room = TOTAL_ATTACH_CHARS - used;
+          if (room < 500) throw new Error('attachment limit reached (about 24,000 characters in total).');
+          if (content.length > room) { content = content.slice(0, room); trimmed = true; }
+          attachedFiles.push({ name: file.name, content, trimmed });
+        }
       } catch (err) { problem = file.name + ': ' + (err.message || 'Could not read this file.'); }
     }
     reading--; if (!reading && !busy) sendBtn.disabled = false;
@@ -840,8 +868,9 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     } catch {}
   }
 
-  async function send(text, retry) {
+  async function send(text, retry, images) {
     if (busy) return;
+    if (!retry) retryImages = images || [];
     const chat = activeChat(); if (!chat) return;
     const chatId = chat.id, sentMode = mode;
     if (!retry) playSfx('send');
@@ -850,6 +879,7 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     chat.mode = sentMode; saveHistory(); render();
     pending = { chatId, el: null }; render();
     const payload = history.map(m => ({ role: m.role, content: m.content }));
+    if (retryImages.length && payload.length) payload[payload.length - 1].images = retryImages.map(({name,mimeType,data}) => ({name,mimeType,data}));
     const inActive = () => activeChatId === chatId;
     // Put a message into the right chat even if the person has opened another chat while waiting.
     const note = (kind, msg) => { if (inActive()) { pending = null; render(); showError(msg, kind === 'retry'); } else { pending = null; showToast(msg); } };
@@ -864,7 +894,7 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
       if (!target) { pending = null; return; }                     // chat was deleted meanwhile
       if (inActive()) history.push({ role: 'assistant', content: data.reply });
       else target.messages.push({ role: 'assistant', content: data.reply });
-      pending = null;
+      pending = null; retryImages = [];
       if (inActive()) playSfx('reply');
       target.updatedAt = Date.now();
       if (inActive()) saveHistory(); else { conversations = [target, ...conversations.filter(c => c.id !== chatId)]; persistChats(); showToast('Reply ready in “' + target.title + '”', 'Open', () => openChat(chatId)); }
@@ -915,15 +945,17 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     const LIMIT = 29000;                                           // the server cuts messages at 30,000 characters
     if (typed.length > LIMIT - 500) { showToast('That message is too long. Please shorten it.'); return; }
     let room = LIMIT - typed.length - 200 * attachedFiles.length, trimmedAny = false;
-    const fileContext = attachedFiles.map(f => {
+    const images = attachedFiles.filter(f => f.isImage);
+    const fileContext = attachedFiles.filter(f => !f.isImage).map(f => {
       let c = f.content; if (c.length > room) { c = c.slice(0, Math.max(0, room)); trimmedAny = true; } room -= c.length;
       return '\n\n--- Attached file: ' + f.name + ' ---\n' + c + '\n--- End file ---';
     }).join('');
-    if (trimmedAny) showToast('Attachments were trimmed to fit the message size limit.');
-    const message = (typed || 'Please read and analyze the attached file(s).') + fileContext;
+    if (trimmedAny) showToast('Text attachments were trimmed to fit the message size limit.');
+    const imageContext = images.map(f => '\n[Image attached: ' + f.name + (f.isGif ? ' — GIF, first frame analyzed' : '') + ']').join('');
+    const message = (typed || 'Please read and analyze the attached file(s), including the images.') + fileContext + imageContext;
     attachedFiles = []; renderAttachments();
     input.value = ''; input.style.height = 'auto';
-    send(message);
+    send(message, false, images);
   });
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); $('chat').requestSubmit(); } });
   input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 140) + 'px'; });

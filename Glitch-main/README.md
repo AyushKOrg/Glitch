@@ -8,6 +8,10 @@ Browser ──> Vercel: public/index.html + api/* ──> Gemini 3.5 Flash-Lite 
 
 Everything runs on Vercel and Supabase, so it works while your computer is off.
 
+### Image attachments
+
+The chat composer accepts multiple PNG, JPG/JPEG, GIF, and WebP images alongside existing PDFs, office documents, and text/code files. Up to 4 images can be attached per message (2.8 MB combined after browser-side resizing). GIF previews remain animated; the AI receives the first frame for image analysis. Still images are resized and compressed in the browser before being sent.
+
 ## 1. Supabase
 
 1. Create a project at Supabase.

@@ -43,7 +43,16 @@ function clean(raw) {
   for (const m of raw.slice(-MAX_MESSAGES)) {
     if (!m || (m.role !== 'user' && m.role !== 'assistant')) continue;
     const text = String(m.content || '').slice(0, MAX_CHARS).trim();
-    if (text) out.push({ role: m.role, text });
+    let imageBytes = 0;
+    const images = m.role === 'user' && Array.isArray(m.images) ? m.images.slice(0, 4).map((img) => {
+      if (!img || !['image/png','image/jpeg','image/gif','image/webp'].includes(img.mimeType)) return null;
+      const data = String(img.data || '').replace(/^data:[^,]+,/, '');
+      if (!/^[A-Za-z0-9+/]+={0,2}$/.test(data) || data.length > 2800000) return null;
+      imageBytes += data.length;
+      if (imageBytes > 2800000) return null;
+      return { name: String(img.name || 'image').slice(0, 120), mimeType: img.mimeType, data };
+    }).filter(Boolean) : [];
+    if (text || images.length) out.push({ role: m.role, text, images });
   }
   if (!out.length || out[out.length - 1].role !== 'user') return null;
   return out;

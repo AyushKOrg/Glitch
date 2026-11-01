@@ -66,7 +66,7 @@ async function runGemini(ctx, system, messages) {
 
   const contents = messages.map((m) => ({
     role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.text }],
+    parts: [ ...(m.text ? [{ text: m.text }] : []), ...(m.images || []).map((img) => ({ inlineData: { mimeType: img.mimeType, data: img.data } })) ],
   }));
 
   const started = Date.now();
@@ -109,7 +109,13 @@ async function runOpenRouter(ctx, system, messages) {
   const model = OPENROUTER_MODEL;
   if (!key) throw new Error('Cognition mode needs OPENROUTER_API_KEY on the server.');
 
-  const convo = [{ role: 'system', content: system }, ...messages.map((m) => ({ role: m.role, content: m.text }))];
+  const convo = [{ role: 'system', content: system }, ...messages.map((m) => ({
+    role: m.role,
+    content: m.images && m.images.length ? [
+      ...(m.text ? [{ type: 'text', text: m.text }] : []),
+      ...m.images.map((img) => ({ type: 'image_url', image_url: { url: `data:${img.mimeType};base64,${img.data}` } })),
+    ] : m.text,
+  }))];
   let useTools = true;
   const started = Date.now();
 

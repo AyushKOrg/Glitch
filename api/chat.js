@@ -7,8 +7,13 @@ const MAX_CHARS = 30000;
 const GUEST_MESSAGE_LIMIT = 30;
 
 // Catch clear code-generation requests in Flash before sending them to a model.
+// Essays, letters, emails etc. are documents, not code: Flash handles them and returns a downloadable file.
+function isDocumentRequest(text) {
+  return /\b(essay|letter|cover letter|resume|r[eé]sum[eé]|cv|email|e-mail|story|poem|speech|report|article|blog post|paragraphs?|summary|application|statement|apology|invitation|caption|bio|speech|assignment|homework|notes|proposal|memo|complaint|review|thesis|abstract|lyrics|toast|message to)\b/i.test(String(text || ''));
+}
 function isCodeWritingRequest(text) {
   const t = String(text || '').toLowerCase();
+  if (isDocumentRequest(t) && !/\b(code|function|script|html|css|javascript|python|react|api|sql|regex|program|component)\b/.test(t)) return false;
   const asksToCreate = /\b(write|generate|create|build|make|implement|code|program|develop|scaffold|fix|debug|refactor|edit|update)\b/.test(t);
   const codeSubject = /\b(code|coding|program|script|function|class|component|website|web app|application|app|html|css|javascript|typescript|python|java|c\+\+|react|node\.js|api endpoint|sql query|regex|algorithm|bug|error|stack trace|source file|files?|repository|repo|project|calculator|game|bot|extension|plugin|automation|tool|dashboard|landing page|portfolio|chatbot)\b/.test(t);
   return asksToCreate && codeSubject;

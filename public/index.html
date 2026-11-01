@@ -253,6 +253,8 @@ body.away #toBottom{opacity:1;pointer-events:auto;transform:none}body.empty #toB
 .quota-box h3{margin:0;font-size:1.2rem;letter-spacing:-.02em}.quota-box p{margin:0 0 6px;color:var(--text-dim);font-size:.92rem}
 .quota-ico{font-size:2rem;margin:0 auto 2px}.quota-box .mini{padding:10px}.quota-later{border-color:transparent!important;background:none!important}
 .msg.err.quota-end{border-radius:14px;text-align:center;max-width:min(520px,92%)}
+.doc-artifact pre{white-space:pre-wrap;word-break:break-word;font-family:var(--sans)!important;font-size:.92rem!important;line-height:1.65!important;padding:14px 16px;max-height:460px}
+.doc-artifact .code-download::before{content:"⬇ "}
 </style>
 </head>
 <body class="empty">
@@ -674,7 +676,7 @@ body.away #toBottom{opacity:1;pointer-events:auto;transform:none}body.empty #toB
     const all = [];
     artifacts.forEach((a) => {
       if (a.start > cursor) { const before = text.slice(cursor, a.start); if (before) { const p = document.createElement('div'); p.className = 'md'; renderMarkdown(p, before); el.appendChild(p); } }
-      const card = document.createElement('section'); card.className = 'code-artifact';
+      const card = document.createElement('section'); card.className = 'code-artifact' + (/\.(txt|md)$/i.test(a.filename) ? ' doc-artifact' : '');
       const head = document.createElement('div'); head.className = 'code-artifact-head';
       const name = document.createElement('span'); name.className = 'code-artifact-name'; name.textContent = '📄 ' + a.filename;
       const button = document.createElement('button'); button.type = 'button'; button.className = 'code-download'; button.textContent = 'Download file';

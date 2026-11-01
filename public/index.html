@@ -126,6 +126,10 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 @keyframes floatIn{from{opacity:0;transform:translateY(18px) scale(.985);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 @keyframes orbitGlow{0%,100%{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 10%,transparent),0 12px 32px -22px var(--accent)}50%{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 16px 42px -20px var(--accent)}}
 @keyframes softPing{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 28%,transparent)}100%{box-shadow:0 0 0 8px transparent}}
+@keyframes spectralSweep{0%{transform:translateX(-120%) rotate(12deg);opacity:0}15%{opacity:.55}75%{opacity:.22}100%{transform:translateX(130%) rotate(12deg);opacity:0}}
+@keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 9px color-mix(in srgb,var(--accent) 60%,transparent))}}
+@keyframes borderFlow{to{background-position:200% center}}
+@keyframes starTwinkle{0%,100%{opacity:.2}50%{opacity:.8}}
 .stage{isolation:isolate;overflow:hidden}
 .stage::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 12% 0%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 42%),radial-gradient(ellipse at 92% 100%,color-mix(in srgb,var(--accent-2) 6%,transparent),transparent 38%);background-size:160% 160%;animation:aurora 18s ease-in-out infinite}
 .side{backdrop-filter:blur(18px);box-shadow:8px 0 34px -32px rgba(0,0,0,.28)}
@@ -179,6 +183,27 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 .attach-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--text);font-size:.8rem}
 .attach-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:1rem;line-height:1;padding:0 6px;border-radius:50%}.attach-chip button:hover{background:var(--panel)}
 .attach-note{font-size:.8rem;color:var(--text-dim)}.attach-note.err{color:var(--error)}
+
+/* Glitch VFX polish */
+#vfxCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.62}
+.stage>*:not(#vfxCanvas){position:relative;z-index:1}
+.stage::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(360px circle at var(--pointer-x,50%) var(--pointer-y,35%),color-mix(in srgb,var(--accent) 9%,transparent),transparent 72%);opacity:.75;transition:opacity .25s}
+.side-brand img{animation:logoPulse 4.8s ease-in-out infinite}
+.side-brand strong{filter:drop-shadow(0 5px 15px color-mix(in srgb,var(--accent) 18%,transparent))}
+.nav.primary::before{content:"";position:absolute;inset:-1px auto -1px -55%;width:42%;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 18%,white),transparent);transform:skewX(-18deg);pointer-events:none}
+.nav.primary:hover::before{animation:spectralSweep .8s ease}
+#chat{border:1px solid color-mix(in srgb,var(--accent) 18%,var(--border));background:color-mix(in srgb,var(--panel) 94%,transparent)}
+#send:not(:disabled){background:var(--grad);background-size:200% 200%;animation:shift 5s ease infinite}
+#send svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+.msg.bot{box-shadow:0 8px 28px -28px var(--accent)}
+.msg.user{position:relative;overflow:hidden}
+.msg.user::after{content:"";position:absolute;inset:-40% auto -40% -70%;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);pointer-events:none}
+.msg.user:hover::after{animation:spectralSweep .9s ease}
+#soundToggle[aria-pressed=false]{opacity:.65}
+#soundToggle[aria-pressed=true] svg{color:var(--accent)}
+.swatch.active{box-shadow:0 0 15px color-mix(in srgb,var(--accent) 35%,transparent)}
+@media(prefers-reduced-motion:reduce){#vfxCanvas{display:none}.side-brand img{animation:none}}
+
 </style>
 </head>
 <body class="empty">
@@ -203,6 +228,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     <button type="button" class="swatch" data-theme="ice" title="Blue" aria-label="Blue"></button>
   </div>
   <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
+  <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
@@ -212,6 +238,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 </aside>
 
 <div class="stage">
+  <canvas id="vfxCanvas" aria-hidden="true"></canvas>
   <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img src="/logo.png" alt=""><strong>Glitch</strong></div>
   <main id="log" aria-live="polite"></main>
   <h2 class="hero">Ready when <b>you are.</b></h2>
@@ -251,6 +278,45 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 (async () => {
   const $ = (id) => document.getElementById(id);
   const log = $('log'), input = $('input'), sendBtn = $('send');
+
+  // ---- subtle interface sound + ambient VFX ---------------------------------
+  let soundOn = true, audioCtx = null;
+  try { soundOn = localStorage.getItem('glitch_sfx') !== 'off'; } catch {}
+  const soundButton = $('soundToggle'), soundLabel = $('soundLabel');
+  function syncSoundButton() { soundButton.setAttribute('aria-pressed', String(soundOn)); soundLabel.textContent = 'Sound effects: ' + (soundOn ? 'on' : 'off'); }
+  function playSfx(kind = 'tap') {
+    if (!soundOn) return;
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime, osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      const presets = { tap:[520,660,.045], send:[420,760,.095], reply:[620,880,.12], toggle:[360,520,.065] };
+      const [from,to,duration] = presets[kind] || presets.tap;
+      osc.type = 'sine'; osc.frequency.setValueAtTime(from, now); osc.frequency.exponentialRampToValueAtTime(to, now + duration);
+      gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(kind === 'reply' ? .035 : .022, now + .012); gain.gain.exponentialRampToValueAtTime(.0001, now + duration + .035);
+      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + duration + .04);
+    } catch {}
+  }
+  syncSoundButton();
+  soundButton.addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('glitch_sfx', soundOn ? 'on' : 'off'); } catch {} syncSoundButton(); if (soundOn) playSfx('toggle'); });
+  // Lightweight ambient particles; respects reduced-motion and never blocks input.
+  (() => {
+    const canvas = $('vfxCanvas'), ctx = canvas && canvas.getContext && canvas.getContext('2d');
+    if (!ctx || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const stage = canvas.parentElement; let w = 0, h = 0, raf = 0, dots = [];
+    const resize = () => { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5); w = r.width; h = r.height; canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); dots = Array.from({length:Math.min(54,Math.max(22,Math.floor(w*h/26000)))},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.35,a:Math.random()*.42+.12,p:Math.random()*6.28})); };
+    const draw = t => { ctx.clearRect(0,0,w,h); const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8b5cf6';
+      for (let i=0;i<dots.length;i++){const p=dots[i];p.x+=p.vx;p.y+=p.vy;p.p+=.018;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;ctx.globalAlpha=p.a*(.65+.35*Math.sin(p.p));ctx.fillStyle=accent;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+        for(let j=i+1;j<dots.length;j++){const q=dots[j],dx=p.x-q.x,dy=p.y-q.y,dist=Math.hypot(dx,dy);if(dist<105){ctx.globalAlpha=(1-dist/105)*.075;ctx.strokeStyle=accent;ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}}
+      }ctx.globalAlpha=1;raf=requestAnimationFrame(draw); };
+    const observer = new ResizeObserver(resize); observer.observe(stage); resize(); draw(0);
+    window.addEventListener('pagehide',()=>{cancelAnimationFrame(raf);observer.disconnect();},{once:true});
+  })();
+  const stageEl = document.querySelector('.stage');
+  stageEl.addEventListener('pointermove', e => { const r=stageEl.getBoundingClientRect(); stageEl.style.setProperty('--pointer-x',(e.clientX-r.left)+'px'); stageEl.style.setProperty('--pointer-y',(e.clientY-r.top)+'px'); }, {passive:true});
+
   let attachedFiles = [];
   const MAX_FILE_BYTES = 8 * 1024 * 1024, MAX_EXTRACTED_CHARS = 24000;
   const MODES = ['flash', 'cognition'];
@@ -738,6 +804,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
     if (busy) return;
     const chat = activeChat(); if (!chat) return;
     const chatId = chat.id, sentMode = mode;
+    if (!retry) playSfx('send');
     busy = true; sendBtn.disabled = true;
     if (!retry) history.push({ role: 'user', content: text });
     chat.mode = sentMode; saveHistory(); render();
@@ -758,6 +825,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
       if (inActive()) history.push({ role: 'assistant', content: data.reply });
       else target.messages.push({ role: 'assistant', content: data.reply });
       pending = null;
+      if (inActive()) playSfx('reply');
       target.updatedAt = Date.now();
       if (inActive()) saveHistory(); else { conversations = [target, ...conversations.filter(c => c.id !== chatId)]; persistChats(); showToast('Reply ready in “' + target.title + '”', 'Open', () => openChat(chatId)); }
       if (inActive()) {
@@ -819,8 +887,9 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   });
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); $('chat').requestSubmit(); } });
   input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 140) + 'px'; });
-  $('newChat').addEventListener('click', startNewChat);
+  $('newChat').addEventListener('click', () => { playSfx('tap'); startNewChat(); });
   $('clear').addEventListener('click', () => {
+    playSfx('tap');
     if (pending && pending.chatId === activeChatId) return;
     if (history.length && !confirm('Clear the messages in this chat? It stays in Recent chats with an empty history.')) return;
     history = []; const c = activeChat(); if (c) c.title = 'New chat'; saveHistory(false); render(); document.body.classList.remove('nav-open'); input.focus();
@@ -843,10 +912,11 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
   const root = document.documentElement;
   const markTheme = () => document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.theme === root.dataset.theme));
   document.querySelectorAll('.swatch').forEach(s => s.addEventListener('click', () => {
-    root.dataset.theme = s.dataset.theme; try { localStorage.setItem('glitch_theme', s.dataset.theme); } catch {} markTheme();
+    playSfx('toggle'); root.dataset.theme = s.dataset.theme; try { localStorage.setItem('glitch_theme', s.dataset.theme); } catch {} markTheme();
   }));
   markTheme();
   $('scheme').addEventListener('click', () => {
+    playSfx('toggle');
     const dark = root.dataset.scheme ? root.dataset.scheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     root.dataset.scheme = dark ? 'light' : 'dark'; try { localStorage.setItem('glitch_scheme', root.dataset.scheme); } catch {}
   });

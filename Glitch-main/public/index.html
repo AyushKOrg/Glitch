@@ -167,11 +167,11 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 .toast button{border:0;background:transparent;color:var(--accent-strong);font:inherit;font-weight:600;cursor:pointer;padding:2px 4px}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .msg .md{white-space:normal}.md>*:first-child{margin-top:0}.md>*:last-child{margin-bottom:0}
-.md p{margin:0 0 .65em}.md h3,.md h4,.md h5,.md h6{margin:.9em 0 .35em;line-height:1.3;font-size:1em;font-weight:700}.md h3{font-size:1.08em}
-.md ul,.md ol{margin:.2em 0 .7em;padding-left:1.35em}.md li{margin:.15em 0}.md hr{border:0;border-top:1px solid var(--border);margin:.9em 0}
-.md blockquote{margin:.5em 0;padding:.1em .9em;border-left:3px solid var(--accent);color:var(--text-dim)}
-.md a{color:var(--accent-strong);text-decoration:underline;text-underline-offset:2px;word-break:break-all}
-.md code{font:.88em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:.12em .38em;border-radius:6px;background:var(--accent-soft)}
+.md{min-width:0;overflow-wrap:anywhere}.md p{margin:0 0 .72em;white-space:normal}.md h1,.md h2,.md h3,.md h4,.md h5,.md h6{margin:1em 0 .42em;line-height:1.25;font-weight:800;letter-spacing:-.02em}.md h1{font-size:1.45em}.md h2{font-size:1.25em;border-bottom:1px solid var(--border);padding-bottom:.28em}.md h3{font-size:1.1em}.md h4,.md h5,.md h6{font-size:1em}
+.md ul,.md ol{margin:.25em 0 .8em;padding-left:1.5em}.md li{margin:.2em 0;padding-left:.08em}.md li::marker{color:var(--accent)}.md li.md-task{list-style:none;margin-left:-1.25em}.md .md-check{accent-color:var(--accent);vertical-align:middle;margin-right:.45em}.md hr{border:0;border-top:1px solid var(--border);margin:1em 0}
+.md blockquote{margin:.65em 0;padding:.25em .9em;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;background:color-mix(in srgb,var(--accent) 6%,transparent);color:var(--text-dim)}
+.md a{color:var(--accent-strong);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}.md strong{font-weight:750;color:var(--text)}.md del{text-decoration-thickness:1.5px;color:var(--text-dim)}.md u{text-decoration-color:var(--accent);text-underline-offset:3px}
+.md code{font:.88em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:.12em .38em;border-radius:6px;background:var(--accent-soft);overflow-wrap:anywhere}.md-table-wrap{max-width:100%;overflow-x:auto;margin:.65em 0 1em;border:1px solid var(--border);border-radius:10px}.md table{border-collapse:collapse;width:100%;min-width:360px;font-size:.9em}.md th,.md td{padding:9px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}.md th{background:color-mix(in srgb,var(--accent) 10%,var(--panel-alt));font-weight:750}.md tr:last-child td{border-bottom:0}.md th:last-child,.md td:last-child{border-right:0}.md tr:nth-child(even) td{background:color-mix(in srgb,var(--panel-alt) 55%,transparent)}
 .md-code{margin:.55em 0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--panel)}
 .md-code-head{display:flex;justify-content:space-between;align-items:center;padding:5px 6px 5px 12px;font-size:.74rem;color:var(--muted);border-bottom:1px solid var(--border)}
 .md-code-head button,.msg-copy{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;cursor:pointer;padding:3px 8px;border-radius:6px}
@@ -565,19 +565,21 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     } catch {}
   });
 
-  // ---- safe markdown: built with DOM nodes, so model text is never parsed as HTML ----------------
-  const INLINE_SRC = '(`[^`\\n]+`)|(\\*\\*(?!\\s)[^*\\n]+?(?<!\\s)\\*\\*)|(\\[[^\\]\\n]+\\]\\(https?:\\/\\/[^\\s)]+\\))|(https?:\\/\\/[^\\s<>()]*[^\\s<>().,;:!?\'"*])|(\\*(?!\\s)[^*\\n]+?(?<!\\s)\\*)';
+  // ---- safe, dependency-free Markdown renderer -----------------------------------
+  // Build DOM nodes only: model/user text is never assigned to innerHTML.
   function mdLink(url, label) { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = label; return a; }
-  function inline(parent, text) {
-    const re = new RegExp(INLINE_SRC, 'g'); let last = 0, m;
+  function inline(parent, value) {
+    const text = String(value); const re = /(`[^`\n]+`|\*\*(?=\S)(?:[^*]|\*(?!\*))+?\*\*|__(?=\S)(?:[^_]|_(?!_))+?__|~~(?=\S)(?:[^~]|~(?!~))+?~~|\[[^\]\n]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s<>()]*[^\s<>().,;:!?\'"*]|\*(?=\S)(?:[^*]|\*(?!\*))+?\*|_(?=\S)(?:[^_]|_(?!_))+?_)/g;
+    let last = 0, m;
     while ((m = re.exec(text))) {
       if (m.index > last) parent.append(text.slice(last, m.index));
       const tok = m[0];
-      if (m[1]) { const c = document.createElement('code'); c.textContent = tok.slice(1, -1); parent.append(c); }
-      else if (m[2]) { const b = document.createElement('strong'); inline(b, tok.slice(2, -2)); parent.append(b); }
-      else if (m[3]) { const mm = tok.match(/^\[([^\]]+)\]\((.+)\)$/); parent.append(mdLink(mm[2], mm[1])); }
-      else if (m[4]) parent.append(mdLink(tok, tok));
-      else { const i = document.createElement('em'); inline(i, tok.slice(1, -1)); parent.append(i); }
+      if (tok[0] === '`') { const c = document.createElement('code'); c.textContent = tok.slice(1, -1); parent.append(c); }
+      else if (tok.startsWith('**') || tok.startsWith('__')) { const b = document.createElement('strong'); inline(b, tok.slice(2, -2)); parent.append(b); }
+      else if (tok.startsWith('~~')) { const d = document.createElement('del'); inline(d, tok.slice(2, -2)); parent.append(d); }
+      else if (tok[0] === '[') { const mm = tok.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/); if (mm) parent.append(mdLink(mm[2], mm[1])); else parent.append(tok); }
+      else if (/^https?:\/\//i.test(tok)) parent.append(mdLink(tok, tok));
+      else { const tag = tok[0] === '_' ? 'em' : 'em'; const el = document.createElement(tag); inline(el, tok.slice(1, -1)); parent.append(el); }
       last = m.index + tok.length;
     }
     if (last < text.length) parent.append(text.slice(last));
@@ -596,18 +598,49 @@ body{background-image:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--a
     const pre = document.createElement('pre'), c = document.createElement('code'); c.textContent = code; pre.appendChild(c);
     box.append(head, pre); return box;
   }
+  function splitTableRow(line) {
+    // Accept normal Markdown pipes and escaped pipes copied from tables in chat.
+    let s = String(line).trim().replace(/\\\|/g, '|').replace(/\\\s*$/g, '').trim();
+    if (s.startsWith('|')) s = s.slice(1);
+    if (s.endsWith('|')) s = s.slice(0, -1);
+    return s.split(/(?<!\\)\|/).map(cell => cell.trim().replace(/\\\|/g, '|'));
+  }
+  function isTableSeparator(line) {
+    const cells = splitTableRow(line);
+    return cells.length > 0 && cells.every(cell => /^:?-{3,}:?$/.test(cell.replace(/\s/g, '')));
+  }
+  function renderTable(parent, headerLine, separatorLine, rows) {
+    const headers = splitTableRow(headerLine), aligns = splitTableRow(separatorLine).map(c => c.startsWith(':') && c.endsWith(':') ? 'center' : c.endsWith(':') ? 'right' : 'left');
+    const wrap = document.createElement('div'); wrap.className = 'md-table-wrap';
+    const table = document.createElement('table'), thead = document.createElement('thead'), trh = document.createElement('tr');
+    headers.forEach((cell, i) => { const th = document.createElement('th'); th.style.textAlign = aligns[i] || 'left'; inline(th, cell); trh.append(th); });
+    thead.append(trh); table.append(thead);
+    const tbody = document.createElement('tbody');
+    rows.forEach(row => { const cells = splitTableRow(row), tr = document.createElement('tr'); headers.forEach((_, i) => { const td = document.createElement('td'); td.style.textAlign = aligns[i] || 'left'; inline(td, cells[i] || ''); tr.append(td); }); tbody.append(tr); });
+    table.append(tbody); wrap.append(table); parent.append(wrap);
+  }
   function renderMarkdown(parent, text) {
-    const lines = String(text).replace(/\r\n?/g, '\n').split('\n'); let i = 0, para = [], m;
-    const LI = /^\s*([-*+]|\d+[.)])\s+(.*)$/, QUOTE = /^\s*>\s?/;
-    const flush = () => { if (!para.length) return; const p = document.createElement('p'); para.forEach((ln, k) => { if (k) p.append(document.createElement('br')); inline(p, ln); }); parent.append(p); para = []; };
+    const lines = String(text).replace(/\r\n?/g, '\n').replace(/\\\n/g, '\n').split('\n'); let i = 0, para = [], m;
+    const LI = /^\s*([-*+] |\d+[.)] )(.*)$/, QUOTE = /^\s*>\s?/;
+    const flush = () => { if (!para.length) return; const p = document.createElement('p'); para.forEach((ln, k) => { if (k) p.append(document.createElement('br')); inline(p, ln.replace(/ {2,}$/g, '')); }); parent.append(p); para = []; };
     while (i < lines.length) {
       const line = lines[i];
-      if ((m = line.match(/^\s*```\s*([\w+#.-]*)/))) { flush(); const buf = []; i++; while (i < lines.length && !/^\s*```\s*$/.test(lines[i])) buf.push(lines[i++]); i++; parent.append(codeBlock(buf.join('\n'), m[1])); continue; }
+      if ((m = line.match(/^\s*```\s*([\w+#.-]*)/))) { flush(); const buf = []; i++; while (i < lines.length && !/^\s*```\s*$/.test(lines[i])) buf.push(lines[i++]); if (i < lines.length) i++; parent.append(codeBlock(buf.join('\n'), m[1])); continue; }
+      if (i + 1 < lines.length && line.includes('|') && isTableSeparator(lines[i + 1])) { flush(); const header = line, sep = lines[i + 1], rows = []; i += 2; while (i < lines.length && lines[i].trim() && lines[i].includes('|')) rows.push(lines[i++]); renderTable(parent, header, sep, rows); continue; }
       if (!line.trim()) { flush(); i++; continue; }
-      if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { flush(); const h = document.createElement('h' + (m[1].length + 2)); inline(h, m[2]); parent.append(h); i++; continue; }
+      if ((m = line.match(/^(#{1,6})\s+(.*)$/))) { flush(); const h = document.createElement('h' + m[1].length); inline(h, m[2].replace(/\s+#+\s*$/, '')); parent.append(h); i++; continue; }
       if (/^\s*([-*_]\s*){3,}$/.test(line)) { flush(); parent.append(document.createElement('hr')); i++; continue; }
       if (QUOTE.test(line)) { flush(); const q = document.createElement('blockquote'), buf = []; while (i < lines.length && QUOTE.test(lines[i])) buf.push(lines[i++].replace(QUOTE, '')); inline(q, buf.join(' ')); parent.append(q); continue; }
-      if (LI.test(line)) { flush(); const list = document.createElement(/\d/.test(line.match(LI)[1]) ? 'ol' : 'ul'); while (i < lines.length && (m = lines[i].match(LI))) { const li = document.createElement('li'); inline(li, m[2]); list.append(li); i++; } parent.append(list); continue; }
+      if ((m = line.match(LI))) {
+        flush(); const ordered = /^\s*\d/.test(line), list = document.createElement(ordered ? 'ol' : 'ul');
+        while (i < lines.length && (m = lines[i].match(LI)) && (/^\s*\d/.test(lines[i]) === ordered)) {
+          const li = document.createElement('li'), task = m[2].match(/^\[([ xX])\]\s+(.*)$/);
+          if (task) { li.className = 'md-task'; const cb = document.createElement('input'); cb.type = 'checkbox'; cb.disabled = true; cb.checked = task[1].toLowerCase() === 'x'; cb.className = 'md-check'; li.append(cb); inline(li, task[2]); }
+          else inline(li, m[2]);
+          list.append(li); i++;
+        }
+        parent.append(list); continue;
+      }
       para.push(line); i++;
     }
     flush();

@@ -73,7 +73,7 @@ module.exports = async (req, res) => {
       usage = await consumeGuestMessage(user);
       if (!usage || usage.allowed !== true) {
         return res.status(429).json({
-          error: `This guest account has used all ${GUEST_MESSAGE_LIMIT} messages. Create an account to continue.`,
+          error: `You've used all ${GUEST_MESSAGE_LIMIT} free guest messages. Please sign in with a real email address to continue.`,
           usage: { used: GUEST_MESSAGE_LIMIT, remaining: 0, limit: GUEST_MESSAGE_LIMIT },
         });
       }

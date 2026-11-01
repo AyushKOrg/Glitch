@@ -8,10 +8,8 @@
 // NOTE: Gemini 2.5 Flash shut down on 2026-10-16, and Google Search grounding on Gemini 3.x is
 // paid-tier only (billing must be enabled on the project). Override the list with GOOGLE_SEARCH_MODELS
 // (comma-separated) in Vercel env vars if Google changes things again.
-// Temporary hardcoded key (see _temp_keys.js). Optional: deleting that file is safe.
-let tempKeys = { activeTavilyKey: () => '' };
-try { tempKeys = require('./_temp_keys'); } catch { /* file removed: use env vars only */ }
-const tavilyKey = () => process.env.TAVILY_API_KEY || tempKeys.activeTavilyKey();
+// Tavily key comes from the TAVILY_API_KEY environment variable only. Never hardcode keys.
+const tavilyKey = () => process.env.TAVILY_API_KEY || '';
 
 const DEFAULT_GROUNDING_MODELS = [
   'gemini-3.5-flash-lite',

@@ -385,9 +385,23 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   (() => {
     const canvas = $('vfxCanvas'), ctx = canvas && canvas.getContext && canvas.getContext('2d');
     if (!ctx || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const stage = canvas.parentElement; let w = 0, h = 0, raf = 0, dots = [];
-    const resize = () => { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5); w = r.width; h = r.height; canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); dots = Array.from({length:Math.min(54,Math.max(22,Math.floor(w*h/26000)))},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.35,a:Math.random()*.42+.12,p:Math.random()*6.28})); };
+    const stage = canvas.parentElement; let w = 0, h = 0, raf = 0, dots = [], stars = [];
+    const lightMq = matchMedia('(prefers-color-scheme: light)');
+    const isLight = () => { const sc = document.documentElement.dataset.scheme; return sc ? sc === 'light' : lightMq.matches; };
+    const resize = () => { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5); w = r.width; h = r.height; canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); dots = Array.from({length:Math.min(54,Math.max(22,Math.floor(w*h/26000)))},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.35,a:Math.random()*.42+.12,p:Math.random()*6.28})); stars = Array.from({length:Math.min(260,Math.max(60,Math.floor(w*h/4200)))},()=>{const big=Math.random()<.07;return {x:Math.random()*w,y:Math.random()*h,r:big?1.15+Math.random()*.7:.35+Math.random()*.65,a:big?.55+Math.random()*.35:.18+Math.random()*.4,sp:.5+Math.random()*1.8,ph:Math.random()*6.28,glint:big||Math.random()<.04,warm:Math.random()<.18};}); };
     const draw = t => { ctx.clearRect(0,0,w,h); const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8b5cf6';
+      // faint twinkling stars + a few sparkles (white on dark, soft violet specks on light)
+      const light = isLight(), sec = t / 1000;
+      for (let k = 0; k < stars.length; k++) {
+        const st = stars[k], tw = .5 + .5 * Math.sin(sec * st.sp + st.ph), al = st.a * (.25 + .75 * tw) * (light ? .85 : 1);
+        ctx.fillStyle = light ? (st.warm ? '#c08457' : accent) : (st.warm ? '#ffe9c7' : '#f2efff');
+        ctx.globalAlpha = al; ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.2832); ctx.fill();
+        if (st.glint && tw > .8) {   // brief four-point glint at the peak of the twinkle
+          const L = st.r * 5.5 * ((tw - .8) / .2 + .3); ctx.globalAlpha = al * .8; ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth = .6;
+          ctx.beginPath(); ctx.moveTo(st.x - L, st.y); ctx.lineTo(st.x + L, st.y); ctx.moveTo(st.x, st.y - L); ctx.lineTo(st.x, st.y + L); ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
       for (let i=0;i<dots.length;i++){const p=dots[i];p.x+=p.vx;p.y+=p.vy;p.p+=.018;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;ctx.globalAlpha=p.a*(.65+.35*Math.sin(p.p));ctx.fillStyle=accent;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
         for(let j=i+1;j<dots.length;j++){const q=dots[j],dx=p.x-q.x,dy=p.y-q.y,dist=Math.hypot(dx,dy);if(dist<105){ctx.globalAlpha=(1-dist/105)*.075;ctx.strokeStyle=accent;ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}}
       }ctx.globalAlpha=1;raf=requestAnimationFrame(draw); };

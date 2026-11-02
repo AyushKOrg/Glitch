@@ -255,12 +255,22 @@ body.away #toBottom{opacity:1;pointer-events:auto;transform:none}body.empty #toB
 .msg.err.quota-end{border-radius:14px;text-align:center;max-width:min(520px,92%)}
 .doc-artifact pre{white-space:pre-wrap;word-break:break-word;font-family:var(--sans)!important;font-size:.92rem!important;line-height:1.65!important;padding:14px 16px;max-height:460px}
 .doc-artifact .code-download::before{content:"⬇ "}
+/* two logos: the dark tile on dark themes, the light tile on light themes (follows the Light / dark button, or the OS setting) */
+.logo-light{display:none}
+html[data-scheme=light] .logo-dark{display:none}
+html[data-scheme=light] .logo-light{display:inline-block}
+html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
+@media(prefers-color-scheme:light){
+ html:not([data-scheme=dark]) .logo-dark{display:none}
+ html:not([data-scheme=dark]) .logo-light{display:inline-block}
+ html:not([data-scheme=dark]) .msg.bot::before{background-image:url(/logo-light.png)}}
+.logo-light{box-shadow:0 0 0 1px var(--border)}
 </style>
 </head>
 <body class="empty">
 <div class="layout">
 <aside class="side" id="side">
-  <div class="side-brand"><img src="/logo.png" alt=""><strong>Glitch</strong></div>
+  <div class="side-brand"><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong></div>
   <button class="nav primary" id="newChat" type="button" title="Start a new conversation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New chat</button>
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
@@ -293,7 +303,7 @@ body.away #toBottom{opacity:1;pointer-events:auto;transform:none}body.empty #toB
 
 <div class="stage">
   <canvas id="vfxCanvas" aria-hidden="true"></canvas>
-  <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img src="/logo.png" alt=""><strong>Glitch</strong></div>
+  <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong></div>
   <main id="log" aria-live="polite"></main>
   <h2 class="hero">Ready when <b>you are.</b></h2>
   <p class="hero-sub">Ask anything, attach a file, or just talk.</p>
@@ -329,7 +339,7 @@ body.away #toBottom{opacity:1;pointer-events:auto;transform:none}body.empty #toB
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="gate" class="overlay">
   <form id="gateForm">
-    <div class="brand"><img src="/logo.png" alt=""><strong>Glitch</strong></div>
+    <div class="brand"><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong></div>
     <div class="tabs" role="group" aria-label="Account">
       <button type="button" data-tab="login" aria-pressed="true">Sign in</button>
       <button type="button" data-tab="register" aria-pressed="false">Create account</button>

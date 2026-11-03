@@ -25,6 +25,7 @@ html[data-scheme=dark]{--bg:#0f0f14;--panel:#17171f;--panel-alt:#1e1e28;--border
 [data-theme=rose]{--accent:#ec4899;--accent-2:#f43f5e;--accent-soft:#ffe8f1;--accent-strong:#be185d}
 [data-theme=midnight]{--accent:#4f46e5;--accent-2:#4f46e5;--accent-soft:#e9eaff;--accent-strong:#3730a3}
 [data-theme=lime]{--accent:#84cc16;--accent-2:#10b981;--accent-soft:#effbdc;--accent-strong:#4d7c0f}
+[data-theme=custom]{--accent-2:color-mix(in srgb,var(--accent) 68%,white);--accent-soft:color-mix(in srgb,var(--accent) 13%,transparent);--accent-strong:var(--accent)}
 *{box-sizing:border-box;--grad:linear-gradient(135deg,var(--accent),var(--accent-2))}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit}button{white-space:nowrap}

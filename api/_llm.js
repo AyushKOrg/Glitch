@@ -78,7 +78,7 @@ async function runGemini(ctx, system, messages) {
         systemInstruction: { parts: [{ text: system }] },
         contents,
         tools: [{ functionDeclarations: TOOLS }],
-        generationConfig: { maxOutputTokens: 4096 },
+        generationConfig: { maxOutputTokens: 8192 },
       }),
       signal: AbortSignal.timeout(30000),
     });
@@ -114,7 +114,7 @@ async function runOpenRouter(ctx, system, messages) {
   const started = Date.now();
 
   for (let step = 0; step < MAX_STEPS; step++) {
-    const body = { model, messages: convo, max_tokens: 4096 };
+    const body = { model, messages: convo, max_tokens: 8192 };
     if (useTools) {
       body.tools = TOOLS.map((t) => ({ type: 'function', function: t }));
     }

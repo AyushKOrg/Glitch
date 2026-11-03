@@ -164,6 +164,7 @@ create policy "Users can delete their own glitch chats"
 
 
 -- VIP invite system. Codes are stored only as SHA-256 hashes and can be redeemed once.
+create extension if not exists pgcrypto with schema extensions;
 create table if not exists public.glitch_vip_codes (
   code_hash text primary key check (code_hash ~ '^[0-9a-f]{64}$'),
   redeemed_by uuid references auth.users(id) on delete set null,

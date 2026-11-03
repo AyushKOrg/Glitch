@@ -1045,7 +1045,9 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
     document.body.classList.toggle('vip-orbit',effect==='orbit');
     $('vipTheme').value=theme;$('vipEffect').value=effect;$('vipPersonality').value=vipPersonality;$('vipSound').value=vipSoundPack;
     $('vipAvatar').value=p.avatar||'';
-    $('vipTagline').value=p.tagline||'';\n    $('vipTaglineDisplay').textContent=p.tagline||'';\n    $('vipTaglineDisplay').hidden=!Boolean(p.tagline);
+    $('vipTagline').value=p.tagline||'';
+    $('vipTaglineDisplay').textContent=p.tagline||'';
+    $('vipTaglineDisplay').hidden=!Boolean(p.tagline);
     if(p.avatar){$('avatar').textContent=p.avatar;}else if(user){$('avatar').textContent=user.isAnonymous?'G':(user.email[0]||'U').toUpperCase();}
     if(showToastMessage)showToast('VIP customisation saved.');
   }

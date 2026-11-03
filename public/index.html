@@ -54,17 +54,23 @@ button,input,textarea{font:inherit;color:inherit}button{white-space:nowrap}
 html[data-scheme=dark] .nav[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--text)}
 .nav.off{opacity:.5}
 .side h4{margin:18px 10px 6px;font-size:.74rem;font-weight:600;color:var(--muted)}
-.history-head{display:flex;align-items:center;justify-content:space-between;margin:16px 8px 5px}.history-head h4{margin:0}.history-list{display:flex;flex-direction:column;gap:3px;overflow:auto;flex:1 1 120px;min-height:90px;max-height:46vh;padding:0 2px}.history-item{display:flex;align-items:center;gap:4px;border-radius:9px;min-width:0}.history-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:9px;padding:8px;color:var(--text-dim);cursor:pointer;font-size:.84rem}.history-open:hover,.history-item.active .history-open{background:var(--accent-soft);color:var(--text)}.history-actions{display:flex;gap:2px}.history-action{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 6px}.history-action:hover{background:var(--panel);color:var(--text)}.history-empty{padding:8px 10px;color:var(--muted);font-size:.78rem} .accent-picker-wrap{display:flex;align-items:center;gap:11px;padding:7px 10px 12px}
-.accent-wheel{width:48px;height:48px;flex:none;display:grid;place-items:center;border-radius:50%;padding:4px;background:conic-gradient(#ff3b30,#ff9500,#ffcc00,#34c759,#00c7be,#32ade6,#007aff,#5856d6,#af52de,#ff2d55,#ff3b30);box-shadow:0 3px 12px -5px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s}
-.accent-wheel:hover{transform:scale(1.08);box-shadow:0 5px 18px -6px var(--accent)}
-#accentPicker{appearance:none;-webkit-appearance:none;width:100%;height:100%;min-width:0;padding:0;border:3px solid var(--panel);border-radius:50%;background:var(--accent);cursor:pointer;overflow:hidden}
-#accentPicker::-webkit-color-swatch-wrapper{padding:0}
-#accentPicker::-webkit-color-swatch{border:0;border-radius:50%}
-#accentPicker::-moz-color-swatch{border:0;border-radius:50%}
-.accent-picker-copy{min-width:0;display:flex;flex-direction:column;gap:1px}
+.history-head{display:flex;align-items:center;justify-content:space-between;margin:16px 8px 5px}.history-head h4{margin:0}.history-list{display:flex;flex-direction:column;gap:3px;overflow:auto;flex:1 1 120px;min-height:90px;max-height:46vh;padding:0 2px}.history-item{display:flex;align-items:center;gap:4px;border-radius:9px;min-width:0}.history-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:9px;padding:8px;color:var(--text-dim);cursor:pointer;font-size:.84rem}.history-open:hover,.history-item.active .history-open{background:var(--accent-soft);color:var(--text)}.history-actions{display:flex;gap:2px}.history-action{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 6px}.history-action:hover{background:var(--panel);color:var(--text)}.history-empty{padding:8px 10px;color:var(--muted);font-size:.78rem} .accent-picker-wrap{display:flex;flex-direction:column;gap:10px;padding:8px 10px 14px}
+.color-picker-layout{display:flex;align-items:center;gap:12px}
+.hue-wheel{position:relative;width:142px;height:142px;flex:none;border-radius:50%;background:conic-gradient(#ff0000,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000);cursor:crosshair;touch-action:none}
+.hue-wheel::before{content:"";position:absolute;inset:13px;border-radius:50%;background:var(--panel);box-shadow:inset 0 0 0 1px var(--border)}
+.hue-wheel:focus-visible,.sv-square:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.hue-marker{position:absolute;width:13px;height:13px;border:2px solid white;border-radius:50%;background:transparent;box-shadow:0 1px 5px #0009;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.hue-center{position:absolute;inset:31px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--border);pointer-events:none}
+.color-picker-controls{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.sv-square{position:relative;width:100%;height:92px;border-radius:10px;overflow:hidden;cursor:crosshair;touch-action:none;background:linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,hsl(260 100% 50%));box-shadow:inset 0 0 0 1px #0002}
+.sv-marker{position:absolute;width:13px;height:13px;border:2px solid white;border-radius:50%;box-shadow:0 1px 4px #000b;transform:translate(-50%,-50%);pointer-events:none}
+.accent-picker-meta{display:flex;align-items:center;gap:8px;min-width:0}
+.accent-preview{width:24px;height:24px;flex:none;border-radius:7px;background:var(--accent);border:1px solid var(--border-strong)}
+.accent-hex{min-width:0;flex:1;font-size:.78rem;font-weight:650;color:var(--text);font-variant-numeric:tabular-nums}
+.accent-picker-copy{display:flex;flex-direction:column;gap:1px}
 .accent-picker-copy strong{font-size:.82rem;font-weight:650;color:var(--text)}
 .accent-picker-copy span{font-size:.72rem;color:var(--muted)}
-.accent-picker-wrap:focus-within .accent-wheel{outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:360px){.color-picker-layout{gap:8px}.hue-wheel{width:124px;height:124px}.hue-wheel::before{inset:12px}.hue-center{inset:29px}.sv-square{height:82px}}
 .spacer{flex:1}
 .me{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--border);margin:6px -10px -12px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 .avatar{width:32px;height:32px;border-radius:50%;background:var(--grad);background-size:200% 200%;color:var(--on-accent);display:grid;place-items:center;font-weight:700;font-size:.8rem;flex:none;animation:shift 6s ease infinite}
@@ -321,10 +327,18 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   </div>
   <h4>Accent</h4>
   <div class="accent-picker-wrap">
-    <label class="accent-wheel" for="accentPicker" title="Choose any accent colour">
-      <input id="accentPicker" type="color" value="#7c3aed" aria-label="Choose a custom accent colour">
-    </label>
-    <div class="accent-picker-copy"><strong>Custom colour</strong><span>Pick any shade you like</span></div>
+    <div class="color-picker-layout">
+      <div class="hue-wheel" id="hueWheel" role="slider" tabindex="0" aria-label="Choose hue" aria-valuemin="0" aria-valuemax="360" aria-valuenow="260">
+        <div class="hue-center" id="hueCenter"></div><div class="hue-marker" id="hueMarker"></div>
+      </div>
+      <div class="color-picker-controls">
+        <div class="sv-square" id="svSquare" role="group" aria-label="Choose saturation and brightness">
+          <div class="sv-marker" id="svMarker" style="left:100%;top:0%"></div>
+        </div>
+        <div class="accent-picker-meta"><span class="accent-preview" id="accentPreview"></span><span class="accent-hex" id="accentHex">#7C3AED</span></div>
+        <div class="accent-picker-copy"><strong>Custom accent</strong><span>Pick a hue, then choose its shade</span></div>
+      </div>
+    </div>
   </div>
   <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
   <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
@@ -1248,19 +1262,60 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 
   // ---- look & feel: accent, light/dark, mobile menu, suggestions, send ripple ----------
   const root = document.documentElement;
-  const accentPicker = $('accentPicker');
-  function applyAccent(hex, persist = false) {
-    if (!/^#[0-9a-f]{6}$/i.test(hex)) return;
-    root.dataset.theme = 'custom';
-    root.style.setProperty('--accent', hex);
-    accentPicker.value = hex;
-    if (persist) { try { localStorage.setItem('glitch_accent', hex); localStorage.setItem('glitch_theme', 'custom'); } catch {} }
+  const hueWheel = $('hueWheel'), svSquare = $('svSquare');
+  const hueMarker = $('hueMarker'), svMarker = $('svMarker');
+  const hueCenter = $('hueCenter'), accentPreview = $('accentPreview'), accentHex = $('accentHex');
+  let hue = 260, saturation = 75, brightness = 92;
+  const clamp = (n,min,max) => Math.min(max,Math.max(min,n));
+  function hsvToHex(h,s,v) {
+    const c=v*s/100, x=c*(1-Math.abs((h/60)%2-1)), m=v/100-c;
+    let rgb = h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];
+    return '#'+rgb.map(n=>Math.round((n+m)*255).toString(16).padStart(2,'0')).join('');
   }
-  let savedAccent = null;
-  try { savedAccent = localStorage.getItem('glitch_accent'); } catch {}
-  if (savedAccent && /^#[0-9a-f]{6}$/i.test(savedAccent)) applyAccent(savedAccent);
-  accentPicker.addEventListener('input', () => { playSfx('toggle'); applyAccent(accentPicker.value, true); });
-  accentPicker.addEventListener('change', () => applyAccent(accentPicker.value, true));
+  function hexToHsv(hex) {
+    const r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+    const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+    let h=0;
+    if(d){if(max===r)h=60*(((g-b)/d)%6);else if(max===g)h=60*((b-r)/d+2);else h=60*((r-g)/d+4);}
+    return {h:(h+360)%360,s:max===0?0:d/max*100,v:max*100};
+  }
+  function applyAccent(hex,persist=false) {
+    if(!/^#[0-9a-f]{6}$/i.test(hex))return;
+    root.dataset.theme='custom';root.style.setProperty('--accent',hex);
+    accentPreview.style.background=hex;accentHex.textContent=hex.toUpperCase();
+    hueCenter.style.background='hsl('+hue+' 100% 50%)';
+    svSquare.style.background='linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,hsl('+hue+' 100% 50%))';
+    hueWheel.setAttribute('aria-valuenow',String(Math.round(hue)));
+    if(persist){try{localStorage.setItem('glitch_accent',hex);localStorage.setItem('glitch_theme','custom');}catch{}}
+  }
+  function paintPicker(persist=true) {
+    const hex=hsvToHex(hue,saturation,brightness);
+    const angle=(hue-90)*Math.PI/180, radius=hueWheel.clientWidth*.43;
+    hueMarker.style.left=(50+Math.cos(angle)*43)+'%';hueMarker.style.top=(50+Math.sin(angle)*43)+'%';
+    svMarker.style.left=saturation+'%';svMarker.style.top=(100-brightness)+'%';
+    applyAccent(hex,persist);
+  }
+  function setHueFromPointer(e) {
+    const r=hueWheel.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);
+    if(Math.hypot(x,y)<r.width*.31)return;
+    hue=(Math.atan2(y,x)*180/Math.PI+90+360)%360;paintPicker(true);
+  }
+  function setShadeFromPointer(e) {
+    const r=svSquare.getBoundingClientRect();
+    saturation=clamp((e.clientX-r.left)/r.width*100,0,100);
+    brightness=100-clamp((e.clientY-r.top)/r.height*100,0,100);paintPicker(true);
+  }
+  function pointerControl(el,handler) {
+    el.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;el.setPointerCapture(e.pointerId);handler(e);});
+    el.addEventListener('pointermove',e=>{if(el.hasPointerCapture(e.pointerId))handler(e);});
+  }
+  pointerControl(hueWheel,setHueFromPointer);pointerControl(svSquare,setShadeFromPointer);
+  hueWheel.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key))return;e.preventDefault();hue=e.key==='Home'?0:e.key==='End'?359:(hue+(['ArrowRight','ArrowUp'].includes(e.key)?2:-2)+360)%360;paintPicker(true);});
+  let savedAccent=null;try{savedAccent=localStorage.getItem('glitch_accent');}catch{}
+  if(savedAccent&&/^#[0-9a-f]{6}$/i.test(savedAccent)){const hsv=hexToHsv(savedAccent);hue=hsv.h;saturation=hsv.s;brightness=hsv.v;}
+  paintPicker(false);
+  hueWheel.addEventListener('pointerup',()=>playSfx('toggle'));
+  svSquare.addEventListener('pointerup',()=>playSfx('toggle'));
   $('scheme').addEventListener('click', () => {
     playSfx('toggle');
     const dark = root.dataset.scheme ? root.dataset.scheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;

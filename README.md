@@ -49,6 +49,19 @@ vercel --prod
 
 Redeploy after changing environment variables. Open the site and choose **Create account** or **Continue as guest**.
 
+## Owner-issued VIP access
+
+VIP is invite-only. A registered account must redeem a one-time code personally issued by the owner; guest accounts cannot redeem codes. Codes are stored as SHA-256 hashes, and redemption is atomic, so a code can only be used once. The browser never decides membership: `/api/vip` checks it through Supabase, and VIP assistant styles are checked again by `/api/chat`.
+
+To issue a code, choose a long random code and run this in the Supabase SQL Editor (replace the example text; never publish the plain code):
+
+```sql
+insert into public.glitch_vip_codes(code_hash)
+values (encode(extensions.digest(lower(trim('YOUR-PRIVATE-CODE-HERE')), 'sha256'), 'hex'));
+```
+
+Send the plain code privately to the intended person. Do not paste it into GitHub, frontend code, or the public SQL file. Each code works for one account once. The VIP dashboard includes themes, assistant personalities, avatar/profile customisation, extra visual effects, sound packs, local chat stats, a VIP Lounge panel, and slash commands such as `/vip`, `/stats`, `/lounge`, and `/theme gold`. Customisation and chat stats are stored in that browser; VIP membership itself is stored securely in Supabase.
+
 ## What it does
 
 | Feature | Behavior |

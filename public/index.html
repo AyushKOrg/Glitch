@@ -298,6 +298,27 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
  html:not([data-scheme=dark]) .logo-light{display:inline-block}
  html:not([data-scheme=dark]) .msg.bot::before{background-image:url(/logo-light.png)}}
 .logo-light{box-shadow:0 0 0 1px var(--border)}
+
+/* Click-to-open colour selector, with the existing drag-to-pick wheel preserved. */
+.accent-picker-wrap{position:relative}
+.color-wheel-trigger{width:54px;height:54px;flex:none;position:relative;border:3px solid var(--panel);border-radius:50%;padding:0;cursor:pointer;background:radial-gradient(circle,var(--accent) 0 28%,transparent 30%),conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);box-shadow:0 3px 12px -5px rgba(0,0,0,.5);transition:transform .18s var(--ease),box-shadow .18s}
+.color-wheel-trigger:hover{transform:scale(1.06);box-shadow:0 5px 18px -5px var(--accent)}
+.color-wheel-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.color-wheel-trigger-core{position:absolute;inset:19px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--border)}
+.accent-picker-panel{margin:2px 8px 12px;padding:13px;border:1px solid var(--border);border-radius:15px;background:var(--panel);box-shadow:0 12px 28px -18px rgba(0,0,0,.55);animation:rise .2s ease both}
+.accent-picker-panel[hidden]{display:none}
+.accent-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:.82rem}
+.accent-panel-head button{border:0;background:var(--accent-soft);color:var(--accent-strong);border-radius:7px;padding:5px 9px;font-size:.72rem;font-weight:650;cursor:pointer}
+.accent-wheel-stage{display:flex;flex-direction:column;align-items:center;gap:8px}
+.accent-picker-panel .color-wheel{width:132px;height:132px;border-width:5px;cursor:crosshair}
+.accent-picker-panel .color-wheel::after{inset:49px}
+.accent-picker-panel .color-wheel-marker{width:13px;height:13px}
+.accent-wheel-hint{font-size:.7rem;color:var(--muted)}
+.accent-presets{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.accent-swatch{width:28px;height:28px;justify-self:center;border:3px solid var(--panel);border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px var(--border);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.accent-swatch:hover{transform:scale(1.14)}
+.accent-swatch.active{box-shadow:0 0 0 2px var(--accent),0 0 0 4px var(--panel)}
+@media(max-width:760px){.accent-picker-panel{max-width:100%}}
 </style>
 </head>
 <body class="empty">
@@ -318,11 +339,32 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   </div>
   <h4>Accent</h4>
   <div class="accent-picker-wrap">
-    <div class="color-wheel" id="colorWheel" role="slider" tabindex="0" aria-label="Choose accent colour" aria-valuemin="0" aria-valuemax="359" aria-valuenow="260">
-      <span class="color-wheel-marker" id="colorWheelMarker" style="left:50%;top:8%"></span>
-    </div>
+    <button class="color-wheel-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">
+      <span class="color-wheel-trigger-core" aria-hidden="true"></span>
+    </button>
     <div class="accent-picker-copy"><strong>Accent colour</strong><span id="accentWheelLabel">Use your theme's default or pick a custom shade</span></div>
   </div>
+  <section class="accent-picker-panel" id="accentPickerPanel" aria-label="Colour selection" hidden>
+    <div class="accent-panel-head"><strong>Choose a colour</strong><button id="accentReset" type="button">Reset</button></div>
+    <div class="accent-wheel-stage">
+      <div class="color-wheel" id="colorWheel" role="slider" tabindex="0" aria-label="Choose a custom accent colour" aria-valuemin="0" aria-valuemax="359" aria-valuenow="260">
+        <span class="color-wheel-marker" id="colorWheelMarker" style="left:50%;top:8%"></span>
+      </div>
+      <span class="accent-wheel-hint">Drag to pick any shade</span>
+    </div>
+    <div class="accent-presets" role="group" aria-label="Preset accent colours">
+      <button type="button" class="accent-swatch" data-accent="#7c3aed" style="--swatch:#7c3aed" aria-label="Purple"></button>
+      <button type="button" class="accent-swatch" data-accent="#2563eb" style="--swatch:#2563eb" aria-label="Blue"></button>
+      <button type="button" class="accent-swatch" data-accent="#06b6d4" style="--swatch:#06b6d4" aria-label="Cyan"></button>
+      <button type="button" class="accent-swatch" data-accent="#10b981" style="--swatch:#10b981" aria-label="Green"></button>
+      <button type="button" class="accent-swatch" data-accent="#84cc16" style="--swatch:#84cc16" aria-label="Lime"></button>
+      <button type="button" class="accent-swatch" data-accent="#eab308" style="--swatch:#eab308" aria-label="Yellow"></button>
+      <button type="button" class="accent-swatch" data-accent="#f97316" style="--swatch:#f97316" aria-label="Orange"></button>
+      <button type="button" class="accent-swatch" data-accent="#e11d48" style="--swatch:#e11d48" aria-label="Red"></button>
+      <button type="button" class="accent-swatch" data-accent="#ec4899" style="--swatch:#ec4899" aria-label="Pink"></button>
+      <button type="button" class="accent-swatch" data-accent="#64748b" style="--swatch:#64748b" aria-label="Slate"></button>
+    </div>
+  </section>
   <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
   <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
   <button class="nav" id="speakToggle" type="button" aria-pressed="false" title="Read Glitch's replies out loud"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/></svg><span id="speakLabel">Spoken replies: off</span></button>
@@ -1296,6 +1338,55 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     const angle=(hue-90)*Math.PI/180,radius=42*(saturation/100);
     colorWheelMarker.style.left=(50+Math.cos(angle)*radius)+'%';colorWheelMarker.style.top=(50+Math.sin(angle)*radius)+'%';
   }
+  const accentPickerToggle = $('accentPickerToggle');
+  const accentPickerPanel = $('accentPickerPanel');
+  accentPickerToggle.addEventListener('click', () => {
+    const open = accentPickerPanel.hidden;
+    accentPickerPanel.hidden = !open;
+    accentPickerToggle.setAttribute('aria-expanded', String(open));
+    if (open) colorWheel.focus();
+  });
+  function updateAccentSwatches() {
+    const current = root.style.getPropertyValue('--accent').trim().toLowerCase();
+    document.querySelectorAll('.accent-swatch').forEach((swatch) => {
+      const active = swatch.dataset.accent.toLowerCase() === current;
+      swatch.classList.toggle('active', active);
+      swatch.setAttribute('aria-pressed', String(active));
+    });
+  }
+  function selectPresetAccent(hex) {
+    const hsv = hexToHsv(hex);
+    hue = hsv.h; saturation = hsv.s; brightness = hsv.v;
+    paintWheel(true);
+    updateAccentSwatches();
+  }
+  document.querySelectorAll('.accent-swatch').forEach((swatch) => {
+    swatch.addEventListener('click', () => selectPresetAccent(swatch.dataset.accent));
+  });
+  $('accentReset').addEventListener('click', () => {
+    const hsv = hexToHsv('#7c3aed');
+    hue = hsv.h; saturation = hsv.s; brightness = hsv.v;
+    paintWheel(false);
+    root.dataset.theme = 'default';
+    root.style.removeProperty('--accent');
+    accentWheelLabel.textContent = 'Theme default · #7C3AED';
+    try { localStorage.removeItem('glitch_accent'); localStorage.setItem('glitch_theme', 'default'); } catch {}
+    updateAccentSwatches();
+  });
+  document.addEventListener('click', (e) => {
+    if (!accentPickerPanel.hidden && !e.target.closest('.accent-picker-wrap, #accentPickerPanel')) {
+      accentPickerPanel.hidden = true;
+      accentPickerToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !accentPickerPanel.hidden) {
+      accentPickerPanel.hidden = true;
+      accentPickerToggle.setAttribute('aria-expanded', 'false');
+      accentPickerToggle.focus();
+    }
+  });
+  updateAccentSwatches();
   $('scheme').addEventListener('click', () => {
     playSfx('toggle');
     const dark = root.dataset.scheme ? root.dataset.scheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;

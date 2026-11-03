@@ -113,6 +113,7 @@ create table if not exists public.glitch_memories (
 );
 
 alter table public.glitch_memories enable row level security;
+revoke all on table public.glitch_memories from public, anon, authenticated;
 drop policy if exists "Users can read their own Glitch memories" on public.glitch_memories;
 create policy "Users can read their own Glitch memories"
   on public.glitch_memories for select to authenticated

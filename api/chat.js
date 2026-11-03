@@ -102,7 +102,7 @@ module.exports = async (req, res) => {
     try {
       const memories = await getUserMemories(user);
       if (memories.length) {
-        system += `\\n\\nUSER-SAVED MEMORY (private profile facts supplied by the user; use only when relevant, never assume they are always current):\\n${memories.map((m, i) => `${i + 1}. ${String(m.content).slice(0, 500)}`).join('\\n')}\\nRespect these preferences and facts. Do not claim to remember anything not listed here.`;
+        system += \`\n\nUSER-SAVED MEMORY (private profile facts supplied by the user; use only when relevant, never assume they are always current):\n\${memories.map((m, i) => \`\${i + 1}. \${String(m.content).slice(0, 500)}\`).join('\n')}\nRespect these preferences and facts. Do not claim to remember anything not listed here.\`
       }
     } catch (memoryError) {
       // Memory lookup is best-effort; chat remains available if the memory table has not been migrated yet.

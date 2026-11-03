@@ -305,7 +305,8 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 .color-wheel-trigger:hover{transform:scale(1.06);box-shadow:0 5px 18px -5px var(--accent)}
 .color-wheel-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .color-wheel-trigger-core{position:absolute;inset:19px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--border)}
-.accent-picker-panel{margin:2px 8px 12px;padding:13px;border:1px solid var(--border);border-radius:15px;background:var(--panel);box-shadow:0 12px 28px -18px rgba(0,0,0,.55);animation:rise .2s ease both}
+.accent-picker-panel{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;justify-content:center;width:min(340px,calc(100vw - 32px));height:max-content;max-height:calc(100dvh - 32px);overflow:auto;margin:auto;padding:16px;border:1px solid var(--border);border-radius:18px;background:var(--panel);box-shadow:0 24px 70px rgba(0,0,0,.35);animation:rise .2s ease both}
+.accent-picker-panel:not([hidden])::before{content:"";position:fixed;inset:0;z-index:-1;background:rgba(8,10,18,.58);backdrop-filter:blur(5px)}
 .accent-picker-panel[hidden]{display:none}
 .accent-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:.82rem}
 .accent-panel-head button{border:0;background:var(--accent-soft);color:var(--accent-strong);border-radius:7px;padding:5px 9px;font-size:.72rem;font-weight:650;cursor:pointer}
@@ -1292,7 +1293,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   let hue = 260, saturation = 75, brightness = 92;
   const clamp = (n,min,max) => Math.min(max,Math.max(min,n));
   function hsvToHex(h,s,v) {
-    const c=v*s/100,x=c*(1-Math.abs((h/60)%2-1)),m=v/100-c;
+    const c=(v/100)*(s/100),x=c*(1-Math.abs((h/60)%2-1)),m=v/100-c;
     const rgb=h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];
     return '#'+rgb.map(n=>Math.round((n+m)*255).toString(16).padStart(2,'0')).join('');
   }
@@ -1309,6 +1310,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     colorWheelMarker.style.top=(50+Math.sin(angle)*radius)+'%';
     colorWheel.style.setProperty('--wheel-selected',hex);
     colorWheel.setAttribute('aria-valuenow',String(Math.round(hue)));
+    if(root.dataset.theme!=='custom'){try{localStorage.setItem('glitch_base_theme',root.dataset.theme||'default');}catch{}}
     root.dataset.theme='custom';root.style.setProperty('--accent',hex);
     accentWheelLabel.textContent=hex.toUpperCase();
     if(persist){try{localStorage.setItem('glitch_accent',hex);localStorage.setItem('glitch_theme','custom');}catch{}}
@@ -1364,13 +1366,14 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     swatch.addEventListener('click', () => selectPresetAccent(swatch.dataset.accent));
   });
   $('accentReset').addEventListener('click', () => {
-    const hsv = hexToHsv('#7c3aed');
-    hue = hsv.h; saturation = hsv.s; brightness = hsv.v;
-    paintWheel(false);
-    root.dataset.theme = 'default';
+    const baseTheme = (() => { try { return localStorage.getItem('glitch_base_theme') || 'default'; } catch { return 'default'; } })();
+    root.dataset.theme = baseTheme;
     root.style.removeProperty('--accent');
-    accentWheelLabel.textContent = 'Theme default · #7C3AED';
-    try { localStorage.removeItem('glitch_accent'); localStorage.setItem('glitch_theme', 'default'); } catch {}
+    const baseHex = getComputedStyle(root).getPropertyValue('--accent').trim() || '#7c3aed';
+    const hsv = hexToHsv(baseHex);
+    hue = hsv.h; saturation = hsv.s; brightness = hsv.v;
+    accentWheelLabel.textContent = 'Theme default · ' + baseHex.toUpperCase();
+    try { localStorage.removeItem('glitch_accent'); localStorage.setItem('glitch_theme', baseTheme); localStorage.removeItem('glitch_base_theme'); } catch {}
     updateAccentSwatches();
   });
   document.addEventListener('click', (e) => {

@@ -1547,6 +1547,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     }
     function handleMessage(event){
       let message;try{message=JSON.parse(event.data);}catch{return;}
+      if(message.error){const detail=message.error.message||'Google could not start the Live session.';setStatus(detail,'idle');showToast(detail);cleanup();return;}
       if(message.setupComplete){liveReady=true;controls.hidden=false;$('liveConsent').hidden=true;setStatus('Connected · listening','listening');startAudioInput();send({realtimeInput:{text:'Say a short, natural hello and invite the user to talk.'}});return;}
       const c=message.serverContent||{};
       if(c.interrupted){stopPlayback();outputDraft='';setStatus('Listening','listening');paintCaptions();}
@@ -1562,10 +1563,10 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
       if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket){showToast('Live needs a modern browser on a secure HTTPS connection.');return;}
       startBtn.disabled=true;setStatus('Requesting microphone permission…','idle');
       try{
-        micStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
-        const tokenResult=await api('/api/live-token',{method:'POST',body:JSON.stringify({})});if(!tokenResult.ok)throw new Error(tokenResult.data.error||'Could not start Live.');
         const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('This browser does not support live audio.');
         audioCtx=new AC({latencyHint:'interactive'});await audioCtx.resume();
+        micStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
+        const tokenResult=await api('/api/live-token',{method:'POST',body:JSON.stringify({})});if(!tokenResult.ok)throw new Error(tokenResult.data.error||'Could not start Live.');
         ws=new WebSocket('wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?access_token='+encodeURIComponent(tokenResult.data.token));
         ws.onopen=()=>ws.send(JSON.stringify({setup:{
           model:'models/gemini-3.8-live',

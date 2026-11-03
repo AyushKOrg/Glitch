@@ -125,6 +125,16 @@ body.empty .stage{justify-content:center;padding-bottom:6vh}body.empty #log{disp
 #gate p{margin:0;color:var(--text-dim);font-size:.88rem}
 #gate input{background:var(--panel-alt);border:1px solid var(--border);border-radius:10px;padding:.65rem .8rem;outline:0;transition:border-color .15s,box-shadow .15s}#gate input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .tabs{display:flex;gap:6px}.tabs button{flex:1;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:10px;padding:8px;cursor:pointer;transition:all .15s}.tabs button[aria-pressed=true]{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft)}
+.oauth-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.oauth-btn{min-height:44px;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel-alt);color:var(--text);font:600 .88rem inherit;cursor:pointer;transition:border-color .18s,background .18s,transform .18s}
+.oauth-btn:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px)}
+.oauth-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.oauth-btn:disabled{opacity:.55;cursor:wait;transform:none}
+.oauth-btn svg{width:19px;height:19px;flex:0 0 19px}
+.oauth-divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.oauth-divider::before,.oauth-divider::after{content:"";height:1px;flex:1;background:var(--border)}
+@media(max-width:360px){.oauth-buttons{grid-template-columns:1fr}}
+
 html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 .msgline{min-height:1.2em;font-size:.8rem;color:var(--error)}.msgline.good{color:#16a34a}
 .cta{border:0;border-radius:10px;padding:.75rem;font-weight:600;color:var(--on-accent);background:var(--grad);background-size:200% 200%;cursor:pointer;box-shadow:0 10px 24px -8px color-mix(in srgb,var(--accent) 55%,transparent);transition:transform .15s var(--ease),filter .15s}
@@ -388,6 +398,17 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
       <button type="button" data-tab="register" aria-pressed="false">Create account</button>
     </div>
     <p id="gateHint">Prove you're allowed to bother me.</p>
+    <div class="oauth-buttons" aria-label="Sign in with a provider">
+      <button class="oauth-btn" id="googleSignIn" type="button">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.42 38.06 46.98 31.95 46.98 24.55z"/><path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.15 1.45-4.92 2.3-8.18 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        <span>Google</span>
+      </button>
+      <button class="oauth-btn" id="discordSignIn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#5865F2" d="M19.73 5.08A19.3 19.3 0 0 0 14.98 3.6l-.58 1.18a17.8 17.8 0 0 0-4.8 0L9.02 3.6a19.2 19.2 0 0 0-4.75 1.48C1.26 9.5.45 13.83.85 18.1a19.4 19.4 0 0 0 5.83 2.95l1.26-2.05a12.6 12.6 0 0 1-1.98-.96l.49-.38a13.8 13.8 0 0 0 11.1 0l.5.38c-.64.38-1.3.7-1.99.96l1.26 2.05a19.3 19.3 0 0 0 5.83-2.95c.48-4.95-.82-9.24-3.42-13.02ZM8.53 14.9c-1.1 0-2-1.02-2-2.27s.88-2.27 2-2.27 2.02 1.02 2 2.27c0 1.25-.88 2.27-2 2.27Zm6.94 0c-1.1 0-2-1.02-2-2.27s.88-2.27 2-2.27 2.02 1.02 2 2.27c0 1.25-.88 2.27-2 2.27Z"/></svg>
+        <span>Discord</span>
+      </button>
+    </div>
+    <div class="oauth-divider" aria-hidden="true">or use email</div>
     <input id="email" type="email" autocomplete="username" placeholder="Email" autocapitalize="none" spellcheck="false" required>
     <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
     <div class="msgline" id="gateMsg"></div>
@@ -921,6 +942,25 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     gateMsg('');
   }
   document.querySelectorAll('#gate .tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+  async function signInWithProvider(provider, buttonId) {
+    if (!sb) return gateMsg(authInitError);
+    const buttons = [$('googleSignIn'), $('discordSignIn')];
+    buttons.forEach(b => { b.disabled = true; });
+    gateMsg('Connecting to ' + (provider === 'google' ? 'Google' : 'Discord') + '…');
+    try {
+      const { error } = await sb.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin }
+      });
+      if (error) throw error;
+    } catch (err) {
+      gateMsg(err.message || ('Could not sign in with ' + provider + '.'));
+      buttons.forEach(b => { b.disabled = false; });
+    }
+  }
+  $('googleSignIn').addEventListener('click', () => signInWithProvider('google', 'googleSignIn'));
+  $('discordSignIn').addEventListener('click', () => signInWithProvider('discord', 'discordSignIn'));
 
   $('gateForm').addEventListener('submit', async (e) => {
     e.preventDefault();

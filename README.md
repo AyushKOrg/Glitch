@@ -72,7 +72,7 @@ Not available on the web edition: executing generated code, opening apps, mouse/
 - The limit is enforced in the database, not localStorage, so refreshing or editing browser storage does not reset it.
 - Google AI free-tier model access and request limits depend on your account, region, and current Google availability. Gemini 3.5 Flash-Lite access may be restricted for some new projects. OpenRouter free model endpoints are also rate-limited and can be temporarily unavailable. “Free” does not mean unlimited.
 - The free Nemotron endpoint may log requests for service/security purposes. Do not send confidential information or personal data to it.
-- Keep provider API keys in Vercel server-side environment variables. Never hardcode a real API key into frontend JavaScript or a public GitHub repository.
+- Keep provider API keys in Vercel server-side environment variables. Never hardcode a real API key into frontend JavaScript or a public GitHub repository. Do not create or configure a Supabase service-role key for this app; its server routes use the public anon key together with each signed-in user's JWT and database row-level security.
 - Email-account chat history is temporarily stored in localStorage in this browser, separately by Supabase user ID and mode; it does not sync across devices and is not server-side storage. Guests do not get persistent chat history. The user can clear the current mode’s history with **New chat**.
 - A chat request has about 60 seconds on Vercel (`vercel.json`). Long tool chains may time out.
 - Test the migration and endpoints against your own Supabase project before announcing the deployment.

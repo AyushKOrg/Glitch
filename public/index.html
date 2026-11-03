@@ -379,6 +379,35 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 .accent-swatch:hover{transform:scale(1.14)}
 .accent-swatch.active{box-shadow:0 0 0 2px var(--accent),0 0 0 4px var(--panel)}
 @media(max-width:760px){.accent-picker-panel{max-width:100%}}
+
+/* VIP */
+[data-theme=obsidian]{--accent:#eab308;--accent-2:#f59e0b;--accent-soft:#3b2d10;--accent-strong:#facc15}
+[data-theme=cosmic]{--accent:#a78bfa;--accent-2:#22d3ee;--accent-soft:#29204b;--accent-strong:#c4b5fd}
+.vip-nav{border:1px solid color-mix(in srgb,#eab308 45%,var(--border));background:linear-gradient(100deg,color-mix(in srgb,#eab308 9%,var(--panel)),var(--panel));}
+.vip-nav svg{color:#d99a08}.vip-pill{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 7px;border-radius:999px;background:linear-gradient(110deg,#fef3c7,#f59e0b);color:#422006;font-size:.65rem;font-weight:900;letter-spacing:.07em;vertical-align:middle}
+.vip-box{width:min(650px,100%);max-height:min(88vh,820px);overflow:auto;display:flex;flex-direction:column}
+.vip-box .top{position:sticky;top:0;background:var(--panel);z-index:2}
+.vip-box h3{margin:0;font-size:1.15rem}.vip-box .top p{margin:4px 0 0;color:var(--text-dim);font-size:.82rem}
+.vip-content{padding:16px;display:flex;flex-direction:column;gap:14px}
+.vip-hero{padding:16px;border-radius:14px;background:linear-gradient(120deg,#3b2607,#9a5b08 52%,#f4c45e);color:#fff7db;box-shadow:0 12px 32px -20px #d97706}
+.vip-hero strong{display:block;font-size:1.15rem}.vip-hero span{font-size:.82rem;opacity:.9}
+.vip-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vip-card{min-width:0;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-alt);display:flex;flex-direction:column;gap:7px}
+.vip-card label,.vip-card strong{font-size:.82rem;font-weight:700}.vip-card small{color:var(--muted);font-size:.72rem}
+.vip-card select,.vip-card input{width:100%;min-width:0;padding:8px 9px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel);color:var(--text)}
+.vip-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vip-lock{padding:14px;border:1px dashed color-mix(in srgb,#d99a08 60%,var(--border));border-radius:12px;background:color-mix(in srgb,#f59e0b 6%,var(--panel))}
+.vip-lock form{display:flex;gap:8px;margin-top:10px}.vip-lock input{flex:1;min-width:0;padding:10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel);color:var(--text)}
+#vipStatus{font-size:.8rem;color:var(--text-dim);min-height:1.2em}.vip-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vip-stat{padding:12px;border-radius:11px;background:var(--panel-alt);border:1px solid var(--border)}.vip-stat b{display:block;font-size:1.2rem}.vip-stat span{font-size:.72rem;color:var(--muted)}
+.vip-lounge{padding:14px;border-radius:12px;border:1px solid color-mix(in srgb,#d99a08 30%,var(--border));background:linear-gradient(135deg,color-mix(in srgb,#f59e0b 8%,var(--panel)),var(--panel))}
+.vip-lounge p{margin:5px 0;color:var(--text-dim);font-size:.84rem}
+body.vip-neon .stage::after{background:radial-gradient(420px circle at var(--pointer-x,50%) var(--pointer-y,35%),rgba(34,211,238,.18),transparent 72%)}
+body.vip-orbit .msg.bot{box-shadow:0 0 0 1px color-mix(in srgb,#eab308 20%,transparent),0 10px 34px -22px #d97706}
+body.vip-stars .stage::before{background:radial-gradient(ellipse at 18% 12%,rgba(250,204,21,.14),transparent 40%),radial-gradient(ellipse at 85% 85%,rgba(167,139,250,.15),transparent 42%)}
+body.vip-active .me{border-top-color:rgba(234,179,8,.4)}
+body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)}
+@media(max-width:520px){.vip-grid{grid-template-columns:1fr}.vip-lock form{flex-direction:column}.vip-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body class="empty">
@@ -389,6 +418,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
   <button class="nav" id="memoryOpen" type="button" title="Manage memories saved to your account"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v1a4 4 0 00-2 7 4 4 0 006 5 4 4 0 006-5 4 4 0 00-2-7V7a4 4 0 00-4-4zM9 11h.01M15 11h.01M9 16c1.5 1 4.5 1 6 0"/></svg>Memory</button>
+  <button class="nav vip-nav" id="vipOpen" type="button" title="VIP membership and exclusive features"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>VIP <span id="vipNavBadge" class="vip-pill">LOCKED</span></button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
   <div id="historyList" class="history-list" aria-label="Recent chats"></div>
@@ -435,7 +465,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
-    <div class="me-text"><span id="who">Signed out</span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
+    <div class="me-text"><span id="who">Signed out</span><span id="vipProfileBadge" class="vip-pill" hidden>✦ VIP</span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
     <button class="mini" id="signout" type="button">Sign out</button>
   </div>
 </aside>
@@ -474,6 +504,37 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     <form id="memoryForm"><label for="memoryInput">Add something for Glitch to remember</label><textarea id="memoryInput" maxlength="500" rows="3" placeholder="e.g. I prefer concise answers and use Windows."></textarea><div class="memory-form-foot"><span id="memoryCount">0 / 500</span><button class="cta" id="memorySave" type="submit">Save memory</button></div></form>
     <div id="memoryStatus" role="status" aria-live="polite"></div>
     <div id="memoryList" class="memory-list"></div>
+  </section>
+</div>
+<div id="vipModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="vipTitle">
+  <section class="box vip-box">
+    <div class="top"><div><h3 id="vipTitle">✦ Glitch VIP</h3><p>Private perks for people with an invite from the owner.</p></div><button class="mini" id="vipClose" type="button" aria-label="Close VIP">✕</button></div>
+    <div class="vip-content">
+      <div class="vip-hero"><strong>GLITCH VIP ACCESS</strong><span>Exclusive looks, assistant styles, profile customisation and the VIP Lounge.</span></div>
+      <div id="vipLock" class="vip-lock">
+        <strong>🔐 Invite-only access</strong>
+        <p>VIP codes are issued personally by the Glitch owner. Each code can be redeemed once and is linked to your account.</p>
+        <form id="vipRedeemForm"><input id="vipCode" type="password" autocomplete="off" placeholder="Enter your VIP invite code" maxlength="100" required><button class="cta" id="vipRedeem" type="submit">Unlock VIP</button></form>
+      </div>
+      <div id="vipUnlocked" hidden>
+        <div class="vip-stats">
+          <div class="vip-stat"><b id="vipChatCount">0</b><span>Chats</span></div>
+          <div class="vip-stat"><b id="vipMessageCount">0</b><span>Messages</span></div>
+          <div class="vip-stat"><b id="vipSince">VIP</b><span>Membership</span></div>
+        </div>
+        <div class="vip-grid">
+          <div class="vip-card"><label for="vipTheme">Exclusive theme</label><select id="vipTheme"><option value="gold">Gold Royale</option><option value="obsidian">Obsidian Gold</option><option value="cosmic">Cosmic Nebula</option><option value="aurora">Aurora</option></select><small>Changes the app colour palette.</small></div>
+          <div class="vip-card"><label for="vipPersonality">Assistant personality</label><select id="vipPersonality"><option value="default">Classic Glitch</option><option value="witty">Witty</option><option value="mentor">Patient mentor</option><option value="coder">Builder / coder</option><option value="chill">Chill</option></select><small>VIP styles are checked by the server when chatting.</small></div>
+          <div class="vip-card"><label for="vipAvatar">Profile avatar (emoji)</label><input id="vipAvatar" maxlength="8" placeholder="👑"><small>Pick a short emoji for your profile.</small></div>
+          <div class="vip-card"><label for="vipEffect">Visual effect</label><select id="vipEffect"><option value="stars">Golden stars</option><option value="neon">Neon pulse</option><option value="orbit">Orbit glow</option><option value="none">No extra effect</option></select><small>Extra ambience across the chat.</small></div>
+          <div class="vip-card"><label for="vipSound">Sound pack</label><select id="vipSound"><option value="classic">Classic</option><option value="soft">Soft tones</option><option value="arcade">Arcade</option></select><small>Changes interface sound character.</small></div>
+        </div>
+        <div class="vip-actions"><button class="cta" id="vipSave" type="button">Save VIP customisation</button><button class="mini" id="vipReset" type="button">Reset customisation</button></div>
+        <div class="vip-lounge"><strong>🌙 VIP Lounge</strong><p>Welcome to the private corner of Glitch. Get early feature previews, share feedback, and see owner announcements here.</p><p><b>Coming up:</b> sneak peeks, community challenges, and member-only updates.</p></div>
+        <div class="vip-card"><strong>Secret commands</strong><small>Try <code>/vip</code>, <code>/stats</code>, <code>/lounge</code>, or <code>/theme gold</code> in the chat box.</small></div>
+      </div>
+      <div id="vipStatus" role="status" aria-live="polite"></div>
+    </div>
   </section>
 </div>
 <div id="quotaModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="quotaTitle">
@@ -537,7 +598,11 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
       if (!audioCtx) audioCtx = new Ctx();
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const now = audioCtx.currentTime, osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-      const presets = { tap:[520,660,.045], send:[420,760,.095], reply:[620,880,.12], toggle:[360,520,.065] };
+      const presets = vipSoundPack === 'arcade'
+        ? { tap:[620,980,.055], send:[340,880,.12], reply:[520,1040,.16], toggle:[440,740,.08] }
+        : vipSoundPack === 'soft'
+          ? { tap:[440,520,.07], send:[360,540,.11], reply:[520,660,.16], toggle:[330,440,.09] }
+          : { tap:[520,660,.045], send:[420,760,.095], reply:[620,880,.12], toggle:[360,520,.065] };
       const [from,to,duration] = presets[kind] || presets.tap;
       osc.type = 'sine'; osc.frequency.setValueAtTime(from, now); osc.frequency.exponentialRampToValueAtTime(to, now + duration);
       gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(kind === 'reply' ? .035 : .022, now + .012); gain.gain.exponentialRampToValueAtTime(.0001, now + duration + .035);
@@ -584,6 +649,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   let mode = 'flash';
   try { const m = localStorage.getItem(MODE_KEY); if (MODES.includes(m)) mode = m; } catch {}
   let user = null;                                              // {id, email} when signed in
+  let vipActive = false, vipPersonality = 'default', vipSoundPack = 'classic';
   let history = [];                                             // [{role, content}]
   let conversations = [];
   let activeChatId = null;
@@ -943,6 +1009,98 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     return {canSpeak,toggleSpeak,stop:stopSpeaking,onReply(text){if(speakOn)speak(text,null);},onSend(){stopSpeaking();if(listening)stopListening();},onFailed(){}};
   })();
 
+
+  // ---- invite-only VIP -------------------------------------------------------
+  const VIP_PREF_KEY = 'glitch_vip_prefs_';
+  function vipPrefsKey(){ return VIP_PREF_KEY + (user ? user.id : 'signedout'); }
+  function setVipState(active){
+    vipActive = Boolean(active);
+    document.body.classList.toggle('vip-active', vipActive);
+    $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
+    $('vipNavBadge').hidden = false;
+    $('vipProfileBadge').hidden = !vipActive;
+    $('vipLock').hidden = vipActive;
+    $('vipUnlocked').hidden = !vipActive;
+    if(!vipActive){ document.body.classList.remove('vip-stars','vip-neon','vip-orbit'); vipPersonality='default'; }
+    else applyVipPrefs(false);
+  }
+  async function refreshVip(){
+    if(!user || user.isAnonymous){setVipState(false);return;}
+    const r=await api('/api/vip');
+    if(!r.ok) throw new Error(r.data.error||'Could not check VIP status.');
+    setVipState(r.data.vip===true);
+  }
+  function applyVipPrefs(showToastMessage=false){
+    if(!vipActive)return;
+    let p={};try{p=JSON.parse(localStorage.getItem(vipPrefsKey())||'{}')}catch{}
+    const theme=['gold','obsidian','cosmic','aurora'].includes(p.theme)?p.theme:'gold';
+    const effect=['stars','neon','orbit','none'].includes(p.effect)?p.effect:'stars';
+    vipPersonality=['default','witty','mentor','coder','chill'].includes(p.personality)?p.personality:'default';
+    vipSoundPack=['classic','soft','arcade'].includes(p.sound)?p.sound:'classic';
+    document.documentElement.dataset.theme=theme;
+    try{localStorage.setItem('glitch_theme',theme);localStorage.removeItem('glitch_accent')}catch{}
+    document.body.classList.toggle('vip-stars',effect==='stars');
+    document.body.classList.toggle('vip-neon',effect==='neon');
+    document.body.classList.toggle('vip-orbit',effect==='orbit');
+    $('vipTheme').value=theme;$('vipEffect').value=effect;$('vipPersonality').value=vipPersonality;$('vipSound').value=vipSoundPack;
+    $('vipAvatar').value=p.avatar||'';
+    if(p.avatar){$('avatar').textContent=p.avatar;}else if(user){$('avatar').textContent=user.isAnonymous?'G':(user.email[0]||'U').toUpperCase();}
+    if(showToastMessage)showToast('VIP customisation saved.');
+  }
+  function saveVipPrefs(){
+    if(!vipActive)return showToast('Redeem a VIP invite code first.');
+    const avatar=String($('vipAvatar').value||'').trim().slice(0,8);
+    const prefs={theme:$('vipTheme').value,effect:$('vipEffect').value,personality:$('vipPersonality').value,sound:$('vipSound').value,avatar};
+    try{localStorage.setItem(vipPrefsKey(),JSON.stringify(prefs));}catch{}
+    applyVipPrefs(true);
+  }
+  function renderVipStats(){
+    const chats=conversations.filter(c=>c.messages.length);
+    $('vipChatCount').textContent=String(chats.length);
+    $('vipMessageCount').textContent=String(chats.reduce((n,c)=>n+c.messages.length,0));
+    $('vipSince').textContent='Member';
+  }
+  $('vipOpen').addEventListener('click',async()=>{
+    $('vipModal').classList.add('open');$('vipStatus').textContent='Checking your invite status…';
+    try{await refreshVip();$('vipStatus').textContent=vipActive?'VIP unlocked. Your perks are ready.':(user&&!user.isAnonymous?'Enter the private code you received from the owner.':'Sign in with a registered account before redeeming a code.');}
+    catch(e){$('vipStatus').textContent=e.message;}
+    if(vipActive)renderVipStats();
+  });
+  $('vipClose').addEventListener('click',()=>$('vipModal').classList.remove('open'));
+  $('vipModal').addEventListener('click',e=>{if(e.target===$('vipModal'))$('vipModal').classList.remove('open');});
+  $('vipRedeemForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    if(!user||user.isAnonymous){$('vipStatus').textContent='Sign in with a registered account first.';return;}
+    const b=$('vipRedeem');b.disabled=true;$('vipStatus').textContent='Checking invite…';
+    try{
+      const r=await api('/api/vip',{method:'POST',body:JSON.stringify({code:$('vipCode').value.trim()})});
+      if(!r.ok)throw new Error(r.data.error||'Could not redeem that code.');
+      $('vipCode').value='';setVipState(true);renderVipStats();$('vipStatus').textContent=r.data.alreadyVip?'This account already has VIP.':'VIP unlocked! Welcome aboard.';
+    }catch(err){$('vipStatus').textContent=err.message;}
+    finally{b.disabled=false;}
+  });
+  $('vipSave').addEventListener('click',saveVipPrefs);
+  $('vipReset').addEventListener('click',()=>{
+    if(!vipActive)return;
+    try{localStorage.removeItem(vipPrefsKey())}catch{}
+    $('vipTheme').value='gold';$('vipEffect').value='stars';$('vipPersonality').value='default';$('vipSound').value='classic';$('vipAvatar').value='';
+    applyVipPrefs(true);
+  });
+  function runVipCommand(raw){
+    const bits=String(raw||'').trim().split(/\s+/),cmd=(bits[0]||'').toLowerCase();
+    if(cmd==='/vip'){ $('vipOpen').click(); return true; }
+    if(!['/stats','/lounge','/theme'].includes(cmd))return false;
+    if(!vipActive){showToast('That command is VIP-only. Type /vip to redeem an invite.');return true;}
+    if(cmd==='/stats'){renderVipStats();showToast('VIP stats: '+$('vipChatCount').textContent+' chats · '+$('vipMessageCount').textContent+' messages');return true;}
+    if(cmd==='/lounge'){$('vipOpen').click();return true;}
+    if(cmd==='/theme'){
+      const name=(bits[1]||'gold').toLowerCase();
+      if(!['gold','obsidian','cosmic','aurora'].includes(name)){showToast('Themes: gold, obsidian, cosmic, aurora');return true;}
+      $('vipTheme').value=name;saveVipPrefs();return true;
+    }
+    return false;
+  }
+
   // ---- account memory: private Supabase-backed facts used as context in every chat ----
   let memoryItems = [];
   function renderMemoryList() {
@@ -1097,10 +1255,11 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     markMode();
     // Token refreshes call this again; only (re)load chats when the account really changed.
     if (changedUser) { quotaDone = false; pending = null; loadHistory(); render(); loadMemories().catch(e => showToast('Memory could not load: ' + e.message)); }
+    refreshVip().catch(() => setVipState(false));
     refreshUsage();
   }
   function onSignedOut() {
-    user = null; memoryItems = []; renderMemoryList(); pending = null; undo = null; history = []; conversations = []; activeChatId = null;
+    user = null; setVipState(false); memoryItems = []; renderMemoryList(); pending = null; undo = null; history = []; conversations = []; activeChatId = null;
     $('who').textContent = 'Signed out'; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
     render(); renderHistoryList(); openGate();
   }
@@ -1237,7 +1396,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     // Put a message into the right chat even if the person has opened another chat while waiting.
     const note = (kind, msg) => { if (inActive()) { pending = null; render(); showError(msg, kind === 'retry'); } else { pending = null; showToast(msg); } Voice.onFailed(); };
     try {
-      const { ok, status, data } = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: payload, mode: sentMode }), signal: abortCtl.signal });
+      const { ok, status, data } = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: payload, mode: sentMode, vipPersonality: vipActive ? vipPersonality : 'default' }), signal: abortCtl.signal });
       if (status === 401) { pending = null; await sb.auth.signOut(); return; }
       if (!ok) {
         if (status === 429) { pending = null; if (inActive()) render(); showQuotaEnd(); Voice.onFailed(); return; }
@@ -1302,6 +1461,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   $('chat').addEventListener('submit', (e) => {
     e.preventDefault();
     const typed = input.value.trim();
+    if(typed.startsWith('/') && runVipCommand(typed)){input.value='';return;}
     if ((!typed && !attachedFiles.length) || busy || !user) return;
     if (reading) { showToast('Still reading your file. Try again in a moment.'); return; }
     const LIMIT = 29000;                                           // the server cuts messages at 30,000 characters
@@ -1485,6 +1645,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   });
 
   // ---- start ----------------------------------------------------------------------
+  if(user) refreshVip().catch(()=>setVipState(false));
   markMode(); render(); renderHistoryList();
   let cfg = null;
   try {

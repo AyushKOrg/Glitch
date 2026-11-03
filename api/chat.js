@@ -98,6 +98,27 @@ module.exports = async (req, res) => {
 
     const ctx = { userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
     let system = systemPrompt(mode);
+    const requestedPersonality = String(req.body && req.body.vipPersonality || 'default');
+    if (requestedPersonality !== 'default') {
+      const allowedStyles = {
+        witty: 'Use a playful, clever, lightly humorous tone while remaining respectful.',
+        mentor: 'Use a patient mentor tone and explain reasoning clearly.',
+        coder: 'Use a precise technical builder tone.',
+        chill: 'Use a relaxed, friendly, concise tone.',
+      };
+      if (!Object.prototype.hasOwnProperty.call(allowedStyles, requestedPersonality)) {
+        return res.status(400).json({ error: 'Unknown assistant style.' });
+      }
+      const statusResponse = await fetch(`${require('./_lib').supabaseUrl()}/rest/v1/rpc/get_glitch_vip_status`, {
+        method: 'POST',
+        headers: { apikey: process.env.SUPABASE_ANON_KEY, Authorization: `Bearer ${user.accessToken}`, 'Content-Type': 'application/json' },
+        body: '{}',
+        signal: AbortSignal.timeout(8000),
+      });
+      const statusData = statusResponse.ok ? await statusResponse.json() : {};
+      if (!statusData.vip) return res.status(403).json({ error: 'This assistant style requires VIP access.' });
+      system += `\\n\\nAssistant style: ${allowedStyles[requestedPersonality]}`;
+    }
     // Account memories are private to this authenticated user and are supplied as trusted context data.
     try {
       const memories = await getUserMemories(user);

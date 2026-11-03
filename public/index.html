@@ -870,6 +870,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   }
 
   function render() {
+    log.style.scrollBehavior = 'auto';   // rebuilding the list must not trigger a smooth-scroll animation
     log.textContent = '';
     document.body.classList.toggle('empty', !history.length);
     if (!history.length) return;
@@ -882,6 +883,8 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
       lastEl.querySelector('.msg-actions').appendChild(rg);
     }
     if (pending && pending.chatId === activeChatId) { pending.el = add('bot', ''); pending.el.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>'; }
+    log.scrollTop = log.scrollHeight;
+    log.style.scrollBehavior = '';
   }
 
   // ---- talking to the server ------------------------------------------------
@@ -1104,7 +1107,14 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
       if (inActive()) {
         render();
         const lastMsg = log.lastElementChild;   // a long reply should open at its start, not its end
-        if (lastMsg && lastMsg.classList.contains('bot') && lastMsg.offsetHeight > log.clientHeight * 0.7) lastMsg.scrollIntoView({ block: 'start' });
+        if (lastMsg && lastMsg.classList.contains('bot') && lastMsg.offsetHeight > log.clientHeight * 0.7) {
+          // Anchor on the user's question just above the reply so it stays visible instead of scrolling out of view.
+          const q = lastMsg.previousElementSibling;
+          const anchor = (q && q.classList.contains('user')) ? q : lastMsg;
+          log.style.scrollBehavior = 'auto';
+          log.scrollTop += anchor.getBoundingClientRect().top - log.getBoundingClientRect().top - 12;
+          log.style.scrollBehavior = '';
+        }
       }
       if (data.suggestCognition && inActive()) {
         const lastBot = log.querySelector('.msg.bot:last-of-type');

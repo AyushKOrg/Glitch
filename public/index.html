@@ -151,6 +151,20 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 @keyframes starTwinkle{0%,100%{opacity:.2}50%{opacity:.8}}
 .stage{isolation:isolate;overflow:hidden}
 .stage::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 12% 0%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 42%),radial-gradient(ellipse at 92% 100%,color-mix(in srgb,var(--accent-2) 6%,transparent),transparent 38%);background-size:160% 160%;animation:aurora 18s ease-in-out infinite}
+/* Cognition mode: a cooler, more focused ambient field, distinct from Flash. */
+@keyframes cognitionField{0%,100%{background-position:0% 45%;opacity:.62}50%{background-position:100% 55%;opacity:.95}}
+body.cognition-mode .stage::before{
+  background:
+    radial-gradient(ellipse at 16% 18%,rgba(34,211,238,.17),transparent 42%),
+    radial-gradient(ellipse at 82% 78%,rgba(99,102,241,.2),transparent 46%),
+    radial-gradient(ellipse at 55% 5%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 48%);
+  background-size:180% 180%;
+  animation:cognitionField 9s ease-in-out infinite;
+}
+body.cognition-mode #vfxCanvas{opacity:.9}
+body.cognition-mode .modes [data-mode="cognition"]{
+  box-shadow:inset 0 0 0 1px rgba(34,211,238,.38),0 0 18px rgba(99,102,241,.16);
+}
 .side{backdrop-filter:blur(18px);box-shadow:8px 0 34px -32px rgba(0,0,0,.28)}
 .side-brand{margin-bottom:3px}.side-brand img{box-shadow:0 5px 16px -8px var(--accent);transition:transform .35s var(--ease),box-shadow .35s ease}.side-brand:hover img{transform:rotate(-8deg) scale(1.08);box-shadow:0 8px 22px -8px var(--accent)}
 .nav{position:relative;overflow:hidden}.nav::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent, color-mix(in srgb,var(--accent) 8%,transparent),transparent);transform:translateX(-130%);transition:transform .55s ease;pointer-events:none}.nav:hover::after{transform:translateX(130%)}
@@ -1288,7 +1302,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 
   // ---- modes ------------------------------------------------------------------
   // The mode is a setting for the next message; it no longer swaps out your whole history.
-  function markMode() { document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode))); }
+  function markMode() { document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode))); document.body.classList.toggle('cognition-mode', mode === 'cognition'); }
   document.querySelectorAll('.modes button').forEach(b => b.addEventListener('click', () => {
     if (busy || b.dataset.mode === mode) return;
     mode = b.dataset.mode;

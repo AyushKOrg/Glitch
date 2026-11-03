@@ -384,7 +384,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 [data-theme=obsidian]{--accent:#eab308;--accent-2:#f59e0b;--accent-soft:#3b2d10;--accent-strong:#facc15}
 [data-theme=cosmic]{--accent:#a78bfa;--accent-2:#22d3ee;--accent-soft:#29204b;--accent-strong:#c4b5fd}
 .vip-nav{border:1px solid color-mix(in srgb,#eab308 45%,var(--border));background:linear-gradient(100deg,color-mix(in srgb,#eab308 9%,var(--panel)),var(--panel));}
-.vip-nav svg{color:#d99a08}.vip-pill{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 7px;border-radius:999px;background:linear-gradient(110deg,#fef3c7,#f59e0b);color:#422006;font-size:.65rem;font-weight:900;letter-spacing:.07em;vertical-align:middle}
+.vip-nav svg{color:#d99a08}.vip-pill[hidden]{display:none}.vip-tagline{display:block;color:var(--muted);font-size:.68rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}.vip-pill{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 7px;border-radius:999px;background:linear-gradient(110deg,#fef3c7,#f59e0b);color:#422006;font-size:.65rem;font-weight:900;letter-spacing:.07em;vertical-align:middle}
 .vip-box{width:min(650px,100%);max-height:min(88vh,820px);overflow:auto;display:flex;flex-direction:column}
 .vip-box .top{position:sticky;top:0;background:var(--panel);z-index:2}
 .vip-box h3{margin:0;font-size:1.15rem}.vip-box .top p{margin:4px 0 0;color:var(--text-dim);font-size:.82rem}
@@ -465,7 +465,7 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
-    <div class="me-text"><span id="who">Signed out</span><span id="vipProfileBadge" class="vip-pill" hidden>✦ VIP</span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
+    <div class="me-text"><span id="who">Signed out</span><span id="vipProfileBadge" class="vip-pill" hidden>✦ VIP</span><span id="vipTaglineDisplay" class="vip-tagline" hidden></span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
     <button class="mini" id="signout" type="button">Sign out</button>
   </div>
 </aside>
@@ -526,6 +526,7 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
           <div class="vip-card"><label for="vipTheme">Exclusive theme</label><select id="vipTheme"><option value="gold">Gold Royale</option><option value="obsidian">Obsidian Gold</option><option value="cosmic">Cosmic Nebula</option><option value="aurora">Aurora</option></select><small>Changes the app colour palette.</small></div>
           <div class="vip-card"><label for="vipPersonality">Assistant personality</label><select id="vipPersonality"><option value="default">Classic Glitch</option><option value="witty">Witty</option><option value="mentor">Patient mentor</option><option value="coder">Builder / coder</option><option value="chill">Chill</option></select><small>VIP styles are checked by the server when chatting.</small></div>
           <div class="vip-card"><label for="vipAvatar">Profile avatar (emoji)</label><input id="vipAvatar" maxlength="8" placeholder="👑"><small>Pick a short emoji for your profile.</small></div>
+          <div class="vip-card"><label for="vipTagline">Profile showcase title</label><input id="vipTagline" maxlength="36" placeholder="e.g. Glitch Founder"><small>A small custom title shown under your account name.</small></div>
           <div class="vip-card"><label for="vipEffect">Visual effect</label><select id="vipEffect"><option value="stars">Golden stars</option><option value="neon">Neon pulse</option><option value="orbit">Orbit glow</option><option value="none">No extra effect</option></select><small>Extra ambience across the chat.</small></div>
           <div class="vip-card"><label for="vipSound">Sound pack</label><select id="vipSound"><option value="classic">Classic</option><option value="soft">Soft tones</option><option value="arcade">Arcade</option></select><small>Changes interface sound character.</small></div>
         </div>
@@ -604,7 +605,7 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
           ? { tap:[440,520,.07], send:[360,540,.11], reply:[520,660,.16], toggle:[330,440,.09] }
           : { tap:[520,660,.045], send:[420,760,.095], reply:[620,880,.12], toggle:[360,520,.065] };
       const [from,to,duration] = presets[kind] || presets.tap;
-      osc.type = 'sine'; osc.frequency.setValueAtTime(from, now); osc.frequency.exponentialRampToValueAtTime(to, now + duration);
+      osc.type = vipSoundPack === 'arcade' ? 'triangle' : 'sine'; osc.frequency.setValueAtTime(from, now); osc.frequency.exponentialRampToValueAtTime(to, now + duration);
       gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(kind === 'reply' ? .035 : .022, now + .012); gain.gain.exponentialRampToValueAtTime(.0001, now + duration + .035);
       osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + duration + .04);
     } catch {}
@@ -1043,14 +1044,14 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
     document.body.classList.toggle('vip-neon',effect==='neon');
     document.body.classList.toggle('vip-orbit',effect==='orbit');
     $('vipTheme').value=theme;$('vipEffect').value=effect;$('vipPersonality').value=vipPersonality;$('vipSound').value=vipSoundPack;
-    $('vipAvatar').value=p.avatar||'';
+    $('vipAvatar').value=p.avatar||'';\n    $('vipTagline').value=p.tagline||'';\n    $('vipTaglineDisplay').textContent=p.tagline||'';\n    $('vipTaglineDisplay').hidden=!Boolean(p.tagline);
     if(p.avatar){$('avatar').textContent=p.avatar;}else if(user){$('avatar').textContent=user.isAnonymous?'G':(user.email[0]||'U').toUpperCase();}
     if(showToastMessage)showToast('VIP customisation saved.');
   }
   function saveVipPrefs(){
     if(!vipActive)return showToast('Redeem a VIP invite code first.');
     const avatar=String($('vipAvatar').value||'').trim().slice(0,8);
-    const prefs={theme:$('vipTheme').value,effect:$('vipEffect').value,personality:$('vipPersonality').value,sound:$('vipSound').value,avatar};
+    const prefs={theme:$('vipTheme').value,effect:$('vipEffect').value,personality:$('vipPersonality').value,sound:$('vipSound').value,avatar,tagline:String($('vipTagline').value||'').trim().slice(0,36)};
     try{localStorage.setItem(vipPrefsKey(),JSON.stringify(prefs));}catch{}
     applyVipPrefs(true);
   }

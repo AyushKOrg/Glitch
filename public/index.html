@@ -165,21 +165,45 @@ body.cognition-mode #vfxCanvas{opacity:.9}
 body.cognition-mode .modes [data-mode="cognition"]{
   box-shadow:inset 0 0 0 1px rgba(34,211,238,.38),0 0 18px rgba(99,102,241,.16);
 }
-/* Tiny floating companion, only present while Cognition is active. */
+/* Flash gets the same layered VFX polish, with a warmer, faster energy field. */
+@keyframes flashField{0%,100%{background-position:0% 50%;opacity:.58}50%{background-position:100% 50%;opacity:.9}}
+body.flash-mode .stage::before{
+  background:
+    radial-gradient(ellipse at 14% 18%,rgba(251,146,60,.18),transparent 42%),
+    radial-gradient(ellipse at 84% 78%,rgba(244,63,94,.15),transparent 46%),
+    radial-gradient(ellipse at 55% 5%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 48%);
+  background-size:190% 190%;
+  animation:flashField 7s ease-in-out infinite;
+}
+body.flash-mode #vfxCanvas{opacity:.82}
+body.flash-mode .modes [data-mode="flash"]{
+  box-shadow:inset 0 0 0 1px rgba(251,146,60,.4),0 0 18px rgba(244,63,94,.14);
+}
+body.flash-mode #chat{box-shadow:0 12px 40px -30px rgba(251,146,60,.55);border-color:color-mix(in srgb,#fb923c 28%,var(--border))}
+body.flash-mode #send:not(:disabled){filter:saturate(1.12)}
+/* Tiny floating companion, awake in Cognition and snoozing in Flash. */
 #cognitionBuddy{display:none;position:absolute;z-index:3;right:22px;top:-62px;width:48px;height:48px;pointer-events:none;filter:drop-shadow(0 5px 10px rgba(99,102,241,.22))}
 body.cognition-mode #cognitionBuddy{display:block;animation:buddyDrift 4.2s ease-in-out infinite}
+body.flash-mode #cognitionBuddy{display:block;animation:buddySleep 4.8s ease-in-out infinite;filter:drop-shadow(0 5px 10px rgba(251,146,60,.2))}
+@keyframes buddySleep{0%,100%{transform:translate3d(0,0,0) rotate(-3deg)}50%{transform:translate3d(0,3px,0) rotate(2deg)}}
 #cognitionBuddy .buddy-body{position:absolute;inset:7px 5px 5px;border:1px solid rgba(255,255,255,.72);border-radius:46% 46% 43% 43%;background:linear-gradient(145deg,#b9f4ff 0%,#8b9bff 58%,#c6a5ff 100%);box-shadow:inset -5px -5px 10px rgba(73,74,173,.18),0 0 0 3px rgba(125,211,252,.12)}
 #cognitionBuddy .buddy-body::before,#cognitionBuddy .buddy-body::after{content:"";position:absolute;top:17px;width:5px;height:7px;border-radius:50%;background:#26345d;box-shadow:0 1px 0 rgba(255,255,255,.8)}
 #cognitionBuddy .buddy-body::before{left:12px}#cognitionBuddy .buddy-body::after{right:12px}
+body.flash-mode #cognitionBuddy .buddy-body::before,body.flash-mode #cognitionBuddy .buddy-body::after{top:20px;width:7px;height:2px;border-radius:50%;background:#35405f;box-shadow:none}
+body.flash-mode #cognitionBuddy .buddy-mouth{top:29px;width:6px;height:3px;border-bottom:1.5px solid #405080;border-radius:0 0 8px 8px}
 #cognitionBuddy .buddy-mouth{position:absolute;left:50%;top:28px;width:7px;height:4px;border-bottom:1.5px solid #405080;border-radius:0 0 8px 8px;transform:translateX(-50%)}
 #cognitionBuddy .buddy-blush{position:absolute;top:26px;left:8px;width:6px;height:3px;border-radius:50%;background:#ff9dbb;opacity:.85;box-shadow:20px 0 #ff9dbb}
 #cognitionBuddy .buddy-antenna{position:absolute;left:23px;top:0;width:2px;height:10px;background:#9b9cff;border-radius:2px}
 #cognitionBuddy .buddy-antenna::after{content:"";position:absolute;top:-3px;left:-2px;width:6px;height:6px;border-radius:50%;background:#a5f3fc;box-shadow:0 0 8px #67e8f9}
 #cognitionBuddy .buddy-spark{position:absolute;right:-2px;top:3px;color:#fde68a;font-size:12px;animation:buddyTwinkle 1.8s ease-in-out infinite}
+#cognitionBuddy .buddy-zzz{display:none;position:absolute;right:-9px;top:-8px;color:#fbbf24;font-size:11px;font-weight:800;letter-spacing:-2px;text-shadow:0 1px 5px rgba(251,191,36,.3)}
+body.flash-mode #cognitionBuddy .buddy-spark{display:none}
+body.flash-mode #cognitionBuddy .buddy-zzz{display:block;animation:zzzFloat 2.8s ease-in-out infinite}
+@keyframes zzzFloat{0%,100%{opacity:.55;transform:translate(0,3px) scale(.9)}50%{opacity:1;transform:translate(3px,-4px) scale(1.08)}}
 @keyframes buddyDrift{0%,100%{transform:translate3d(0,0,0) rotate(-5deg)}30%{transform:translate3d(-8px,-9px,0) rotate(4deg)}65%{transform:translate3d(5px,-15px,0) rotate(-2deg)}}
 @keyframes buddyTwinkle{0%,100%{opacity:.45;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
 @media(max-width:760px){#cognitionBuddy{right:12px;top:-54px;transform:scale(.9)}}
-@media(prefers-reduced-motion:reduce){body.cognition-mode #cognitionBuddy{animation:none}#cognitionBuddy .buddy-spark{animation:none}}
+@media(prefers-reduced-motion:reduce){body.cognition-mode #cognitionBuddy,body.flash-mode #cognitionBuddy{animation:none}#cognitionBuddy .buddy-spark,#cognitionBuddy .buddy-zzz{animation:none}}
 .side{backdrop-filter:blur(18px);box-shadow:8px 0 34px -32px rgba(0,0,0,.28)}
 .side-brand{margin-bottom:3px}.side-brand img{box-shadow:0 5px 16px -8px var(--accent);transition:transform .35s var(--ease),box-shadow .35s ease}.side-brand:hover img{transform:rotate(-8deg) scale(1.08);box-shadow:0 8px 22px -8px var(--accent)}
 .nav{position:relative;overflow:hidden}.nav::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent, color-mix(in srgb,var(--accent) 8%,transparent),transparent);transform:translateX(-130%);transition:transform .55s ease;pointer-events:none}.nav:hover::after{transform:translateX(130%)}
@@ -425,7 +449,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   <div id="fileStatus" role="status" aria-live="polite" style="width:min(780px,calc(100% - 2.8rem));margin:0 auto 6px;color:var(--text-dim);font-size:.82rem"></div>
   <form id="chat">
     <div id="cognitionBuddy" role="img" aria-label="A tiny floating Cognition companion" title="Your little Cognition companion">
-      <span class="buddy-antenna"></span><span class="buddy-body"><span class="buddy-blush"></span><span class="buddy-mouth"></span></span><span class="buddy-spark" aria-hidden="true">✦</span>
+      <span class="buddy-antenna"></span><span class="buddy-body"><span class="buddy-blush"></span><span class="buddy-mouth"></span></span><span class="buddy-spark" aria-hidden="true">✦</span><span class="buddy-zzz" aria-hidden="true">Zz</span>
     </div>
     <input id="filePicker" type="file" multiple hidden accept=".pdf,.txt,.md,.markdown,.json,.jsonl,.xml,.html,.htm,.css,.scss,.less,.js,.mjs,.cjs,.ts,.tsx,.jsx,.py,.ipynb,.java,.c,.h,.cpp,.hpp,.cs,.go,.rs,.php,.rb,.swift,.kt,.kts,.sql,.sh,.bash,.ps1,.bat,.yml,.yaml,.toml,.ini,.cfg,.conf,.env,.log,.csv,.tsv,.rtf,.docx,.xlsx,.xls,.ods,.odt,.tex,.vue,.svelte,.dart,.lua,.r,.R,.pl,.ex,.exs,.erl,.hs,.scala,.clj,.dockerfile,.makefile,.gradle,.properties,.gitignore,.diff,.patch">
     <button class="round" id="attach" type="button" title="Attach files (PDF, code, documents, data)" aria-label="Attach files" style="background:var(--panel);border:1px solid var(--border);font-size:22px">＋</button>
@@ -1320,7 +1344,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 
   // ---- modes ------------------------------------------------------------------
   // The mode is a setting for the next message; it no longer swaps out your whole history.
-  function markMode() { document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode))); document.body.classList.toggle('cognition-mode', mode === 'cognition'); }
+  function markMode() { document.querySelectorAll('.modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode))); document.body.classList.toggle('cognition-mode', mode === 'cognition'); document.body.classList.toggle('flash-mode', mode === 'flash'); }
   document.querySelectorAll('.modes button').forEach(b => b.addEventListener('click', () => {
     if (busy || b.dataset.mode === mode) return;
     mode = b.dataset.mode;

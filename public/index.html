@@ -130,6 +130,7 @@ body.empty .stage{justify-content:center;padding-bottom:6vh}body.empty #log{disp
 .live-controls[hidden]{display:none}
 .live-end{margin-left:auto;background:var(--error);box-shadow:none}
 .live-footnote{margin-top:12px}
+.voice-language{display:flex;flex-direction:column;gap:4px;padding:4px 10px 9px}.voice-language label{font-size:.7rem;color:var(--muted)}.voice-language select{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);padding:6px 8px;font-size:.76rem}
 .live-nav{position:relative;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent-strong);font-weight:700}
 .live-nav svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .live-nav-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;margin-left:auto;box-shadow:0 0 0 3px color-mix(in srgb,#16a34a 15%,transparent)}
@@ -407,6 +408,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
   <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
   <button class="nav" id="speakToggle" type="button" aria-pressed="false" title="Read Glitch's replies out loud"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/></svg><span id="speakLabel">Spoken replies: off</span></button>
+  <div class="voice-language"><label for="speechLanguage">Speech recognition language</label><select id="speechLanguage"><option value="auto">Device default</option><option value="en-IN">English (India)</option><option value="hi-IN">Hindi (India)</option><option value="en-US">English (US)</option><option value="en-GB">English (UK)</option></select></div>
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
@@ -913,7 +915,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     function stopListening(){if(rec&&listening){try{rec.stop();}catch{}}else{listening=false;paint();}}
     function startListening(){
       if(!canListen||listening||busy||!user)return;
-      stopSpeaking();rec=new SR();rec.lang=navigator.language||'en-IN';rec.interimResults=true;rec.continuous=true;rec.maxAlternatives=3;
+      stopSpeaking();rec=new SR();let selectedLang='auto';try{selectedLang=localStorage.getItem('glitch_speech_language')||'auto';}catch{}rec.lang=selectedLang==='auto'?(navigator.language||'en-IN'):selectedLang;rec.interimResults=true;rec.continuous=true;rec.maxAlternatives=3;
       transcript='';baseText=input.value?input.value.trim()+' ':'';let finalText='',interimText='',failed=false;
       rec.onresult=e=>{
         interimText='';
@@ -927,6 +929,8 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     mic.hidden=!canListen;if(!canSpeak)$('speakToggle').hidden=true;
     mic.addEventListener('click',()=>{if(listening)stopListening();else startListening();});
     $('speakToggle').addEventListener('click',()=>{speakOn=!speakOn;put(KEY_SPEAK,speakOn);if(!speakOn)stopSpeaking();paint();});
+    const speechLanguage=$('speechLanguage');try{speechLanguage.value=localStorage.getItem('glitch_speech_language')||'auto';}catch{}
+    speechLanguage.addEventListener('change',()=>{try{localStorage.setItem('glitch_speech_language',speechLanguage.value);}catch{}});
     if(synth)synth.getVoices();
     window.addEventListener('pagehide',()=>{stopSpeaking();stopListening();});
     paint();
@@ -1539,7 +1543,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
       if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
       if(audioCtx){const old=audioCtx;audioCtx=null;old.close().catch(()=>{});}
       if(ws){const old=ws;ws=null;try{old.close(1000,'Session ended');}catch{}}
-      controls.hidden=true;startBtn.disabled=!consent.checked;$('liveMute').textContent='Mute mic';box.dataset.state='idle';
+      controls.hidden=true;$('liveConsent').hidden=false;startBtn.disabled=!consent.checked;$('liveMute').textContent='Mute mic';box.dataset.state='idle';
     }
     function handleMessage(event){
       let message;try{message=JSON.parse(event.data);}catch{return;}

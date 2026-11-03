@@ -19,6 +19,12 @@ html[data-scheme=dark]{--bg:#0f0f14;--panel:#17171f;--panel-alt:#1e1e28;--border
 [data-theme=matrix]{--accent:#10b981;--accent-2:#06b6d4;--accent-soft:#e3fbf3;--accent-strong:#0a9468}
 [data-theme=sunset]{--accent:#f97316;--accent-2:#ef4444;--accent-soft:#fff0e6;--accent-strong:#d95c0d}
 [data-theme=ice]{--accent:#3b82f6;--accent-2:#06b6d4;--accent-soft:#e8f2ff;--accent-strong:#2266d6}
+[data-theme=crimson]{--accent:#e11d48;--accent-2:#e11d48;--accent-soft:#ffe4e9;--accent-strong:#be123c}
+[data-theme=gold]{--accent:#d97706;--accent-2:#d97706;--accent-soft:#fff3d6;--accent-strong:#a85505}
+[data-theme=aurora]{--accent:#06b6d4;--accent-2:#8b5cf6;--accent-soft:#e4f7ff;--accent-strong:#087eaa}
+[data-theme=rose]{--accent:#ec4899;--accent-2:#f43f5e;--accent-soft:#ffe8f1;--accent-strong:#be185d}
+[data-theme=midnight]{--accent:#4f46e5;--accent-2:#4f46e5;--accent-soft:#e9eaff;--accent-strong:#3730a3}
+[data-theme=lime]{--accent:#84cc16;--accent-2:#10b981;--accent-soft:#effbdc;--accent-strong:#4d7c0f}
 *{box-sizing:border-box;--grad:linear-gradient(135deg,var(--accent),var(--accent-2))}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit}button{white-space:nowrap}
@@ -47,14 +53,21 @@ button,input,textarea{font:inherit;color:inherit}button{white-space:nowrap}
 html[data-scheme=dark] .nav[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--text)}
 .nav.off{opacity:.5}
 .side h4{margin:18px 10px 6px;font-size:.74rem;font-weight:600;color:var(--muted)}
-.history-head{display:flex;align-items:center;justify-content:space-between;margin:16px 8px 5px}.history-head h4{margin:0}.history-list{display:flex;flex-direction:column;gap:3px;overflow:auto;flex:1 1 120px;min-height:90px;max-height:46vh;padding:0 2px}.history-item{display:flex;align-items:center;gap:4px;border-radius:9px;min-width:0}.history-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:9px;padding:8px;color:var(--text-dim);cursor:pointer;font-size:.84rem}.history-open:hover,.history-item.active .history-open{background:var(--accent-soft);color:var(--text)}.history-actions{display:flex;gap:2px}.history-action{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 6px}.history-action:hover{background:var(--panel);color:var(--text)}.history-empty{padding:8px 10px;color:var(--muted);font-size:.78rem}.swatches{display:flex;gap:.6rem;padding:2px 10px}
-.swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer;position:relative;animation:bob 3.6s ease-in-out infinite;transition:transform .2s var(--ease)}
-.swatch:nth-child(2){animation-delay:.15s}.swatch:nth-child(3){animation-delay:.3s}.swatch:nth-child(4){animation-delay:.45s}
-.swatch[data-theme=default]{background:linear-gradient(135deg,#7c3aed,#ec4899)}.swatch[data-theme=matrix]{background:linear-gradient(135deg,#10b981,#06b6d4)}
-.swatch[data-theme=sunset]{background:linear-gradient(135deg,#f97316,#ef4444)}.swatch[data-theme=ice]{background:linear-gradient(135deg,#3b82f6,#06b6d4)}
-.swatch:hover{transform:scale(1.15) rotate(-6deg)!important;animation-play-state:paused}
-.swatch.active{border-color:var(--text);animation-play-state:paused}
-.swatch.active::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--border-strong)}
+.history-head{display:flex;align-items:center;justify-content:space-between;margin:16px 8px 5px}.history-head h4{margin:0}.history-list{display:flex;flex-direction:column;gap:3px;overflow:auto;flex:1 1 120px;min-height:90px;max-height:46vh;padding:0 2px}.history-item{display:flex;align-items:center;gap:4px;border-radius:9px;min-width:0}.history-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:9px;padding:8px;color:var(--text-dim);cursor:pointer;font-size:.84rem}.history-open:hover,.history-item.active .history-open{background:var(--accent-soft);color:var(--text)}.history-actions{display:flex;gap:2px}.history-action{border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 6px}.history-action:hover{background:var(--panel);color:var(--text)}.history-empty{padding:8px 10px;color:var(--muted);font-size:.78rem}.swatches{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 8px;padding:5px 10px 8px}
+.swatch{width:30px;height:30px;justify-self:center;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer;position:relative;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s}
+.swatch[data-theme=default]{background:linear-gradient(135deg,#7c3aed,#ec4899)}
+.swatch[data-theme=matrix]{background:linear-gradient(135deg,#10b981,#06b6d4)}
+.swatch[data-theme=sunset]{background:linear-gradient(135deg,#f97316,#ef4444)}
+.swatch[data-theme=ice]{background:linear-gradient(135deg,#3b82f6,#06b6d4)}
+.swatch[data-theme=crimson]{background:#e11d48}
+.swatch[data-theme=gold]{background:#d97706}
+.swatch[data-theme=aurora]{background:linear-gradient(135deg,#06b6d4,#8b5cf6)}
+.swatch[data-theme=rose]{background:linear-gradient(135deg,#ec4899,#f43f5e)}
+.swatch[data-theme=midnight]{background:#4f46e5}
+.swatch[data-theme=lime]{background:linear-gradient(135deg,#84cc16,#10b981)}
+.swatch:hover{transform:scale(1.16)}
+.swatch.active{border-color:var(--text);box-shadow:0 0 0 3px var(--panel),0 0 0 5px var(--accent)}
+.swatch:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
 .spacer{flex:1}
 .me{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--border);margin:6px -10px -12px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 .avatar{width:32px;height:32px;border-radius:50%;background:var(--grad);background-size:200% 200%;color:var(--on-accent);display:grid;place-items:center;font-weight:700;font-size:.8rem;flex:none;animation:shift 6s ease infinite}
@@ -205,7 +218,7 @@ html[data-scheme=dark] .tabs button[aria-pressed=true]{color:var(--text)}
 #mic{background:none;color:var(--text-dim);border:0;transition:background .15s,color .15s,transform .2s var(--ease)}#mic:hover{background:var(--border);color:var(--text)}#mic[hidden]{display:none}
 #mic.live{background:var(--accent);color:var(--on-accent);animation:micpulse 1.2s ease-in-out infinite}
 @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}50%{box-shadow:0 0 0 9px transparent}}
-#speakToggle[aria-pressed=false],#handsFree[aria-pressed=false]{opacity:.65}#speakToggle[aria-pressed=true] svg,#handsFree[aria-pressed=true] svg{color:var(--accent)}
+#speakToggle[aria-pressed=false]{opacity:.65}#speakToggle[aria-pressed=true] svg{color:var(--accent)}
 .msg-listen{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;cursor:pointer;padding:3px 8px;border-radius:6px}.msg-listen:hover{background:var(--accent-soft);color:var(--text)}
 @media(prefers-reduced-motion:reduce){#mic.live{animation:none}}
 #soundToggle[aria-pressed=false]{opacity:.65}
@@ -249,6 +262,22 @@ body.away #toBottom{opacity:1;pointer-events:auto;transform:none}body.empty #toB
 @media(max-width:760px){body.empty .suggest{grid-template-columns:1fr}.hero{font-size:2rem}#toBottom{right:16px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
+
+.memory-box{width:min(560px,100%);max-height:min(82vh,760px);overflow:auto;display:flex;flex-direction:column}
+.memory-box .top{align-items:flex-start;gap:12px}.memory-box h3{margin:0;font-size:1.15rem}.memory-box .top p{margin:4px 0 0;color:var(--text-dim);font-size:.82rem}
+#memoryForm{padding:16px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--border)}
+#memoryForm label{font-size:.82rem;font-weight:650}
+#memoryInput{width:100%;resize:vertical;min-height:76px;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel-alt);outline:0}
+#memoryInput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.memory-form-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:.75rem}
+.memory-form-foot .cta{padding:8px 14px}
+#memoryStatus{padding:0 16px;color:var(--text-dim);font-size:.8rem}
+.memory-list{padding:8px 16px 16px;display:flex;flex-direction:column;gap:8px}
+.memory-row{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border:1px solid var(--border);border-radius:11px;background:var(--panel-alt)}
+.memory-content{flex:1;min-width:0;font-size:.86rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.memory-delete{border:0;background:transparent;color:var(--muted);font-size:1.1rem;cursor:pointer;border-radius:7px;padding:2px 7px}
+.memory-delete:hover{background:var(--error-soft);color:var(--error)}
+
 .quota-box{width:min(400px,100%);padding:1.8rem;display:flex;flex-direction:column;gap:10px;text-align:center;align-items:stretch}
 .quota-box h3{margin:0;font-size:1.2rem;letter-spacing:-.02em}.quota-box p{margin:0 0 6px;color:var(--text-dim);font-size:.92rem}
 .quota-ico{font-size:2rem;margin:0 auto 2px}.quota-box .mini{padding:10px}.quota-later{border-color:transparent!important;background:none!important}
@@ -274,6 +303,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   <button class="nav primary" id="newChat" type="button" title="Start a new conversation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New chat</button>
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
+  <button class="nav" id="memoryOpen" type="button" title="Manage memories saved to your account"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v1a4 4 0 00-2 7 4 4 0 006 5 4 4 0 006-5 4 4 0 00-2-7V7a4 4 0 00-4-4zM9 11h.01M15 11h.01M9 16c1.5 1 4.5 1 6 0"/></svg>Memory</button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
   <div id="historyList" class="history-list" aria-label="Recent chats"></div>
@@ -283,16 +313,21 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     <button class="nav" type="button" data-mode="cognition" aria-pressed="false" title="Deeper reasoning, code generation, and downloadable files"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 8h4M12 16H8"/></svg>Cognition</button>
   </div>
   <h4>Accent</h4>
-  <div class="swatches" id="swatches">
-    <button type="button" class="swatch" data-theme="default" title="Violet" aria-label="Violet"></button>
-    <button type="button" class="swatch" data-theme="matrix" title="Teal" aria-label="Teal"></button>
-    <button type="button" class="swatch" data-theme="sunset" title="Coral" aria-label="Coral"></button>
-    <button type="button" class="swatch" data-theme="ice" title="Blue" aria-label="Blue"></button>
+  <div class="swatches" id="swatches" role="group" aria-label="Choose an accent colour">
+    <button type="button" class="swatch" data-theme="default" title="Violet · gradient" aria-label="Violet gradient"></button>
+    <button type="button" class="swatch" data-theme="matrix" title="Matrix · gradient" aria-label="Matrix gradient"></button>
+    <button type="button" class="swatch" data-theme="sunset" title="Sunset · gradient" aria-label="Sunset gradient"></button>
+    <button type="button" class="swatch" data-theme="ice" title="Ice · gradient" aria-label="Ice gradient"></button>
+    <button type="button" class="swatch" data-theme="crimson" title="Crimson · solid" aria-label="Crimson solid"></button>
+    <button type="button" class="swatch" data-theme="gold" title="Gold · solid" aria-label="Gold solid"></button>
+    <button type="button" class="swatch" data-theme="aurora" title="Aurora · gradient" aria-label="Aurora gradient"></button>
+    <button type="button" class="swatch" data-theme="rose" title="Rose · gradient" aria-label="Rose gradient"></button>
+    <button type="button" class="swatch" data-theme="midnight" title="Midnight · solid" aria-label="Midnight solid"></button>
+    <button type="button" class="swatch" data-theme="lime" title="Lime · gradient" aria-label="Lime gradient"></button>
   </div>
   <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
   <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
   <button class="nav" id="speakToggle" type="button" aria-pressed="false" title="Read Glitch's replies out loud"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/></svg><span id="speakLabel">Spoken replies: off</span></button>
-  <button class="nav" id="handsFree" type="button" aria-pressed="false" title="Talk back and forth: Glitch listens, answers out loud, then listens again"><svg viewBox="0 0 24 24"><path d="M4 12v-1a8 8 0 0116 0v1M4 12v4a2 2 0 002 2h1v-6H6a2 2 0 00-2 2zM20 12v4a2 2 0 01-2 2h-1v-6h1a2 2 0 012 2z"/></svg><span id="handsLabel">Hands-free: off</span></button>
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
@@ -326,6 +361,14 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 
 <button id="toBottom" type="button" aria-label="Scroll to latest">↓</button>
 <button id="stopBtn" type="button">■ Stop</button>
+<div id="memoryModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="memoryTitle">
+  <section class="box memory-box">
+    <div class="top"><div><h3 id="memoryTitle">Your memory</h3><p>Private to your signed-in account. Glitch can use these details in future chats.</p></div><button class="mini" id="memoryClose" type="button" aria-label="Close memory">✕</button></div>
+    <form id="memoryForm"><label for="memoryInput">Add something for Glitch to remember</label><textarea id="memoryInput" maxlength="500" rows="3" placeholder="e.g. I prefer concise answers and use Windows."></textarea><div class="memory-form-foot"><span id="memoryCount">0 / 500</span><button class="cta" id="memorySave" type="submit">Save memory</button></div></form>
+    <div id="memoryStatus" role="status" aria-live="polite"></div>
+    <div id="memoryList" class="memory-list"></div>
+  </section>
+</div>
 <div id="quotaModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="quotaTitle">
   <div class="box quota-box">
     <div class="quota-ico" aria-hidden="true">🔒</div>
@@ -716,135 +759,94 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     }
   }
   // ---- voice: speech-to-text (mic) and text-to-speech (spoken replies), all in the browser ----------
+  // ---- voice: explicit push-to-talk and optional spoken replies; no continuous listening ----
   const Voice = (() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const synth = window.speechSynthesis || null;
     const canListen = Boolean(SR), canSpeak = Boolean(synth && window.SpeechSynthesisUtterance);
-    const KEY_SPEAK = 'glitch_voice_speak', KEY_HANDS = 'glitch_voice_hands';
+    const KEY_SPEAK = 'glitch_voice_speak';
     const get = (k) => { try { return localStorage.getItem(k) === '1'; } catch { return false; } };
     const put = (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch {} };
-    let speakOn = canSpeak && get(KEY_SPEAK), handsOn = canListen && canSpeak && get(KEY_HANDS);
-    let rec = null, listening = false, wantSend = false, transcript = '', baseText = '', silentRounds = 0, speakingBtn = null, token = 0;
+    let speakOn = canSpeak && get(KEY_SPEAK), rec = null, listening = false, transcript = '', baseText = '', speakingBtn = null, token = 0;
     const mic = $('mic');
-
     function paint() {
-      $('speakToggle').setAttribute('aria-pressed', String(speakOn || handsOn));
-      $('speakLabel').textContent = 'Spoken replies: ' + (speakOn || handsOn ? 'on' : 'off');
-      $('handsFree').setAttribute('aria-pressed', String(handsOn));
-      $('handsLabel').textContent = 'Hands-free: ' + (handsOn ? 'on' : 'off');
+      $('speakToggle').setAttribute('aria-pressed', String(speakOn));
+      $('speakLabel').textContent = 'Spoken replies: ' + (speakOn ? 'on' : 'off');
       mic.classList.toggle('live', listening); mic.setAttribute('aria-pressed', String(listening));
       mic.title = listening ? 'Listening… click to stop' : 'Speak (click to start)';
     }
-
-    // What gets read out: no code, links, markdown symbols or source lists.
     function speakable(text) {
-      return String(text || '')
-        .replace(/```[\s\S]*?```/g, ' (code is on screen) ')
-        .replace(/\n+\s*(sources?|references?)\s*:?[\s\S]*$/i, '')
-        .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-        .replace(/https?:\/\/\S+/g, '')
-        .replace(/`([^`]*)`/g, '$1')
-        .replace(/^\s{0,3}#{1,6}\s*/gm, '').replace(/^\s*[-*+]\s+/gm, '').replace(/^\s*\d+[.)]\s+/gm, '')
-        .replace(/[*_~>|]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 1800);
+      return String(text || '').replace(/```[\s\S]*?```/g,' (code is on screen) ')
+        .replace(/\n+\s*(sources?|references?)\s*:?[\s\S]*$/i,'')
+        .replace(/!?\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/https?:\/\/\S+/g,'')
+        .replace(/`([^`]*)`/g,'$1').replace(/^\s{0,3}#{1,6}\s*/gm,'')
+        .replace(/^\s*[-*+]\s+/gm,'').replace(/^\s*\d+[.)]\s+/gm,'')
+        .replace(/[*_~>|]+/g,'').replace(/\s+/g,' ').trim().slice(0,1800);
     }
     function pickVoice() {
-      const vs = synth.getVoices(), lang = (navigator.language || 'en-US').toLowerCase();
-      const same = vs.filter(v => v.lang && v.lang.toLowerCase().startsWith(lang.slice(0, 2)));
-      // Prefer a male voice (young, a bit impatient). Browsers don't label gender, so match known male voice names.
-      const MALE = /\b(guy|christopher|eric|ryan|roger|steffan|brian|andrew|davis|jason|tony|david|mark|james|daniel|alex|fred|aaron|arthur|oliver|thomas|google uk english male|male)\b/i;
-      const FEMALE = /\b(zira|hazel|susan|samantha|victoria|karen|moira|tessa|fiona|aria|jenny|michelle|emma|libby|sonia|female)\b/i;
-      const males = same.filter(v => MALE.test(v.name) && !FEMALE.test(v.name));
-      return males.find(v => /natural|neural|online/i.test(v.name)) || males[0]
-        || same.find(v => /natural|neural|google|online/i.test(v.name) && !FEMALE.test(v.name)) || same.find(v => v.default) || same[0] || null;
+      const vs=synth.getVoices(), lang=(navigator.language||'en-US').toLowerCase();
+      const same=vs.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lang.slice(0,2)));
+      const MALE=/\b(guy|christopher|eric|ryan|roger|steffan|brian|andrew|davis|jason|tony|david|mark|james|daniel|alex|fred|aaron|arthur|oliver|thomas|google uk english male|male)\b/i;
+      const FEMALE=/\b(zira|hazel|susan|samantha|victoria|karen|moira|tessa|fiona|aria|jenny|michelle|emma|libby|sonia|female)\b/i;
+      const males=same.filter(v=>MALE.test(v.name)&&!FEMALE.test(v.name));
+      return males.find(v=>/natural|neural|online/i.test(v.name))||males[0]||same.find(v=>/natural|neural|google|online/i.test(v.name)&&!FEMALE.test(v.name))||same.find(v=>v.default)||same[0]||null;
     }
-    function chunks(text) {   // Chrome silently cuts off long utterances, so speak one sentence group at a time
-      const parts = text.match(/[^.!?\n]+[.!?]*\s*/g) || [text], out = []; let cur = '';
-      for (const p of parts) { if ((cur + p).length > 220 && cur) { out.push(cur); cur = p; } else cur += p; }
-      if (cur.trim()) out.push(cur); return out;
-    }
-    function stopSpeaking() {
-      token++; if (synth) synth.cancel();
-      if (speakingBtn) { speakingBtn.textContent = 'Listen'; speakingBtn = null; }
-    }
-    function speak(text, btn, onDone) {
-      if (!canSpeak) return onDone && onDone();
-      stopSpeaking();
-      const t = speakable(text); if (!t) return onDone && onDone();
-      const mine = token; const parts = chunks(t), voice = pickVoice();
-      if (btn) { btn.textContent = 'Stop'; speakingBtn = btn; }
-      let i = 0;
-      const next = () => {
-        if (mine !== token) return;                         // cancelled or replaced by something newer
-        if (i >= parts.length) { if (speakingBtn === btn && btn) { btn.textContent = 'Listen'; speakingBtn = null; } return onDone && onDone(); }
-        const u = new SpeechSynthesisUtterance(parts[i++]);
-        if (voice) { u.voice = voice; u.lang = voice.lang; }
-        // Young + irritated: higher pitch, quick clipped pace, sharper on questions and exclamations.
-        const sharp = /[?!]\s*$/.test(parts[i - 1]);
-        u.pitch = sharp ? 1.28 : 1.15; u.rate = sharp ? 1.22 : 1.14; u.volume = 1;
-        u.onend = next; u.onerror = next;
-        synth.speak(u);
-      };
+    function chunks(text){const parts=text.match(/[^.!?\n]+[.!?]*\s*/g)||[text],out=[];let cur='';for(const p of parts){if((cur+p).length>220&&cur){out.push(cur);cur=p;}else cur+=p;}if(cur.trim())out.push(cur);return out;}
+    function stopSpeaking(){token++;if(synth)synth.cancel();if(speakingBtn){speakingBtn.textContent='Listen';speakingBtn=null;}}
+    function speak(text,btn){
+      if(!canSpeak)return;stopSpeaking();const t=speakable(text);if(!t)return;
+      const mine=token,parts=chunks(t),voice=pickVoice();if(btn){btn.textContent='Stop';speakingBtn=btn;}let i=0;
+      const next=()=>{if(mine!==token)return;if(i>=parts.length){if(speakingBtn===btn&&btn){btn.textContent='Listen';speakingBtn=null;}return;}
+        const part=parts[i++],u=new SpeechSynthesisUtterance(part);if(voice){u.voice=voice;u.lang=voice.lang;}
+        const sharp=/[?!]\s*$/.test(part);u.pitch=sharp?1.28:1.15;u.rate=sharp?1.22:1.14;u.volume=1;u.onend=next;u.onerror=next;synth.speak(u);};
       next();
     }
-    function toggleSpeak(text, btn) { if (speakingBtn === btn) stopSpeaking(); else speak(text, btn); }
-
-    function stopListening(send) {
-      wantSend = Boolean(send);
-      if (rec && listening) { try { rec.stop(); } catch {} } else { listening = false; paint(); }
+    function toggleSpeak(text,btn){if(speakingBtn===btn)stopSpeaking();else speak(text,btn);}
+    function stopListening(){if(rec&&listening){try{rec.stop();}catch{}}else{listening=false;paint();}}
+    function startListening(){
+      if(!canListen||listening||busy||!user)return;
+      stopSpeaking();rec=new SR();rec.lang=navigator.language||'en-US';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
+      transcript='';baseText=input.value?input.value.trim()+' ':'';let failed=false;
+      rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;transcript=t.trim();input.value=baseText+transcript;input.dispatchEvent(new Event('input'));};
+      rec.onerror=e=>{if(e.error==='no-speech'||e.error==='aborted')return;failed=true;showToast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Microphone blocked. Allow it in your browser site settings.':e.error==='audio-capture'?'I can’t find a microphone.':'Voice input failed ('+e.error+').');};
+      rec.onend=()=>{listening=false;paint();if(!failed&&transcript.trim())$('chat').requestSubmit();};
+      try{rec.start();listening=true;paint();}catch{listening=false;paint();}
     }
-    function startListening() {
-      if (!canListen || listening || busy || !user) return;
-      stopSpeaking();
-      rec = new SR(); rec.lang = navigator.language || 'en-US'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
-      transcript = ''; baseText = input.value ? input.value.trim() + ' ' : ''; wantSend = handsOn; let failed = false;
-      rec.onresult = (e) => {
-        let t = ''; for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
-        transcript = t.trim(); input.value = baseText + transcript; input.dispatchEvent(new Event('input'));
-      };
-      rec.onerror = (e) => {
-        if (e.error === 'no-speech' || e.error === 'aborted') return;
-        failed = true; wantSend = false; handsOn = false; put(KEY_HANDS, false);
-        showToast(e.error === 'not-allowed' || e.error === 'service-not-allowed'
-          ? 'Microphone blocked. Allow it in your browser’s site settings, then try again.'
-          : e.error === 'audio-capture' ? 'I can’t find a microphone.' : 'Voice input failed (' + e.error + ').');
-      };
-      rec.onend = () => {
-        listening = false; paint();
-        if (failed) return;
-        if (transcript && wantSend) { silentRounds = 0; $('chat').requestSubmit(); }
-        else if (handsOn && !transcript) { if (++silentRounds < 3) setTimeout(startListening, 300); else { handsOn = false; put(KEY_HANDS, false); paint(); showToast('Hands-free paused: I didn’t hear anything.'); } }
-      };
-      try { rec.start(); listening = true; paint(); } catch { listening = false; paint(); }
-    }
-
-    mic.hidden = !canListen;
-    if (!canListen) { $('handsFree').hidden = true; }
-    if (!canSpeak) { $('speakToggle').hidden = true; $('handsFree').hidden = true; }
-    mic.addEventListener('click', () => { if (listening) stopListening(false); else { handsOn = false; startListening(); } });
-    $('speakToggle').addEventListener('click', () => {
-      if (handsOn) { handsOn = false; put(KEY_HANDS, false); } else { speakOn = !speakOn; put(KEY_SPEAK, speakOn); if (!speakOn) stopSpeaking(); }
-      paint();
-    });
-    $('handsFree').addEventListener('click', () => {
-      handsOn = !handsOn; put(KEY_HANDS, handsOn); silentRounds = 0;
-      if (handsOn) { speakOn = true; put(KEY_SPEAK, true); startListening(); } else { stopListening(false); stopSpeaking(); }
-      paint();
-    });
-    if (synth) synth.getVoices();   // some browsers load the voice list lazily
-    window.addEventListener('pagehide', () => { stopSpeaking(); stopListening(false); });
+    mic.hidden=!canListen;if(!canSpeak)$('speakToggle').hidden=true;
+    mic.addEventListener('click',()=>{if(listening)stopListening();else startListening();});
+    $('speakToggle').addEventListener('click',()=>{speakOn=!speakOn;put(KEY_SPEAK,speakOn);if(!speakOn)stopSpeaking();paint();});
+    if(synth)synth.getVoices();
+    window.addEventListener('pagehide',()=>{stopSpeaking();stopListening();});
     paint();
-
-    return {
-      canSpeak, toggleSpeak, stop: stopSpeaking,
-      // Called after every successful reply in the open chat.
-      onReply(text) {
-        if (!(speakOn || handsOn)) return;
-        speak(text, null, () => { if (handsOn) setTimeout(startListening, 350); });
-      },
-      onSend() { stopSpeaking(); if (listening) stopListening(false); },
-      onFailed() { if (handsOn) setTimeout(startListening, 800); },
-    };
+    return {canSpeak,toggleSpeak,stop:stopSpeaking,onReply(text){if(speakOn)speak(text,null);},onSend(){stopSpeaking();if(listening)stopListening();},onFailed(){}};
   })();
+
+  // ---- account memory: private Supabase-backed facts used as context in every chat ----
+  let memoryItems = [];
+  function renderMemoryList() {
+    const list=$('memoryList');if(!list)return;list.textContent='';
+    if(!memoryItems.length){const p=document.createElement('p');p.className='history-empty';p.textContent='No saved memories yet. Add one here, or tell Glitch “remember that …” in chat.';list.appendChild(p);return;}
+    memoryItems.forEach(item=>{const row=document.createElement('div');row.className='memory-row';const content=document.createElement('div');content.className='memory-content';content.textContent=item.content;
+      const del=document.createElement('button');del.type='button';del.className='memory-delete';del.textContent='×';del.title='Delete memory';del.setAttribute('aria-label','Delete memory');
+      del.addEventListener('click',async()=>{del.disabled=true;try{const r=await api('/api/memory',{method:'DELETE',body:JSON.stringify({id:item.id})});if(!r.ok)throw new Error(r.data.error||'Could not delete memory.');memoryItems=memoryItems.filter(x=>x.id!==item.id);renderMemoryList();}catch(e){showToast(e.message);del.disabled=false;}});
+      row.append(content,del);list.appendChild(row);});
+  }
+  async function loadMemories() {
+    if(!user){memoryItems=[];renderMemoryList();return;}
+    const r=await api('/api/memory');if(!r.ok)throw new Error(r.data.error||'Could not load account memory.');
+    memoryItems=Array.isArray(r.data.memories)?r.data.memories:[];renderMemoryList();
+  }
+  async function saveMemory(content,quiet=false) {
+    const value=String(content||'').trim().slice(0,500);if(!value)throw new Error('Write something to remember first.');
+    const r=await api('/api/memory',{method:'POST',body:JSON.stringify({content:value})});
+    if(!r.ok)throw new Error(r.data.error||'Could not save memory.');
+    await loadMemories();if(!quiet)showToast('Saved to your account memory.');
+  }
+  $('memoryOpen').addEventListener('click',async()=>{if(!user){showToast('Sign in or continue as guest to use account memory.');return;}$('memoryModal').classList.add('open');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
+  $('memoryClose').addEventListener('click',()=>$('memoryModal').classList.remove('open'));
+  $('memoryModal').addEventListener('click',e=>{if(e.target===$('memoryModal'))$('memoryModal').classList.remove('open');});
+  $('memoryInput').addEventListener('input',()=>{$('memoryCount').textContent=$('memoryInput').value.length+' / 500';});
+  $('memoryForm').addEventListener('submit',async e=>{e.preventDefault();const b=$('memorySave');b.disabled=true;$('memoryStatus').textContent='Saving…';try{await saveMemory($('memoryInput').value);$('memoryInput').value='';$('memoryCount').textContent='0 / 500';$('memoryStatus').textContent='Saved. Glitch can use this in future chats.';}catch(err){$('memoryStatus').textContent=err.message;}finally{b.disabled=false;}});
 
   function add(role, text, tag) {
     const el = document.createElement('div');
@@ -951,11 +953,11 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     $('gate').classList.remove('open');
     markMode();
     // Token refreshes call this again; only (re)load chats when the account really changed.
-    if (changedUser) { quotaDone = false; pending = null; loadHistory(); render(); }
+    if (changedUser) { quotaDone = false; pending = null; loadHistory(); render(); loadMemories().catch(e => showToast('Memory could not load: ' + e.message)); }
     refreshUsage();
   }
   function onSignedOut() {
-    user = null; pending = null; undo = null; history = []; conversations = []; activeChatId = null;
+    user = null; memoryItems = []; renderMemoryList(); pending = null; undo = null; history = []; conversations = []; activeChatId = null;
     $('who').textContent = 'Signed out'; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
     render(); renderHistoryList(); openGate();
   }
@@ -1081,6 +1083,8 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     const chatId = chat.id, sentMode = mode;
     if (!retry) playSfx('send');
     Voice.onSend();
+    const rememberMatch = String(text || '').trim().match(/^(?:please\\s+)?remember(?:\\s+that)?\\s*[:,-]?\\s*(.{3,500})$/i);
+    if (rememberMatch && user) { try { await saveMemory(rememberMatch[1], true); } catch (e) { showToast('Could not save that memory: ' + e.message); } }
     busy = true; sendBtn.disabled = true; document.body.classList.add('busy'); abortCtl = new AbortController();
     if (!retry) history.push({ role: 'user', content: text });
     chat.mode = sentMode; saveHistory(); render();

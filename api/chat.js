@@ -1,5 +1,5 @@
 // POST /api/chat { mode: 'flash'|'cognition', messages: [{role, content}] }
-const { requireUser, consumeGuestMessage } = require('./_lib');
+const { requireUser, consumeGuestMessage, getUserMemories } = require('./_lib');
 const { systemPrompt, runGemini, runOpenRouter, runTool } = require('./_llm');
 
 const MAX_MESSAGES = 20;
@@ -98,6 +98,15 @@ module.exports = async (req, res) => {
 
     const ctx = { userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
     let system = systemPrompt(mode);
+    // Account memories are private to this authenticated user and are supplied as trusted context data.
+    try {
+      const memories = await getUserMemories(user);
+      if (memories.length) {
+        system += `\\n\\nUSER-SAVED MEMORY (private profile facts supplied by the user; use only when relevant, never assume they are always current):\\n${memories.map((m, i) => `${i + 1}. ${String(m.content).slice(0, 500)}`).join('\\n')}\\nRespect these preferences and facts. Do not claim to remember anything not listed here.`;
+      }
+    } catch (memoryError) {
+      // Memory lookup is best-effort; chat remains available if the memory table has not been migrated yet.
+    }
     // Run search server-side whenever the request may benefit from outside facts, so both models
     // receive grounded context even if they do not call the tool themselves. Search failure does not block chat.
     if (needsLiveSearch(lastUserText)) {

@@ -101,6 +101,32 @@ revoke all on function public.get_guest_message_usage() from public, anon;
 grant execute on function public.consume_guest_message() to authenticated;
 grant execute on function public.get_guest_message_usage() to authenticated;
 
+
+-- Private, account-scoped memory. Anonymous guest sessions can use it too;
+-- each row is only visible to the authenticated owner through the caller's JWT.
+create table if not exists public.glitch_memories (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  content text not null check (char_length(content) between 1 and 500),
+  created_at timestamptz not null default now(),
+  unique (user_id, content)
+);
+
+alter table public.glitch_memories enable row level security;
+drop policy if exists "Users can read their own Glitch memories" on public.glitch_memories;
+create policy "Users can read their own Glitch memories"
+  on public.glitch_memories for select to authenticated
+  using (auth.uid() = user_id);
+drop policy if exists "Users can add their own Glitch memories" on public.glitch_memories;
+create policy "Users can add their own Glitch memories"
+  on public.glitch_memories for insert to authenticated
+  with check (auth.uid() = user_id);
+drop policy if exists "Users can delete their own Glitch memories" on public.glitch_memories;
+create policy "Users can delete their own Glitch memories"
+  on public.glitch_memories for delete to authenticated
+  using (auth.uid() = user_id);
+grant select, insert, delete on public.glitch_memories to authenticated;
+
 -- Optional per-user chat table. RLS keeps each account's rows private.
 create table if not exists public.glitch_chats (
   id text primary key,

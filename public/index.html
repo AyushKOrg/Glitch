@@ -1020,6 +1020,7 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
     $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
     $('vipNavBadge').hidden = false;
     $('vipProfileBadge').hidden = !vipActive;
+    $('vipTaglineDisplay').hidden = !vipActive;
     $('vipLock').hidden = vipActive;
     $('vipUnlocked').hidden = !vipActive;
     if(!vipActive){ document.body.classList.remove('vip-stars','vip-neon','vip-orbit'); vipPersonality='default'; }

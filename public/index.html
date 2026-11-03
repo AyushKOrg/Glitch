@@ -108,6 +108,34 @@ html[data-scheme=dark] .nav[aria-pressed=true]{background:color-mix(in srgb,var(
 .suggest svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 body.empty .stage{justify-content:center;padding-bottom:6vh}body.empty #log{display:none}body.empty .hero{display:block}body.empty #chat{margin-bottom:0}body.empty .suggest{display:flex}
 .overlay{position:fixed;inset:0;background:rgba(10,10,20,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:16px;z-index:40}.overlay.open{display:flex}
+.live-overlay{z-index:70;background:rgba(5,7,14,.72);backdrop-filter:blur(10px)}
+.live-box{width:min(620px,100%);max-height:min(92dvh,850px);overflow:auto;padding:0 18px 16px}
+.live-head{position:sticky;top:0;z-index:2;background:var(--panel);margin:0 -18px;padding:14px 18px;border-radius:16px 16px 0 0}
+.live-head h3{margin:0;font-size:1rem}.live-status{font-size:.75rem;color:var(--text-dim)}
+.live-visual{height:220px;display:grid;place-items:center;position:relative;overflow:hidden;margin:14px 0;border:1px solid var(--border);border-radius:18px;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 60%),var(--panel-alt)}
+.live-orb{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;position:relative;background:var(--grad);color:white;font-size:2.5rem;font-weight:800;box-shadow:0 0 0 12px color-mix(in srgb,var(--accent) 9%,transparent),0 0 55px color-mix(in srgb,var(--accent) 42%,transparent);animation:orbitGlow 3s ease-in-out infinite}
+.live-orb i{position:absolute;inset:-14px;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:50%;animation:softPing 2s ease-out infinite}
+.live-box[data-state="speaking"] .live-orb{animation:orbitGlow .8s ease-in-out infinite,bob 1.2s ease-in-out infinite}
+.live-box[data-state="listening"] .live-orb{box-shadow:0 0 0 14px color-mix(in srgb,var(--accent) 12%,transparent),0 0 65px color-mix(in srgb,var(--accent) 55%,transparent)}
+.live-visual video{width:100%;height:100%;object-fit:contain;background:#09090d}
+.live-captions{min-height:70px;max-height:145px;overflow:auto;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-alt);font-size:.84rem}
+.live-captions p{margin:0;color:var(--text-dim)}
+.live-caption-line{margin:0 0 7px!important;color:var(--text)!important}.live-caption-line:last-child{margin-bottom:0!important}
+.live-caption-line strong{color:var(--accent-strong);margin-right:5px}
+.live-consent{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.live-consent p,.live-footnote{margin:0;color:var(--text-dim);font-size:.75rem;line-height:1.55}
+.live-consent-check{display:flex;align-items:flex-start;gap:8px;font-size:.78rem;color:var(--text)}
+.live-consent-check input{margin-top:3px;accent-color:var(--accent)}
+.live-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.live-controls[hidden]{display:none}
+.live-end{margin-left:auto;background:var(--error);box-shadow:none}
+.live-footnote{margin-top:12px}
+.voice-language{display:flex;flex-direction:column;gap:4px;padding:4px 10px 9px}.voice-language label{font-size:.7rem;color:var(--muted)}.voice-language select{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);padding:6px 8px;font-size:.76rem}
+.live-nav{position:relative;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent-strong);font-weight:700}
+.live-nav svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.live-nav-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;margin-left:auto;box-shadow:0 0 0 3px color-mix(in srgb,#16a34a 15%,transparent)}
+.live-top-button{margin-left:auto;border-color:color-mix(in srgb,var(--accent) 45%,var(--border));color:var(--accent-strong);font-weight:700}
+@media(max-width:520px){.live-overlay{padding:8px}.live-box{padding:0 12px 12px}.live-head{margin:0 -12px;padding:12px}.live-visual{height:190px}.live-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.live-end{margin:0}.live-controls .mini,.live-controls .cta{width:100%}}
 .box,#gate form{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 50px -20px rgba(20,20,30,.3);animation:msgin .4s var(--ease)}
 .box .top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
 #gate{background:var(--bg);backdrop-filter:none;overflow:hidden;z-index:50}
@@ -344,6 +372,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     <button class="nav" type="button" data-mode="flash" aria-pressed="true" title="Fast and light; can also look at images and PDFs"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Flash</button>
     <button class="nav" type="button" data-mode="cognition" aria-pressed="false" title="Deeper reasoning, code generation, and downloadable files"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 8h4M12 16H8"/></svg>Cognition</button>
   </div>
+  <button class="nav live-nav" id="liveOpen" type="button" title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="live-nav-dot"></span></button>
   <h4>Accent</h4>
   <div class="accent-picker-wrap">
     <button class="color-wheel-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">
@@ -379,6 +408,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
   <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
   <button class="nav" id="speakToggle" type="button" aria-pressed="false" title="Read Glitch's replies out loud"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/></svg><span id="speakLabel">Spoken replies: off</span></button>
+  <div class="voice-language"><label for="speechLanguage">Speech recognition language</label><select id="speechLanguage"><option value="auto">Device default</option><option value="en-IN">English (India)</option><option value="hi-IN">Hindi (India)</option><option value="en-US">English (US)</option><option value="en-GB">English (UK)</option></select></div>
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
@@ -389,7 +419,7 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 
 <div class="stage">
   <canvas id="vfxCanvas" aria-hidden="true"></canvas>
-  <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong></div>
+  <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong><button class="mini live-top-button" id="liveOpenTop" type="button">● Live</button></div>
   <main id="log" aria-live="polite"></main>
   <h2 class="hero">Ready when <b>you are.</b></h2>
   <p class="hero-sub">Ask anything, attach a file, or just talk.</p>
@@ -429,6 +459,20 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     <button class="mini" id="quotaLogin" type="button">I already have an account</button>
     <button class="mini quota-later" id="quotaClose" type="button">Not now</button>
   </div>
+</div>
+<div id="liveModal" class="overlay live-overlay" role="dialog" aria-modal="true" aria-labelledby="liveTitle">
+  <section class="box live-box">
+    <div class="top live-head"><div><h3 id="liveTitle">Glitch Live</h3><span id="liveStatus" class="live-status">Ready when you are</span></div><button class="mini" id="liveClose" type="button" aria-label="Close Live">✕</button></div>
+    <div class="live-visual" id="liveVisual"><div class="live-orb" id="liveOrb"><span>G</span><i></i></div><video id="liveVideo" autoplay muted playsinline hidden></video></div>
+    <div class="live-captions" id="liveCaptions" aria-live="polite"><p>Start Live and just talk. You can interrupt Glitch naturally.</p></div>
+    <div class="live-consent" id="liveConsent">
+      <p>Live sends microphone audio to Google Gemini for real-time conversation. Camera or screen content is sent only when you explicitly turn on sharing. On Google's free API tier, submitted content may be used to improve Google products. Avoid sharing passwords, private messages, financial details or other sensitive content.</p>
+      <label class="live-consent-check"><input id="liveConsentCheck" type="checkbox"> I understand and want to start a Live session.</label>
+      <button class="cta" id="liveStart" type="button" disabled>Start Live</button>
+    </div>
+    <div class="live-controls" id="liveControls" hidden><button class="mini" id="liveMute" type="button">Mute mic</button><button class="mini" id="liveCamera" type="button">Camera</button><button class="mini" id="liveScreen" type="button">Share screen</button><button class="cta live-end" id="liveEnd" type="button">End session</button></div>
+    <p class="live-footnote">Camera and screen sharing are optional. Your browser will ask for permission, and you can stop sharing at any time.</p>
+  </section>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="gate" class="overlay">
@@ -871,9 +915,13 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     function stopListening(){if(rec&&listening){try{rec.stop();}catch{}}else{listening=false;paint();}}
     function startListening(){
       if(!canListen||listening||busy||!user)return;
-      stopSpeaking();rec=new SR();rec.lang=navigator.language||'en-US';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
-      transcript='';baseText=input.value?input.value.trim()+' ':'';let failed=false;
-      rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;transcript=t.trim();input.value=baseText+transcript;input.dispatchEvent(new Event('input'));};
+      stopSpeaking();rec=new SR();let selectedLang='auto';try{selectedLang=localStorage.getItem('glitch_speech_language')||'auto';}catch{}rec.lang=selectedLang==='auto'?(navigator.language||'en-IN'):selectedLang;rec.interimResults=true;rec.continuous=true;rec.maxAlternatives=3;
+      transcript='';baseText=input.value?input.value.trim()+' ':'';let finalText='',interimText='',failed=false;
+      rec.onresult=e=>{
+        interimText='';
+        for(let i=e.resultIndex;i<e.results.length;i++){const result=e.results[i],candidate=result[0];if(result.isFinal)finalText+=' '+candidate.transcript;else interimText+=' '+candidate.transcript;}
+        transcript=(finalText+' '+interimText).trim();input.value=baseText+transcript;input.dispatchEvent(new Event('input'));
+      };
       rec.onerror=e=>{if(e.error==='no-speech'||e.error==='aborted')return;failed=true;showToast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Microphone blocked. Allow it in your browser site settings.':e.error==='audio-capture'?'I can’t find a microphone.':'Voice input failed ('+e.error+').');};
       rec.onend=()=>{listening=false;paint();if(!failed&&transcript.trim())$('chat').requestSubmit();};
       try{rec.start();listening=true;paint();}catch{listening=false;paint();}
@@ -881,6 +929,8 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     mic.hidden=!canListen;if(!canSpeak)$('speakToggle').hidden=true;
     mic.addEventListener('click',()=>{if(listening)stopListening();else startListening();});
     $('speakToggle').addEventListener('click',()=>{speakOn=!speakOn;put(KEY_SPEAK,speakOn);if(!speakOn)stopSpeaking();paint();});
+    const speechLanguage=$('speechLanguage');try{speechLanguage.value=localStorage.getItem('glitch_speech_language')||'auto';}catch{}
+    speechLanguage.addEventListener('change',()=>{try{localStorage.setItem('glitch_speech_language',speechLanguage.value);}catch{}});
     if(synth)synth.getVoices();
     window.addEventListener('pagehide',()=>{stopSpeaking();stopListening();});
     paint();
@@ -1427,6 +1477,121 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     s.className = 'ripple'; s.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + (e.clientX - r.left - d / 2) + 'px;top:' + (e.clientY - r.top - d / 2) + 'px';
     sendBtn.appendChild(s); setTimeout(() => s.remove(), 600);
   });
+
+  // ---- Live voice + vision, isolated from regular chat and push-to-talk ----
+  const LiveVoice = (() => {
+    const modal=$('liveModal'),box=modal.querySelector('.live-box'),status=$('liveStatus'),captions=$('liveCaptions'),video=$('liveVideo');
+    const startBtn=$('liveStart'),consent=$('liveConsentCheck'),controls=$('liveControls');
+    let ws=null,micStream=null,videoStream=null,audioCtx=null,micSource=null,processor=null,silentGain=null,frameTimer=null,playbackAt=0;
+    let playing=new Set(),liveActive=false,liveReady=false,muted=false,videoKind='',captionLines=[],inputDraft='',outputDraft='';
+    const send=p=>{if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(p));};
+    function setStatus(t,state){status.textContent=t;box.dataset.state=state||'idle';}
+    function paintCaptions(){
+      captions.textContent='';
+      captionLines.slice(-6).forEach(row=>{const p=document.createElement('p');p.className='live-caption-line';const b=document.createElement('strong');b.textContent=row.who+':';const span=document.createElement('span');span.textContent=row.text;p.append(b,span);captions.appendChild(p);});
+      if(inputDraft||outputDraft){const p=document.createElement('p');p.className='live-caption-line';const b=document.createElement('strong');b.textContent=outputDraft?'Glitch:':'You:';const span=document.createElement('span');span.textContent=outputDraft||inputDraft;p.append(b,span);captions.appendChild(p);}
+      captions.scrollTop=captions.scrollHeight;
+    }
+    function addCaption(who,text){const value=String(text||'').trim();if(!value)return;captionLines.push({who,text:value});captionLines=captionLines.slice(-12);paintCaptions();}
+    function stopPlayback(){for(const source of playing){try{source.stop();}catch{}}playing.clear();playbackAt=audioCtx?audioCtx.currentTime:0;}
+    function playPcm(base64){
+      if(!audioCtx)return;
+      try{const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+        const pcm=new Int16Array(bytes.buffer,bytes.byteOffset,Math.floor(bytes.byteLength/2));if(!pcm.length)return;
+        const buffer=audioCtx.createBuffer(1,pcm.length,24000),channel=buffer.getChannelData(0);for(let i=0;i<pcm.length;i++)channel[i]=pcm[i]/32768;
+        const source=audioCtx.createBufferSource();source.buffer=buffer;source.connect(audioCtx.destination);
+        const when=Math.max(audioCtx.currentTime+.025,playbackAt);source.start(when);playbackAt=when+buffer.duration;playing.add(source);source.onended=()=>playing.delete(source);
+      }catch(error){console.warn('Live audio playback failed',error);}
+    }
+    function resample(input,rate){
+      if(rate===16000)return input;const ratio=rate/16000,length=Math.floor(input.length/ratio),out=new Int16Array(length);
+      for(let i=0;i<length;i++){const a=Math.floor(i*ratio),b=Math.min(Math.floor((i+1)*ratio),input.length);let sum=0;for(let j=a;j<b;j++)sum+=input[j];const v=b>a?sum/(b-a):0;out[i]=Math.max(-1,Math.min(1,v))*32767;}return out;
+    }
+    function base64(bytes){let binary='';for(let i=0;i<bytes.length;i++)binary+=String.fromCharCode(bytes[i]);return btoa(binary);}
+    function startAudioInput(){
+      micSource=audioCtx.createMediaStreamSource(micStream);processor=audioCtx.createScriptProcessor(2048,1,1);silentGain=audioCtx.createGain();silentGain.gain.value=0;
+      processor.onaudioprocess=e=>{if(!liveReady||muted||!ws||ws.readyState!==WebSocket.OPEN)return;const pcm=resample(e.inputBuffer.getChannelData(0),audioCtx.sampleRate);send({realtimeInput:{audio:{data:base64(new Uint8Array(pcm.buffer)),mimeType:'audio/pcm;rate=16000'}}});};
+      micSource.connect(processor);processor.connect(silentGain);silentGain.connect(audioCtx.destination);
+    }
+    function stopVideoShare(){
+      if(frameTimer){clearInterval(frameTimer);frameTimer=null;}
+      if(videoStream){videoStream.getTracks().forEach(t=>t.stop());videoStream=null;}
+      video.srcObject=null;video.hidden=true;$('liveOrb').hidden=false;videoKind='';
+      $('liveCamera').textContent='Camera';$('liveScreen').textContent='Share screen';
+    }
+    async function startVideoShare(kind){
+      if(!liveReady||!navigator.mediaDevices)return;
+      try{
+        const request=kind==='screen'?navigator.mediaDevices.getDisplayMedia({video:{frameRate:{ideal:5,max:10}},audio:false}):navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false});
+        const stream=await request;stopVideoShare();videoStream=stream;videoKind=kind;video.srcObject=stream;video.hidden=false;$('liveOrb').hidden=true;await video.play().catch(()=>{});
+        stream.getVideoTracks()[0].addEventListener('ended',stopVideoShare,{once:true});
+        if(kind==='camera')$('liveCamera').textContent='Stop camera';else $('liveScreen').textContent='Stop sharing';
+        const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+        frameTimer=setInterval(()=>{if(!liveReady||!ws||ws.readyState!==WebSocket.OPEN||video.readyState<2)return;
+          const w=video.videoWidth||640,h=video.videoHeight||360,scale=Math.min(1,640/w);canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));
+          try{ctx.drawImage(video,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.62).split(',')[1];send({realtimeInput:{video:{data,mimeType:'image/jpeg'}}});}catch(error){console.warn('Live video frame skipped',error);}
+        },1000);
+        setStatus(kind==='screen'?'Sharing your screen':'Camera is on','listening');
+      }catch(error){if(error&&error.name!=='NotAllowedError'&&error.name!=='AbortError')showToast('Could not start sharing: '+(error.message||'permission unavailable'));setStatus('Live is still running','listening');}
+    }
+    async function toggleVideo(kind){if(videoKind===kind){stopVideoShare();setStatus('Live is still running','listening');return;}await startVideoShare(kind);}
+    function cleanup(){
+      liveReady=false;liveActive=false;muted=false;stopPlayback();stopVideoShare();
+      if(processor){processor.onaudioprocess=null;try{processor.disconnect();}catch{}processor=null;}
+      if(micSource){try{micSource.disconnect();}catch{}micSource=null;}
+      if(silentGain){try{silentGain.disconnect();}catch{}silentGain=null;}
+      if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+      if(audioCtx){const old=audioCtx;audioCtx=null;old.close().catch(()=>{});}
+      if(ws){const old=ws;ws=null;try{old.close(1000,'Session ended');}catch{}}
+      controls.hidden=true;$('liveConsent').hidden=false;startBtn.disabled=!consent.checked;$('liveMute').textContent='Mute mic';box.dataset.state='idle';
+    }
+    function handleMessage(event){
+      let message;try{message=JSON.parse(event.data);}catch{return;}
+      if(message.error){const detail=message.error.message||'Google could not start the Live session.';setStatus(detail,'idle');showToast(detail);cleanup();return;}
+      if(message.setupComplete){liveReady=true;controls.hidden=false;$('liveConsent').hidden=true;setStatus('Connected · listening','listening');startAudioInput();send({realtimeInput:{text:'Say a short, natural hello and invite the user to talk.'}});return;}
+      const c=message.serverContent||{};
+      if(c.interrupted){stopPlayback();outputDraft='';setStatus('Listening','listening');paintCaptions();}
+      if(c.interimInputTranscription&&c.interimInputTranscription.text){inputDraft=c.interimInputTranscription.text;setStatus('Listening','listening');paintCaptions();}
+      if(c.inputTranscription&&c.inputTranscription.text){addCaption('You',c.inputTranscription.text);inputDraft='';}
+      if(c.outputTranscription&&c.outputTranscription.text){outputDraft+=c.outputTranscription.text;setStatus('Glitch is speaking','speaking');paintCaptions();}
+      (c.modelTurn&&c.modelTurn.parts||[]).forEach(part=>{const d=part.inlineData||part.inline_data;if(d&&d.data&&String(d.mimeType||d.mime_type||'').startsWith('audio/pcm'))playPcm(d.data);});
+      if(c.turnComplete){if(outputDraft){addCaption('Glitch',outputDraft);outputDraft='';}inputDraft='';setStatus('Connected · listening','listening');paintCaptions();}
+      if(message.goAway)setStatus('Google is preparing to close this session','listening');
+    }
+    async function startSession(){
+      if(!user){showToast('Sign in or continue as guest before starting Live.');return;}
+      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket){showToast('Live needs a modern browser on a secure HTTPS connection.');return;}
+      startBtn.disabled=true;setStatus('Requesting microphone permission…','idle');
+      try{
+        const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('This browser does not support live audio.');
+        audioCtx=new AC({latencyHint:'interactive'});await audioCtx.resume();
+        micStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
+        const tokenResult=await api('/api/live-token',{method:'POST',body:JSON.stringify({})});if(!tokenResult.ok)throw new Error(tokenResult.data.error||'Could not start Live.');
+        ws=new WebSocket('wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?access_token='+encodeURIComponent(tokenResult.data.token));
+        ws.onopen=()=>ws.send(JSON.stringify({setup:{
+          model:'models/gemini-3.8-live',
+          generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Puck'}}}},
+          systemInstruction:{parts:[{text:'You are Glitch, a natural, warm, quick-witted conversational AI and the user’s helpful friend. Speak naturally, concisely and conversationally, not like a formal assistant. You may use light playful humour, but never be cruel or mock vulnerability. Listen carefully, answer what the user actually means, and allow interruptions. If unsure, say so. Never claim to see camera or screen content unless a frame has actually been shared.'}]},
+          inputAudioTranscription:{},outputAudioTranscription:{},
+          realtimeInputConfig:{automaticActivityDetection:{disabled:false,prefixPaddingMs:180,silenceDurationMs:550}}
+        }}));
+        ws.onmessage=handleMessage;
+        ws.onerror=()=>{setStatus('Live connection error. Check network or Google API access.','idle');showToast('Live connection failed. Your normal chat still works.');cleanup();};
+        ws.onclose=e=>{if(liveActive){setStatus(e.reason||'Live connection closed.','idle');cleanup();}};
+        liveActive=true;setStatus('Opening secure Live connection…','idle');
+      }catch(error){cleanup();setStatus(error.message||'Could not start Live.','idle');showToast(error.message||'Could not start Live.');}
+    }
+    function open(){if(!user){showToast('Sign in or continue as guest to use Live.');return;}modal.classList.add('open');}
+    function close(){cleanup();modal.classList.remove('open');}
+    $('liveOpen').addEventListener('click',open);$('liveOpenTop').addEventListener('click',open);
+    $('liveClose').addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close();});
+    consent.addEventListener('change',()=>{startBtn.disabled=!consent.checked;});startBtn.addEventListener('click',startSession);
+    $('liveEnd').addEventListener('click',()=>{cleanup();setStatus('Session ended','idle');$('liveConsent').hidden=false;});
+    $('liveMute').addEventListener('click',()=>{muted=!muted;if(micStream)micStream.getAudioTracks().forEach(t=>t.enabled=!muted);$('liveMute').textContent=muted?'Unmute mic':'Mute mic';setStatus(muted?'Microphone muted':'Connected · listening',muted?'idle':'listening');});
+    $('liveCamera').addEventListener('click',()=>toggleVideo('camera'));$('liveScreen').addEventListener('click',()=>toggleVideo('screen'));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close();});window.addEventListener('pagehide',cleanup);
+    return {close};
+  })();
 
   // ---- start ----------------------------------------------------------------------
   markMode(); render(); renderHistoryList();

@@ -161,3 +161,75 @@ drop policy if exists "Users can delete their own glitch chats" on public.glitch
 create policy "Users can delete their own glitch chats"
   on public.glitch_chats for delete to authenticated
   using (auth.uid() = user_id);
+
+
+-- VIP invite system. Codes are stored only as SHA-256 hashes and can be redeemed once.
+create table if not exists public.glitch_vip_codes (
+  code_hash text primary key check (code_hash ~ '^[0-9a-f]{64}$'),
+  redeemed_by uuid references auth.users(id) on delete set null,
+  redeemed_at timestamptz
+);
+create table if not exists public.glitch_vip_members (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  granted_at timestamptz not null default now()
+);
+alter table public.glitch_vip_codes enable row level security;
+alter table public.glitch_vip_members enable row level security;
+revoke all on table public.glitch_vip_codes from public, anon, authenticated;
+revoke all on table public.glitch_vip_members from public, anon, authenticated;
+
+create or replace function public.get_glitch_vip_status()
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare v_user_id uuid := auth.uid();
+begin
+  if v_user_id is null then raise exception 'Authentication required'; end if;
+  return jsonb_build_object('vip', exists(select 1 from public.glitch_vip_members where user_id = v_user_id));
+end;
+$$;
+
+create or replace function public.redeem_glitch_vip_code(p_code text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_hash text;
+  v_redeemed_by uuid;
+begin
+  if v_user_id is null then raise exception 'Authentication required'; end if;
+  if exists(select 1 from auth.users where id = v_user_id and is_anonymous = true) then
+    raise exception 'Sign in with a registered account to redeem VIP access';
+  end if;
+  if exists(select 1 from public.glitch_vip_members where user_id = v_user_id) then
+    return jsonb_build_object('vip', true, 'already_vip', true);
+  end if;
+  if p_code is null or length(trim(p_code)) < 8 or length(trim(p_code)) > 100 then
+    raise exception 'Invalid invite code';
+  end if;
+  v_hash := encode(extensions.digest(lower(trim(p_code)), 'sha256'), 'hex');
+  update public.glitch_vip_codes
+    set redeemed_by = v_user_id, redeemed_at = now()
+    where code_hash = v_hash and redeemed_by is null
+    returning redeemed_by into v_redeemed_by;
+  if v_redeemed_by is null then raise exception 'That VIP code is invalid or has already been used'; end if;
+  insert into public.glitch_vip_members(user_id) values (v_user_id)
+    on conflict (user_id) do nothing;
+  return jsonb_build_object('vip', true, 'redeemed', true);
+end;
+$$;
+
+revoke all on function public.get_glitch_vip_status() from public, anon;
+revoke all on function public.redeem_glitch_vip_code(text) from public, anon;
+grant execute on function public.get_glitch_vip_status() to authenticated;
+grant execute on function public.redeem_glitch_vip_code(text) to authenticated;
+
+-- OWNER ONLY: create a one-time invite by replacing the example string, then run this
+-- statement in the Supabase SQL Editor. Give the plain code to exactly one person.
+-- insert into public.glitch_vip_codes(code_hash)
+-- values (encode(extensions.digest(lower(trim('REPLACE-WITH-YOUR-PRIVATE-VIP-CODE')), 'sha256'), 'hex'));

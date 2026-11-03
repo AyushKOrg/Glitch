@@ -315,6 +315,12 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
 .accent-picker-panel .color-wheel::after{inset:49px}
 .accent-picker-panel .color-wheel-marker{width:13px;height:13px}
 .accent-wheel-hint{font-size:.7rem;color:var(--muted)}
+.accent-brightness{display:flex;flex-direction:column;gap:7px;margin-top:14px;padding:11px 2px 2px;border-top:1px solid var(--border)}
+.accent-brightness-head{display:flex;align-items:center;justify-content:space-between;font-size:.76rem;color:var(--text-dim)}
+.accent-brightness-head output{font-variant-numeric:tabular-nums;color:var(--text);font-weight:650}
+#accentBrightness{width:100%;height:8px;margin:3px 0 5px;appearance:none;-webkit-appearance:none;border:0;border-radius:999px;cursor:pointer;background:linear-gradient(90deg,#171717,#fff);accent-color:var(--accent);touch-action:pan-y}
+#accentBrightness::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border:3px solid var(--panel);border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px var(--border-strong),0 2px 6px #0005}
+#accentBrightness::-moz-range-thumb{width:13px;height:13px;border:3px solid var(--panel);border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px var(--border-strong),0 2px 6px #0005}
 .accent-presets{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
 .accent-swatch{width:28px;height:28px;justify-self:center;border:3px solid var(--panel);border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px var(--border);cursor:pointer;transition:transform .15s,box-shadow .15s}
 .accent-swatch:hover{transform:scale(1.14)}
@@ -351,7 +357,11 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
       <div class="color-wheel" id="colorWheel" role="slider" tabindex="0" aria-label="Choose a custom accent colour" aria-valuemin="0" aria-valuemax="359" aria-valuenow="260">
         <span class="color-wheel-marker" id="colorWheelMarker" style="left:50%;top:8%"></span>
       </div>
-      <span class="accent-wheel-hint">Drag to pick any shade</span>
+      <span class="accent-wheel-hint">Drag to pick hue and saturation</span>
+    </div>
+    <div class="accent-brightness">
+      <div class="accent-brightness-head"><label for="accentBrightness">Brightness</label><output id="accentBrightnessValue" for="accentBrightness">92%</output></div>
+      <input id="accentBrightness" type="range" min="5" max="100" step="1" value="92" aria-label="Adjust accent colour brightness">
     </div>
     <div class="accent-presets" role="group" aria-label="Preset accent colours">
       <button type="button" class="accent-swatch" data-accent="#7c3aed" style="--swatch:#7c3aed" aria-label="Purple"></button>
@@ -1290,6 +1300,8 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
   const root = document.documentElement;
   const colorWheel = $('colorWheel'), colorWheelMarker = $('colorWheelMarker');
   const accentWheelLabel = $('accentWheelLabel');
+  const accentBrightness = $('accentBrightness');
+  const accentBrightnessValue = $('accentBrightnessValue');
   let hue = 260, saturation = 75, brightness = 92;
   const clamp = (n,min,max) => Math.min(max,Math.max(min,n));
   function hsvToHex(h,s,v) {
@@ -1313,6 +1325,8 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     if(root.dataset.theme!=='custom'){try{localStorage.setItem('glitch_base_theme',root.dataset.theme||'default');}catch{}}
     root.dataset.theme='custom';root.style.setProperty('--accent',hex);
     accentWheelLabel.textContent=hex.toUpperCase();
+    accentBrightness.value=String(Math.round(brightness));
+    accentBrightnessValue.textContent=Math.round(brightness)+'%';
     if(persist){try{localStorage.setItem('glitch_accent',hex);localStorage.setItem('glitch_theme','custom');}catch{}}
   }
   function wheelPointer(e) {
@@ -1320,11 +1334,14 @@ html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
     const distance=Math.min(1,Math.hypot(x,y)/(r.width*.47));
     hue=(Math.atan2(y,x)*180/Math.PI+90+360)%360;
     saturation=distance*100;
-    brightness=92;
     paintWheel(true);
   }
   colorWheel.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;colorWheel.setPointerCapture(e.pointerId);wheelPointer(e);});
   colorWheel.addEventListener('pointermove',e=>{if(colorWheel.hasPointerCapture(e.pointerId))wheelPointer(e);});
+  accentBrightness.addEventListener('input', () => {
+    brightness=Number(accentBrightness.value);
+    paintWheel(true);
+  });
   colorWheel.addEventListener('keydown',e=>{
     if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
     e.preventDefault();hue=(hue+(['ArrowRight','ArrowUp'].includes(e.key)?2:-2)+360)%360;saturation=Math.max(saturation,70);paintWheel(true);

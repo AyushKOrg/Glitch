@@ -49,7 +49,7 @@ vercel --prod
 
 Redeploy after changing environment variables. Open the site and choose **Create account** or **Continue as guest**.
 
-## Owner-issued VIP access
+## Image generation (Pollinations AI)\n\nSet `POLLINATIONS_API_KEY` as a server-side environment variable in your hosting dashboard. Do not put it in frontend code or GitHub. Run the updated complete `supabase.sql` script to create the daily image quota functions. Signed-in free accounts receive 15 successful image generations per UTC day; VIP accounts bypass the quota. Failed upstream requests refund the reserved free slot. The app uses Pollinations' image API through `/api/images`, so the provider key never reaches the browser.\n\n## Owner-issued VIP access
 
 VIP is invite-only. A registered account must redeem a one-time code personally issued by the owner; guest accounts cannot redeem codes. Codes are stored as SHA-256 hashes, and redemption is atomic, so a code can only be used once. The browser never decides membership: `/api/vip` checks it through Supabase, and VIP assistant styles are checked again by `/api/chat`.
 

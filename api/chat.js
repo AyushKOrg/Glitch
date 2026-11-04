@@ -1,5 +1,5 @@
 // POST /api/chat { mode: 'flash'|'cognition', messages: [{role, content}] }
-const { requireUser, consumeGuestMessage, getUserMemories } = require('./_lib');
+const { requireUser, consumeGuestMessage, getUserMemories, supabaseUrl } = require('./_lib');
 const { systemPrompt, runGemini, runOpenRouter, runTool } = require('./_llm');
 
 const MAX_MESSAGES = 20;
@@ -11,6 +11,13 @@ const GUEST_MESSAGE_LIMIT = 30;
 function isDocumentRequest(text) {
   return /\b(essay|letter|cover letter|resume|r[eé]sum[eé]|cv|email|e-mail|story|poem|speech|report|article|blog post|paragraphs?|summary|application|statement|apology|invitation|caption|bio|speech|assignment|homework|notes|proposal|memo|complaint|review|thesis|abstract|lyrics|toast|message to)\b/i.test(String(text || ''));
 }
+async function isVipUser(user) {
+  if (!user || user.isAnonymous) return false;
+  const r = await fetch(`${supabaseUrl()}/rest/v1/rpc/get_glitch_vip_status`, { method: 'POST', headers: { apikey: process.env.SUPABASE_ANON_KEY, Authorization: `Bearer ${user.accessToken}`, 'Content-Type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(8000) });
+  if (!r.ok) throw new Error('VIP status could not be verified.');
+  return (await r.json().catch(() => ({}))).vip === true;
+}
+
 function isCodeWritingRequest(text) {
   const t = String(text || '').toLowerCase();
   if (isDocumentRequest(t) && !/\b(code|function|script|html|css|javascript|python|react|api|sql|regex|program|component)\b/.test(t)) return false;
@@ -63,7 +70,14 @@ module.exports = async (req, res) => {
 
   const messages = clean(req.body && req.body.messages);
   if (!messages) return res.status(400).json({ error: 'Send {messages:[...]} ending with a user message.' });
-  const mode = req.body && req.body.mode === 'cognition' ? 'cognition' : 'flash';
+  let mode = req.body && req.body.mode === 'cognition' ? 'cognition' : 'flash';
+  const lastUserText = messages[messages.length - 1].text;
+  if (isCodeWritingRequest(lastUserText)) {
+    let vip = false;
+    try { vip = await isVipUser(user); } catch (error) { return res.status(503).json({ error: error.message || 'VIP status could not be verified.' }); }
+    if (!vip) return res.status(403).json({ error: 'Coding with Glitch is a VIP feature. Redeem a VIP invite to unlock code generation.', vipRequired: true });
+    mode = 'cognition';
+  }
   if (mode === 'flash' && !process.env.GOOGLE_API_KEY) {
     return res.status(503).json({ error: 'GOOGLE_API_KEY is required for Flash and web search.' });
   }
@@ -82,18 +96,6 @@ module.exports = async (req, res) => {
           usage: { used: GUEST_MESSAGE_LIMIT, remaining: 0, limit: GUEST_MESSAGE_LIMIT },
         });
       }
-    }
-
-    const lastUserText = messages[messages.length - 1].text;
-    if (mode === 'flash' && isCodeWritingRequest(lastUserText)) {
-      return res.status(200).json({
-        reply: 'This looks like a code-writing task. To give you complete, more reliable code and downloadable files, switch to Cognition mode. I have not generated code in Flash.',
-        mode,
-        suggestCognition: true,
-        usage: user.isAnonymous
-          ? { used: usage.used, remaining: usage.remaining, limit: GUEST_MESSAGE_LIMIT }
-          : null,
-      });
     }
 
     const ctx = { userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };

@@ -66,12 +66,34 @@ module.exports = async (req, res) => {
         await refund();
         return res.status(502).json({ error: 'Pollinations returned an unsupported image format.' });
       }
-      // Enforce the response limit while streaming instead of buffering an unbounded upstream body.
+      // Prefer Pollinations' hosted media URL. This avoids buffering/base64-encoding
+      // multi-megabyte images inside a serverless function response.
+      const linkHeader = upstream.headers.get('link') || '';
+      const enclosure = [...linkHeader.matchAll(/<([^>]+)>\\s*;\\s*rel=["']?enclosure["']?/gi)]
+        .map(match => match[1]).find(value => {
+          try {
+            const parsed = new URL(value);
+            return parsed.protocol === 'https:' && parsed.hostname === 'media.pollinations.ai';
+          } catch { return false; }
+        });
+      if (enclosure) {
+        // Drain the upstream body so the provider can finish its response cleanly.
+        if (upstream.body && typeof upstream.body.cancel === 'function') {
+          await upstream.body.cancel().catch(() => {});
+        }
+        return res.status(200).json({
+          imageUrl: enclosure,
+          usage: quota.vip ? null : { used: quota.used, remaining: quota.remaining, limit: DAILY_LIMIT },
+          vip: quota.vip === true,
+        });
+      }
+
+      // Fallback for provider responses without a hosted-media Link header.
       const maxBytes = 3 * 1024 * 1024;
       const announcedLength = Number(upstream.headers.get('content-length') || 0);
       if (announcedLength > maxBytes) {
         await refund();
-        return res.status(502).json({ error: 'The generated image is too large (3 MB maximum).' });
+        return res.status(502).json({ error: 'Pollinations did not provide a hosted image link and its image exceeds the safe response limit. Please try again.' });
       }
       if (!upstream.body || typeof upstream.body.getReader !== 'function') {
         await refund();
@@ -87,7 +109,7 @@ module.exports = async (req, res) => {
         if (totalBytes > maxBytes) {
           await reader.cancel().catch(() => {});
           await refund();
-          return res.status(502).json({ error: 'The generated image is too large (3 MB maximum).' });
+          return res.status(502).json({ error: 'Pollinations did not provide a hosted image link and its image exceeds the safe response limit. Please try again.' });
         }
         chunks.push(Buffer.from(part.value));
       }

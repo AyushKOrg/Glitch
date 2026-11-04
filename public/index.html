@@ -1950,7 +1950,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   function runPlayground(){
     const html=$('playgroundHTML').value,css=$('playgroundCSS').value;
     // Prevent user code from terminating the wrapper script element.
-    const js=$('playgroundJS').value.replace(/<\\x2fscript/gi,'<\\\\x2fscript');
+    const js=$('playgroundJS').value.replace(/<\x2fscript/gi,'<\\x2fscript');
     const errorBridge='<script>window.onerror=function(message,source,line){parent.postMessage({type:"glitch-playground-error",message:String(message),line:line||0},"*");return false;};</scr'+'ipt>';
     const src='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:"><style>'+css+'</style></head><body>'+html+errorBridge+'<script>'+js+'</scr'+'ipt></body></html>';
     $('playgroundFrame').srcdoc=src;

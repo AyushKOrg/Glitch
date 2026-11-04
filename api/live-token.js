@@ -1,7 +1,7 @@
 // POST /api/live-token
 // Mint a short-lived, single-use Gemini Live API token. The long-lived Google API key
 // remains server-side; the browser receives only this restricted ephemeral token.
-const { requireUser } = require('./_lib');
+const { requireUser, supabaseUrl } = require('./_lib');
 
 const LIVE_MODEL = 'models/gemini-3.8-live';
 
@@ -22,6 +22,10 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const vipResponse = await fetch(`${supabaseUrl()}/rest/v1/rpc/get_glitch_vip_status`, { method: 'POST', headers: { apikey: process.env.SUPABASE_ANON_KEY, Authorization: `Bearer ${user.accessToken}`, 'Content-Type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(8000) });
+    const vipStatus = vipResponse.ok ? await vipResponse.json().catch(() => ({})) : {};
+    if (!vipResponse.ok) return res.status(503).json({ error: 'VIP status could not be verified. Please try again.' });
+    if (vipStatus.vip !== true) return res.status(403).json({ error: 'Live voice is a VIP feature. Redeem a VIP invite to unlock it.', vipRequired: true });
     const now = Date.now();
     // The REST auth_tokens.create body is an AuthToken resource.
     // Its REST field is bidiGenerateContentSetup; liveConnectConstraints is

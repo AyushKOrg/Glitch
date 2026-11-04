@@ -1985,8 +1985,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
     if(!r.ok)throw new Error(r.data.error||'Could not load image quota.');
     $('imageUsage').textContent=r.data.vip?'VIP: unlimited image generations':('Today: '+r.data.used+' / 15 used · '+r.data.remaining+' free generations left');
   }
-  $('openImageStudio').addEventListener('click',openImageStudio);
-  $('imageStudioQuick').addEventListener('click',openImageStudio);
+  // Image generation is invoked from chat prompts; no separate launcher is required.
   $('imageClose').addEventListener('click',closeImageStudio);
   imageModal.addEventListener('click',e=>{if(e.target===imageModal)closeImageStudio();});
   $('imageGenerate').addEventListener('click',async()=>{

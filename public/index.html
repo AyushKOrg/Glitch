@@ -472,6 +472,7 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
 .playground-editors textarea{width:100%;height:220px;resize:vertical;padding:10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel-alt);color:var(--text);font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}
 .playground-preview{width:100%;height:360px;border:1px solid var(--border-strong);border-radius:10px;background:white}
 .vip-tool-nav{border:1px solid color-mix(in srgb,#a78bfa 38%,var(--border))}
+  .nav[hidden],.live-composer-button[hidden]{display:none!important}
 .vip-tool-nav .tool-lock-label{margin-left:auto;font-size:.66rem;color:#d99a08;font-weight:800;letter-spacing:.05em}
 body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
 @media(max-width:700px){.tool-grid,.playground-editors{grid-template-columns:1fr}.playground-editors textarea{height:150px}.playground-preview{height:300px}}
@@ -551,8 +552,8 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
   <button class="nav" id="memoryOpen" type="button" title="Manage memories saved to your account"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v1a4 4 0 00-2 7 4 4 0 006 5 4 4 0 006-5 4 4 0 00-2-7V7a4 4 0 00-4-4zM9 11h.01M15 11h.01M9 16c1.5 1 4.5 1 6 0"/></svg>Memory</button>
-  <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openCodePlayground" type="button" title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openImageEditor" type="button" hidden title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openCodePlayground" type="button" hidden title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-nav" id="vipOpen" type="button" title="VIP membership and exclusive features"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>VIP <span id="vipNavBadge" class="vip-pill">LOCKED</span></button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
@@ -562,7 +563,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
     <button class="nav" type="button" data-mode="flash" aria-pressed="true" title="Fast and light; can also look at images and PDFs"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Flash</button>
     <button class="nav" type="button" data-mode="cognition" aria-pressed="false" title="Deeper reasoning, code generation, and downloadable files"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 8h4M12 16H8"/></svg>Cognition</button>
   </div>
-  <button class="nav live-nav" id="liveOpen" type="button" title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="live-nav-dot"></span></button>
+  <button class="nav live-nav" id="liveOpen" type="button" hidden title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="live-nav-dot"></span></button>
   <h4>Accent</h4>
   <div class="accent-picker-wrap">
     <button class="accent-picker-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">
@@ -623,7 +624,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
     <textarea id="input" rows="1" placeholder="Ask Glitch" autocomplete="off"></textarea>
     <button class="round" id="mic" type="button" title="Speak (click again to stop)" aria-label="Speak your message" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
     <button class="round" id="send" type="submit" title="Send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12L20 4L14 20L11 13L4 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg></button>
-    <button class="live-composer-button" id="liveOpenComposer" type="button" title="Start a real-time Live conversation" aria-label="Start Live"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0014 0M12 18v3m-4 0h8"/></svg><span>Live</span></button>
+    <button class="live-composer-button" id="liveOpenComposer" type="button" hidden title="Start a real-time Live conversation" aria-label="Start Live"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0014 0M12 18v3m-4 0h8"/></svg><span>Live</span></button>
   </form>
   <div class="suggest">
     <button type="button" data-prompt="Help me write or edit: "><b>✍️ Write &amp; edit</b><span>Emails, essays, polish</span></button>
@@ -1240,6 +1241,8 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   function vipPrefsKey(){ return VIP_PREF_KEY + (user ? user.id : 'signedout'); }
   function setVipState(active){
     vipActive = Boolean(active);
+    // VIP-only tools stay hidden until the server confirms membership.
+    ['openImageEditor','openCodePlayground','liveOpen','liveOpenComposer'].forEach(id=>{const button=$(id);if(button)button.hidden=!vipActive;});
     document.body.classList.toggle('vip-active', vipActive);
     $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
     $('vipNavBadge').hidden = false;
@@ -1946,11 +1949,26 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   function setPlaygroundDefaults(){ $('playgroundHTML').value=playgroundDefaults.html;$('playgroundCSS').value=playgroundDefaults.css;$('playgroundJS').value=playgroundDefaults.js;runPlayground(); }
   function runPlayground(){
     const html=$('playgroundHTML').value,css=$('playgroundCSS').value;
-    // Escape closing-script sequences in user code without exposing a literal HTML end tag here.
-    const js=$('playgroundJS').value.replace(/<\x2fscript/gi,'<\\x2fscript');
-    const src='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:"><style>'+css+'</style></head><body>'+html+'<script>'+js+'</scr'+'ipt></body></html>';
-    $('playgroundFrame').srcdoc=src;$('playgroundStatus').textContent='Preview updated. Code runs in an isolated frame.';
+    // Prevent user code from terminating the wrapper script element.
+    const js=$('playgroundJS').value.replace(/<\\x2fscript/gi,'<\\\\x2fscript');
+    const errorBridge='<script>window.onerror=function(message,source,line){parent.postMessage({type:"glitch-playground-error",message:String(message),line:line||0},"*");return false;};</scr'+'ipt>';
+    const src='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:"><style>'+css+'</style></head><body>'+html+errorBridge+'<script>'+js+'</scr'+'ipt></body></html>';
+    $('playgroundFrame').srcdoc=src;
+    $('playgroundStatus').textContent='Preview updated. Code runs in an isolated frame.';
   }
+  const playgroundFrame=$('playgroundFrame');
+  window.addEventListener('message',event=>{
+    if(event.source!==playgroundFrame.contentWindow||!event.data||event.data.type!=='glitch-playground-error')return;
+    const line=event.data.line?' (line '+event.data.line+')':'';
+    $('playgroundStatus').textContent='JavaScript error'+line+': '+event.data.message;
+  });
+  ['playgroundHTML','playgroundCSS','playgroundJS'].forEach(id=>{
+    const editor=$(id);
+    editor.addEventListener('keydown',event=>{
+      if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();runPlayground();return;}
+      if(event.key==='Tab'){event.preventDefault();editor.setRangeText('  ',editor.selectionStart,editor.selectionEnd,'end');}
+    });
+  });
   $('openCodePlayground').addEventListener('click',async()=>{if(await requireVipTool()){ $('codePlaygroundModal').classList.add('open');runPlayground();}});
   $('codePlaygroundClose').addEventListener('click',()=>$('codePlaygroundModal').classList.remove('open'));
   $('codePlaygroundModal').addEventListener('click',e=>{if(e.target===$('codePlaygroundModal'))$('codePlaygroundModal').classList.remove('open');});

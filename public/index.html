@@ -542,6 +542,93 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
 }
 @media(max-width:520px){.live-composer-button{min-width:66px;width:66px;padding:0 8px;font-size:.76rem}.live-composer-button span{display:inline}}
 
+
+/* FreeAI-inspired Liquid Glass refresh: vivid theme-tinted light, layered glass, and a roomier archive. */
+:root{
+  --glass-surface:rgba(255,255,255,.66);
+  --glass-surface-strong:rgba(255,255,255,.82);
+  --glass-edge:color-mix(in srgb,var(--accent) 24%,rgba(255,255,255,.9));
+  --glass-shadow:0 18px 48px rgba(44,52,85,.10),inset 0 1px 0 rgba(255,255,255,.92);
+  --glass-blur:blur(26px) saturate(185%);
+}
+html,body{background:#f8faff}
+body{
+  background:
+    radial-gradient(ellipse at 78% 4%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 42%),
+    radial-gradient(ellipse at 12% 94%,color-mix(in srgb,var(--accent-2) 22%,transparent),transparent 43%),
+    radial-gradient(ellipse at 48% 48%,rgba(255,255,255,.9),transparent 68%),
+    linear-gradient(135deg,#f9fbff 0%,color-mix(in srgb,var(--accent-soft) 72%,#fff) 48%,#f4f8ff 100%);
+  background-attachment:fixed;
+}
+.side{
+  width:320px;min-width:320px;max-height:100dvh;height:100dvh;
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  background:linear-gradient(155deg,rgba(255,255,255,.82),color-mix(in srgb,var(--accent-soft) 58%,rgba(255,255,255,.78)));
+  border-right:1px solid color-mix(in srgb,var(--accent) 22%,rgba(255,255,255,.85));
+  box-shadow:8px 0 36px rgba(65,75,120,.07),inset -1px 0 0 rgba(255,255,255,.72);
+  backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+}
+.side-brand,.history-head{flex-shrink:0}
+.history-list{
+  max-height:none;min-height:180px;flex:1 0 220px;
+  overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;
+}
+.stage{
+  background:
+    radial-gradient(ellipse at 78% 0%,color-mix(in srgb,var(--accent) 27%,transparent),transparent 42%),
+    radial-gradient(ellipse at 8% 100%,color-mix(in srgb,var(--accent-2) 20%,transparent),transparent 43%),
+    linear-gradient(145deg,#fbfcff 0%,color-mix(in srgb,var(--accent-soft) 72%,#fff) 54%,#f5f8ff 100%);
+}
+.topbar{
+  background:linear-gradient(115deg,rgba(255,255,255,.72),color-mix(in srgb,var(--accent-soft) 48%,rgba(255,255,255,.66)));
+  border-bottom:1px solid color-mix(in srgb,var(--accent) 17%,rgba(255,255,255,.9));
+  box-shadow:0 5px 28px rgba(66,78,120,.055);
+  backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+}
+.nav,.nav.primary,.mini,.history-open,.history-action{transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
+.nav.primary,.mini{
+  background:linear-gradient(145deg,rgba(255,255,255,.88),color-mix(in srgb,var(--accent-soft) 40%,rgba(255,255,255,.7)));
+  border:1px solid var(--glass-edge);
+  box-shadow:inset 0 1px 0 #fff,0 5px 18px rgba(61,76,120,.06);
+}
+.nav:hover,.history-open:hover,.history-item.active .history-open{
+  background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 17%,rgba(255,255,255,.9)),rgba(255,255,255,.65));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 5px 18px color-mix(in srgb,var(--accent) 10%,transparent);
+}
+.accent-picker-wrap,.me{background:linear-gradient(135deg,rgba(255,255,255,.42),color-mix(in srgb,var(--accent-soft) 28%,rgba(255,255,255,.52)))}
+#log{background:transparent;scrollbar-gutter:stable}
+.msg.bot{
+  background:linear-gradient(145deg,rgba(255,255,255,.82),color-mix(in srgb,var(--accent-soft) 48%,rgba(255,255,255,.72)));
+  border:1px solid color-mix(in srgb,var(--accent) 17%,rgba(255,255,255,.9));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.96),0 10px 30px rgba(57,69,112,.075);
+  backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+}
+.msg.user{
+  background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 84%,white),color-mix(in srgb,var(--accent-2) 72%,white));
+  border:1px solid rgba(255,255,255,.52);color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.10);
+  box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 22%,transparent),inset 0 1px 0 rgba(255,255,255,.4);
+}
+#chat{
+  background:linear-gradient(135deg,rgba(255,255,255,.88),color-mix(in srgb,var(--accent-soft) 44%,rgba(255,255,255,.76)));
+  border:1px solid color-mix(in srgb,var(--accent) 25%,rgba(255,255,255,.95));
+  box-shadow:0 14px 38px rgba(57,69,112,.12),inset 0 1px 0 rgba(255,255,255,.98);
+  backdrop-filter:blur(30px) saturate(190%);-webkit-backdrop-filter:blur(30px) saturate(190%);
+}
+#chat:focus-within{
+  background:linear-gradient(135deg,rgba(255,255,255,.96),color-mix(in srgb,var(--accent-soft) 55%,rgba(255,255,255,.84)));
+  border-color:color-mix(in srgb,var(--accent) 55%,white);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 13%,transparent),0 16px 42px rgba(57,69,112,.13),inset 0 1px 0 white;
+}
+#input{color:#202638}#input::placeholder{color:#858da0}
+.side::-webkit-scrollbar,.history-list::-webkit-scrollbar,#log::-webkit-scrollbar{width:9px}
+.side::-webkit-scrollbar-thumb,.history-list::-webkit-scrollbar-thumb,#log::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 36%,#fff),color-mix(in srgb,var(--accent-2) 30%,#fff));
+  border:2px solid transparent;background-clip:padding-box;border-radius:99px;
+}
+.side::-webkit-scrollbar-track,.history-list::-webkit-scrollbar-track,#log::-webkit-scrollbar-track{background:transparent}
+@media(max-width:760px){.side{width:min(320px,88vw);min-width:0;height:100dvh;max-height:100dvh}}
+@media(prefers-reduced-motion:no-preference){.stage{background-size:130% 130%;animation:shift 24s ease-in-out infinite}}
+
 </style>
 </head>
 <body class="empty">

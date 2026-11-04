@@ -410,6 +410,20 @@ body.vip-stars .stage::before{background:radial-gradient(ellipse at 18% 12%,rgba
 body.vip-active .me{border-top-color:rgba(234,179,8,.4)}
 body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)}
 @media(max-width:520px){.vip-grid{grid-template-columns:1fr}.vip-lock form{flex-direction:column}.vip-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Pollinations image studio */
+.image-box{width:min(720px,100%);max-height:min(90vh,900px);overflow:auto;display:flex;flex-direction:column}
+.image-box .top{position:sticky;top:0;background:var(--panel);z-index:2}
+.image-content{padding:16px;display:flex;flex-direction:column;gap:12px}
+.image-content label{font-size:.82rem;font-weight:700}
+.image-content textarea,.image-content select{width:100%;padding:10px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel-alt);color:var(--text)}
+.image-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.image-preview{width:100%;max-height:56vh;object-fit:contain;border:1px solid var(--border);border-radius:12px;background:var(--panel-alt)}
+.image-usage{font-size:.78rem;color:var(--text-dim)}
+.image-status{min-height:1.3em;font-size:.82rem;color:var(--text-dim)}
+.image-download{display:inline-flex;align-items:center;justify-content:center;border-radius:9px;padding:9px 13px;background:var(--accent);color:white;text-decoration:none;font-size:.84rem;font-weight:700}
+#imageGenerate:disabled{opacity:.55;cursor:wait}
+
 </style>
 </head>
 <body class="empty">
@@ -494,6 +508,7 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
     <button type="button" data-prompt="Search the web for "><b>🌐 Search the web</b><span>Live, sourced answers</span></button>
     <button type="button" data-prompt="Explain in simple terms: "><b>💡 Explain anything</b><span>Clear, step by step</span></button>
     <button type="button" data-prompt="Write code for: "><b>⌨️ Build something</b><span>Use Cognition mode</span></button>
+    <button type="button" id="openImageStudio"><b>🎨 Generate an image</b><span>15 free each day · VIP unlimited</span></button>
   </div>
 </div>
 </div>
@@ -550,6 +565,21 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
     <button class="mini quota-later" id="quotaClose" type="button">Not now</button>
   </div>
 </div>
+
+<div id="imageModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="imageTitle">
+  <section class="box image-box">
+    <div class="top"><div><h3 id="imageTitle">✦ Glitch Image Studio</h3><p>Generate images with Pollinations AI.</p></div><button class="mini" id="imageClose" type="button" aria-label="Close image studio">✕</button></div>
+    <div class="image-content">
+      <div><label for="imagePrompt">Describe your image</label><textarea id="imagePrompt" rows="3" maxlength="1000" placeholder="A tiny astronaut exploring a glowing purple garden..." required></textarea></div>
+      <div><label for="imageModel">Image model</label><select id="imageModel"><option value="black-forest-labs/flux.1-schnell">Flux Schnell · Fast</option><option value="krea/krea-2-medium">Krea 2 · Medium</option><option value="google/gemini-3.1-flash-image">Gemini Flash Image</option></select></div>
+      <div class="image-usage" id="imageUsage">Free: 15 generations per day · VIP: unlimited</div>
+      <div class="image-actions"><button class="cta" id="imageGenerate" type="button">Generate image</button><a id="imageDownload" class="image-download" hidden download="glitch-image.png">Download image</a></div>
+      <div id="imageStatus" class="image-status" role="status" aria-live="polite"></div>
+      <img id="imagePreview" class="image-preview" alt="Your generated image" hidden>
+    </div>
+  </section>
+</div>
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="gate" class="overlay">
   <form id="gateForm">

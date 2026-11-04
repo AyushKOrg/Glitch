@@ -28,13 +28,12 @@ module.exports = async (req, res) => {
   }
   const user = await requireUser(req, res);
   if (!user) return;
-  if (!process.env.POLLINATIONS_API_KEY) return res.status(503).json({ error: 'POLLINATIONS_API_KEY is missing from the server environment.' });
-
   try {
     if (req.method === 'GET') {
       const usage = await rpc(user, 'get_glitch_image_usage');
       return res.status(200).json(usage);
     }
+    if (!process.env.POLLINATIONS_API_KEY) return res.status(503).json({ error: 'POLLINATIONS_API_KEY is missing from the server environment.' });
     const prompt = String(req.body && req.body.prompt || '').trim();
     const model = String(req.body && req.body.model || 'black-forest-labs/flux.1-schnell');
     if (!prompt || prompt.length > 1000) return res.status(400).json({ error: 'Enter an image prompt between 1 and 1000 characters.' });
@@ -67,10 +66,35 @@ module.exports = async (req, res) => {
         await refund();
         return res.status(502).json({ error: 'Pollinations returned an unsupported image format.' });
       }
-      const bytes = Buffer.from(await upstream.arrayBuffer());
-      if (!bytes.length || bytes.length > 3 * 1024 * 1024) {
+      // Enforce the response limit while streaming instead of buffering an unbounded upstream body.
+      const maxBytes = 3 * 1024 * 1024;
+      const announcedLength = Number(upstream.headers.get('content-length') || 0);
+      if (announcedLength > maxBytes) {
         await refund();
-        return res.status(502).json({ error: 'The generated image was empty or too large (3 MB maximum).' });
+        return res.status(502).json({ error: 'The generated image is too large (3 MB maximum).' });
+      }
+      if (!upstream.body || typeof upstream.body.getReader !== 'function') {
+        await refund();
+        return res.status(502).json({ error: 'Pollinations returned an unreadable image response.' });
+      }
+      const reader = upstream.body.getReader();
+      const chunks = [];
+      let totalBytes = 0;
+      while (true) {
+        const part = await reader.read();
+        if (part.done) break;
+        totalBytes += part.value.byteLength;
+        if (totalBytes > maxBytes) {
+          await reader.cancel().catch(() => {});
+          await refund();
+          return res.status(502).json({ error: 'The generated image is too large (3 MB maximum).' });
+        }
+        chunks.push(Buffer.from(part.value));
+      }
+      const bytes = Buffer.concat(chunks, totalBytes);
+      if (!bytes.length) {
+        await refund();
+        return res.status(502).json({ error: 'Pollinations returned an empty image.' });
       }
       return res.status(200).json({
         image: `data:${contentType};base64,${bytes.toString('base64')}`,

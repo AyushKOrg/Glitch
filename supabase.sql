@@ -234,3 +234,88 @@ grant execute on function public.redeem_glitch_vip_code(text) to authenticated;
 -- statement in the Supabase SQL Editor. Give the plain code to exactly one person.
 -- insert into public.glitch_vip_codes(code_hash)
 -- values (encode(extensions.digest(lower(trim('REPLACE-WITH-YOUR-PRIVATE-VIP-CODE')), 'sha256'), 'hex'));
+
+
+-- Pollinations image-generation quota: 15 successful daily generations for free accounts.
+-- VIP membership bypasses the counter. The database derives the account from auth.uid().
+create table if not exists public.glitch_image_usage (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  usage_date date not null,
+  used integer not null default 0 check (used >= 0 and used <= 15),
+  updated_at timestamptz not null default now(),
+  primary key (user_id, usage_date)
+);
+alter table public.glitch_image_usage enable row level security;
+revoke all on table public.glitch_image_usage from public, anon, authenticated;
+
+create or replace function public.get_glitch_image_usage()
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_day date := (now() at time zone 'utc')::date;
+  v_used integer := 0;
+  v_vip boolean := false;
+begin
+  if v_user_id is null then raise exception 'Authentication required'; end if;
+  select exists(select 1 from public.glitch_vip_members where user_id = v_user_id) into v_vip;
+  select coalesce((select used from public.glitch_image_usage where user_id=v_user_id and usage_date=v_day),0) into v_used;
+  return jsonb_build_object('vip',v_vip,'used',v_used,'remaining',case when v_vip then null else greatest(15-v_used,0) end,'limit',case when v_vip then null else 15 end,'date',v_day);
+end;
+$$;
+
+create or replace function public.reserve_glitch_image_generation()
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_day date := (now() at time zone 'utc')::date;
+  v_used integer := 0;
+  v_vip boolean := false;
+begin
+  if v_user_id is null then raise exception 'Authentication required'; end if;
+  select exists(select 1 from public.glitch_vip_members where user_id = v_user_id) into v_vip;
+  if v_vip then return jsonb_build_object('allowed',true,'vip',true,'used',0,'remaining',null,'limit',null); end if;
+  insert into public.glitch_image_usage(user_id,usage_date,used)
+  values(v_user_id,v_day,0) on conflict(user_id,usage_date) do nothing;
+  update public.glitch_image_usage set used=used+1,updated_at=now()
+    where user_id=v_user_id and usage_date=v_day and used<15 returning used into v_used;
+  if not found then
+    select used into v_used from public.glitch_image_usage where user_id=v_user_id and usage_date=v_day;
+    return jsonb_build_object('allowed',false,'vip',false,'used',v_used,'remaining',0,'limit',15);
+  end if;
+  return jsonb_build_object('allowed',true,'vip',false,'used',v_used,'remaining',greatest(15-v_used,0),'limit',15);
+end;
+$$;
+
+-- Refund a reserved slot if the upstream image request fails.
+create or replace function public.refund_glitch_image_generation()
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_day date := (now() at time zone 'utc')::date;
+  v_used integer := 0;
+begin
+  if v_user_id is null then raise exception 'Authentication required'; end if;
+  update public.glitch_image_usage set used=greatest(used-1,0),updated_at=now()
+    where user_id=v_user_id and usage_date=v_day returning used into v_used;
+  return jsonb_build_object('refunded',found,'used',coalesce(v_used,0),'remaining',greatest(15-coalesce(v_used,0),0));
+end;
+$$;
+
+revoke all on function public.get_glitch_image_usage() from public, anon;
+revoke all on function public.reserve_glitch_image_generation() from public, anon;
+revoke all on function public.refund_glitch_image_generation() from public, anon;
+grant execute on function public.get_glitch_image_usage() to authenticated;
+grant execute on function public.reserve_glitch_image_generation() to authenticated;
+grant execute on function public.refund_glitch_image_generation() to authenticated;

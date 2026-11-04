@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
       // Prefer Pollinations' hosted media URL. This avoids buffering/base64-encoding
       // multi-megabyte images inside a serverless function response.
       const linkHeader = upstream.headers.get('link') || '';
-      const enclosure = [...linkHeader.matchAll(/<([^>]+)>\\s*;\\s*rel=["']?enclosure["']?/gi)]
+      const enclosure = [...linkHeader.matchAll(/<([^>]+)>\s*;\s*rel=["']?enclosure["']?/gi)]
         .map(match => match[1]).find(value => {
           try {
             const parsed = new URL(value);

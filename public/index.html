@@ -1114,6 +1114,7 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
     $('vipTaglineDisplay').hidden = !vipActive;
     $('vipLock').hidden = vipActive;
     $('vipUnlocked').hidden = !vipActive;
+    document.querySelectorAll('.tool-lock-label').forEach(el=>{el.textContent=vipActive?'UNLOCKED':'VIP';});
     if(!vipActive){ document.body.classList.remove('vip-stars','vip-neon','vip-orbit'); vipPersonality='default'; }
     else applyVipPrefs(false);
   }

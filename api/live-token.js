@@ -23,11 +23,10 @@ module.exports = async (req, res) => {
 
   try {
     const now = Date.now();
-    // CreateAuthTokenRequest wraps the token resource in "authToken".
-    // The REST resource uses bidiGenerateContentSetup (not the SDK-only
-    // liveConnectConstraints alias).
+    // The REST auth_tokens.create body is an AuthToken resource.
+    // Its REST field is bidiGenerateContentSetup; liveConnectConstraints is
+    // an SDK alias and is not accepted as a REST JSON field.
     const payload = {
-      authToken: {
         uses: 1,
         expireTime: new Date(now + 30 * 60 * 1000).toISOString(),
         newSessionExpireTime: new Date(now + 60 * 1000).toISOString(),
@@ -46,7 +45,6 @@ module.exports = async (req, res) => {
             automaticActivityDetection: { disabled: false, prefixPaddingMs: 180, silenceDurationMs: 550 },
           },
         },
-      },
     };
 
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/auth_tokens', {

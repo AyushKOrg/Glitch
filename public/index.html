@@ -108,6 +108,35 @@ html[data-scheme=dark] .nav[aria-pressed=true]{background:color-mix(in srgb,var(
 .suggest svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 body.empty .stage{justify-content:center;padding-bottom:6vh}body.empty #log{display:none}body.empty .hero{display:block}body.empty #chat{margin-bottom:0}body.empty .suggest{display:flex}
 .overlay{position:fixed;inset:0;background:rgba(10,10,20,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:16px;z-index:40}.overlay.open{display:flex}
+.live-overlay{z-index:70;background:rgba(5,7,14,.72);backdrop-filter:blur(10px)}
+.live-box{width:min(620px,100%);max-height:min(92dvh,850px);overflow:auto;padding:0 18px 16px}
+.live-head{position:sticky;top:0;z-index:2;background:var(--panel);margin:0 -18px;padding:14px 18px;border-radius:16px 16px 0 0}
+.live-head h3{margin:0;font-size:1rem}.live-status{font-size:.75rem;color:var(--text-dim)}
+.live-visual{height:220px;display:grid;place-items:center;position:relative;overflow:hidden;margin:14px 0;border:1px solid var(--border);border-radius:18px;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 60%),var(--panel-alt)}
+.live-orb{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;position:relative;background:var(--grad);color:white;font-size:2.5rem;font-weight:800;box-shadow:0 0 0 12px color-mix(in srgb,var(--accent) 9%,transparent),0 0 55px color-mix(in srgb,var(--accent) 42%,transparent);animation:orbitGlow 3s ease-in-out infinite}
+.live-orb i{position:absolute;inset:-14px;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:50%;animation:softPing 2s ease-out infinite}
+.live-box[data-state="speaking"] .live-orb{animation:orbitGlow .8s ease-in-out infinite,bob 1.2s ease-in-out infinite}
+.live-box[data-state="listening"] .live-orb{box-shadow:0 0 0 14px color-mix(in srgb,var(--accent) 12%,transparent),0 0 65px color-mix(in srgb,var(--accent) 55%,transparent)}
+.live-visual video{width:100%;height:100%;object-fit:contain;background:#09090d}
+.live-captions{min-height:70px;max-height:145px;overflow:auto;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-alt);font-size:.84rem}
+.live-captions p{margin:0;color:var(--text-dim)}
+.live-caption-line{margin:0 0 7px!important;color:var(--text)!important}.live-caption-line:last-child{margin-bottom:0!important}
+.live-caption-line strong{color:var(--accent-strong);margin-right:5px}
+.live-consent{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.live-consent p,.live-footnote{margin:0;color:var(--text-dim);font-size:.75rem;line-height:1.55}
+.live-consent-check{display:flex;align-items:flex-start;gap:8px;font-size:.78rem;color:var(--text)}
+.live-consent-check input{margin-top:3px;accent-color:var(--accent)}
+.live-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.live-controls[hidden]{display:none}
+.live-end{margin-left:auto;background:var(--error);box-shadow:none}
+.live-footnote{margin-top:12px}
+.voice-language{display:flex;flex-direction:column;gap:4px;padding:4px 10px 9px}.voice-language label{font-size:.7rem;color:var(--muted)}.voice-language select{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);padding:6px 8px;font-size:.76rem}
+.live-nav{position:relative;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent-strong);font-weight:700}
+.live-nav svg{stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.live-nav-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;margin-left:auto;box-shadow:0 0 0 3px color-mix(in srgb,#16a34a 15%,transparent)}
+.live-top-button{margin-left:auto;border-color:color-mix(in srgb,var(--accent) 45%,var(--border));color:var(--accent-strong);font-weight:700}
+@media(max-width:520px){.live-overlay{padding:8px}.live-box{padding:0 12px 12px}.live-head{margin:0 -12px;padding:12px}.live-visual{height:190px}.live-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.live-end{margin:0}.live-controls .mini,.live-controls .cta{width:100%}}
+
 .box,#gate form{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 50px -20px rgba(20,20,30,.3);animation:msgin .4s var(--ease)}
 .box .top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
 #gate{background:var(--bg);backdrop-filter:none;overflow:hidden;z-index:50}
@@ -447,12 +476,77 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
 body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
 @media(max-width:700px){.tool-grid,.playground-editors{grid-template-columns:1fr}.playground-editors textarea{height:150px}.playground-preview{height:300px}}
 
+
+/* Expanded, collapsible navigation and a cleaner conversation archive. */
+.side{width:304px;min-width:304px;overflow:hidden;padding:14px 12px;gap:4px}
+.side-brand{min-height:54px;padding:6px 8px 12px}
+#sideCollapse{margin-left:auto;flex:none;width:34px;height:34px;display:grid;place-items:center;padding:0;border-radius:10px}
+#sideCollapse svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.side h4{margin:17px 10px 7px;letter-spacing:.075em;text-transform:uppercase;font-size:.66rem}
+.history-head{margin:20px 8px 8px;padding-top:12px;border-top:1px solid var(--border)}
+.history-head h4{letter-spacing:.075em;text-transform:uppercase;font-size:.66rem}
+.history-search{padding:0 4px 8px}
+.history-search input{height:36px;border-radius:11px;background:var(--panel);border-color:var(--border);padding:8px 11px}
+.history-list{flex:1 1 220px;min-height:130px;max-height:none;overflow:auto;overscroll-behavior:contain;padding:3px 3px 12px;gap:5px;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+.history-group{margin:14px 9px 5px;font-size:.65rem;letter-spacing:.09em;text-transform:uppercase;font-weight:750;color:var(--muted)}
+.history-item{position:relative;gap:3px;padding:2px;border:1px solid transparent;border-radius:12px;transition:background .16s,border-color .16s}
+.history-item:hover{background:color-mix(in srgb,var(--accent) 5%,var(--panel));border-color:var(--border)}
+.history-item.active{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 22%,var(--border))}
+.history-open{padding:10px 9px;font-size:.81rem;line-height:1.35;color:var(--text-dim)}
+.history-item.active .history-open{font-weight:650;color:var(--text);background:transparent}
+.history-actions{gap:2px;opacity:.0}
+.history-action{width:29px;height:29px;display:grid;place-items:center;padding:0;font-size:1rem;border:1px solid transparent}
+.history-action:hover{border-color:var(--border)}
+.history-empty{margin:5px 2px;padding:14px 12px;border:1px dashed var(--border-strong);border-radius:12px;background:color-mix(in srgb,var(--panel) 72%,transparent);line-height:1.5}
+.accent-picker-wrap{display:block;padding:5px 2px 10px}
+.accent-picker-trigger{width:100%;min-width:0;display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 94%,var(--accent) 6%),var(--panel));color:var(--text);text-align:left;cursor:pointer;box-shadow:0 5px 18px -15px var(--accent);transition:border-color .18s,transform .18s,box-shadow .18s}
+.accent-picker-trigger:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 45%,var(--border));box-shadow:0 9px 24px -16px var(--accent)}
+.accent-trigger-disc{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:13px;background:conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);box-shadow:inset 0 0 0 2px var(--panel),0 2px 8px #0002}
+.accent-trigger-disc span{width:24px;height:24px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px #0002}
+.accent-picker-copy{flex:1;gap:3px}
+.accent-picker-copy strong{font-size:.8rem}
+.accent-picker-copy span{font-size:.68rem;line-height:1.35}
+.accent-trigger-chevron{width:15px;height:15px;flex:none;opacity:.65}
+.accent-trigger-chevron path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.live-composer-button{height:42px;min-width:76px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 13px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--border));border-radius:13px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 17%,var(--panel)),var(--panel));color:var(--accent-strong);font-size:.82rem;font-weight:750;cursor:pointer;box-shadow:0 4px 14px -12px var(--accent);transition:transform .16s,border-color .16s,box-shadow .16s}
+.live-composer-button:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:0 7px 20px -12px var(--accent)}
+.live-composer-button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+body.sidebar-collapsed .side{width:76px;min-width:76px;padding:14px 9px;align-items:center}
+body.sidebar-collapsed .side-brand{width:100%;justify-content:center;padding:6px 0 12px}
+body.sidebar-collapsed .side-brand strong,body.sidebar-collapsed .side h4,body.sidebar-collapsed .history-head,body.sidebar-collapsed .history-search,body.sidebar-collapsed .history-list,body.sidebar-collapsed .accent-picker-copy,body.sidebar-collapsed .accent-trigger-chevron,body.sidebar-collapsed .me-text,body.sidebar-collapsed #signout,body.sidebar-collapsed .vip-pill,body.sidebar-collapsed .tool-lock-label{display:none!important}
+body.sidebar-collapsed .side-brand img{width:34px;height:34px}
+body.sidebar-collapsed #sideCollapse{position:absolute;top:19px;right:8px;width:25px;height:25px;background:var(--panel);opacity:.9}
+body.sidebar-collapsed #sideCollapse svg{transform:rotate(180deg)}
+body.sidebar-collapsed .side>.nav{width:48px;height:46px;justify-content:center;padding:0;font-size:0;gap:0}
+body.sidebar-collapsed .side>.nav svg{width:19px;height:19px}
+body.sidebar-collapsed .side .modes{width:100%;display:flex;flex-direction:column;align-items:center}
+body.sidebar-collapsed .side .modes .nav{width:48px;height:44px;justify-content:center;padding:0;font-size:0}
+body.sidebar-collapsed .side .live-nav{position:relative}
+body.sidebar-collapsed .side .live-nav-dot{position:absolute;top:7px;right:7px;width:6px;height:6px}
+body.sidebar-collapsed .accent-picker-wrap{width:100%;padding:8px 0}
+body.sidebar-collapsed .accent-picker-trigger{width:48px;height:48px;justify-content:center;padding:3px;border-radius:14px}
+body.sidebar-collapsed .accent-trigger-disc{width:35px;height:35px}
+body.sidebar-collapsed .me{width:100%;justify-content:center;margin:6px 0 0;padding:10px 0}
+body.sidebar-collapsed .avatar{width:34px;height:34px}
+.topbar #menu{display:inline-flex}
+@media(max-width:760px){
+ .side{width:min(304px,88vw);min-width:0}
+ body.sidebar-collapsed .side{width:min(304px,88vw);min-width:0;align-items:stretch}
+ body.sidebar-collapsed .side-brand{justify-content:flex-start;padding:6px 8px 12px}
+ body.sidebar-collapsed .side-brand strong,body.sidebar-collapsed .side h4,body.sidebar-collapsed .history-head,body.sidebar-collapsed .history-search,body.sidebar-collapsed .history-list,body.sidebar-collapsed .accent-picker-copy,body.sidebar-collapsed .accent-trigger-chevron,body.sidebar-collapsed .me-text,body.sidebar-collapsed #signout,body.sidebar-collapsed .vip-pill,body.sidebar-collapsed .tool-lock-label{display:initial!important}
+ body.sidebar-collapsed .side>.nav,body.sidebar-collapsed .side .modes .nav{width:100%;height:auto;justify-content:flex-start;padding:9px 10px;font-size:15px}
+ body.sidebar-collapsed .side .accent-picker-trigger{width:100%;height:auto;justify-content:flex-start;padding:11px 12px}
+ body.sidebar-collapsed .side .me{width:auto;justify-content:flex-start;margin:6px -10px -12px;padding:10px}
+ body.sidebar-collapsed #sideCollapse{position:static;width:34px;height:34px}
+}
+@media(max-width:520px){.live-composer-button{min-width:66px;width:66px;padding:0 8px;font-size:.76rem}.live-composer-button span{display:inline}}
+
 </style>
 </head>
 <body class="empty">
 <div class="layout">
 <aside class="side" id="side">
-  <div class="side-brand"><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong></div>
+  <div class="side-brand"><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong><button class="mini" id="sideCollapse" type="button" aria-label="Collapse sidebar" aria-pressed="false" title="Collapse sidebar"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7M7 12h14"/></svg></button></div>
   <button class="nav primary" id="newChat" type="button" title="Start a new conversation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New chat</button>
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
@@ -468,12 +562,14 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
     <button class="nav" type="button" data-mode="flash" aria-pressed="true" title="Fast and light; can also look at images and PDFs"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Flash</button>
     <button class="nav" type="button" data-mode="cognition" aria-pressed="false" title="Deeper reasoning, code generation, and downloadable files"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 8h4M12 16H8"/></svg>Cognition</button>
   </div>
+  <button class="nav live-nav" id="liveOpen" type="button" title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="live-nav-dot"></span></button>
   <h4>Accent</h4>
   <div class="accent-picker-wrap">
-    <button class="color-wheel-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">
-      <span class="color-wheel-trigger-core" aria-hidden="true"></span>
+    <button class="accent-picker-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">
+      <span class="accent-trigger-disc" aria-hidden="true"><span></span></span>
+      <span class="accent-picker-copy"><strong>Accent colour</strong><span id="accentWheelLabel">Choose a custom shade</span></span>
+      <svg class="accent-trigger-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
     </button>
-    <div class="accent-picker-copy"><strong>Accent colour</strong><span id="accentWheelLabel">Use your theme's default or pick a custom shade</span></div>
   </div>
   <section class="accent-picker-panel" id="accentPickerPanel" aria-label="Colour selection" hidden>
     <div class="accent-panel-head"><strong>Choose a colour</strong><button id="accentReset" type="button">Reset</button></div>
@@ -528,6 +624,7 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
     <textarea id="input" rows="1" placeholder="Ask Glitch" autocomplete="off"></textarea>
     <button class="round" id="mic" type="button" title="Speak (click again to stop)" aria-label="Speak your message" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
     <button class="round" id="send" type="submit" title="Send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12L20 4L14 20L11 13L4 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg></button>
+    <button class="live-composer-button" id="liveOpenComposer" type="button" title="Start a real-time Live conversation" aria-label="Start Live"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0014 0M12 18v3m-4 0h8"/></svg><span>Live</span></button>
   </form>
   <div class="suggest">
     <button type="button" data-prompt="Help me write or edit: "><b>✍️ Write &amp; edit</b><span>Emails, essays, polish</span></button>
@@ -639,6 +736,21 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
   </section>
 </div>
 
+<div id="liveModal" class="overlay live-overlay" role="dialog" aria-modal="true" aria-labelledby="liveTitle">
+  <section class="box live-box">
+    <div class="top live-head"><div><h3 id="liveTitle">Glitch Live</h3><span id="liveStatus" class="live-status">Ready when you are</span></div><button class="mini" id="liveClose" type="button" aria-label="Close Live">✕</button></div>
+    <div class="live-visual" id="liveVisual"><div class="live-orb" id="liveOrb"><span>G</span><i></i></div><video id="liveVideo" autoplay muted playsinline hidden></video></div>
+    <div class="live-captions" id="liveCaptions" aria-live="polite"><p>Start Live and just talk. You can interrupt Glitch naturally.</p></div>
+    <div class="live-consent" id="liveConsent">
+      <p>Live sends microphone audio to Google Gemini for real-time conversation. Camera or screen content is sent only when you explicitly turn on sharing. On Google's free API tier, submitted content may be used to improve Google products. Avoid sharing passwords, private messages, financial details or other sensitive content.</p>
+      <label class="live-consent-check"><input id="liveConsentCheck" type="checkbox"> I understand and want to start a Live session.</label>
+      <button class="cta" id="liveStart" type="button" disabled>Start Live</button>
+    </div>
+    <div class="live-controls" id="liveControls" hidden><button class="mini" id="liveMute" type="button">Mute mic</button><button class="mini" id="liveCamera" type="button">Camera</button><button class="mini" id="liveScreen" type="button">Share screen</button><button class="cta live-end" id="liveEnd" type="button">End session</button></div>
+    <p class="live-footnote">Camera and screen sharing are optional. Your browser will ask for permission, and you can stop sharing at any time.</p>
+  </section>
+</div>
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="gate" class="overlay">
   <form id="gateForm">
@@ -675,6 +787,20 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
 <script>
 (async () => {
   const $ = (id) => document.getElementById(id);
+  const sideCollapseButton = $('sideCollapse');
+  let sidebarCollapsed = false;
+  try { sidebarCollapsed = localStorage.getItem('glitch_sidebar_collapsed') === '1' && window.matchMedia('(min-width: 761px)').matches; } catch {}
+  function setSidebarCollapsed(collapsed) {
+    sidebarCollapsed = !!collapsed && window.matchMedia('(min-width: 761px)').matches;
+    document.body.classList.toggle('sidebar-collapsed', sidebarCollapsed);
+    sideCollapseButton.setAttribute('aria-pressed', String(sidebarCollapsed));
+    sideCollapseButton.setAttribute('aria-label', sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar');
+    sideCollapseButton.title = sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+    try { localStorage.setItem('glitch_sidebar_collapsed', sidebarCollapsed ? '1' : '0'); } catch {}
+  }
+  setSidebarCollapsed(sidebarCollapsed);
+  sideCollapseButton.addEventListener('click', () => setSidebarCollapsed(!sidebarCollapsed));
+  window.addEventListener('resize', () => { if (window.innerWidth <= 760 && sidebarCollapsed) setSidebarCollapsed(false); });
   const log = $('log'), input = $('input'), sendBtn = $('send');
 
   // ---- subtle interface sound + ambient VFX ---------------------------------
@@ -1791,9 +1917,11 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
   const playgroundDefaults={html:'<main class="card">\n  <h1>Hello, Glitch!</h1>\n  <p>Edit the code and press Run.</p>\n  <button id="hello">Click me</button>\n  <p id="message"></p>\n</main>',css:'body { font-family: system-ui; background: #f4f0ff; padding: 2rem; }\n.card { max-width: 420px; margin: auto; padding: 2rem; border-radius: 18px; background: white; box-shadow: 0 12px 35px #33225522; }\nbutton { padding: .7rem 1rem; border: 0; border-radius: 9px; background: #7c3aed; color: white; cursor: pointer; }',js:'document.querySelector("#hello").addEventListener("click", () => {\n  document.querySelector("#message").textContent = "It works! ✨";\n});'};
   function setPlaygroundDefaults(){ $('playgroundHTML').value=playgroundDefaults.html;$('playgroundCSS').value=playgroundDefaults.css;$('playgroundJS').value=playgroundDefaults.js;runPlayground(); }
   function runPlayground(){
-    const html=$('playgroundHTML').value,css=$('playgroundCSS').value,js=$('playgroundJS').value.replace(/<\/script/gi,'<\\/script');
-    const src='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:"><style>'+css+'</style></head><body>'+html+'<script>'+js+'<\\/script></body></html>';
-    $('playgroundFrame').srcdoc=src;$('playgroundStatus').textContent='Preview updated. Code runs in an isolated frame.'; 
+    const html=$('playgroundHTML').value,css=$('playgroundCSS').value;
+    // Escape closing-script sequences in user code without exposing a literal HTML end tag here.
+    const js=$('playgroundJS').value.replace(/<\x2fscript/gi,'<\\x2fscript');
+    const src='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:"><style>'+css+'</style></head><body>'+html+'<script>'+js+'</scr'+'ipt></body></html>';
+    $('playgroundFrame').srcdoc=src;$('playgroundStatus').textContent='Preview updated. Code runs in an isolated frame.';
   }
   $('openCodePlayground').addEventListener('click',async()=>{if(await requireVipTool()){ $('codePlaygroundModal').classList.add('open');runPlayground();}});
   $('codePlaygroundClose').addEventListener('click',()=>$('codePlaygroundModal').classList.remove('open'));
@@ -1806,11 +1934,24 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
   // ---- Pollinations image studio behavior ------------------------------------
   let imagePreviewUrl = '';
   const imageModal = $('imageModal');
-  function openImageStudio(){
+  async function openImageStudio(){
     if(!user){openGate('Sign in to generate images.');return;}
     imageModal.classList.add('open');
-    refreshImageUsage().catch(e=>{$('imageStatus').textContent=e.message||'Could not load image quota.';});
+    $('imageGenerate').disabled=true;
+    $('imageStatus').textContent='Checking image-generation service…';
     $('imagePrompt').focus();
+    try{
+      const configResult=await api('/api/config');
+      if(configResult.ok&&configResult.data.imageGeneration===false){
+        $('imageStatus').textContent='Image generation is not configured on this deployment. Add POLLINATIONS_API_KEY to the Vercel environment variables, then redeploy.';
+      }else{
+        $('imageGenerate').disabled=false;
+        $('imageStatus').textContent='';
+      }
+    }catch(error){
+      $('imageStatus').textContent='Could not check image-generation configuration: '+(error.message||'Please try again.');
+    }
+    refreshImageUsage().catch(e=>{$('imageUsage').textContent=e.message||'Could not load image quota.';});
   }
   function closeImageStudio(){imageModal.classList.remove('open');}
   async function refreshImageUsage(){
@@ -1836,11 +1977,22 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
         if(r.data.usage&&!r.data.vip)$('imageUsage').textContent='Today: '+r.data.usage.used+' / 15 used · '+r.data.usage.remaining+' left';
         return;
       }
-      if(imagePreviewUrl)URL.revokeObjectURL(imagePreviewUrl);
-      const blob=await (await fetch(r.data.image)).blob();
-      imagePreviewUrl=URL.createObjectURL(blob);
-      $('imagePreview').src=imagePreviewUrl;$('imagePreview').hidden=false;
-      $('imageDownload').href=imagePreviewUrl;$('imageDownload').hidden=false;
+      if(imagePreviewUrl){URL.revokeObjectURL(imagePreviewUrl);imagePreviewUrl='';}
+      // Use Pollinations-hosted media directly when available; fall back to the
+      // compact data URI for providers that do not return an enclosure URL.
+      const imageSource=r.data.imageUrl||r.data.image;
+      if(!imageSource)throw new Error('The image provider returned no image. Please try again.');
+      if(imageSource.startsWith('data:')){
+        const blob=await (await fetch(imageSource)).blob();
+        imagePreviewUrl=URL.createObjectURL(blob);
+        $('imagePreview').src=imagePreviewUrl;
+        $('imageDownload').href=imagePreviewUrl;
+      }else{
+        $('imagePreview').src=imageSource;
+        $('imageDownload').href=imageSource;
+      }
+      $('imagePreview').hidden=false;
+      $('imageDownload').hidden=false;
       $('imageStatus').textContent='Image ready!';
       await refreshImageUsage();
       playSfx('reply');
@@ -1848,6 +2000,122 @@ body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
     finally{btn.disabled=false;btn.textContent='Generate image';}
   });
 
+  // ---- Live voice + vision, isolated from regular chat and push-to-talk ----
+  const LiveVoice = (() => {
+    const modal=$('liveModal'),box=modal.querySelector('.live-box'),status=$('liveStatus'),captions=$('liveCaptions'),video=$('liveVideo');
+    const startBtn=$('liveStart'),consent=$('liveConsentCheck'),controls=$('liveControls');
+    let ws=null,micStream=null,videoStream=null,audioCtx=null,micSource=null,processor=null,silentGain=null,frameTimer=null,playbackAt=0;
+    let playing=new Set(),liveActive=false,liveReady=false,muted=false,videoKind='',captionLines=[],inputDraft='',outputDraft='';
+    const send=p=>{if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(p));};
+    function setStatus(t,state){status.textContent=t;box.dataset.state=state||'idle';}
+    function paintCaptions(){
+      captions.textContent='';
+      captionLines.slice(-6).forEach(row=>{const p=document.createElement('p');p.className='live-caption-line';const b=document.createElement('strong');b.textContent=row.who+':';const span=document.createElement('span');span.textContent=row.text;p.append(b,span);captions.appendChild(p);});
+      if(inputDraft||outputDraft){const p=document.createElement('p');p.className='live-caption-line';const b=document.createElement('strong');b.textContent=outputDraft?'Glitch:':'You:';const span=document.createElement('span');span.textContent=outputDraft||inputDraft;p.append(b,span);captions.appendChild(p);}
+      captions.scrollTop=captions.scrollHeight;
+    }
+    function addCaption(who,text){const value=String(text||'').trim();if(!value)return;captionLines.push({who,text:value});captionLines=captionLines.slice(-12);paintCaptions();}
+    function stopPlayback(){for(const source of playing){try{source.stop();}catch{}}playing.clear();playbackAt=audioCtx?audioCtx.currentTime:0;}
+    function playPcm(base64){
+      if(!audioCtx)return;
+      try{const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+        const pcm=new Int16Array(bytes.buffer,bytes.byteOffset,Math.floor(bytes.byteLength/2));if(!pcm.length)return;
+        const buffer=audioCtx.createBuffer(1,pcm.length,24000),channel=buffer.getChannelData(0);for(let i=0;i<pcm.length;i++)channel[i]=pcm[i]/32768;
+        const source=audioCtx.createBufferSource();source.buffer=buffer;source.connect(audioCtx.destination);
+        const when=Math.max(audioCtx.currentTime+.025,playbackAt);source.start(when);playbackAt=when+buffer.duration;playing.add(source);source.onended=()=>playing.delete(source);
+      }catch(error){console.warn('Live audio playback failed',error);}
+    }
+    function resample(input,rate){
+      if(rate===16000)return input;const ratio=rate/16000,length=Math.floor(input.length/ratio),out=new Int16Array(length);
+      for(let i=0;i<length;i++){const a=Math.floor(i*ratio),b=Math.min(Math.floor((i+1)*ratio),input.length);let sum=0;for(let j=a;j<b;j++)sum+=input[j];const v=b>a?sum/(b-a):0;out[i]=Math.max(-1,Math.min(1,v))*32767;}return out;
+    }
+    function base64(bytes){let binary='';for(let i=0;i<bytes.length;i++)binary+=String.fromCharCode(bytes[i]);return btoa(binary);}
+    function startAudioInput(){
+      micSource=audioCtx.createMediaStreamSource(micStream);processor=audioCtx.createScriptProcessor(2048,1,1);silentGain=audioCtx.createGain();silentGain.gain.value=0;
+      processor.onaudioprocess=e=>{if(!liveReady||muted||!ws||ws.readyState!==WebSocket.OPEN)return;const pcm=resample(e.inputBuffer.getChannelData(0),audioCtx.sampleRate);send({realtimeInput:{audio:{data:base64(new Uint8Array(pcm.buffer)),mimeType:'audio/pcm;rate=16000'}}});};
+      micSource.connect(processor);processor.connect(silentGain);silentGain.connect(audioCtx.destination);
+    }
+    function stopVideoShare(){
+      if(frameTimer){clearInterval(frameTimer);frameTimer=null;}
+      if(videoStream){videoStream.getTracks().forEach(t=>t.stop());videoStream=null;}
+      video.srcObject=null;video.hidden=true;$('liveOrb').hidden=false;videoKind='';
+      $('liveCamera').textContent='Camera';$('liveScreen').textContent='Share screen';
+    }
+    async function startVideoShare(kind){
+      if(!liveReady||!navigator.mediaDevices)return;
+      try{
+        const request=kind==='screen'?navigator.mediaDevices.getDisplayMedia({video:{frameRate:{ideal:5,max:10}},audio:false}):navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false});
+        const stream=await request;stopVideoShare();videoStream=stream;videoKind=kind;video.srcObject=stream;video.hidden=false;$('liveOrb').hidden=true;await video.play().catch(()=>{});
+        stream.getVideoTracks()[0].addEventListener('ended',stopVideoShare,{once:true});
+        if(kind==='camera')$('liveCamera').textContent='Stop camera';else $('liveScreen').textContent='Stop sharing';
+        const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+        frameTimer=setInterval(()=>{if(!liveReady||!ws||ws.readyState!==WebSocket.OPEN||video.readyState<2)return;
+          const w=video.videoWidth||640,h=video.videoHeight||360,scale=Math.min(1,640/w);canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));
+          try{ctx.drawImage(video,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.62).split(',')[1];send({realtimeInput:{video:{data,mimeType:'image/jpeg'}}});}catch(error){console.warn('Live video frame skipped',error);}
+        },1000);
+        setStatus(kind==='screen'?'Sharing your screen':'Camera is on','listening');
+      }catch(error){if(error&&error.name!=='NotAllowedError'&&error.name!=='AbortError')showToast('Could not start sharing: '+(error.message||'permission unavailable'));setStatus('Live is still running','listening');}
+    }
+    async function toggleVideo(kind){if(videoKind===kind){stopVideoShare();setStatus('Live is still running','listening');return;}await startVideoShare(kind);}
+    function cleanup(){
+      liveReady=false;liveActive=false;muted=false;stopPlayback();stopVideoShare();
+      if(processor){processor.onaudioprocess=null;try{processor.disconnect();}catch{}processor=null;}
+      if(micSource){try{micSource.disconnect();}catch{}micSource=null;}
+      if(silentGain){try{silentGain.disconnect();}catch{}silentGain=null;}
+      if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+      if(audioCtx){const old=audioCtx;audioCtx=null;old.close().catch(()=>{});}
+      if(ws){const old=ws;ws=null;try{old.close(1000,'Session ended');}catch{}}
+      controls.hidden=true;$('liveConsent').hidden=false;startBtn.disabled=!consent.checked;$('liveMute').textContent='Mute mic';box.dataset.state='idle';
+    }
+    function handleMessage(event){
+      let message;try{message=JSON.parse(event.data);}catch{return;}
+      if(message.error){const detail=message.error.message||'Google could not start the Live session.';setStatus(detail,'idle');showToast(detail);cleanup();return;}
+      if(message.setupComplete){liveReady=true;controls.hidden=false;$('liveConsent').hidden=true;setStatus('Connected · listening','listening');startAudioInput();send({realtimeInput:{text:'Say a short, natural hello and invite the user to talk.'}});return;}
+      const c=message.serverContent||{};
+      if(c.interrupted){stopPlayback();outputDraft='';setStatus('Listening','listening');paintCaptions();}
+      if(c.interimInputTranscription&&c.interimInputTranscription.text){inputDraft=c.interimInputTranscription.text;setStatus('Listening','listening');paintCaptions();}
+      if(c.inputTranscription&&c.inputTranscription.text){addCaption('You',c.inputTranscription.text);inputDraft='';}
+      if(c.outputTranscription&&c.outputTranscription.text){outputDraft+=c.outputTranscription.text;setStatus('Glitch is speaking','speaking');paintCaptions();}
+      (c.modelTurn&&c.modelTurn.parts||[]).forEach(part=>{const d=part.inlineData||part.inline_data;if(d&&d.data&&String(d.mimeType||d.mime_type||'').startsWith('audio/pcm'))playPcm(d.data);});
+      if(c.turnComplete){if(outputDraft){addCaption('Glitch',outputDraft);outputDraft='';}inputDraft='';setStatus('Connected · listening','listening');paintCaptions();}
+      if(message.goAway)setStatus('Google is preparing to close this session','listening');
+    }
+    async function startSession(){
+      if(!user){showToast('Sign in or continue as guest before starting Live.');return;}
+      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket){showToast('Live needs a modern browser on a secure HTTPS connection.');return;}
+      startBtn.disabled=true;setStatus('Requesting microphone permission…','idle');
+      try{
+        const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('This browser does not support live audio.');
+        audioCtx=new AC({latencyHint:'interactive'});await audioCtx.resume();
+        micStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
+        const tokenResult=await api('/api/live-token',{method:'POST',body:JSON.stringify({})});if(!tokenResult.ok)throw new Error(tokenResult.data.error||'Could not start Live.');
+        ws=new WebSocket('wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained?access_token='+encodeURIComponent(tokenResult.data.token));
+        ws.onopen=()=>ws.send(JSON.stringify({setup:{
+          model:'models/gemini-3.8-live',
+          generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Puck'}}}},
+          systemInstruction:{parts:[{text:'You are Glitch, a natural, warm, quick-witted conversational AI and the user’s helpful friend. Speak naturally, concisely and conversationally, not like a formal assistant. You may use light playful humour, but never be cruel or mock vulnerability. Listen carefully, answer what the user actually means, and allow interruptions. If unsure, say so. Never claim to see camera or screen content unless a frame has actually been shared.'}]},
+          inputAudioTranscription:{},outputAudioTranscription:{},
+          realtimeInputConfig:{automaticActivityDetection:{disabled:false,prefixPaddingMs:180,silenceDurationMs:550}}
+        }}));
+        ws.onmessage=handleMessage;
+        ws.onerror=()=>{setStatus('Live connection error. Check network or Google API access.','idle');showToast('Live connection failed. Your normal chat still works.');cleanup();};
+        ws.onclose=e=>{if(liveActive){const detail=[e.reason,e.code?'code '+e.code:''].filter(Boolean).join(' · ');setStatus(detail||'Live connection closed.','idle');if(e.code!==1000)showToast('Live disconnected'+(detail?': '+detail:''));cleanup();}};
+        liveActive=true;setStatus('Opening secure Live connection…','idle');
+      }catch(error){cleanup();setStatus(error.message||'Could not start Live.','idle');showToast(error.message||'Could not start Live.');}
+    }
+    function open(){if(!user){showToast('Sign in or continue as guest to use Live.');return;}modal.classList.add('open');}
+    function close(){cleanup();modal.classList.remove('open');}
+    $('liveOpen').addEventListener('click',open);$('liveOpenComposer').addEventListener('click',open);
+    $('liveClose').addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close();});
+    consent.addEventListener('change',()=>{startBtn.disabled=!consent.checked;});startBtn.addEventListener('click',startSession);
+    $('liveEnd').addEventListener('click',()=>{cleanup();setStatus('Session ended','idle');$('liveConsent').hidden=false;});
+    $('liveMute').addEventListener('click',()=>{muted=!muted;if(micStream)micStream.getAudioTracks().forEach(t=>t.enabled=!muted);$('liveMute').textContent=muted?'Unmute mic':'Mute mic';setStatus(muted?'Microphone muted':'Connected · listening',muted?'idle':'listening');});
+    $('liveCamera').addEventListener('click',()=>toggleVideo('camera'));$('liveScreen').addEventListener('click',()=>toggleVideo('screen'));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close();});window.addEventListener('pagehide',cleanup);
+    return {close};
+  })();
+
+  
   // ---- start ----------------------------------------------------------------------
   if(user) refreshVip().catch(()=>setVipState(false));
   markMode(); render(); renderHistoryList();

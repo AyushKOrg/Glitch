@@ -30,8 +30,8 @@ module.exports = async (req, res) => {
   if (!user) return;
   try {
     if (req.method === 'GET') {
-      const usage = await rpc(user, 'get_glitch_image_usage');
-      return res.status(200).json(usage);
+      const status = await rpc(user, 'get_glitch_vip_status');
+      return res.status(200).json({ vip: status.vip === true });
     }
     if (!process.env.POLLINATIONS_API_KEY) return res.status(503).json({ error: 'POLLINATIONS_API_KEY is missing from the server environment.' });
     const prompt = String(req.body && req.body.prompt || '').trim();
@@ -40,7 +40,8 @@ module.exports = async (req, res) => {
     if (!MODELS.has(model)) return res.status(400).json({ error: 'That image model is not available.' });
     const vipStatus = await rpc(user, 'get_glitch_vip_status');
     if (vipStatus.vip !== true) return res.status(403).json({ error: 'Image generation is a VIP feature. Redeem a VIP invite to generate images directly in chat.', vipRequired: true });
-    const quota = await rpc(user, 'reserve_glitch_image_generation');
+    // Image generation is VIP-only, so no free-tier quota or image-usage migration is needed.
+    const quota = { vip: true, allowed: true, used: 0, remaining: null, limit: null };
     if (quota.allowed !== true) return res.status(429).json({ error: 'You have used all 15 free image generations for today. Your allowance resets at 00:00 UTC, or VIP accounts get unlimited generations.', usage: quota });
 
     let refunded = false;

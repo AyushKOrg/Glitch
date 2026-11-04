@@ -552,6 +552,12 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   --glass-blur:blur(26px) saturate(185%);
 }
 html,body{background:#f8faff}
+html,html[data-scheme=dark],html:not([data-scheme=light]){
+  --bg:#f8faff;--panel:rgba(255,255,255,.88);--panel-alt:rgba(255,255,255,.68);
+  --text:#202638;--text-dim:#59657b;--muted:#7e899e;
+  --border:rgba(117,132,165,.20);--border-strong:rgba(117,132,165,.32);
+  --error-soft:rgba(255,226,232,.88);color-scheme:light;
+}
 body{
   background:
     radial-gradient(ellipse at 78% 4%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 42%),

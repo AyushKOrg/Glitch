@@ -1611,7 +1611,8 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   function isImageGenerationPrompt(text) {
     const t = String(text || '').trim();
     return /\b(generate|create|draw|make|design|illustrate|paint|render)\b.{0,90}\b(image|picture|illustration|wallpaper|logo|poster|artwork|portrait|concept art|comic panel)\b/i.test(t)
-      || /^\s*(please\s+)?(show|make|create|draw)\s+me\s+(an?\s+)?(image|picture|illustration)\b/i.test(t);
+      || /^\s*(please\s+)?(show|make|create|draw)\s+me\s+(an?\s+)?(image|picture|illustration)\b/i.test(t)
+      || /^\s*(please\s+)?(draw|paint|illustrate)\b/i.test(t);
   }
   async function send(text, retry) {
     if (busy) return;

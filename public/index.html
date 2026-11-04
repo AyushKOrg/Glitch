@@ -1189,7 +1189,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
       mic.title = listening ? 'Listening… click to stop' : 'Speak (click to start)';
     }
     function speakable(text) {
-      return String(text || '').replace(/```[\s\S]*?```/g,' (code is on screen) ')
+      return String(text || '').replace(/\[\[GLITCH_IMAGE:[\s\S]*?\]\]/g,' image generated ').replace(/```[\s\S]*?```/g,' (code is on screen) ')
         .replace(/\n+\s*(sources?|references?)\s*:?[\s\S]*$/i,'')
         .replace(/!?\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/https?:\/\/\S+/g,'')
         .replace(/`([^`]*)`/g,'$1').replace(/^\s{0,3}#{1,6}\s*/gm,'')

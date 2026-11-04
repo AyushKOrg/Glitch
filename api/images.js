@@ -68,9 +68,9 @@ module.exports = async (req, res) => {
         return res.status(502).json({ error: 'Pollinations returned an unsupported image format.' });
       }
       const bytes = Buffer.from(await upstream.arrayBuffer());
-      if (!bytes.length || bytes.length > 12 * 1024 * 1024) {
+      if (!bytes.length || bytes.length > 3 * 1024 * 1024) {
         await refund();
-        return res.status(502).json({ error: 'The generated image was empty or too large.' });
+        return res.status(502).json({ error: 'The generated image was empty or too large (3 MB maximum).' });
       }
       return res.status(200).json({
         image: `data:${contentType};base64,${bytes.toString('base64')}`,

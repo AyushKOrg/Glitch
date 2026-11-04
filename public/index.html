@@ -1934,11 +1934,24 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   // ---- Pollinations image studio behavior ------------------------------------
   let imagePreviewUrl = '';
   const imageModal = $('imageModal');
-  function openImageStudio(){
+  async function openImageStudio(){
     if(!user){openGate('Sign in to generate images.');return;}
     imageModal.classList.add('open');
-    refreshImageUsage().catch(e=>{$('imageStatus').textContent=e.message||'Could not load image quota.';});
+    $('imageGenerate').disabled=true;
+    $('imageStatus').textContent='Checking image-generation service…';
     $('imagePrompt').focus();
+    try{
+      const configResult=await api('/api/config');
+      if(configResult.ok&&configResult.data.imageGeneration===false){
+        $('imageStatus').textContent='Image generation is not configured on this deployment. Add POLLINATIONS_API_KEY to the Vercel environment variables, then redeploy.';
+      }else{
+        $('imageGenerate').disabled=false;
+        $('imageStatus').textContent='';
+      }
+    }catch(error){
+      $('imageStatus').textContent='Could not check image-generation configuration: '+(error.message||'Please try again.');
+    }
+    refreshImageUsage().catch(e=>{$('imageUsage').textContent=e.message||'Could not load image quota.';});
   }
   function closeImageStudio(){imageModal.classList.remove('open');}
   async function refreshImageUsage(){

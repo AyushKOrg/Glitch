@@ -38,7 +38,8 @@ module.exports = async (req, res) => {
     const model = String(req.body && req.body.model || 'black-forest-labs/flux.1-schnell');
     if (!prompt || prompt.length > 1000) return res.status(400).json({ error: 'Enter an image prompt between 1 and 1000 characters.' });
     if (!MODELS.has(model)) return res.status(400).json({ error: 'That image model is not available.' });
-
+    const vipStatus = await rpc(user, 'get_glitch_vip_status');
+    if (vipStatus.vip !== true) return res.status(403).json({ error: 'Image generation is a VIP feature. Redeem a VIP invite to generate images directly in chat.', vipRequired: true });
     const quota = await rpc(user, 'reserve_glitch_image_generation');
     if (quota.allowed !== true) return res.status(429).json({ error: 'You have used all 15 free image generations for today. Your allowance resets at 00:00 UTC, or VIP accounts get unlimited generations.', usage: quota });
 

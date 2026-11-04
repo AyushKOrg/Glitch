@@ -1682,6 +1682,52 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
     sendBtn.appendChild(s); setTimeout(() => s.remove(), 600);
   });
 
+
+  // ---- Pollinations image studio behavior ------------------------------------
+  let imagePreviewUrl = '';
+  const imageModal = $('imageModal');
+  function openImageStudio(){
+    if(!user){openGate('Sign in to generate images.');return;}
+    imageModal.classList.add('open');
+    refreshImageUsage().catch(e=>{$('imageStatus').textContent=e.message||'Could not load image quota.';});
+    $('imagePrompt').focus();
+  }
+  function closeImageStudio(){imageModal.classList.remove('open');}
+  async function refreshImageUsage(){
+    if(!user)return;
+    const r=await api('/api/images');
+    if(!r.ok)throw new Error(r.data.error||'Could not load image quota.');
+    $('imageUsage').textContent=r.data.vip?'VIP: unlimited image generations':('Today: '+r.data.used+' / 15 used · '+r.data.remaining+' free generations left');
+  }
+  $('openImageStudio').addEventListener('click',openImageStudio);
+  $('imageStudioQuick').addEventListener('click',openImageStudio);
+  $('imageClose').addEventListener('click',closeImageStudio);
+  imageModal.addEventListener('click',e=>{if(e.target===imageModal)closeImageStudio();});
+  $('imageGenerate').addEventListener('click',async()=>{
+    const prompt=$('imagePrompt').value.trim();
+    if(!prompt){$('imageStatus').textContent='Enter a description first.';return;}
+    const btn=$('imageGenerate');btn.disabled=true;btn.textContent='Generating…';
+    $('imageStatus').textContent='Creating your image. This can take a little while.';
+    $('imageDownload').hidden=true;$('imagePreview').hidden=true;
+    try{
+      const r=await api('/api/images',{method:'POST',body:JSON.stringify({prompt,model:$('imageModel').value})});
+      if(!r.ok){
+        $('imageStatus').textContent=r.data.error||'Image generation failed.';
+        if(r.data.usage&&!r.data.vip)$('imageUsage').textContent='Today: '+r.data.usage.used+' / 15 used · '+r.data.usage.remaining+' left';
+        return;
+      }
+      if(imagePreviewUrl)URL.revokeObjectURL(imagePreviewUrl);
+      const blob=await (await fetch(r.data.image)).blob();
+      imagePreviewUrl=URL.createObjectURL(blob);
+      $('imagePreview').src=imagePreviewUrl;$('imagePreview').hidden=false;
+      $('imageDownload').href=imagePreviewUrl;$('imageDownload').hidden=false;
+      $('imageStatus').textContent='Image ready!';
+      await refreshImageUsage();
+      playSfx('reply');
+    }catch(e){$('imageStatus').textContent=e.message||'Could not generate the image.';}
+    finally{btn.disabled=false;btn.textContent='Generate image';}
+  });
+
   // ---- start ----------------------------------------------------------------------
   if(user) refreshVip().catch(()=>setVipState(false));
   markMode(); render(); renderHistoryList();

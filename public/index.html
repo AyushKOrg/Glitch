@@ -1615,6 +1615,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   }
   async function send(text, retry) {
     if (busy) return;
+    const requestText = text == null ? String((history[history.length - 1] || {}).content || '') : String(text);
     if (user && user.isAnonymous && quotaDone) { showQuotaEnd(); return; }
     const chat = activeChat(); if (!chat) return;
     const chatId = chat.id, sentMode = mode;
@@ -1632,8 +1633,8 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
     const note = (kind, msg) => { if (inActive()) { pending = null; render(); showError(msg, kind === 'retry'); } else { pending = null; showToast(msg); } Voice.onFailed(); };
     try {
       let result;
-      if (isImageGenerationPrompt(text)) {
-        const imageResult = await api('/api/images', { method: 'POST', body: JSON.stringify({ prompt: String(text).slice(0, 1000) }), signal: abortCtl.signal });
+      if (isImageGenerationPrompt(requestText)) {
+        const imageResult = await api('/api/images', { method: 'POST', body: JSON.stringify({ prompt: String(requestText).slice(0, 1000) }), signal: abortCtl.signal });
         if (!imageResult.ok && imageResult.status === 403 && imageResult.data.vipRequired) { $('vipModal').classList.add('open'); $('vipStatus').textContent = imageResult.data.error; }
         if (!imageResult.ok) throw new Error(imageResult.data.error || 'Image generation failed.');
         const imageSource = imageResult.data.imageUrl || imageResult.data.image;

@@ -13,5 +13,6 @@ module.exports = (req, res) => {
     supabaseAnonKey: process.env.SUPABASE_ANON_KEY || '',
     cognition: Boolean(process.env.OPENROUTER_API_KEY),
     flash: Boolean(process.env.GOOGLE_API_KEY),
+    imageGeneration: Boolean(process.env.POLLINATIONS_API_KEY),
   });
 };

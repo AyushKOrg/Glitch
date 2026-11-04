@@ -1,16 +1,36 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/chat.js": { "maxDuration": 60 },\n    "api/images.js": { "maxDuration": 60 }
+    "api/chat.js": {
+      "maxDuration": 60
+    },
+    "api/images.js": {
+      "maxDuration": 60
+    },
+    "api/live-token.js": {
+      "maxDuration": 20
+    }
   },
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "no-referrer" },
-        { "key": "Permissions-Policy", "value": "microphone=(self), camera=(), geolocation=()" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "microphone=(self), camera=(self), display-capture=(self), geolocation=()"
+        }
       ]
     }
   ]

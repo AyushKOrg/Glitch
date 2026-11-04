@@ -2004,7 +2004,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
   const LiveVoice = (() => {
     const modal=$('liveModal'),box=modal.querySelector('.live-box'),status=$('liveStatus'),captions=$('liveCaptions'),video=$('liveVideo');
     const startBtn=$('liveStart'),consent=$('liveConsentCheck'),controls=$('liveControls');
-    let ws=null,micStream=null,videoStream=null,audioCtx=null,micSource=null,processor=null,silentGain=null,frameTimer=null,playbackAt=0;
+    let ws=null,micStream=null,videoStream=null,audioCtx=null,micSource=null,processor=null,silentGain=null,frameTimer=null,connectTimer=null,playbackAt=0;
     let playing=new Set(),liveActive=false,liveReady=false,muted=false,videoKind='',captionLines=[],inputDraft='',outputDraft='';
     const send=p=>{if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(p));};
     function setStatus(t,state){status.textContent=t;box.dataset.state=state||'idle';}
@@ -2058,7 +2058,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
     }
     async function toggleVideo(kind){if(videoKind===kind){stopVideoShare();setStatus('Live is still running','listening');return;}await startVideoShare(kind);}
     function cleanup(){
-      liveReady=false;liveActive=false;muted=false;stopPlayback();stopVideoShare();
+      liveReady=false;liveActive=false;muted=false;if(connectTimer){clearTimeout(connectTimer);connectTimer=null;}stopPlayback();stopVideoShare();
       if(processor){processor.onaudioprocess=null;try{processor.disconnect();}catch{}processor=null;}
       if(micSource){try{micSource.disconnect();}catch{}micSource=null;}
       if(silentGain){try{silentGain.disconnect();}catch{}silentGain=null;}
@@ -2070,7 +2070,7 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
     function handleMessage(event){
       let message;try{message=JSON.parse(event.data);}catch{return;}
       if(message.error){const detail=message.error.message||'Google could not start the Live session.';setStatus(detail,'idle');showToast(detail);cleanup();return;}
-      if(message.setupComplete){liveReady=true;controls.hidden=false;$('liveConsent').hidden=true;setStatus('Connected · listening','listening');startAudioInput();send({realtimeInput:{text:'Say a short, natural hello and invite the user to talk.'}});return;}
+      if(message.setupComplete){if(connectTimer){clearTimeout(connectTimer);connectTimer=null;}liveReady=true;controls.hidden=false;$('liveConsent').hidden=true;setStatus('Connected · listening','listening');startAudioInput();send({realtimeInput:{text:'Say a short, natural hello and invite the user to talk.'}});return;}
       const c=message.serverContent||{};
       if(c.interrupted){stopPlayback();outputDraft='';setStatus('Listening','listening');paintCaptions();}
       if(c.interimInputTranscription&&c.interimInputTranscription.text){inputDraft=c.interimInputTranscription.text;setStatus('Listening','listening');paintCaptions();}
@@ -2082,6 +2082,8 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
     }
     async function startSession(){
       if(!user){showToast('Sign in or continue as guest before starting Live.');return;}
+      try { await refreshVip(); } catch (error) { showToast('Could not verify VIP status. Please try again.'); return; }
+      if(!vipActive){$('vipModal').classList.add('open');$('vipStatus').textContent='Live voice is a VIP feature. Redeem your invite to unlock it.';return;}
       if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket){showToast('Live needs a modern browser on a secure HTTPS connection.');return;}
       startBtn.disabled=true;setStatus('Requesting microphone permission…','idle');
       try{
@@ -2090,20 +2092,21 @@ body.sidebar-collapsed .avatar{width:34px;height:34px}
         micStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
         const tokenResult=await api('/api/live-token',{method:'POST',body:JSON.stringify({})});if(!tokenResult.ok)throw new Error(tokenResult.data.error||'Could not start Live.');
         ws=new WebSocket('wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained?access_token='+encodeURIComponent(tokenResult.data.token));
-        ws.onopen=()=>ws.send(JSON.stringify({setup:{
+        ws.onopen=()=>{setStatus('Authenticating secure Live session…','idle');ws.send(JSON.stringify({setup:{
           model:'models/gemini-3.8-live',
           generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Puck'}}}},
           systemInstruction:{parts:[{text:'You are Glitch, a natural, warm, quick-witted conversational AI and the user’s helpful friend. Speak naturally, concisely and conversationally, not like a formal assistant. You may use light playful humour, but never be cruel or mock vulnerability. Listen carefully, answer what the user actually means, and allow interruptions. If unsure, say so. Never claim to see camera or screen content unless a frame has actually been shared.'}]},
           inputAudioTranscription:{},outputAudioTranscription:{},
           realtimeInputConfig:{automaticActivityDetection:{disabled:false,prefixPaddingMs:180,silenceDurationMs:550}}
-        }}));
+        }}));};
         ws.onmessage=handleMessage;
         ws.onerror=()=>{setStatus('Live connection error. Check network or Google API access.','idle');showToast('Live connection failed. Your normal chat still works.');cleanup();};
         ws.onclose=e=>{if(liveActive){const detail=[e.reason,e.code?'code '+e.code:''].filter(Boolean).join(' · ');setStatus(detail||'Live connection closed.','idle');if(e.code!==1000)showToast('Live disconnected'+(detail?': '+detail:''));cleanup();}};
         liveActive=true;setStatus('Opening secure Live connection…','idle');
+        connectTimer=setTimeout(()=>{if(!liveReady){setStatus('Live timed out before setup completed. Please try again.','idle');showToast('Live did not finish connecting. Check Google Live API access and try again.');cleanup();}},18000);
       }catch(error){cleanup();setStatus(error.message||'Could not start Live.','idle');showToast(error.message||'Could not start Live.');}
     }
-    function open(){if(!user){showToast('Sign in or continue as guest to use Live.');return;}modal.classList.add('open');}
+    async function open(){if(!user){showToast('Sign in or continue as guest to use Live.');return;}try{await refreshVip();}catch(error){showToast('Could not verify VIP status. Please try again.');return;}if(!vipActive){$('vipModal').classList.add('open');$('vipStatus').textContent='Live voice is a VIP feature. Redeem your invite to unlock it.';return;}modal.classList.add('open');}
     function close(){cleanup();modal.classList.remove('open');}
     $('liveOpen').addEventListener('click',open);$('liveOpenComposer').addEventListener('click',open);
     $('liveClose').addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close();});

@@ -424,6 +424,29 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
 .image-download{display:inline-flex;align-items:center;justify-content:center;border-radius:9px;padding:9px 13px;background:var(--accent);color:white;text-decoration:none;font-size:.84rem;font-weight:700}
 #imageGenerate:disabled{opacity:.55;cursor:wait}
 
+
+/* VIP creative tools */
+.tool-box{width:min(1040px,100%);max-height:min(94vh,980px);overflow:auto;display:flex;flex-direction:column}
+.tool-box .top{position:sticky;top:0;background:var(--panel);z-index:3}
+.tool-content{padding:14px;display:flex;flex-direction:column;gap:12px}
+.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tool-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.tool-field label{font-size:.78rem;font-weight:700;color:var(--text-dim)}
+.tool-field input,.tool-field textarea{width:100%;min-width:0;padding:9px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel-alt);color:var(--text)}
+.tool-toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.tool-toolbar .mini{padding:8px 10px}
+.tool-status{min-height:1.25em;font-size:.78rem;color:var(--text-dim)}
+.editor-stage{display:grid;place-items:center;min-height:240px;max-height:52vh;overflow:auto;padding:12px;border:1px dashed var(--border-strong);border-radius:12px;background:var(--panel-alt)}
+#editorCanvas{display:block;max-width:100%;max-height:48vh;object-fit:contain;background:repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 50%/18px 18px;border-radius:4px}
+.editor-range{width:100%;accent-color:var(--accent)}
+.playground-editors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.playground-editors textarea{width:100%;height:220px;resize:vertical;padding:10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel-alt);color:var(--text);font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}
+.playground-preview{width:100%;height:360px;border:1px solid var(--border-strong);border-radius:10px;background:white}
+.vip-tool-nav{border:1px solid color-mix(in srgb,#a78bfa 38%,var(--border))}
+.vip-tool-nav .tool-lock-label{margin-left:auto;font-size:.66rem;color:#d99a08;font-weight:800;letter-spacing:.05em}
+body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
+@media(max-width:700px){.tool-grid,.playground-editors{grid-template-columns:1fr}.playground-editors textarea{height:150px}.playground-preview{height:300px}}
+
 </style>
 </head>
 <body class="empty">
@@ -434,6 +457,8 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
   <button class="nav" id="memoryOpen" type="button" title="Manage memories saved to your account"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v1a4 4 0 00-2 7 4 4 0 006 5 4 4 0 006-5 4 4 0 00-2-7V7a4 4 0 00-4-4zM9 11h.01M15 11h.01M9 16c1.5 1 4.5 1 6 0"/></svg>Memory</button>
+  <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openCodePlayground" type="button" title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-nav" id="vipOpen" type="button" title="VIP membership and exclusive features"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>VIP <span id="vipNavBadge" class="vip-pill">LOCKED</span></button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
@@ -577,6 +602,39 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
       <div class="image-actions"><button class="cta" id="imageGenerate" type="button">Generate image</button><a id="imageDownload" class="image-download" hidden download="glitch-image.png">Download image</a></div>
       <div id="imageStatus" class="image-status" role="status" aria-live="polite"></div>
       <img id="imagePreview" class="image-preview" alt="Your generated image" hidden>
+    </div>
+  </section>
+</div>
+
+
+<div id="imageEditorModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="imageEditorTitle">
+  <section class="box tool-box">
+    <div class="top"><div><h3 id="imageEditorTitle">🖼️ VIP Image Editor</h3><p>Edit locally in your browser. Your image is not uploaded.</p></div><button class="mini" id="imageEditorClose" type="button" aria-label="Close image editor">✕</button></div>
+    <div class="tool-content">
+      <div class="tool-toolbar"><label class="mini" for="editorUpload">＋ Upload image</label><input id="editorUpload" type="file" accept="image/*" hidden><button class="mini" id="editorRotate" type="button">↻ Rotate 90°</button><button class="mini" id="editorReset" type="button">Reset edits</button><button class="cta" id="editorDownload" type="button" disabled>Download PNG</button></div>
+      <div class="editor-stage"><canvas id="editorCanvas" width="1" height="1"></canvas><div id="editorEmpty" class="tool-status">Upload an image to start editing.</div></div>
+      <div class="tool-grid">
+        <div class="tool-field"><label for="editorBrightness">Brightness <output id="editorBrightnessValue">100%</output></label><input class="editor-range" id="editorBrightness" type="range" min="0" max="200" value="100"></div>
+        <div class="tool-field"><label for="editorContrast">Contrast <output id="editorContrastValue">100%</output></label><input class="editor-range" id="editorContrast" type="range" min="0" max="200" value="100"></div>
+        <div class="tool-field"><label for="editorSaturation">Saturation <output id="editorSaturationValue">100%</output></label><input class="editor-range" id="editorSaturation" type="range" min="0" max="200" value="100"></div>
+        <div class="tool-field"><label for="editorText">Text overlay</label><input id="editorText" maxlength="100" placeholder="Add a caption (optional)"></div>
+      </div>
+      <div id="editorStatus" class="tool-status" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+</div>
+<div id="codePlaygroundModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="codePlaygroundTitle">
+  <section class="box tool-box">
+    <div class="top"><div><h3 id="codePlaygroundTitle">⌨️ VIP Code Playground</h3><p>HTML, CSS and JavaScript · live preview · runs in a sandbox.</p></div><button class="mini" id="codePlaygroundClose" type="button" aria-label="Close code playground">✕</button></div>
+    <div class="tool-content">
+      <div class="tool-toolbar"><button class="cta" id="playgroundRun" type="button">▶ Run code</button><button class="mini" id="playgroundReset" type="button">Reset example</button><button class="mini" id="playgroundClear" type="button">Clear all</button><span class="tool-status">Preview is isolated from the main Glitch page.</span></div>
+      <div class="playground-editors">
+        <div class="tool-field"><label for="playgroundHTML">HTML</label><textarea id="playgroundHTML" spellcheck="false"></textarea></div>
+        <div class="tool-field"><label for="playgroundCSS">CSS</label><textarea id="playgroundCSS" spellcheck="false"></textarea></div>
+        <div class="tool-field"><label for="playgroundJS">JavaScript</label><textarea id="playgroundJS" spellcheck="false"></textarea></div>
+      </div>
+      <div class="tool-field"><label>Live preview</label><iframe id="playgroundFrame" class="playground-preview" title="Code playground preview" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></div>
+      <div id="playgroundStatus" class="tool-status" role="status" aria-live="polite">Ready. Press Run code to update the preview.</div>
     </div>
   </section>
 </div>
@@ -1682,6 +1740,67 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
     sendBtn.appendChild(s); setTimeout(() => s.remove(), 600);
   });
 
+
+
+  // ---- VIP-only creative tools (all processing stays client-side) ------------
+  async function requireVipTool(){
+    if(!user){openGate('Sign in with your account to use VIP tools.');return false;}
+    try{await refreshVip();}catch(e){showToast('Could not verify VIP status. Please try again.');return false;}
+    if(!vipActive){
+      $('vipModal').classList.add('open');
+      $('vipStatus').textContent=user.isAnonymous?'Create a registered account, then redeem a VIP invite to unlock these tools.':'These tools are VIP-only. Redeem your private invite code to unlock them.';
+      return false;
+    }
+    return true;
+  }
+  const imageEditorModal=$('imageEditorModal'),editorCanvas=$('editorCanvas'),editorCtx=editorCanvas.getContext('2d');
+  let editorImage=null,editorRotation=0,editorObjectUrl='';
+  function renderEditor(){
+    if(!editorImage)return;
+    const rotated=Math.abs(editorRotation%180)===90;
+    const maxSide=2600,scale=Math.min(1,maxSide/Math.max(editorImage.naturalWidth,editorImage.naturalHeight));
+    const w=Math.max(1,Math.round(editorImage.naturalWidth*scale)),h=Math.max(1,Math.round(editorImage.naturalHeight*scale));
+    editorCanvas.width=rotated?h:w;editorCanvas.height=rotated?w:h;
+    editorCtx.save();editorCtx.translate(editorCanvas.width/2,editorCanvas.height/2);editorCtx.rotate(editorRotation*Math.PI/180);
+    editorCtx.filter='brightness('+ $('editorBrightness').value +'%) contrast('+ $('editorContrast').value +'%) saturate('+ $('editorSaturation').value +'%)';
+    editorCtx.drawImage(editorImage,-w/2,-h/2,w,h);editorCtx.filter='none';
+    const caption=$('editorText').value.trim();
+    if(caption){const size=Math.max(18,Math.round(Math.min(w,h)*.065));editorCtx.font='700 '+size+'px Inter, sans-serif';editorCtx.textAlign='center';editorCtx.textBaseline='bottom';editorCtx.lineWidth=Math.max(3,size*.12);editorCtx.strokeStyle='rgba(0,0,0,.8)';editorCtx.fillStyle='#fff';editorCtx.strokeText(caption,0,Math.min(h/2-12, h*.43));editorCtx.fillText(caption,0,Math.min(h/2-12,h*.43));}
+    editorCtx.restore();
+    $('editorEmpty').hidden=true;$('editorDownload').disabled=false;
+    ['Brightness','Contrast','Saturation'].forEach(k=>$( 'editor'+k+'Value').textContent=$('editor'+k).value+'%');
+  }
+  function resetEditor(){['Brightness','Contrast','Saturation'].forEach(k=>$('editor'+k).value=100);$('editorText').value='';editorRotation=0;renderEditor();}
+  $('openImageEditor').addEventListener('click',async()=>{if(await requireVipTool())imageEditorModal.classList.add('open');});
+  $('imageEditorClose').addEventListener('click',()=>imageEditorModal.classList.remove('open'));
+  imageEditorModal.addEventListener('click',e=>{if(e.target===imageEditorModal)imageEditorModal.classList.remove('open');});
+  $('editorUpload').addEventListener('change',e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    if(!file.type.startsWith('image/')){$('editorStatus').textContent='Choose an image file.';return;}
+    if(editorObjectUrl)URL.revokeObjectURL(editorObjectUrl);
+    editorObjectUrl=URL.createObjectURL(file);const img=new Image();
+    img.onload=()=>{editorImage=img;resetEditor();$('editorStatus').textContent='Loaded '+file.name+' · edits are local to this browser.';};
+    img.onerror=()=>{$('editorStatus').textContent='Could not open this image.';};
+    img.src=editorObjectUrl;
+  });
+  ['editorBrightness','editorContrast','editorSaturation','editorText'].forEach(id=>$(id).addEventListener('input',renderEditor));
+  $('editorRotate').addEventListener('click',()=>{if(editorImage){editorRotation=(editorRotation+90)%360;renderEditor();}});
+  $('editorReset').addEventListener('click',()=>{if(editorImage)resetEditor();});
+  $('editorDownload').addEventListener('click',()=>{if(!editorImage)return;const a=document.createElement('a');a.download='glitch-edited-image.png';a.href=editorCanvas.toDataURL('image/png');a.click();});
+  const playgroundDefaults={html:'<main class="card">\n  <h1>Hello, Glitch!</h1>\n  <p>Edit the code and press Run.</p>\n  <button id="hello">Click me</button>\n  <p id="message"></p>\n</main>',css:'body { font-family: system-ui; background: #f4f0ff; padding: 2rem; }\n.card { max-width: 420px; margin: auto; padding: 2rem; border-radius: 18px; background: white; box-shadow: 0 12px 35px #33225522; }\nbutton { padding: .7rem 1rem; border: 0; border-radius: 9px; background: #7c3aed; color: white; cursor: pointer; }',js:'document.querySelector("#hello").addEventListener("click", () => {\n  document.querySelector("#message").textContent = "It works! ✨";\n});'};
+  function setPlaygroundDefaults(){ $('playgroundHTML').value=playgroundDefaults.html;$('playgroundCSS').value=playgroundDefaults.css;$('playgroundJS').value=playgroundDefaults.js;runPlayground(); }
+  function runPlayground(){
+    const html=$('playgroundHTML').value,css=$('playgroundCSS').value,js=$('playgroundJS').value.replace(/<\/script/gi,'<\\/script');
+    const src='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:"><style>'+css+'</style></head><body>'+html+'<script>'+js+'<\\/script></body></html>';
+    $('playgroundFrame').srcdoc=src;$('playgroundStatus').textContent='Preview updated. Code runs in an isolated frame.'; 
+  }
+  $('openCodePlayground').addEventListener('click',async()=>{if(await requireVipTool()){ $('codePlaygroundModal').classList.add('open');runPlayground();}});
+  $('codePlaygroundClose').addEventListener('click',()=>$('codePlaygroundModal').classList.remove('open'));
+  $('codePlaygroundModal').addEventListener('click',e=>{if(e.target===$('codePlaygroundModal'))$('codePlaygroundModal').classList.remove('open');});
+  $('playgroundRun').addEventListener('click',runPlayground);
+  $('playgroundReset').addEventListener('click',setPlaygroundDefaults);
+  $('playgroundClear').addEventListener('click',()=>{$('playgroundHTML').value='';$('playgroundCSS').value='';$('playgroundJS').value='';runPlayground();});
+  setPlaygroundDefaults();
 
   // ---- Pollinations image studio behavior ------------------------------------
   let imagePreviewUrl = '';

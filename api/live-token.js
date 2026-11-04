@@ -23,11 +23,30 @@ module.exports = async (req, res) => {
 
   try {
     const now = Date.now();
+    // CreateAuthTokenRequest wraps the token resource in "authToken".
+    // The REST resource uses bidiGenerateContentSetup (not the SDK-only
+    // liveConnectConstraints alias).
     const payload = {
-      uses: 1,
-      expireTime: new Date(now + 30 * 60 * 1000).toISOString(),
-      newSessionExpireTime: new Date(now + 60 * 1000).toISOString(),
-      liveConnectConstraints: { model: LIVE_MODEL },
+      authToken: {
+        uses: 1,
+        expireTime: new Date(now + 30 * 60 * 1000).toISOString(),
+        newSessionExpireTime: new Date(now + 60 * 1000).toISOString(),
+        bidiGenerateContentSetup: {
+          model: LIVE_MODEL,
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Puck' } } },
+          },
+          systemInstruction: {
+            parts: [{ text: 'You are Glitch, a natural, warm, quick-witted conversational AI and the user’s helpful friend. Speak naturally, concisely and conversationally, not like a formal assistant. You may use light playful humour, but never be cruel or mock vulnerability. Listen carefully, answer what the user actually means, and allow interruptions. If unsure, say so. Never claim to see camera or screen content unless a frame has actually been shared.' }],
+          },
+          inputAudioTranscription: {},
+          outputAudioTranscription: {},
+          realtimeInputConfig: {
+            automaticActivityDetection: { disabled: false, prefixPaddingMs: 180, silenceDurationMs: 550 },
+          },
+        },
+      },
     };
 
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/auth_tokens', {

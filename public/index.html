@@ -924,6 +924,50 @@ html[data-scheme=dark] .msg.bot,html[data-scheme=dark] .side,html[data-scheme=da
  @keyframes prismFlow{0%{background-position:0% 20%}100%{background-position:100% 80%}}
 }
 
+
+/* Glitch recovery pass: tools remain discoverable, theme backgrounds stay neutral. */
+html[data-scheme=dark],html[data-scheme=dark] body{background:#000!important;background-color:#000!important}
+html[data-scheme=dark] body,html[data-scheme=dark] .stage{background:#000!important;background-image:none!important}
+html[data-scheme=light],html[data-scheme=light] body{background:#fff!important;background-color:#fff!important}
+html[data-scheme=light] body,html[data-scheme=light] .stage{background:#fff!important;background-image:none!important}
+body{animation:none!important}
+.stage{background:#000!important;background-image:none!important}
+html[data-scheme=light] .stage{background:#fff!important;background-image:none!important}
+.stage::before{pointer-events:none!important}
+.tool-group-label{margin-top:14px!important;color:var(--muted)!important;font-size:.68rem!important;font-weight:800!important;letter-spacing:.13em!important}
+.vip-tool-nav{position:relative;min-height:42px}
+.vip-tool-nav .tool-lock-label,.live-nav .tool-lock-label{
+ display:inline-flex;align-items:center;justify-content:center;margin-left:auto;padding:2px 7px;
+ border:1px solid rgba(245,190,65,.62);border-radius:999px;
+ background:linear-gradient(135deg,rgba(255,221,120,.24),rgba(173,112,15,.20));
+ color:#f2bd4d;font-size:.61rem;font-weight:900;letter-spacing:.09em;line-height:1.5;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 8px rgba(0,0,0,.12)
+}
+html[data-scheme=light] .vip-tool-nav .tool-lock-label,html[data-scheme=light] .live-nav .tool-lock-label{color:#946000;background:linear-gradient(135deg,#fff4cf,#ffe5a0);border-color:#e7c66e}
+.vip-nav .vip-pill{margin-left:auto}
+.live-nav{margin-top:0}
+#vipModal .vip-box{width:min(590px,100%);max-height:min(88dvh,780px);overflow:auto;border-radius:24px;border:1px solid rgba(226,184,91,.42)!important;background:linear-gradient(145deg,rgba(26,25,31,.98),rgba(12,13,19,.98))!important;box-shadow:0 30px 100px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.16)!important;color:#f8f5ed}
+#vipModal .top{padding:20px 22px;border-bottom:1px solid rgba(226,184,91,.2)}
+#vipModal .top h3{font-size:1.25rem;letter-spacing:-.025em;color:#f7d58b}
+#vipModal .top p{color:#b9b5aa}
+#vipModal .vip-content{padding:20px 22px 24px;display:flex;flex-direction:column;gap:16px}
+#vipModal .vip-hero{padding:20px;border-radius:18px;border:1px solid rgba(235,194,105,.35);background:radial-gradient(ellipse at 0 0,rgba(255,225,150,.2),transparent 58%),linear-gradient(125deg,rgba(130,91,28,.34),rgba(32,27,22,.86));box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+#vipModal .vip-hero strong{display:block;font-size:1rem;letter-spacing:.18em;color:#ffdf9b}
+#vipModal .vip-hero span{display:block;margin-top:7px;color:#d4c9b4;font-size:.84rem;line-height:1.6}
+#vipModal .vip-lock{padding:18px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.045)}
+#vipModal .vip-lock>strong{font-size:.94rem;color:#f5d48f}
+#vipModal .vip-lock p{margin:7px 0 14px;color:#bdb9b0;font-size:.8rem;line-height:1.6}
+#vipModal #vipRedeemForm{display:flex;gap:9px;align-items:stretch}
+#vipModal #vipCode{flex:1;min-width:0;padding:12px 14px;border:1px solid rgba(231,194,111,.34);border-radius:11px;background:rgba(0,0,0,.36);color:#fff;outline:none}
+#vipModal #vipCode:focus{border-color:#e7c16f;box-shadow:0 0 0 3px rgba(231,193,111,.14)}
+#vipModal #vipRedeem{background:linear-gradient(120deg,#f6d88f,#b77b25)!important;color:#211708!important;border:1px solid rgba(255,238,191,.8)!important;font-weight:850;box-shadow:0 8px 24px rgba(193,139,49,.22)!important}
+#vipModal #vipStatus{min-height:1.3em;color:#e8c77f;font-size:.8rem}
+#vipModal .vip-card,#vipModal .vip-stat{border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.055);padding:13px}
+#vipModal .vip-card label,#vipModal .vip-card strong{color:#f3d99f}
+#vipModal .vip-card small,#vipModal .vip-stat span{color:#bcb7ac}
+#vipModal .vip-card input,#vipModal .vip-card select{width:100%;margin-top:7px;padding:9px;border-radius:9px;border:1px solid rgba(255,255,255,.15);background:#17171c;color:#fff}
+@media(max-width:520px){#vipModal #vipRedeemForm{flex-direction:column}#vipModal #vipRedeem{width:100%}}
+
 </style>
 </head>
 <body class="empty">
@@ -934,9 +978,11 @@ html[data-scheme=dark] .msg.bot,html[data-scheme=dark] .side,html[data-scheme=da
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
   <button class="nav" id="memoryOpen" type="button" title="Manage memories saved to your account"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v1a4 4 0 00-2 7 4 4 0 006 5 4 4 0 006-5 4 4 0 00-2-7V7a4 4 0 00-4-4zM9 11h.01M15 11h.01M9 16c1.5 1 4.5 1 6 0"/></svg>Memory</button>
-  <button class="nav vip-tool-nav" id="openImageStudio" type="button" hidden title="VIP image generation"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/><path d="m17 2 .7 1.8L20 5l-2.3 1.2L17 8l-.7-1.8L14 5l2.3-1.2L17 2z"/></svg>Image Generation <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openImageEditor" type="button" hidden title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openCodePlayground" type="button" hidden title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
+<h4 class="tool-group-label">VIP TOOLS</h4>
+  <button class="nav vip-tool-nav" id="openImageStudio" type="button" title="VIP image generation"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/><path d="m17 2 .7 1.8L20 5l-2.3 1.2L17 8l-.7-1.8L14 5l2.3-1.2L17 2z"/></svg>Image Generation <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openCodePlayground" type="button" title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
+  <button class="nav live-nav vip-tool-nav" id="liveOpen" type="button" title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="tool-lock-label">VIP</span><span class="live-nav-dot"></span></button>
   <button class="nav vip-nav" id="vipOpen" type="button" title="VIP membership and exclusive features"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>VIP <span id="vipNavBadge" class="vip-pill">LOCKED</span></button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
@@ -946,7 +992,6 @@ html[data-scheme=dark] .msg.bot,html[data-scheme=dark] .side,html[data-scheme=da
     <button class="nav" type="button" data-mode="flash" aria-pressed="true" title="Fast and light; can also look at images and PDFs"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Flash</button>
     <button class="nav" type="button" data-mode="cognition" aria-pressed="false" title="Deeper reasoning, code generation, and downloadable files"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 8h4M12 16H8"/></svg>Cognition</button>
   </div>
-  <button class="nav live-nav" id="liveOpen" type="button" hidden title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="tool-lock-label">VIP</span><span class="live-nav-dot"></span></button>
   <h4>Accent</h4>
   <div class="accent-picker-wrap">
     <button class="accent-picker-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">

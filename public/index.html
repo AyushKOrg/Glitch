@@ -1133,12 +1133,36 @@ html[data-scheme="light"] .accent-picker-panel{
 html[data-scheme="light"] .me,
 html[data-scheme="light"] .me-text,
 html[data-scheme="light"] .me-sub{color:#4e586b!important}
-html[data-scheme="light"] .cta,
-html[data-scheme="light"] #send,
-html[data-scheme="light"] .nav.primary,
-html[data-scheme="light"] .live-nav{
+/* Theme-aware contrast for the two sidebar actions and the composer Live action. */
+html[data-scheme="light"] #newChat{
+  color:#172033!important;
+  background:#fff!important;
+  border:1px solid rgba(25,32,48,.16)!important;
+  box-shadow:0 4px 14px rgba(25,32,48,.08),inset 0 1px 0 #fff!important;
+}
+html[data-scheme="light"] #newChat svg{color:#172033!important;stroke:currentColor!important}
+html[data-scheme="light"] #liveOpen{
+  color:#172033!important;
+  background:linear-gradient(115deg,color-mix(in srgb,var(--accent) 15%,#fff),#fff)!important;
+  border:1px solid color-mix(in srgb,var(--accent) 36%,rgba(25,32,48,.16))!important;
+  box-shadow:0 4px 16px color-mix(in srgb,var(--accent) 12%,transparent),inset 0 1px 0 #fff!important;
+}
+html[data-scheme="light"] #liveOpen svg{color:#172033!important;stroke:currentColor!important}
+html[data-scheme="light"] #liveOpenComposer{
+  color:#172033!important;
+  background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 14%,#fff),#fff)!important;
+}
+html[data-scheme="light"] #liveOpenComposer svg{color:#172033!important;stroke:currentColor!important}
+html[data-scheme="dark"] #newChat,
+html[data-scheme="dark"] #liveOpen,
+html[data-scheme="dark"] #liveOpenComposer{
   color:#fff!important;
 }
+html[data-scheme="dark"] #newChat svg,
+html[data-scheme="dark"] #liveOpen svg,
+html[data-scheme="dark"] #liveOpenComposer svg{color:#fff!important;stroke:currentColor!important}
+html[data-scheme="light"] .cta,
+html[data-scheme="light"] #send{color:#fff!important}
 
 </style>
 </head>

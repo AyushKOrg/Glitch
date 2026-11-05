@@ -1,0 +1,1 @@
+try{var d=document.documentElement,t=localStorage.getItem('glitch_theme'),s=localStorage.getItem('glitch_scheme'),a=localStorage.getItem('glitch_accent');if(t)d.dataset.theme=t;if(a&&/^#[0-9a-f]{6}$/i.test(a)){d.dataset.theme='custom';d.style.setProperty('--accent',a)}d.dataset.scheme=s||'dark'}catch(e){}

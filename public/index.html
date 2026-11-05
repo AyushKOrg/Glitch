@@ -968,6 +968,178 @@ html[data-scheme=light] .vip-tool-nav .tool-lock-label,html[data-scheme=light] .
 #vipModal .vip-card input,#vipModal .vip-card select{width:100%;margin-top:7px;padding:9px;border-radius:9px;border:1px solid rgba(255,255,255,.15);background:#17171c;color:#fff}
 @media(max-width:520px){#vipModal #vipRedeemForm{flex-direction:column}#vipModal #vipRedeem{width:100%}}
 
+
+/* Light mode correction: enforce a genuinely white canvas and clean white glass surfaces.
+   Keep accent colour on controls, focus rings and small highlights only. */
+html[data-scheme="light"]{
+  color-scheme:light!important;
+  --bg:#fff!important;
+  --panel:#fff!important;
+  --panel-alt:#fff!important;
+  --text:#171923!important;
+  --text-dim:#505666!important;
+  --muted:#737b8c!important;
+  --border:rgba(25,32,48,.12)!important;
+  --border-strong:rgba(25,32,48,.2)!important;
+  --accent-soft:color-mix(in srgb,var(--accent) 12%,white)!important;
+}
+html[data-scheme="light"],html[data-scheme="light"] body{
+  background:#fff!important;
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#171923!important;
+}
+html[data-scheme="light"] body,
+html[data-scheme="light"] .layout,
+html[data-scheme="light"] .stage,
+html[data-scheme="light"] #log{
+  background:#fff!important;
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#171923!important;
+}
+html[data-scheme="light"] .stage::before,
+html[data-scheme="light"] #vfxCanvas{display:none!important}
+html[data-scheme="light"] .side{
+  background:#fff!important;
+  background-image:none!important;
+  color:#171923!important;
+  border-right:1px solid rgba(25,32,48,.1)!important;
+  box-shadow:8px 0 30px rgba(25,32,48,.055)!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+html[data-scheme="light"] .topbar{
+  background:rgba(255,255,255,.96)!important;
+  background-image:none!important;
+  color:#171923!important;
+  border-bottom:1px solid rgba(25,32,48,.1)!important;
+  box-shadow:0 5px 20px rgba(25,32,48,.035)!important;
+  backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;
+}
+html[data-scheme="light"] .nav,
+html[data-scheme="light"] .history-item,
+html[data-scheme="light"] .history-open,
+html[data-scheme="light"] .side h4,
+html[data-scheme="light"] .history-head h4{
+  color:#343b4b!important;
+}
+html[data-scheme="light"] .nav:not(.primary):not(.live-nav):not(.vip-nav):not([aria-pressed=true]){
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+html[data-scheme="light"] .nav:hover,
+html[data-scheme="light"] .history-item:hover,
+html[data-scheme="light"] .history-open:hover{
+  background:rgba(25,32,48,.055)!important;
+}
+html[data-scheme="light"] .nav[aria-pressed=true]{
+  background:color-mix(in srgb,var(--accent) 12%,white)!important;
+  color:var(--accent-strong)!important;
+}
+html[data-scheme="light"] .hero,
+html[data-scheme="light"] .hero-sub{color:#202638!important}
+html[data-scheme="light"] #chat{
+  background:#fff!important;
+  background-image:none!important;
+  border:1px solid rgba(25,32,48,.14)!important;
+  box-shadow:0 12px 38px rgba(25,32,48,.09),inset 0 1px 0 #fff!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+html[data-scheme="light"] #input,
+html[data-scheme="light"] #histSearch,
+html[data-scheme="light"] input:not([type=range]):not([type=checkbox]):not([type=radio]),
+html[data-scheme="light"] textarea,
+html[data-scheme="light"] select{
+  background:#fff!important;
+  color:#171923!important;
+  border-color:rgba(25,32,48,.18)!important;
+}
+html[data-scheme="light"] #input::placeholder,
+html[data-scheme="light"] input::placeholder,
+html[data-scheme="light"] textarea::placeholder{color:#858c9b!important}
+html[data-scheme="light"] .msg{
+  color:#202638!important;
+  border:1px solid rgba(25,32,48,.1)!important;
+  box-shadow:0 8px 24px rgba(25,32,48,.055)!important;
+  backdrop-filter:blur(18px) saturate(125%)!important;
+}
+html[data-scheme="light"] .msg.bot{
+  background:linear-gradient(145deg,#fff,#fff)!important;
+  border-color:rgba(25,32,48,.1)!important;
+}
+html[data-scheme="light"] .msg.user{
+  background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 90%,white),color-mix(in srgb,var(--accent-2) 82%,white))!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.8)!important;
+}
+html[data-scheme="light"] .box,
+html[data-scheme="light"] .modal-card,
+html[data-scheme="light"] .overlay .box{
+  background:#fff!important;
+  background-image:none!important;
+  color:#202638!important;
+  border:1px solid rgba(25,32,48,.12)!important;
+  box-shadow:0 24px 80px rgba(25,32,48,.18)!important;
+}
+html[data-scheme="light"] .box p,
+html[data-scheme="light"] .box label,
+html[data-scheme="light"] .box small,
+html[data-scheme="light"] .box h3,
+html[data-scheme="light"] .box h4{color:inherit}
+html[data-scheme="light"] .tool-box,
+html[data-scheme="light"] .image-box,
+html[data-scheme="light"] .memory-box,
+html[data-scheme="light"] .quota-box{background:#fff!important;color:#202638!important}
+html[data-scheme="light"] .editor-stage,
+html[data-scheme="light"] .playground-preview,
+html[data-scheme="light"] .playground-editors,
+html[data-scheme="light"] .code-artifact{
+  background:#f8f9fc!important;color:#202638!important;border-color:rgba(25,32,48,.12)!important;
+}
+html[data-scheme="light"] .vip-box{
+  background:linear-gradient(145deg,#fffdf8,#fff)!important;
+  color:#272319!important;
+}
+html[data-scheme="light"] .vip-box .vip-hero{
+  background:linear-gradient(125deg,#fff4d6,#fffaf0)!important;
+}
+html[data-scheme="light"] .vip-box .vip-hero strong{color:#80530c!important}
+html[data-scheme="light"] .vip-box .vip-hero span,
+html[data-scheme="light"] .vip-box .vip-lock p,
+html[data-scheme="light"] .vip-box .vip-card small,
+html[data-scheme="light"] .vip-box .vip-stat span{color:#625b4d!important}
+html[data-scheme="light"] .vip-box .vip-lock,
+html[data-scheme="light"] .vip-box .vip-card,
+html[data-scheme="light"] .vip-box .vip-stat{
+  background:#fff!important;border-color:rgba(135,103,40,.18)!important;color:#302a1e!important;
+}
+html[data-scheme="light"] .vip-box #vipCode{
+  background:#fff!important;color:#202638!important;border-color:rgba(135,103,40,.28)!important;
+}
+html[data-scheme="light"] .vip-box .vip-card input,
+html[data-scheme="light"] .vip-box .vip-card select{
+  background:#fff!important;color:#202638!important;border-color:rgba(25,32,48,.18)!important;
+}
+html[data-scheme="light"] .suggest button{
+  background:#fff!important;color:#30394d!important;border:1px solid rgba(25,32,48,.1)!important;
+  box-shadow:0 5px 18px rgba(25,32,48,.045)!important;
+}
+html[data-scheme="light"] .suggest button span{color:#687286!important}
+html[data-scheme="light"] .accent-picker-panel{
+  background:#fff!important;color:#202638!important;border:1px solid rgba(25,32,48,.12)!important;
+  box-shadow:0 18px 48px rgba(25,32,48,.14)!important;
+}
+html[data-scheme="light"] .me,
+html[data-scheme="light"] .me-text,
+html[data-scheme="light"] .me-sub{color:#4e586b!important}
+html[data-scheme="light"] .cta,
+html[data-scheme="light"] #send,
+html[data-scheme="light"] .nav.primary,
+html[data-scheme="light"] .live-nav{
+  color:#fff!important;
+}
+
 </style>
 </head>
 <body class="empty">

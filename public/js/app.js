@@ -469,14 +469,14 @@
   $('vipModal').addEventListener('click',e=>{if(e.target===$('vipModal')){$('vipModal').classList.remove('open');hideCurrentVipCode();}});
   $('vipRedeemForm').addEventListener('submit',async e=>{
     e.preventDefault();
-    if(!user||user.isAnonymous){$('vipStatus').textContent='Sign in with a registered account first.';return;}
-    const b=$('vipRedeem');b.disabled=true;$('vipStatus').textContent='Checking invite…';
+    if(!user||user.isAnonymous){$('vipRedeemStatus').textContent='Sign in with a registered account first.';return;}
+    const b=$('vipRedeem');b.disabled=true;$('vipRedeemStatus').textContent='Checking invite…';
     try{
       const r=await api('/api/vip',{method:'POST',body:JSON.stringify({code:$('vipCode').value.trim()})});
       if(!r.ok)throw new Error(r.data.error||'Could not redeem that code.');
       $('vipCode').value='';setVipState(true);renderVipStats();
-      $('vipStatus').textContent=r.data.alreadyVip?'This account already has VIP.':r.data.codeRotated?'VIP unlocked! Your code was consumed, and a fresh one-time code was emailed to both developers.':r.data.rotationWarning?'VIP unlocked, but replacement-code delivery needs developer attention. Both developers can use Regenerate code & email both.':'VIP unlocked! Welcome aboard.';
-    }catch(err){$('vipStatus').textContent=err.message;}
+      $('vipRedeemStatus').textContent=r.data.alreadyVip?'This account already has VIP.':r.data.codeRotated?'VIP unlocked! Your code was consumed, and a fresh one-time code was emailed to both developers.':r.data.rotationWarning?'VIP unlocked, but replacement-code delivery needs developer attention. Both developers can use Regenerate code & email both.':'VIP unlocked! Welcome aboard.';
+    }catch(err){$('vipRedeemStatus').textContent=err.message;}
     finally{b.disabled=false;}
   });
   function hideCurrentVipCode(){$('vipCurrentCode').hidden=true;$('vipCurrentCodeValue').textContent='';$('vipCodePassword').value='';}

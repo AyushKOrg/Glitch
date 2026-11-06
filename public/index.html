@@ -27,14 +27,9 @@
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
   <button class="nav" id="contextOpen" type="button" title="View this conversation’s context"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3V5Z"/><path d="M8 9h8M8 13h5"/></svg>Chat context</button>
-  <button class="nav" id="installAppSide" type="button" title="Install Glitch on this device"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14"/></svg>Install app</button>
-  <button class="nav" id="memoryOpen" type="button" title="Manage memories saved to your account"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v1a4 4 0 00-2 7 4 4 0 006 5 4 4 0 006-5 4 4 0 00-2-7V7a4 4 0 00-4-4zM9 11h.01M15 11h.01M9 16c1.5 1 4.5 1 6 0"/></svg>Memory</button>
 <h4 class="tool-group-label">VIP TOOLS</h4>
   <button class="nav vip-tool-nav" id="openImageStudio" type="button" title="VIP image generation"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/><path d="m17 2 .7 1.8L20 5l-2.3 1.2L17 8l-.7-1.8L14 5l2.3-1.2L17 2z"/></svg>Image Generation <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openCodePlayground" type="button" title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-nav" id="vipOpen" type="button" title="VIP membership and exclusive features"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>VIP <span id="vipNavBadge" class="vip-pill">LOCKED</span></button>
-  <button class="nav dev-control-nav" id="vipDevOpen" type="button" title="Open developer controls" hidden><svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg>Developer controls</button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
   <div id="historyList" class="history-list" aria-label="Recent chats"></div>
@@ -43,48 +38,12 @@
     <button class="nav" type="button" data-mode="flash" aria-pressed="true" title="Fast and light; can also look at images and PDFs"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Flash</button>
     <button class="nav" type="button" data-mode="cognition" aria-pressed="false" title="Deeper reasoning, code generation, and downloadable files"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 8h4M12 16H8"/></svg>Cognition</button>
   </div>
-  <h4>Accent</h4>
-  <div class="accent-picker-wrap">
-    <button class="accent-picker-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">
-      <span class="accent-trigger-disc" aria-hidden="true"><span></span></span>
-      <span class="accent-picker-copy"><strong>Accent colour</strong><span id="accentWheelLabel">Choose a custom shade</span></span>
-      <svg class="accent-trigger-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-    </button>
-  <section class="accent-picker-panel" id="accentPickerPanel" aria-label="Colour selection" hidden>
-    <div class="accent-panel-head"><strong>Choose a colour</strong><button class="accent-reset" id="accentReset" type="button">Restore default</button></div>
-    <div class="accent-wheel-stage">
-      <div class="color-wheel" id="colorWheel" role="slider" tabindex="0" aria-label="Choose a custom accent colour" aria-valuemin="0" aria-valuemax="359" aria-valuenow="260">
-        <span class="color-wheel-marker" id="colorWheelMarker" style="left:50%;top:8%"></span>
-      </div>
-      <span class="accent-wheel-hint">Drag to pick hue and saturation</span>
-    </div>
-    <div class="accent-brightness">
-      <div class="accent-brightness-head"><label for="accentBrightness">Brightness</label><output id="accentBrightnessValue" for="accentBrightness">92%</output></div>
-      <input id="accentBrightness" type="range" min="5" max="100" step="1" value="92" aria-label="Adjust accent colour brightness">
-    </div>
-    <div class="accent-hex-row"><label for="accentHex">HEX colour</label><div class="accent-hex-controls"><input id="accentHex" type="text" inputmode="text" maxlength="7" placeholder="#7C3AED" autocomplete="off" spellcheck="false" aria-describedby="accentHexHint"><button id="accentHexApply" type="button">Apply</button></div><small id="accentHexHint">Enter a six-digit HEX value, with or without #.</small></div>
-    <div class="accent-presets" role="group" aria-label="Preset accent colours">
-      <button type="button" class="accent-swatch" data-accent="#7c3aed" style="--swatch:#7c3aed" aria-label="Purple"></button>
-      <button type="button" class="accent-swatch" data-accent="#2563eb" style="--swatch:#2563eb" aria-label="Blue"></button>
-      <button type="button" class="accent-swatch" data-accent="#06b6d4" style="--swatch:#06b6d4" aria-label="Cyan"></button>
-      <button type="button" class="accent-swatch" data-accent="#10b981" style="--swatch:#10b981" aria-label="Green"></button>
-      <button type="button" class="accent-swatch" data-accent="#84cc16" style="--swatch:#84cc16" aria-label="Lime"></button>
-      <button type="button" class="accent-swatch" data-accent="#eab308" style="--swatch:#eab308" aria-label="Yellow"></button>
-      <button type="button" class="accent-swatch" data-accent="#f97316" style="--swatch:#f97316" aria-label="Orange"></button>
-      <button type="button" class="accent-swatch" data-accent="#e11d48" style="--swatch:#e11d48" aria-label="Red"></button>
-      <button type="button" class="accent-swatch" data-accent="#ec4899" style="--swatch:#ec4899" aria-label="Pink"></button>
-      <button type="button" class="accent-swatch" data-accent="#64748b" style="--swatch:#64748b" aria-label="Slate"></button>
-    </div>
-  </section>
-  </div>
-  <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
-  <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
-  <button class="nav" id="speakToggle" type="button" aria-pressed="false" title="Read Glitch's replies out loud"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/></svg><span id="speakLabel">Spoken replies: off</span></button>
+
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
     <div class="me-text"><span id="who">Signed out</span><span id="accountBadge" class="account-pill free" hidden>FREE</span><span id="vipTaglineDisplay" class="vip-tagline" hidden></span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
-    <button class="mini" id="signout" type="button">Sign out</button>
+    <button class="mini settings-open" id="settingsOpen" type="button" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 15 .1.1a1.8 1.8 0 0 1-2.5 2.5l-.1-.1a1.8 1.8 0 0 0-3.1 1.3v.2a1.8 1.8 0 0 1-3.6 0v-.2a1.8 1.8 0 0 0-3.1-1.3l-.1.1a1.8 1.8 0 0 1-2.5-2.5l.1-.1a1.8 1.8 0 0 0-1.3-3.1h-.2a1.8 1.8 0 0 1 0-3.6h.2a1.8 1.8 0 0 0 1.3-3.1l-.1-.1a1.8 1.8 0 0 1 2.5-2.5l.1.1a1.8 1.8 0 0 0 3.1-1.3v-.2a1.8 1.8 0 0 1 3.6 0v.2a1.8 1.8 0 0 0 3.1 1.3l-.1-.1a1.8 1.8 0 0 1 2.5 2.5l.1.1a1.8 1.8 0 0 0 1.3 3.1h.2a1.8 1.8 0 0 1 0 3.6h-.2a1.8 1.8 0 0 0-1.3 3.1Z"/></svg></button>
   </div>
 </aside>
 
@@ -129,7 +88,58 @@
 <div id="installModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="installTitle">
   <section class="box install-box"><div class="top"><div><h3 id="installTitle">Install Glitch</h3><p>Keep Glitch on your home screen and launch it like an app.</p></div><button class="mini" id="installClose" type="button" aria-label="Close install help">✕</button></div><div id="installStatus" class="install-status" role="status" aria-live="polite"></div><div id="installAppleHelp" class="install-help" hidden><strong>On iPhone or iPad</strong><ol><li>Open this page in Safari.</li><li>Tap the Share button.</li><li>Choose <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>.</li></ol><p>Apple does not allow websites to open this system sheet programmatically. This is the native iOS installation flow.</p></div><div id="installOtherHelp" class="install-help" hidden><strong>Install from your browser</strong><p>Open the browser menu and choose <b>Install app</b> or <b>Add to Home screen</b>.</p></div></section>
 </div>
-<div id="vipModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="vipTitle">
+<div id="settingsModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><section class="box settings-box">
+<header class="settings-header"><div class="settings-heading-icon">⚙</div><div><h3 id="settingsTitle">Settings</h3><p>Make Glitch feel like yours.</p></div><button class="mini" id="settingsClose" type="button" aria-label="Close settings">✕</button></header><div class="settings-content">
+<section class="settings-section profile-settings"><div class="settings-section-title"><span class="settings-icon">◉</span><div><h4>Profile</h4><p>Your name and picture shown in the sidebar.</p></div></div><div class="profile-editor"><div class="profile-preview" id="profilePreview">G</div><div class="profile-fields"><label for="profileDisplayName">Display name</label><input id="profileDisplayName" maxlength="40" placeholder="Your name"><div class="profile-picture-actions"><label class="settings-button secondary" for="profilePictureInput">▧ Choose picture</label><input id="profilePictureInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden><button class="settings-button subtle" id="profilePictureRemove" type="button">Remove picture</button></div></div></div><div class="settings-actions"><button class="settings-button primary" id="profileSave" type="button">✓ Save profile</button><span id="profileStatus" class="inline-status" role="status" aria-live="polite"></span></div></section>
+<section class="settings-section"><div class="settings-section-title"><span class="settings-icon">♙</span><div><h4>Account</h4><p>Sign-in details and account security.</p></div></div><div class="account-details"><span class="account-detail-label">Signed in as</span><strong id="settingsEmail">Not signed in</strong></div><div class="settings-actions"><button class="settings-button secondary" id="passwordReset" type="button">🔑 Send password reset email</button><button class="settings-button subtle" id="signout" type="button">↪ Sign out</button></div><div id="accountStatus" class="inline-status" role="status" aria-live="polite"></div></section>
+<section class="settings-section"><div class="settings-section-title"><span class="settings-icon">✦</span><div><h4>Quick access</h4><p>Jump straight to the things you use most.</p></div></div><div class="settings-shortcuts">
+<button class="settings-shortcut" id="vipOpen" type="button"><span class="shortcut-icon">♛</span><span><strong>Request VIP code</strong><small>Redeem an invite to unlock VIP features</small></span><b>›</b></button><a class="settings-shortcut" href="mailto:aayushcmshri@gmail.com?subject=Glitch%20support"><span class="shortcut-icon">✉</span><span><strong>Contact developer</strong><small>Send feedback or report an issue</small></span><b>↗</b></a>
+<button class="settings-shortcut" id="memoryOpen" type="button"><span class="shortcut-icon">◈</span><span><strong>Edit memory</strong><small>Review and manage what Glitch remembers</small></span><b>›</b></button><button class="settings-shortcut" id="personalizeOpen" type="button"><span class="shortcut-icon">✧</span><span><strong>Personalize Glitch</strong><small>Assistant style, profile extras and VIP themes</small></span><b>›</b></button><button class="settings-shortcut" id="installAppSide" type="button"><span class="shortcut-icon">⇩</span><span><strong>Install Glitch</strong><small>Add Glitch to your home screen</small></span><b>›</b></button><button class="settings-shortcut" id="devSettingsOpen" type="button" hidden><span class="shortcut-icon">⌘</span><span><strong>Developer settings</strong><small>Invite rotation and secure code access</small></span><b>›</b></button></div></section>
+<section class="settings-section appearance-settings" id="appearanceSettings"><div class="settings-section-title"><span class="settings-icon">◐</span><div><h4>Appearance</h4><p>Choose how Glitch looks on this device.</p></div></div><label class="settings-field-label" for="schemePreference">Colour mode</label><select id="schemePreference" class="settings-select"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select><div class="settings-accent-heading"><strong>Accent colour</strong><span>Choose a preset or fine-tune your own shade.</span></div><div class="accent-picker-wrap">
+    <button class="accent-picker-trigger" id="accentPickerToggle" type="button" aria-label="Open colour selector" aria-expanded="false" aria-controls="accentPickerPanel">
+      <span class="accent-trigger-disc" aria-hidden="true"><span></span></span>
+      <span class="accent-picker-copy"><strong>Accent colour</strong><span id="accentWheelLabel">Choose a custom shade</span></span>
+      <svg class="accent-trigger-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  <section class="accent-picker-panel" id="accentPickerPanel" aria-label="Colour selection" hidden>
+    <div class="accent-panel-head"><strong>Choose a colour</strong><button class="accent-reset" id="accentReset" type="button">Restore default</button></div>
+    <div class="accent-wheel-stage">
+      <div class="color-wheel" id="colorWheel" role="slider" tabindex="0" aria-label="Choose a custom accent colour" aria-valuemin="0" aria-valuemax="359" aria-valuenow="260">
+        <span class="color-wheel-marker" id="colorWheelMarker" style="left:50%;top:8%"></span>
+      </div>
+      <span class="accent-wheel-hint">Drag to pick hue and saturation</span>
+    </div>
+    <div class="accent-brightness">
+      <div class="accent-brightness-head"><label for="accentBrightness">Brightness</label><output id="accentBrightnessValue" for="accentBrightness">92%</output></div>
+      <input id="accentBrightness" type="range" min="5" max="100" step="1" value="92" aria-label="Adjust accent colour brightness">
+    </div>
+    <div class="accent-hex-row"><label for="accentHex">HEX colour</label><div class="accent-hex-controls"><input id="accentHex" type="text" inputmode="text" maxlength="7" placeholder="#7C3AED" autocomplete="off" spellcheck="false" aria-describedby="accentHexHint"><button id="accentHexApply" type="button">Apply</button></div><small id="accentHexHint">Enter a six-digit HEX value, with or without #.</small></div>
+    <div class="accent-presets" role="group" aria-label="Preset accent colours">
+      <button type="button" class="accent-swatch" data-accent="#7c3aed" style="--swatch:#7c3aed" aria-label="Purple"></button>
+      <button type="button" class="accent-swatch" data-accent="#2563eb" style="--swatch:#2563eb" aria-label="Blue"></button>
+      <button type="button" class="accent-swatch" data-accent="#06b6d4" style="--swatch:#06b6d4" aria-label="Cyan"></button>
+      <button type="button" class="accent-swatch" data-accent="#10b981" style="--swatch:#10b981" aria-label="Green"></button>
+      <button type="button" class="accent-swatch" data-accent="#84cc16" style="--swatch:#84cc16" aria-label="Lime"></button>
+      <button type="button" class="accent-swatch" data-accent="#eab308" style="--swatch:#eab308" aria-label="Yellow"></button>
+      <button type="button" class="accent-swatch" data-accent="#f97316" style="--swatch:#f97316" aria-label="Orange"></button>
+      <button type="button" class="accent-swatch" data-accent="#e11d48" style="--swatch:#e11d48" aria-label="Red"></button>
+      <button type="button" class="accent-swatch" data-accent="#ec4899" style="--swatch:#ec4899" aria-label="Pink"></button>
+      <button type="button" class="accent-swatch" data-accent="#64748b" style="--swatch:#64748b" aria-label="Slate"></button>
+    </div>
+  </section>
+  </div></section>
+<section class="settings-section"><div class="settings-section-title"><span class="settings-icon">♫</span><div><h4>Audio</h4><p>Control interface sounds and spoken replies.</p></div></div><div class="settings-toggle-row"><div><strong>Sound effects</strong><small>Play subtle sounds for interface actions.</small></div><button class="nav settings-toggle" id="soundToggle" type="button" aria-pressed="true"><span id="soundLabel">Sound effects: on</span></button></div><div class="settings-toggle-row"><div><strong>Spoken replies</strong><small>Read Glitch's responses aloud.</small></div><button class="nav settings-toggle" id="speakToggle" type="button" aria-pressed="false"><span id="speakLabel">Spoken replies: off</span></button></div></section>      <section id="vipDeveloperTools" class="vip-dev-tools" hidden aria-label="Developer settings">
+        <div class="vip-dev-heading"><div><span class="vip-eyebrow">RESTRICTED AREA</span><strong>Developer console</strong><p>Private tools for the two registered developer accounts.</p></div><span class="vip-role-chip">DEV ACCESS</span></div>
+        <div class="vip-dev-action"><div class="vip-dev-action-copy"><span class="vip-action-icon">↻</span><div><strong>Rotate invite code</strong><p>Create a new one-time invite and email it to both developer inboxes. The current code is invalidated immediately.</p></div></div><button class="cta" id="vipRegenerate" type="button">↻ Rotate code &amp; email both developers</button><div id="vipDevStatus" class="inline-status" role="status" aria-live="polite"></div></div>
+        <form id="vipCodeVerifyForm" class="vip-code-verify">
+          <div class="vip-verify-copy"><strong>Reveal the active code</strong><p>Confirm your developer-account password before viewing it.</p></div>
+          <label class="vip-sr-only" for="vipCodePassword">Developer-account password</label>
+          <div class="vip-password-row"><input id="vipCodePassword" type="password" autocomplete="current-password" maxlength="256" placeholder="Enter your password" required><button class="mini" id="vipCodeVerify" type="submit">Verify &amp; reveal</button></div>
+        </form>
+        <div id="vipVerifyStatus" class="inline-status" role="status" aria-live="polite"></div>
+        <div id="vipCurrentCode" class="vip-current-code" hidden><div class="vip-current-code-main"><span>ACTIVE ONE-TIME CODE</span><code id="vipCurrentCodeValue"></code></div><div class="vip-code-actions"><button class="mini" id="vipCopyCode" type="button">Copy code</button><button class="mini" id="vipHideCode" type="button">Hide code</button></div></div>
+      </section>
+</div></section></div><div id="vipModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="vipTitle">
   <section class="box vip-box">
     <div class="top vip-top"><div class="vip-title-wrap"><span class="vip-title-icon" aria-hidden="true">✦</span><div><h3 id="vipTitle">VIP &amp; Developer Settings</h3><p>Access, membership and account controls</p></div></div><button class="mini" id="vipClose" type="button" aria-label="Close VIP">✕</button></div>
     <div class="vip-content">
@@ -139,16 +149,7 @@
         <p>Each VIP code works once. After the first successful redemption it is deactivated, and a fresh code is generated and emailed to both developers. Unused codes also expire at the daily rotation.</p>
         <form id="vipRedeemForm"><input id="vipCode" type="password" autocomplete="off" placeholder="Enter your VIP invite code" maxlength="100" required><button class="cta" id="vipRedeem" type="submit">Unlock VIP</button></form>
       </div>
-      <section id="vipDeveloperTools" class="vip-dev-tools" hidden aria-label="Developer settings">
-        <div class="vip-dev-heading"><div><span class="vip-eyebrow">RESTRICTED AREA</span><strong>Developer console</strong><p>Private tools for the two registered developer accounts.</p></div><span class="vip-role-chip">DEV ACCESS</span></div>
-        <div class="vip-dev-action"><div><strong>Rotate invite code</strong><p>Generate a fresh one-time code and email it to both developers. The previous code is invalidated.</p></div><button class="cta" id="vipRegenerate" type="button">Regenerate &amp; email both</button></div>
-        <form id="vipCodeVerifyForm" class="vip-code-verify">
-          <div class="vip-verify-copy"><strong>Reveal the active code</strong><p>Confirm your developer-account password before viewing it.</p></div>
-          <label class="vip-sr-only" for="vipCodePassword">Developer-account password</label>
-          <div class="vip-password-row"><input id="vipCodePassword" type="password" autocomplete="current-password" maxlength="256" placeholder="Enter your password" required><button class="mini" id="vipCodeVerify" type="submit">Verify &amp; reveal</button></div>
-        </form>
-        <div id="vipCurrentCode" class="vip-current-code" hidden><div class="vip-current-code-main"><span>ACTIVE ONE-TIME CODE</span><code id="vipCurrentCodeValue"></code></div><div class="vip-code-actions"><button class="mini" id="vipCopyCode" type="button">Copy code</button><button class="mini" id="vipHideCode" type="button">Hide code</button></div></div>
-      </section>
+
       <div id="vipUnlocked" hidden>
         <div class="vip-stats">
           <div class="vip-stat"><b id="vipChatCount">0</b><span>Chats</span></div>
@@ -163,10 +164,11 @@
           <div class="vip-card"><label for="vipEffect">Visual effect</label><select id="vipEffect"><option value="stars">Golden stars</option><option value="neon">Neon pulse</option><option value="orbit">Orbit glow</option><option value="none">No extra effect</option></select><small>Extra ambience across the chat.</small></div>
           <div class="vip-card"><label for="vipSound">Sound pack</label><select id="vipSound"><option value="classic">Classic</option><option value="soft">Soft tones</option><option value="arcade">Arcade</option></select><small>Changes interface sound character.</small></div>
         </div>
-<div class="vip-actions"><button class="cta" id="vipSave" type="button">Save VIP customisation</button><button class="mini" id="vipReset" type="button">Reset customisation</button></div>
+<div class="vip-actions"><button class="cta" id="vipSave" type="button">✓ Save customisation</button><button class="mini" id="vipReset" type="button">Reset to defaults</button></div>
         <div class="vip-lounge"><strong>🌙 VIP Lounge</strong><p>Welcome to the private corner of Glitch. Get early feature previews, share feedback, and see owner announcements here.</p><p><b>Coming up:</b> sneak peeks, community challenges, and member-only updates.</p></div>
-        <div class="vip-card"><strong>Secret commands</strong><small>Try <code>/vip</code>, <code>/stats</code>, <code>/lounge</code>, or <code>/theme gold</code> in the chat box.</small></div>
+        
       </div>
+      <aside class="vip-command-note"><span class="note-icon">⌘</span><div><strong>Secret commands</strong><small>Try <code>/vip</code>, <code>/stats</code>, <code>/lounge</code>, or <code>/theme gold</code> in the chat box.</small></div></aside>
       <div id="vipStatus" role="status" aria-live="polite"></div>
     </div>
   </section>
@@ -213,22 +215,6 @@
     </div>
   </section>
 </div>
-<div id="codePlaygroundModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="codePlaygroundTitle">
-  <section class="box tool-box">
-    <div class="top"><div><h3 id="codePlaygroundTitle">⌨️ VIP Code Playground</h3><p>HTML, CSS and JavaScript · isolated browser sandbox · no access to your laptop or local files.</p></div><button class="mini" id="codePlaygroundClose" type="button" aria-label="Close code playground">✕</button></div>
-    <div class="tool-content">
-      <div class="tool-toolbar"><button class="cta" id="playgroundRun" type="button">▶ Run code</button><button class="mini" id="playgroundReset" type="button">Reset example</button><button class="mini" id="playgroundClear" type="button">Clear all</button><span class="tool-status">Preview is isolated from the main Glitch page.</span></div>
-      <div class="playground-editors">
-        <div class="tool-field"><label for="playgroundHTML">HTML</label><textarea id="playgroundHTML" spellcheck="false"></textarea></div>
-        <div class="tool-field"><label for="playgroundCSS">CSS</label><textarea id="playgroundCSS" spellcheck="false"></textarea></div>
-        <div class="tool-field"><label for="playgroundJS">JavaScript</label><textarea id="playgroundJS" spellcheck="false"></textarea></div>
-      </div>
-      <div class="tool-field"><label>Preview</label><iframe id="playgroundFrame" class="playground-preview" title="Code playground preview" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></div>
-      <div id="playgroundStatus" class="tool-status" role="status" aria-live="polite">Ready. Press Run code to update the preview.</div>
-    </div>
-  </section>
-</div>
-
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div id="gate" class="overlay">
   <form id="gateForm">

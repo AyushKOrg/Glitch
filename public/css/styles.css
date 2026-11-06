@@ -1086,3 +1086,5 @@ html[data-scheme="light"] .image-content input,html[data-scheme="light"] .image-
 html[data-scheme="light"] .memory-box input,html[data-scheme="light"] .memory-box textarea,html[data-scheme="light"] .memory-box select{
  background-color:var(--panel-alt)!important;color:var(--text)!important;border-color:var(--border-strong)!important;
 }
+
+html[data-scheme="dark"]{color-scheme:dark}html[data-scheme="light"]{color-scheme:light}button{appearance:none;-webkit-appearance:none}

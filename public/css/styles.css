@@ -1391,21 +1391,21 @@ html:not([data-scheme=dark]) #vfxCanvas { opacity:.22; }
 
 /* Accent-reactive cosmic atmosphere: the selected accent drives the actual light fields. */
 html[data-scheme=dark] .stage {
+  /* Keep the ambient palette deliberately faint so the cursor light stays dominant. */
   background:
-    radial-gradient(ellipse 76% 88% at 68% 38%, color-mix(in srgb,var(--accent) 54%,transparent) 0%, color-mix(in srgb,var(--accent) 34%,transparent) 38%, transparent 78%),
-    radial-gradient(ellipse 68% 72% at 12% 92%, color-mix(in srgb,var(--accent-2) 48%,transparent) 0%, color-mix(in srgb,var(--accent-2) 28%,transparent) 42%, transparent 80%),
-    radial-gradient(ellipse 58% 66% at 96% 100%, color-mix(in srgb,var(--accent) 40%,transparent) 0%, color-mix(in srgb,var(--accent-2) 25%,transparent) 48%, transparent 82%),
-    radial-gradient(ellipse 52% 52% at 16% 7%, color-mix(in srgb,var(--accent-2) 32%,transparent), transparent 78%),
+    radial-gradient(ellipse 76% 88% at 68% 38%, color-mix(in srgb,var(--accent) 8%,transparent), transparent 78%),
+    radial-gradient(ellipse 68% 72% at 12% 92%, color-mix(in srgb,var(--accent-2) 7%,transparent), transparent 80%),
+    radial-gradient(ellipse 58% 66% at 96% 100%, color-mix(in srgb,var(--accent) 6%,transparent), transparent 82%),
     #080b16;
 }
 html[data-scheme=dark] .stage::before {
   content:""; position:absolute; inset:-18%; z-index:0; pointer-events:none;
-  filter:blur(48px); opacity:1;
+  filter:blur(48px); opacity:.34;
   background:
-    radial-gradient(ellipse 58% 66% at 67% 38%, color-mix(in srgb,var(--accent) 58%,transparent), transparent 76%),
-    radial-gradient(ellipse 54% 60% at 12% 90%, color-mix(in srgb,var(--accent-2) 52%,transparent), transparent 78%),
-    radial-gradient(ellipse 48% 56% at 92% 100%, color-mix(in srgb,var(--accent) 44%,transparent), transparent 78%),
-    radial-gradient(ellipse 42% 48% at 26% 6%, color-mix(in srgb,var(--accent-2) 38%,transparent), transparent 76%);
+    radial-gradient(ellipse 58% 66% at 67% 38%, color-mix(in srgb,var(--accent) 10%,transparent), transparent 76%),
+    radial-gradient(ellipse 54% 60% at 12% 90%, color-mix(in srgb,var(--accent-2) 9%,transparent), transparent 78%),
+    radial-gradient(ellipse 48% 56% at 92% 100%, color-mix(in srgb,var(--accent) 8%,transparent), transparent 78%),
+    radial-gradient(ellipse 42% 48% at 26% 6%, color-mix(in srgb,var(--accent-2) 7%,transparent), transparent 76%);
   background-size:180% 180%,190% 190%,180% 180%,160% 160%;
   animation:glitchNebulaDrift 22s ease-in-out infinite alternate;
 }
@@ -1413,12 +1413,10 @@ html[data-scheme=dark] #vfxCanvas { opacity:1; }
 @property --pointer-x { syntax:"<percentage>"; inherits:true; initial-value:52%; }
 @property --pointer-y { syntax:"<percentage>"; inherits:true; initial-value:38%; }
 html[data-scheme=dark] .stage::after {
+  /* The cursor-controlled light is the primary colour field; no fixed blobs compete with it. */
+  z-index:1;
   opacity:1;
-  background:
-    radial-gradient(ellipse 620px 560px at var(--pointer-x,52%) var(--pointer-y,38%), color-mix(in srgb,var(--accent) 42%,transparent), transparent 76%),
-    radial-gradient(ellipse 48% 54% at 56% 30%, color-mix(in srgb,var(--accent) 18%,transparent), transparent 76%),
-    radial-gradient(ellipse 42% 48% at 13% 88%, color-mix(in srgb,var(--accent-2) 18%,transparent), transparent 78%),
-    radial-gradient(ellipse 38% 44% at 94% 92%, color-mix(in srgb,var(--accent) 15%,transparent), transparent 80%);
+  background:radial-gradient(ellipse 720px 640px at var(--pointer-x,52%) var(--pointer-y,38%), color-mix(in srgb,var(--accent) 72%,transparent) 0%, color-mix(in srgb,var(--accent) 34%,transparent) 34%, transparent 76%);
 }
 @media(prefers-reduced-motion:reduce) {
   html[data-scheme=dark] .stage::before { animation:none!important; }

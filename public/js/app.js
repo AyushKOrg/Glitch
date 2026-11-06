@@ -1,5 +1,72 @@
 (async () => {
   const $ = (id) => document.getElementById(id);
+  // Reference-matched starfield: fine points and a few cross-shaped glints.
+  function initGlitchStarfield() {
+    const stage = document.querySelector('.stage');
+    const canvas = $('vfxCanvas');
+    if (!stage || !canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let width = 0, height = 0, dpr = 1, stars = [], raf = 0, lastFrame = 0;
+    const random = (min, max) => min + Math.random() * (max - min);
+    function resize() {
+      const rect = stage.getBoundingClientRect();
+      width = Math.max(1, rect.width); height = Math.max(1, rect.height);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+      canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.max(46, Math.min(150, Math.round(width * height / 10500)));
+      stars = Array.from({ length: count }, (_, i) => ({
+        x: random(0, width), y: random(0, height), r: random(.45, 1.05),
+        phase: random(0, Math.PI * 2), speed: random(.25, .8),
+        cyan: Math.random() < .24, flare: i < 5 && Math.random() < .72,
+        drift: random(-.045, .045)
+      }));
+      draw(0, true);
+    }
+    function draw(time, staticFrame = false) {
+      ctx.clearRect(0, 0, width, height);
+      const dark = document.documentElement.dataset.scheme !== 'light';
+      for (const star of stars) {
+        const pulse = staticFrame ? .72 : .48 + (Math.sin(time * .001 * star.speed + star.phase) + 1) * .19;
+        const alpha = pulse * (dark ? 1 : .34);
+        const tint = star.cyan ? (dark ? '105,224,244' : '25,125,155') : (dark ? '220,241,255' : '60,105,130');
+        ctx.fillStyle = 'rgba(' + tint + ',' + alpha + ')';
+        ctx.beginPath(); ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2); ctx.fill();
+        if (star.flare) {
+          const glow = alpha * .7, length = random(5.5, 8.5);
+          ctx.save(); ctx.globalAlpha = glow;
+          ctx.shadowColor = star.cyan ? '#49eaff' : '#d7f5ff'; ctx.shadowBlur = 9;
+          ctx.strokeStyle = star.cyan ? 'rgba(90,235,255,.85)' : 'rgba(220,245,255,.82)';
+          ctx.lineWidth = .65; ctx.beginPath();
+          ctx.moveTo(star.x - length, star.y); ctx.lineTo(star.x + length, star.y);
+          ctx.moveTo(star.x, star.y - length); ctx.lineTo(star.x, star.y + length);
+          ctx.stroke(); ctx.restore();
+        }
+        if (!staticFrame) { star.y += star.drift; if (star.y < -2) star.y = height + 2; if (star.y > height + 2) star.y = -2; }
+      }
+    }
+    function frame(time) {
+      if (time - lastFrame >= 40) { draw(time); lastFrame = time; }
+      raf = requestAnimationFrame(frame);
+    }
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(resize) : null;
+    observer?.observe(stage);
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+    if (!reducedMotion.matches) raf = requestAnimationFrame(frame);
+    reducedMotion.addEventListener?.('change', event => {
+      if (event.matches) { cancelAnimationFrame(raf); draw(0, true); }
+      else { lastFrame = 0; raf = requestAnimationFrame(frame); }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else if (!reducedMotion.matches) raf = requestAnimationFrame(frame);
+    });
+  }
+  initGlitchStarfield();
   const sideCollapseButton = $('sideCollapse');
   let sidebarCollapsed = false;
   try { sidebarCollapsed = localStorage.getItem('glitch_sidebar_collapsed') === '1' && window.matchMedia('(min-width: 761px)').matches; } catch {}

@@ -404,7 +404,10 @@
     const badge=$('accountBadge');
     if(badge){const role=vipDeveloper?'DEV':vipActive?'VIP':'FREE';badge.textContent=role;badge.className='account-pill '+role.toLowerCase();badge.hidden=!user;}
     const devButton=$('devSettingsOpen');if(devButton)devButton.hidden=!vipDeveloper;
-    $('vipDeveloperTools').hidden=!vipDeveloper;
+    const devLabel=document.querySelector('.settings-dev-label');if(devLabel)devLabel.hidden=!vipDeveloper;
+    const contact=$('settingsContactDeveloper');if(contact)contact.hidden=vipDeveloper;
+    ['settingsVipAccess','settingsVipTile'].forEach(id=>{const el=$(id);if(el)el.hidden=vipActive||vipDeveloper;});
+    const vipTools=$('vipToolsOpen');if(vipTools)vipTools.hidden=!(vipActive||vipDeveloper);
   }
   function setVipState(active){
     vipActive = Boolean(active);
@@ -424,7 +427,7 @@
     const r=await api('/api/vip');
     if(!r.ok) throw new Error(r.data.error||'Could not check VIP status.');
     vipDeveloper = r.data.developer === true;
-    setVipState(r.data.vip===true);
+    setVipState(r.data.vip===true || vipDeveloper);
   }
   function applyVipPrefs(showToastMessage=false){
     if(!vipActive)return;
@@ -503,11 +506,11 @@
   });
   function runVipCommand(raw){
     const bits=String(raw||'').trim().split(/\s+/),cmd=(bits[0]||'').toLowerCase();
-    if(cmd==='/vip'){ $('vipOpen').click(); return true; }
+    if(cmd==='/vip'){ openVipModal(); return true; }
     if(!['/stats','/lounge','/theme'].includes(cmd))return false;
     if(!vipActive){showToast('That command is VIP-only. Type /vip to redeem an invite.');return true;}
     if(cmd==='/stats'){renderVipStats();showToast('VIP stats: '+$('vipChatCount').textContent+' chats · '+$('vipMessageCount').textContent+' messages');return true;}
-    if(cmd==='/lounge'){$('vipOpen').click();return true;}
+    if(cmd==='/lounge'){openVipModal();return true;}
     if(cmd==='/theme'){
       const name=(bits[1]||'gold').toLowerCase();
       if(!['gold','obsidian','cosmic','aurora'].includes(name)){showToast('Themes: gold, obsidian, cosmic, aurora');return true;}
@@ -667,13 +670,44 @@
     $('who').textContent=name;$('profileDisplayName').value=name;$('settingsEmail').textContent=user?(user.isAnonymous?'Guest session':user.email):'Not signed in';
     for(const el of [$('avatar'),$('profilePreview')]){el.textContent=picture?'':(name.trim()[0]||'G').toUpperCase();el.style.backgroundImage=picture?'url("'+picture+'")':'';el.style.backgroundSize=picture?'cover':'200% 200%';el.style.backgroundPosition='center';el.classList.toggle('has-picture',!!picture);}
   }
+  let activeSettingsNode=null;
+  const settingsDetails={
+    profile:{id:'profileSettingsSection',title:'Profile',subtitle:'Your display name and profile picture.',icon:'◉'},
+    account:{id:'accountSettingsSection',title:'Account',subtitle:'Your sign-in details and account security.',icon:'♙'},
+    appearance:{id:'appearanceSettings',title:'Appearance',subtitle:'Choose your colour mode and accent.',icon:'◐'},
+    audio:{id:'audioSettingsSection',title:'Audio',subtitle:'Control sound effects and spoken replies.',icon:'♫'},
+    developer:{id:'vipDeveloperTools',title:'Developer settings',subtitle:'Restricted developer-only tools.',icon:'⌘'}
+  };
+  function closeSettingsDetail(){
+    if(activeSettingsNode){$('settingsVault').appendChild(activeSettingsNode);if(activeSettingsNode.id==='vipDeveloperTools')activeSettingsNode.hidden=true;activeSettingsNode=null;}
+    $('settingsDetailModal').classList.remove('open');
+  }
+  function openSettingsDetail(key){
+    const item=settingsDetails[key];if(!item)return;
+    if(key==='developer'&&!vipDeveloper)return;
+    closeSettingsDetail();
+    const node=$(item.id);if(!node)return;
+    if(key==='developer')node.hidden=false;
+    activeSettingsNode=node;$('settingsDetailBody').appendChild(node);
+    $('settingsDetailTitle').textContent=item.title;$('settingsDetailSubtitle').textContent=item.subtitle;$('settingsDetailMark').textContent=item.icon;
+    $('settingsDetailModal').classList.add('open');
+    if(key==='profile')paintProfile();
+    if(key==='account')paintProfile();
+  }
+  function closeSettings(){closeSettingsDetail();$('settingsModal').classList.remove('open');}
   $('settingsOpen').addEventListener('click',()=>{paintProfile();$('settingsModal').classList.add('open');});
-  $('settingsClose').addEventListener('click',()=>$('settingsModal').classList.remove('open'));
-  $('settingsModal').addEventListener('click',e=>{if(e.target===$('settingsModal'))$('settingsModal').classList.remove('open');});
-  $('vipOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
-  $('personalizeOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
-  $('devSettingsOpen').addEventListener('click',()=>{$('vipDeveloperTools').scrollIntoView({block:'start',behavior:'smooth'});});
-  $('installAppSide').addEventListener('click',()=>{$('settingsModal').classList.remove('open');installGlitch();});
+  $('settingsClose').addEventListener('click',closeSettings);
+  $('settingsModal').addEventListener('click',e=>{if(e.target===$('settingsModal'))closeSettings();});
+  $('settingsDetailClose').addEventListener('click',closeSettingsDetail);
+  $('settingsDetailModal').addEventListener('click',e=>{if(e.target===$('settingsDetailModal'))closeSettingsDetail();});
+  document.querySelectorAll('[data-settings-detail]').forEach(button=>button.addEventListener('click',()=>openSettingsDetail(button.dataset.settingsDetail)));
+  document.querySelectorAll('[data-settings-action]').forEach(button=>button.addEventListener('click',()=>{
+    const action=button.dataset.settingsAction;closeSettings();
+    if(action==='memory')$('memoryOpen').click();
+    else if(action==='personalize'||action==='vip')openVipModal();
+    else if(action==='install')installGlitch();
+  }));
+  $('vipToolsOpen').addEventListener('click',()=>openVipModal());
   $('profilePictureInput').addEventListener('change',e=>{
     const file=e.target.files&&e.target.files[0];if(!file)return;
     if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)||file.size>1500000){$('profileStatus').textContent='Choose a PNG, JPG, WebP or GIF under 1.5 MB.';e.target.value='';return;}
@@ -1255,7 +1289,7 @@
   });
 
   // ---- installable PWA -----------------------------------------------------------
-  let deferredInstallPrompt=null;const installButtons=[$('installApp'),$('installAppSide')].filter(Boolean),installModal=$('installModal');
+  let deferredInstallPrompt=null;const installButtons=[$('installApp')].filter(Boolean),installModal=$('installModal');
   const isAppleMobile=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
   function updateInstallButtons(){installButtons.forEach(button=>{button.hidden=isStandalone();button.disabled=false;});}

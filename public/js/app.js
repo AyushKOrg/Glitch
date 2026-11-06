@@ -16,18 +16,29 @@
   window.addEventListener('resize', () => { if (window.innerWidth <= 760 && sidebarCollapsed) setSidebarCollapsed(false); });
   const log = $('log'), input = $('input'), sendBtn = $('send');
 
-  // ---- subtle interface sound + ambient VFX ---------------------------------
+  // Add an accessible show/hide control to every password input.
+  document.querySelectorAll('input[type="password"]').forEach(field => {
+    if(field.parentElement&&field.parentElement.classList.contains('password-field'))return;
+    const wrap=document.createElement('div');wrap.className='password-field';field.parentNode.insertBefore(wrap,field);wrap.appendChild(field);
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='password-visibility';toggle.setAttribute('aria-label','Show password');toggle.setAttribute('aria-pressed','false');toggle.title='Show password';
+    const eye='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const hiddenEye='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10 10 0 0 0 4-.8"/></svg>';
+    toggle.innerHTML=eye;toggle.addEventListener('click',()=>{const show=field.type==='password';field.type=show?'text':'password';toggle.innerHTML=show?hiddenEye:eye;toggle.setAttribute('aria-pressed',String(show));toggle.setAttribute('aria-label',show?'Hide password':'Show password');toggle.title=show?'Hide password':'Show password';field.focus();});wrap.appendChild(toggle);
+  });
+
+  // ---- interface sound effects ---------------------------------
   let soundOn = true, audioCtx = null;
   try { soundOn = localStorage.getItem('glitch_sfx') !== 'off'; } catch {}
   const soundButton = $('soundToggle'), soundLabel = $('soundLabel');
   function syncSoundButton() { soundButton.setAttribute('aria-pressed', String(soundOn)); soundLabel.textContent = 'Sound effects: ' + (soundOn ? 'on' : 'off'); }
-  function playSfx(kind = 'tap') {
+  async function playSfx(kind = 'tap') {
     if (!soundOn) return;
     try {
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if (!Ctx) return;
       if (!audioCtx) audioCtx = new Ctx();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (audioCtx.state !== 'running') await audioCtx.resume();
+      if (audioCtx.state !== 'running') return;
       const now = audioCtx.currentTime, osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
       const presets = vipSoundPack === 'arcade'
         ? { tap:[620,980,.055], send:[340,880,.12], reply:[520,1040,.16], toggle:[440,740,.08] }
@@ -42,36 +53,6 @@
   }
   syncSoundButton();
   soundButton.addEventListener('click', () => { soundOn = !soundOn; try { localStorage.setItem('glitch_sfx', soundOn ? 'on' : 'off'); } catch {} syncSoundButton(); if (soundOn) playSfx('toggle'); });
-  // Lightweight ambient particles; respects reduced-motion and never blocks input.
-  (() => {
-    const canvas = $('vfxCanvas'), ctx = canvas && canvas.getContext && canvas.getContext('2d');
-    if (!ctx || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const stage = canvas.parentElement; let w = 0, h = 0, raf = 0, dots = [], stars = [];
-    const lightMq = matchMedia('(prefers-color-scheme: light)');
-    const isLight = () => { const sc = document.documentElement.dataset.scheme; return sc ? sc === 'light' : lightMq.matches; };
-    const resize = () => { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5); w = r.width; h = r.height; canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); dots = Array.from({length:Math.min(54,Math.max(22,Math.floor(w*h/26000)))},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.35,a:Math.random()*.42+.12,p:Math.random()*6.28})); stars = Array.from({length:Math.min(260,Math.max(60,Math.floor(w*h/4200)))},()=>{const big=Math.random()<.07;return {x:Math.random()*w,y:Math.random()*h,r:big?1.15+Math.random()*.7:.35+Math.random()*.65,a:big?.55+Math.random()*.35:.18+Math.random()*.4,sp:.5+Math.random()*1.8,ph:Math.random()*6.28,glint:big||Math.random()<.04,warm:Math.random()<.18};}); };
-    const draw = t => { ctx.clearRect(0,0,w,h); const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8b5cf6';
-      // faint twinkling stars + a few sparkles (white on dark, soft violet specks on light)
-      const light = isLight(), sec = t / 1000;
-      for (let k = 0; k < stars.length; k++) {
-        const st = stars[k], tw = .5 + .5 * Math.sin(sec * st.sp + st.ph), al = st.a * (.25 + .75 * tw) * (light ? .85 : 1);
-        ctx.fillStyle = light ? (st.warm ? '#c08457' : accent) : (st.warm ? '#ffe9c7' : '#f2efff');
-        ctx.globalAlpha = al; ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.2832); ctx.fill();
-        if (st.glint && tw > .8) {   // brief four-point glint at the peak of the twinkle
-          const L = st.r * 5.5 * ((tw - .8) / .2 + .3); ctx.globalAlpha = al * .8; ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth = .6;
-          ctx.beginPath(); ctx.moveTo(st.x - L, st.y); ctx.lineTo(st.x + L, st.y); ctx.moveTo(st.x, st.y - L); ctx.lineTo(st.x, st.y + L); ctx.stroke();
-        }
-      }
-      ctx.globalAlpha = 1;
-      for (let i=0;i<dots.length;i++){const p=dots[i];p.x+=p.vx;p.y+=p.vy;p.p+=.018;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;ctx.globalAlpha=p.a*(.65+.35*Math.sin(p.p));ctx.fillStyle=accent;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-        for(let j=i+1;j<dots.length;j++){const q=dots[j],dx=p.x-q.x,dy=p.y-q.y,dist=Math.hypot(dx,dy);if(dist<105){ctx.globalAlpha=(1-dist/105)*.075;ctx.strokeStyle=accent;ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}}
-      }ctx.globalAlpha=1;raf=requestAnimationFrame(draw); };
-    const observer = new ResizeObserver(resize); observer.observe(stage); resize(); draw(0);
-    window.addEventListener('pagehide',()=>{cancelAnimationFrame(raf);observer.disconnect();},{once:true});
-  })();
-  const stageEl = document.querySelector('.stage');
-  stageEl.addEventListener('pointermove', e => { const r=stageEl.getBoundingClientRect(); stageEl.style.setProperty('--pointer-x',(e.clientX-r.left)+'px'); stageEl.style.setProperty('--pointer-y',(e.clientY-r.top)+'px'); }, {passive:true});
-
   let attachedFiles = [];
   const MAX_FILE_BYTES = 8 * 1024 * 1024, MAX_EXTRACTED_CHARS = 24000;
   const MODES = ['flash', 'cognition'];
@@ -103,7 +84,7 @@
   let histFilter = '';
   let undo = null;               // {chat, index, timer} for the last deleted chat
 
-  // Attached files are huge; store a short marker instead (the live session keeps the full text).
+  // Attached files are huge; store a short marker instead (the active microphone session keeps the full text).
   const FILE_RE = /\n*--- Attached file: (.*?) ---\n[\s\S]*?\n--- End file ---/g;
   const compact = (t) => String(t).replace(FILE_RE, (_, n) => '\n[Attached file: ' + n + ']').slice(0, 60000);
   const titleFrom = (t) => compact(t).replace(/\[Attached file: .*?\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 42);
@@ -128,7 +109,7 @@
   }
   function persistChats() { if (user) writeStore(); renderHistoryList(); }
 
-  // Bring the live in-memory history up to date with what the chat object holds.
+  // Bring the current in-memory history up to date with what the chat object holds.
   function syncActiveFromHistory() {
     const chat = activeChat(); if (!chat) return;
     chat.messages = history.map(m => ({ role: m.role, content: m.content }));
@@ -389,66 +370,31 @@
   // ---- voice: speech-to-text (mic) and text-to-speech (spoken replies), all in the browser ----------
   // ---- voice: explicit push-to-talk and optional spoken replies; no continuous listening ----
   const Voice = (() => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const synth = window.speechSynthesis || null;
-    const canListen = Boolean(SR), canSpeak = Boolean(synth && window.SpeechSynthesisUtterance);
-    const KEY_SPEAK = 'glitch_voice_speak';
-    const get = (k) => { try { return localStorage.getItem(k) === '1'; } catch { return false; } };
-    const put = (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch {} };
-    let speakOn = canSpeak && get(KEY_SPEAK), rec = null, listening = false, transcript = '', baseText = '', speakingBtn = null, token = 0;
-    const mic = $('mic');
-    function paint() {
-      $('speakToggle').setAttribute('aria-pressed', String(speakOn));
-      $('speakLabel').textContent = 'Spoken replies: ' + (speakOn ? 'on' : 'off');
-      mic.classList.toggle('live', listening); mic.setAttribute('aria-pressed', String(listening));
-      mic.title = listening ? 'Listening… click to stop' : 'Speak (click to start)';
-    }
-    function speakable(text) {
-      return String(text || '').replace(/\[\[GLITCH_IMAGE:[\s\S]*?\]\]/g,' image generated ').replace(/```[\s\S]*?```/g,' (code is on screen) ')
-        .replace(/\n+\s*(sources?|references?)\s*:?[\s\S]*$/i,'')
-        .replace(/!?\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/https?:\/\/\S+/g,'')
-        .replace(/`([^`]*)`/g,'$1').replace(/^\s{0,3}#{1,6}\s*/gm,'')
-        .replace(/^\s*[-*+]\s+/gm,'').replace(/^\s*\d+[.)]\s+/gm,'')
-        .replace(/[*_~>|]+/g,'').replace(/\s+/g,' ').trim().slice(0,1800);
-    }
-    function pickVoice() {
-      const vs=synth.getVoices(), lang=(navigator.language||'en-US').toLowerCase();
-      const same=vs.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lang.slice(0,2)));
-      const MALE=/\b(guy|christopher|eric|ryan|roger|steffan|brian|andrew|davis|jason|tony|david|mark|james|daniel|alex|fred|aaron|arthur|oliver|thomas|google uk english male|male)\b/i;
-      const FEMALE=/\b(zira|hazel|susan|samantha|victoria|karen|moira|tessa|fiona|aria|jenny|michelle|emma|libby|sonia|female)\b/i;
-      const males=same.filter(v=>MALE.test(v.name)&&!FEMALE.test(v.name));
-      return males.find(v=>/natural|neural|online/i.test(v.name))||males[0]||same.find(v=>/natural|neural|google|online/i.test(v.name)&&!FEMALE.test(v.name))||same.find(v=>v.default)||same[0]||null;
-    }
-    function chunks(text){const parts=text.match(/[^.!?\n]+[.!?]*\s*/g)||[text],out=[];let cur='';for(const p of parts){if((cur+p).length>220&&cur){out.push(cur);cur=p;}else cur+=p;}if(cur.trim())out.push(cur);return out;}
-    function stopSpeaking(){token++;if(synth)synth.cancel();if(speakingBtn){speakingBtn.textContent='Listen';speakingBtn=null;}}
-    function speak(text,btn){
-      if(!canSpeak)return;stopSpeaking();const t=speakable(text);if(!t)return;
-      const mine=token,parts=chunks(t),voice=pickVoice();if(btn){btn.textContent='Stop';speakingBtn=btn;}let i=0;
-      const next=()=>{if(mine!==token)return;if(i>=parts.length){if(speakingBtn===btn&&btn){btn.textContent='Listen';speakingBtn=null;}return;}
-        const part=parts[i++],u=new SpeechSynthesisUtterance(part);if(voice){u.voice=voice;u.lang=voice.lang;}
-        const sharp=/[?!]\s*$/.test(part);u.pitch=sharp?1.28:1.15;u.rate=sharp?1.22:1.14;u.volume=1;u.onend=next;u.onerror=next;synth.speak(u);};
-      next();
-    }
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition,synth=window.speechSynthesis||null;
+    const canListen=Boolean(SR),canSpeak=Boolean(synth&&window.SpeechSynthesisUtterance),KEY_SPEAK='glitch_voice_speak';
+    const get=k=>{try{return localStorage.getItem(k)==='1';}catch{return false;}},put=(k,v)=>{try{localStorage.setItem(k,v?'1':'0');}catch{}};
+    let speakOn=canSpeak&&get(KEY_SPEAK),rec=null,listening=false,transcript='',baseText='',speakingBtn=null,token=0,voices=[];
+    const mic=$('mic');function loadVoices(){voices=synth?synth.getVoices()||[]:[];}
+    function paint(){$('speakToggle').setAttribute('aria-pressed',String(speakOn));$('speakLabel').textContent='Spoken replies: '+(speakOn?'on':'off');mic.classList.toggle('listening',listening);mic.setAttribute('aria-pressed',String(listening));mic.title=listening?'Listening… click to stop':'Speak (click to start)';}
+    function speakable(text){return String(text||'').replace(/\[\[GLITCH_IMAGE:[\s\S]*?\]\]/g,' image generated ').replace(/\x60\x60\x60[\s\S]*?\x60\x60\x60/g,' (code is on screen) ').replace(/\n+\s*(sources?|references?)\s*:?[\s\S]*$/i,'').replace(/!?\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/https?:\/\/\S+/g,'').replace(/\x60([^\x60]*)\x60/g,'$1').replace(/^\s{0,3}#{1,6}\s*/gm,'').replace(/^\s*[-*+]\s+/gm,'').replace(/^\s*\d+[.)]\s+/gm,'').replace(/[*_~>|]+/g,'').replace(/\s+/g,' ').trim().slice(0,2400);}
+    function pickVoice(){if(!voices.length)loadVoices();const lang=(navigator.language||'en-US').toLowerCase(),same=voices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lang.slice(0,2)));return same.find(v=>/natural|neural|online/i.test(v.name))||same.find(v=>v.default)||same[0]||voices.find(v=>v.default)||voices[0]||null;}
+    function chunks(text){const parts=text.match(/[^.!?\n]+[.!?]*\s*/g)||[text],out=[];let cur='';for(const p of parts){if((cur+p).length>200&&cur){out.push(cur);cur=p;}else cur+=p;}if(cur.trim())out.push(cur);return out;}
+    function stopSpeaking(){token++;if(synth){synth.cancel();try{synth.resume();}catch{}}if(speakingBtn){speakingBtn.textContent='Listen';speakingBtn=null;}}
+    function speak(text,btn){if(!canSpeak)return;const cleanText=speakable(text);if(!cleanText)return;stopSpeaking();const mine=token,parts=chunks(cleanText),voice=pickVoice();if(btn){btn.textContent='Stop';speakingBtn=btn;}let index=0;const next=()=>{if(mine!==token)return;if(index>=parts.length){if(speakingBtn===btn&&btn){btn.textContent='Listen';speakingBtn=null;}return;}const utterance=new SpeechSynthesisUtterance(parts[index++]);utterance.lang=voice&&voice.lang?voice.lang:(navigator.language||'en-US');if(voice)utterance.voice=voice;utterance.pitch=1.04;utterance.rate=1.02;utterance.volume=1;utterance.onend=()=>{if(mine===token)next();};utterance.onerror=event=>{if(mine!==token||event&&['canceled','interrupted'].includes(event.error))return;next();};try{synth.resume();synth.speak(utterance);}catch{if(speakingBtn===btn&&btn){btn.textContent='Listen';speakingBtn=null;}showToast('Spoken replies are unavailable in this browser.');}};next();}
     function toggleSpeak(text,btn){if(speakingBtn===btn)stopSpeaking();else speak(text,btn);}
     function stopListening(){if(rec&&listening){try{rec.stop();}catch{}}else{listening=false;paint();}}
-    function startListening(){
-      if(!canListen||listening||busy||!user)return;
-      stopSpeaking();rec=new SR();rec.lang=navigator.language||'en-US';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
-      transcript='';baseText=input.value?input.value.trim()+' ':'';let failed=false;
-      rec.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;transcript=t.trim();input.value=baseText+transcript;input.dispatchEvent(new Event('input'));};
-      rec.onerror=e=>{if(e.error==='no-speech'||e.error==='aborted')return;failed=true;showToast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Microphone blocked. Allow it in your browser site settings.':e.error==='audio-capture'?'I can’t find a microphone.':'Voice input failed ('+e.error+').');};
-      rec.onend=()=>{listening=false;paint();if(!failed&&transcript.trim())$('chat').requestSubmit();};
-      try{rec.start();listening=true;paint();}catch{listening=false;paint();}
-    }
-    mic.hidden=!canListen;if(!canSpeak)$('speakToggle').hidden=true;
-    mic.addEventListener('click',()=>{if(listening)stopListening();else startListening();});
-    $('speakToggle').addEventListener('click',()=>{speakOn=!speakOn;put(KEY_SPEAK,speakOn);if(!speakOn)stopSpeaking();paint();});
-    if(synth)synth.getVoices();
-    window.addEventListener('pagehide',()=>{stopSpeaking();stopListening();});
-    paint();
+    function startListening(){if(!canListen||listening||busy||!user)return;stopSpeaking();rec=new SR();rec.lang=navigator.language||'en-US';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=3;transcript='';baseText=input.value?input.value.trim()+' ':'';let failed=false;rec.onresult=e=>{let value='';for(let i=0;i<e.results.length;i++)value+=e.results[i][0].transcript;transcript=value.trim();input.value=baseText+transcript;input.dispatchEvent(new Event('input'));};rec.onerror=e=>{if(e.error==='no-speech'||e.error==='aborted')return;failed=true;showToast(e.error==='not-allowed'||e.error==='service-not-allowed'?'Microphone blocked. Allow it in your browser site settings.':e.error==='audio-capture'?'I can’t find a microphone.':'Voice input failed ('+e.error+').');};rec.onend=()=>{listening=false;paint();if(!failed&&transcript.trim())$('chat').requestSubmit();};try{rec.start();listening=true;paint();}catch{listening=false;paint();}}
+    mic.hidden=!canListen;if(!canSpeak)$('speakToggle').hidden=true;mic.addEventListener('click',()=>{if(listening)stopListening();else startListening();});
+    $('speakToggle').addEventListener('click',()=>{speakOn=!speakOn;put(KEY_SPEAK,speakOn);if(!speakOn)stopSpeaking();paint();if(speakOn){synth.resume();speak('Spoken replies are on.',null);}});
+    if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}window.addEventListener('pagehide',()=>{stopSpeaking();stopListening();});paint();
     return {canSpeak,toggleSpeak,stop:stopSpeaking,onReply(text){if(speakOn)speak(text,null);},onSend(){stopSpeaking();if(listening)stopListening();},onFailed(){}};
   })();
 
+
+  function refreshContextPanel(){const list=$('contextList'),summary=$('contextSummary');if(!list||!summary)return;const rows=history.slice(-40);summary.textContent=rows.length+' messages in this conversation are available (up to 40), plus '+memoryItems.length+' saved memories.';list.textContent='';if(!rows.length){const empty=document.createElement('p');empty.className='history-empty';empty.textContent='Start chatting and this panel will show the context Glitch can refer to.';list.appendChild(empty);return;}rows.forEach(m=>{const row=document.createElement('div');row.className='context-row '+(m.role==='user'?'context-user':'context-assistant');const label=document.createElement('strong');label.textContent=m.role==='user'?'You':'Glitch';const body=document.createElement('p');body.textContent=String(m.content||'').slice(0,700);row.append(label,body);list.appendChild(row);});}
+  $('contextOpen').addEventListener('click',async()=>{$('contextModal').classList.add('open');refreshContextPanel();if(user){try{await loadMemories();refreshContextPanel();}catch{}}});
+  $('contextClose').addEventListener('click',()=>$('contextModal').classList.remove('open'));
+  $('contextModal').addEventListener('click',e=>{if(e.target===$('contextModal'))$('contextModal').classList.remove('open');});
 
   // ---- invite-only VIP -------------------------------------------------------
   const VIP_PREF_KEY = 'glitch_vip_prefs_';
@@ -463,7 +409,7 @@
   function setVipState(active){
     vipActive = Boolean(active);
     // VIP-only tools stay hidden until the server confirms membership.
-    ['openImageStudio','openImageEditor','openCodePlayground','liveOpen','liveOpenComposer'].forEach(id=>{const button=$(id);if(button){button.hidden=false;button.setAttribute('aria-disabled',String(!vipActive));}});
+    ['openImageStudio','openImageEditor','openCodePlayground'].forEach(id=>{const button=$(id);if(button){button.hidden=false;button.setAttribute('aria-disabled',String(!vipActive));}});
     document.body.classList.toggle('vip-active', vipActive);
     $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
     $('vipNavBadge').hidden = false;
@@ -577,25 +523,21 @@
 
   // ---- account memory: private Supabase-backed facts used as context in every chat ----
   let memoryItems = [];
-  function renderMemoryList() {
+  function renderMemoryList(){
     const list=$('memoryList');if(!list)return;list.textContent='';
-    if(!memoryItems.length){const p=document.createElement('p');p.className='history-empty';p.textContent='No saved memories yet. Add one here, or tell Glitch “remember that …” in chat.';list.appendChild(p);return;}
-    memoryItems.forEach(item=>{const row=document.createElement('div');row.className='memory-row';const content=document.createElement('div');content.className='memory-content';content.textContent=item.content;
-      const del=document.createElement('button');del.type='button';del.className='memory-delete';del.textContent='×';del.title='Delete memory';del.setAttribute('aria-label','Delete memory');
+    if(!memoryItems.length){const p=document.createElement('p');p.className='history-empty';p.textContent='No saved memories yet. Glitch can learn clear preferences and ongoing projects from chats, or you can add one here.';list.appendChild(p);return;}
+    memoryItems.forEach(item=>{
+      const row=document.createElement('div');row.className='memory-row';const content=document.createElement('div');content.className='memory-content';content.textContent=item.content;
+      const actions=document.createElement('div');actions.className='memory-actions';
+      const edit=document.createElement('button');edit.type='button';edit.className='memory-edit';edit.textContent='Edit';
+      const del=document.createElement('button');del.type='button';del.className='memory-delete';del.textContent='Delete';
+      edit.addEventListener('click',()=>{row.textContent='';row.classList.add('editing');const field=document.createElement('textarea');field.maxLength=500;field.rows=3;field.value=item.content;field.setAttribute('aria-label','Edit saved memory');const save=document.createElement('button');save.type='button';save.className='memory-edit';save.textContent='Save changes';const cancel=document.createElement('button');cancel.type='button';cancel.className='memory-delete';cancel.textContent='Cancel';save.addEventListener('click',async()=>{const value=field.value.trim();if(!value){showToast('A memory cannot be empty.');return;}save.disabled=true;try{const r=await api('/api/memory',{method:'PATCH',body:JSON.stringify({id:item.id,content:value})});if(!r.ok)throw new Error(r.data.error||'Could not update memory.');item.content=value;renderMemoryList();}catch(e){showToast(e.message);save.disabled=false;}});cancel.addEventListener('click',renderMemoryList);const rowActions=document.createElement('div');rowActions.className='memory-actions';rowActions.append(save,cancel);row.append(field,rowActions);field.focus();});
       del.addEventListener('click',async()=>{del.disabled=true;try{const r=await api('/api/memory',{method:'DELETE',body:JSON.stringify({id:item.id})});if(!r.ok)throw new Error(r.data.error||'Could not delete memory.');memoryItems=memoryItems.filter(x=>x.id!==item.id);renderMemoryList();}catch(e){showToast(e.message);del.disabled=false;}});
-      row.append(content,del);list.appendChild(row);});
+      actions.append(edit,del);row.append(content,actions);list.appendChild(row);
+    });
   }
-  async function loadMemories() {
-    if(!user){memoryItems=[];renderMemoryList();return;}
-    const r=await api('/api/memory');if(!r.ok)throw new Error(r.data.error||'Could not load account memory.');
-    memoryItems=Array.isArray(r.data.memories)?r.data.memories:[];renderMemoryList();
-  }
-  async function saveMemory(content,quiet=false) {
-    const value=String(content||'').trim().slice(0,500);if(!value)throw new Error('Write something to remember first.');
-    const r=await api('/api/memory',{method:'POST',body:JSON.stringify({content:value})});
-    if(!r.ok)throw new Error(r.data.error||'Could not save memory.');
-    await loadMemories();if(!quiet)showToast('Saved to your account memory.');
-  }
+  async function loadMemories(){if(!user){memoryItems=[];renderMemoryList();return;}const r=await api('/api/memory');if(!r.ok)throw new Error(r.data.error||'Could not load account memory.');memoryItems=Array.isArray(r.data.memories)?r.data.memories:[];renderMemoryList();}
+  async function saveMemory(content,quiet=false){const value=String(content||'').trim().slice(0,500);if(!value)throw new Error('Write something to remember first.');const r=await api('/api/memory',{method:'POST',body:JSON.stringify({content:value})});if(!r.ok)throw new Error(r.data.error||'Could not save memory.');await loadMemories();if(!quiet)showToast('Saved to your account memory.');}
   $('memoryOpen').addEventListener('click',async()=>{if(!user){showToast('Sign in or continue as guest to use account memory.');return;}$('memoryModal').classList.add('open');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
   $('memoryClose').addEventListener('click',()=>$('memoryModal').classList.remove('open'));
   $('memoryModal').addEventListener('click',e=>{if(e.target===$('memoryModal'))$('memoryModal').classList.remove('open');});
@@ -1303,125 +1245,18 @@
     finally{btn.disabled=false;btn.textContent='Generate image';}
   });
 
-  // ---- Live voice + vision, isolated from regular chat and push-to-talk ----
-  const LiveVoice = (() => {
-    const modal=$('liveModal'),box=modal.querySelector('.live-box'),status=$('liveStatus'),captions=$('liveCaptions'),video=$('liveVideo');
-    const startBtn=$('liveStart'),consent=$('liveConsentCheck'),controls=$('liveControls');
-    let ws=null,micStream=null,videoStream=null,audioCtx=null,micSource=null,processor=null,silentGain=null,frameTimer=null,connectTimer=null,playbackAt=0;
-    let playing=new Set(),liveActive=false,liveReady=false,muted=false,videoKind='',captionLines=[],inputDraft='',outputDraft='';
-    const send=p=>{if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(p));};
-    function setStatus(t,state){status.textContent=t;box.dataset.state=state||'idle';}
-    function paintCaptions(){
-      captions.textContent='';
-      captionLines.slice(-6).forEach(row=>{const p=document.createElement('p');p.className='live-caption-line';const b=document.createElement('strong');b.textContent=row.who+':';const span=document.createElement('span');span.textContent=row.text;p.append(b,span);captions.appendChild(p);});
-      if(inputDraft||outputDraft){const p=document.createElement('p');p.className='live-caption-line';const b=document.createElement('strong');b.textContent=outputDraft?'Glitch:':'You:';const span=document.createElement('span');span.textContent=outputDraft||inputDraft;p.append(b,span);captions.appendChild(p);}
-      captions.scrollTop=captions.scrollHeight;
-    }
-    function addCaption(who,text){const value=String(text||'').trim();if(!value)return;captionLines.push({who,text:value});captionLines=captionLines.slice(-12);paintCaptions();}
-    function stopPlayback(){for(const source of playing){try{source.stop();}catch{}}playing.clear();playbackAt=audioCtx?audioCtx.currentTime:0;}
-    function playPcm(base64){
-      if(!audioCtx)return;
-      try{const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
-        const pcm=new Int16Array(bytes.buffer,bytes.byteOffset,Math.floor(bytes.byteLength/2));if(!pcm.length)return;
-        const buffer=audioCtx.createBuffer(1,pcm.length,24000),channel=buffer.getChannelData(0);for(let i=0;i<pcm.length;i++)channel[i]=pcm[i]/32768;
-        const source=audioCtx.createBufferSource();source.buffer=buffer;source.connect(audioCtx.destination);
-        const when=Math.max(audioCtx.currentTime+.025,playbackAt);source.start(when);playbackAt=when+buffer.duration;playing.add(source);source.onended=()=>playing.delete(source);
-      }catch(error){console.warn('Live audio playback failed',error);}
-    }
-    function resample(input,rate){
-      if(rate===16000)return input;const ratio=rate/16000,length=Math.floor(input.length/ratio),out=new Int16Array(length);
-      for(let i=0;i<length;i++){const a=Math.floor(i*ratio),b=Math.min(Math.floor((i+1)*ratio),input.length);let sum=0;for(let j=a;j<b;j++)sum+=input[j];const v=b>a?sum/(b-a):0;out[i]=Math.max(-1,Math.min(1,v))*32767;}return out;
-    }
-    function base64(bytes){let binary='';for(let i=0;i<bytes.length;i++)binary+=String.fromCharCode(bytes[i]);return btoa(binary);}
-    function startAudioInput(){
-      micSource=audioCtx.createMediaStreamSource(micStream);processor=audioCtx.createScriptProcessor(2048,1,1);silentGain=audioCtx.createGain();silentGain.gain.value=0;
-      processor.onaudioprocess=e=>{if(!liveReady||muted||!ws||ws.readyState!==WebSocket.OPEN)return;const pcm=resample(e.inputBuffer.getChannelData(0),audioCtx.sampleRate);send({realtimeInput:{audio:{data:base64(new Uint8Array(pcm.buffer)),mimeType:'audio/pcm;rate=16000'}}});};
-      micSource.connect(processor);processor.connect(silentGain);silentGain.connect(audioCtx.destination);
-    }
-    function stopVideoShare(){
-      if(frameTimer){clearInterval(frameTimer);frameTimer=null;}
-      if(videoStream){videoStream.getTracks().forEach(t=>t.stop());videoStream=null;}
-      video.srcObject=null;video.hidden=true;$('liveOrb').hidden=false;videoKind='';
-      $('liveCamera').textContent='Camera';$('liveScreen').textContent='Share screen';
-    }
-    async function startVideoShare(kind){
-      if(!liveReady||!navigator.mediaDevices)return;
-      try{
-        const request=kind==='screen'?navigator.mediaDevices.getDisplayMedia({video:{frameRate:{ideal:5,max:10}},audio:false}):navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false});
-        const stream=await request;stopVideoShare();videoStream=stream;videoKind=kind;video.srcObject=stream;video.hidden=false;$('liveOrb').hidden=true;await video.play().catch(()=>{});
-        stream.getVideoTracks()[0].addEventListener('ended',stopVideoShare,{once:true});
-        if(kind==='camera')$('liveCamera').textContent='Stop camera';else $('liveScreen').textContent='Stop sharing';
-        const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
-        frameTimer=setInterval(()=>{if(!liveReady||!ws||ws.readyState!==WebSocket.OPEN||video.readyState<2)return;
-          const w=video.videoWidth||640,h=video.videoHeight||360,scale=Math.min(1,640/w);canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));
-          try{ctx.drawImage(video,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.62).split(',')[1];send({realtimeInput:{video:{data,mimeType:'image/jpeg'}}});}catch(error){console.warn('Live video frame skipped',error);}
-        },1000);
-        setStatus(kind==='screen'?'Sharing your screen':'Camera is on','listening');
-      }catch(error){if(error&&error.name!=='NotAllowedError'&&error.name!=='AbortError')showToast('Could not start sharing: '+(error.message||'permission unavailable'));setStatus('Live is still running','listening');}
-    }
-    async function toggleVideo(kind){if(videoKind===kind){stopVideoShare();setStatus('Live is still running','listening');return;}await startVideoShare(kind);}
-    function cleanup(){
-      liveReady=false;liveActive=false;muted=false;if(connectTimer){clearTimeout(connectTimer);connectTimer=null;}stopPlayback();stopVideoShare();
-      if(processor){processor.onaudioprocess=null;try{processor.disconnect();}catch{}processor=null;}
-      if(micSource){try{micSource.disconnect();}catch{}micSource=null;}
-      if(silentGain){try{silentGain.disconnect();}catch{}silentGain=null;}
-      if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
-      if(audioCtx){const old=audioCtx;audioCtx=null;old.close().catch(()=>{});}
-      if(ws){const old=ws;ws=null;try{old.close(1000,'Session ended');}catch{}}
-      controls.hidden=true;$('liveConsent').hidden=false;startBtn.disabled=!consent.checked;$('liveMute').textContent='Mute mic';box.dataset.state='idle';
-    }
-    function handleMessage(event){
-      let message;try{message=JSON.parse(event.data);}catch{return;}
-      if(message.error){const detail=message.error.message||'Google could not start the Live session.';setStatus(detail,'idle');showToast(detail);cleanup();return;}
-      if(message.setupComplete){if(connectTimer){clearTimeout(connectTimer);connectTimer=null;}liveReady=true;controls.hidden=false;$('liveConsent').hidden=true;setStatus('Connected · listening','listening');startAudioInput();send({realtimeInput:{text:'Say a short, natural hello and invite the user to talk.'}});return;}
-      const c=message.serverContent||{};
-      if(c.interrupted){stopPlayback();outputDraft='';setStatus('Listening','listening');paintCaptions();}
-      if(c.interimInputTranscription&&c.interimInputTranscription.text){inputDraft=c.interimInputTranscription.text;setStatus('Listening','listening');paintCaptions();}
-      if(c.inputTranscription&&c.inputTranscription.text){addCaption('You',c.inputTranscription.text);inputDraft='';}
-      if(c.outputTranscription&&c.outputTranscription.text){outputDraft+=c.outputTranscription.text;setStatus('Glitch is speaking','speaking');paintCaptions();}
-      (c.modelTurn&&c.modelTurn.parts||[]).forEach(part=>{const d=part.inlineData||part.inline_data;if(d&&d.data&&String(d.mimeType||d.mime_type||'').startsWith('audio/pcm'))playPcm(d.data);});
-      if(c.turnComplete){if(outputDraft){addCaption('Glitch',outputDraft);outputDraft='';}inputDraft='';setStatus('Connected · listening','listening');paintCaptions();}
-      if(message.goAway)setStatus('Google is preparing to close this session','listening');
-    }
-    async function startSession(){
-      if(!user){showToast('Sign in or continue as guest before starting Live.');return;}
-      try { await refreshVip(); } catch (error) { showToast('Could not verify VIP status. Please try again.'); return; }
-      if(!vipActive){$('vipModal').classList.add('open');$('vipStatus').textContent='Live voice is a VIP feature. Redeem your invite to unlock it.';return;}
-      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket){showToast('Live needs a modern browser on a secure HTTPS connection.');return;}
-      startBtn.disabled=true;setStatus('Requesting microphone permission…','idle');
-      try{
-        const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('This browser does not support live audio.');
-        audioCtx=new AC({latencyHint:'interactive'});await audioCtx.resume();
-        micStream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
-        const tokenResult=await api('/api/live-token',{method:'POST',body:JSON.stringify({})});if(!tokenResult.ok)throw new Error(tokenResult.data.error||'Could not start Live.');
-        ws=new WebSocket('wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContentConstrained?access_token='+encodeURIComponent(tokenResult.data.token));
-        ws.onopen=()=>{setStatus('Authenticating secure Live session…','idle');ws.send(JSON.stringify({setup:{
-          model:'models/gemini-3.8-live',
-          generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:'Puck'}}}},
-          systemInstruction:{parts:[{text:'You are Glitch, a natural, warm, quick-witted conversational AI and the user’s helpful friend. Speak naturally, concisely and conversationally, not like a formal assistant. You may use light playful humour, but never be cruel or mock vulnerability. Listen carefully, answer what the user actually means, and allow interruptions. If unsure, say so. Never claim to see camera or screen content unless a frame has actually been shared.'}]},
-          inputAudioTranscription:{},outputAudioTranscription:{},
-          realtimeInputConfig:{automaticActivityDetection:{disabled:false,prefixPaddingMs:180,silenceDurationMs:550}}
-        }}));};
-        ws.onmessage=handleMessage;
-        ws.onerror=()=>{setStatus('Live connection error. Check network or Google API access.','idle');showToast('Live connection failed. Your normal chat still works.');cleanup();};
-        ws.onclose=e=>{if(liveActive){const detail=[e.reason,e.code?'code '+e.code:''].filter(Boolean).join(' · ');setStatus(detail||'Live connection closed.','idle');if(e.code!==1000)showToast('Live disconnected'+(detail?': '+detail:''));cleanup();}};
-        liveActive=true;setStatus('Opening secure Live connection…','idle');
-        connectTimer=setTimeout(()=>{if(!liveReady){setStatus('Live timed out before setup completed. Please try again.','idle');showToast('Live did not finish connecting. Check Google Live API access and try again.');cleanup();}},18000);
-      }catch(error){cleanup();setStatus(error.message||'Could not start Live.','idle');showToast(error.message||'Could not start Live.');}
-    }
-    async function open(){if(!user){showToast('Sign in or continue as guest to use Live.');return;}try{await refreshVip();}catch(error){showToast('Could not verify VIP status. Please try again.');return;}if(!vipActive){$('vipModal').classList.add('open');$('vipStatus').textContent='Live voice is a VIP feature. Redeem your invite to unlock it.';return;}modal.classList.add('open');}
-    function close(){cleanup();modal.classList.remove('open');}
-    $('liveOpen').addEventListener('click',open);$('liveOpenComposer').addEventListener('click',open);
-    $('liveClose').addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close();});
-    consent.addEventListener('change',()=>{startBtn.disabled=!consent.checked;});startBtn.addEventListener('click',startSession);
-    $('liveEnd').addEventListener('click',()=>{cleanup();setStatus('Session ended','idle');$('liveConsent').hidden=false;});
-    $('liveMute').addEventListener('click',()=>{muted=!muted;if(micStream)micStream.getAudioTracks().forEach(t=>t.enabled=!muted);$('liveMute').textContent=muted?'Unmute mic':'Mute mic';setStatus(muted?'Microphone muted':'Connected · listening',muted?'idle':'listening');});
-    $('liveCamera').addEventListener('click',()=>toggleVideo('camera'));$('liveScreen').addEventListener('click',()=>toggleVideo('screen'));
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close();});window.addEventListener('pagehide',cleanup);
-    return {close};
-  })();
+  // ---- installable PWA -----------------------------------------------------------
+  let deferredInstallPrompt=null;const installButtons=[$('installApp'),$('installAppSide')].filter(Boolean),installModal=$('installModal');
+  const isAppleMobile=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  function updateInstallButtons(){installButtons.forEach(button=>{button.hidden=isStandalone();button.disabled=false;});}
+  function openInstallHelp(){$('installAppleHelp').hidden=!isAppleMobile;$('installOtherHelp').hidden=isAppleMobile;$('installStatus').textContent=isAppleMobile?'Safari supports Add to Home Screen on iPhone and iPad.':'This browser has not exposed its native one-tap installation prompt.';installModal.classList.add('open');}
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event;updateInstallButtons();});
+  window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;updateInstallButtons();showToast('Glitch was installed successfully.');});
+  async function installGlitch(){if(isStandalone()){showToast('Glitch is already installed.');return;}if(deferredInstallPrompt){const prompt=deferredInstallPrompt;deferredInstallPrompt=null;try{await prompt.prompt();const choice=await prompt.userChoice;if(choice&&choice.outcome==='accepted')showToast('Glitch installation started.');else showToast('Installation was cancelled.');}catch{openInstallHelp();}updateInstallButtons();return;}openInstallHelp();}
+  installButtons.forEach(button=>button.addEventListener('click',installGlitch));$('installClose').addEventListener('click',()=>$('installModal').classList.remove('open'));installModal.addEventListener('click',e=>{if(e.target===installModal)installModal.classList.remove('open');});
+  updateInstallButtons();if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(error=>console.warn('PWA service worker registration failed:',error));
 
-  
   // ---- start ----------------------------------------------------------------------
   if(user) refreshVip().catch(()=>setVipState(false));
   markMode(); render(); renderHistoryList();

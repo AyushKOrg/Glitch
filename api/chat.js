@@ -2,8 +2,8 @@
 const { requireUser, consumeGuestMessage, getUserMemories, supabaseUrl } = require('./_lib');
 const { systemPrompt, runGemini, runOpenRouter, runTool } = require('./_llm');
 
-const MAX_MESSAGES = 20;
-const MAX_CHARS = 30000;
+const MAX_MESSAGES = 40;
+const MAX_TOTAL_CHARS = 60000;
 const GUEST_MESSAGE_LIMIT = 30;
 
 // Catch clear code-generation requests in Flash before sending them to a model.
@@ -18,6 +18,15 @@ async function isVipUser(user) {
   return (await r.json().catch(() => ({}))).vip === true;
 }
 
+async function autoLearnFromChat(user,text) {
+  const value=String(text||'').trim();
+  if(!user||!value||value.length<8||value.length>220||/^please\s+remember\b/i.test(value))return;
+  if(/\b(password|passcode|secret|api[ -]?key|access token|credit card|bank account|medical|diagnos|medication|religion|politic|sexual|orientation|ethnicity|race|passport|\d{10,})\b/i.test(value))return;
+  const rules=[[/^(?:i\s+)?(?:prefer|like|love|usually use|always use|work with)\s+(.{4,180})$/i,'Preference: '],[/^(?:i am|i'm)\s+(?:building|working on|developing)\s+(.{4,180})$/i,'Ongoing project: '],[/^my\s+(?:project|app|website)\s+(?:is|called)\s+(.{4,180})$/i,'Project: ']];
+  let content='';for(const [pattern,prefix] of rules){const match=value.match(pattern);if(match){content=prefix+match[1].replace(/[.!?]+$/,'').trim();break;}}
+  if(!content)return;
+  try{await fetch(`${supabaseUrl()}/rest/v1/glitch_memories?on_conflict=user_id,content`,{method:'POST',headers:{apikey:process.env.SUPABASE_ANON_KEY,Authorization:`Bearer ${user.accessToken}`,'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({user_id:user.id,content}),signal:AbortSignal.timeout(5000)});}catch{}
+}
 function isCodeWritingRequest(text) {
   const t = String(text || '').toLowerCase();
   if (isDocumentRequest(t) && !/\b(code|function|script|html|css|javascript|python|react|api|sql|regex|program|component)\b/.test(t)) return false;
@@ -51,12 +60,16 @@ function buildSearchQuery(messages) {
 
 function clean(raw) {
   if (!Array.isArray(raw)) return null;
-  const out = [];
-  for (const m of raw.slice(-MAX_MESSAGES)) {
+  const out = []; let remaining = MAX_TOTAL_CHARS;
+  for (const m of raw.slice(-MAX_MESSAGES).reverse()) {
     if (!m || (m.role !== 'user' && m.role !== 'assistant')) continue;
-    const text = String(m.content || '').slice(0, MAX_CHARS).trim();
-    if (text) out.push({ role: m.role, text });
+    const original = String(m.content || '').trim();
+    if (!original || remaining <= 0) continue;
+    const text = original.slice(0, remaining);
+    remaining -= text.length;
+    out.push({ role: m.role, text });
   }
+  out.reverse();
   if (!out.length || out[out.length - 1].role !== 'user') return null;
   return out;
 }
@@ -98,8 +111,9 @@ module.exports = async (req, res) => {
       }
     }
 
+    await autoLearnFromChat(user, lastUserText);
     const ctx = { userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
-    let system = systemPrompt(mode);
+    let system = systemPrompt(mode) + '\\n\\nCHAT CONTEXT: Use the preceding user and assistant messages in this same conversation to resolve references, preserve decisions, and avoid asking the user to repeat information. The latest 40 messages (within the request size limit) are provided in order.';
     const requestedPersonality = String(req.body && req.body.vipPersonality || 'default');
     if (requestedPersonality !== 'default') {
       const allowedStyles = {

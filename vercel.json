@@ -7,9 +7,6 @@
     "api/images.js": {
       "maxDuration": 60
     },
-    "api/live-token.js": {
-      "maxDuration": 20
-    },
     "api/vip-rotate.js": {
       "maxDuration": 60
     },

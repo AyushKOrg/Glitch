@@ -9,7 +9,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/logo.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180.png">
 <link rel="stylesheet" href="/css/styles.css">
 <script src="/js/theme-init.js"></script>
 </head>
@@ -20,12 +26,13 @@
   <button class="nav primary" id="newChat" type="button" title="Start a new conversation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New chat</button>
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
+  <button class="nav" id="contextOpen" type="button" title="View this conversation’s context"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3V5Z"/><path d="M8 9h8M8 13h5"/></svg>Chat context</button>
+  <button class="nav" id="installAppSide" type="button" title="Install Glitch on this device"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14"/></svg>Install app</button>
   <button class="nav" id="memoryOpen" type="button" title="Manage memories saved to your account"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v1a4 4 0 00-2 7 4 4 0 006 5 4 4 0 006-5 4 4 0 00-2-7V7a4 4 0 00-4-4zM9 11h.01M15 11h.01M9 16c1.5 1 4.5 1 6 0"/></svg>Memory</button>
 <h4 class="tool-group-label">VIP TOOLS</h4>
   <button class="nav vip-tool-nav" id="openImageStudio" type="button" title="VIP image generation"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/><path d="m17 2 .7 1.8L20 5l-2.3 1.2L17 8l-.7-1.8L14 5l2.3-1.2L17 2z"/></svg>Image Generation <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-tool-nav" id="openCodePlayground" type="button" title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
-  <button class="nav live-nav vip-tool-nav" id="liveOpen" type="button" title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="tool-lock-label">VIP</span><span class="live-nav-dot"></span></button>
   <button class="nav vip-nav" id="vipOpen" type="button" title="VIP membership and exclusive features"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>VIP <span id="vipNavBadge" class="vip-pill">LOCKED</span></button>
   <button class="nav dev-control-nav" id="vipDevOpen" type="button" title="Open developer controls" hidden><svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg>Developer controls</button>
   <div class="history-head"><h4>Recent chats</h4></div>
@@ -82,11 +89,10 @@
 </aside>
 
 <div class="stage">
-  <canvas id="vfxCanvas" aria-hidden="true"></canvas>
-  <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong></div>
+  <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong><span class="context-indicator" title="The latest 40 messages and saved memory are supplied to Glitch on each reply">Context on · 40 messages</span><button class="mini install-app-button" id="installApp" type="button">Install app</button></div>
   <main id="log" aria-live="polite"></main>
   <h2 class="hero">Ready when <b>you are.</b></h2>
-  <p class="hero-sub">Ask anything, attach a file, or just talk.</p>
+  <p class="hero-sub">Ask anything, attach a file, or just talk. <span class="context-inline">Chat context is active · latest 40 messages + saved memory</span></p>
   <div id="fileStatus" role="status" aria-live="polite" style="width:min(780px,calc(100% - 2.8rem));margin:0 auto 6px;color:var(--text-dim);font-size:.82rem"></div>
   <form id="chat">
     <div id="cognitionBuddy" role="img" aria-label="A tiny floating Cognition companion" title="Your little Cognition companion">
@@ -97,11 +103,10 @@
     <textarea id="input" rows="1" placeholder="Ask Glitch" autocomplete="off"></textarea>
     <button class="round" id="mic" type="button" title="Speak (click again to stop)" aria-label="Speak your message" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
     <button class="round" id="send" type="submit" title="Send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12L20 4L14 20L11 13L4 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg></button>
-    <button class="live-composer-button" id="liveOpenComposer" type="button" hidden title="Start a real-time Live conversation" aria-label="Start Live"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0014 0M12 18v3m-4 0h8"/></svg><span>Live</span><span class="tool-lock-label">VIP</span></button>
   </form>
   <div class="suggest">
     <button type="button" data-prompt="Help me write or edit: "><b>✍️ Write &amp; edit</b><span>Emails, essays, polish</span></button>
-    <button type="button" data-prompt="Search the web for "><b>🌐 Search the web</b><span>Live, sourced answers</span></button>
+    <button type="button" data-prompt="Search the web for "><b>🌐 Search the web</b><span>Sourced answers</span></button>
     <button type="button" data-prompt="Explain in simple terms: "><b>💡 Explain anything</b><span>Clear, step by step</span></button>
     <button type="button" data-prompt="Write code for: "><b>⌨️ Build something</b><span>Use Cognition mode</span></button>
   </div>
@@ -117,6 +122,12 @@
     <div id="memoryStatus" role="status" aria-live="polite"></div>
     <div id="memoryList" class="memory-list"></div>
   </section>
+</div>
+<div id="contextModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="contextTitle">
+  <section class="box context-box"><div class="top"><div><h3 id="contextTitle">Chat context</h3><p>Glitch receives the latest messages in this conversation plus your saved memory before every reply.</p></div><button class="mini" id="contextClose" type="button" aria-label="Close chat context">✕</button></div><div class="context-summary" id="contextSummary"></div><div class="context-list" id="contextList"></div></section>
+</div>
+<div id="installModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <section class="box install-box"><div class="top"><div><h3 id="installTitle">Install Glitch</h3><p>Keep Glitch on your home screen and launch it like an app.</p></div><button class="mini" id="installClose" type="button" aria-label="Close install help">✕</button></div><div id="installStatus" class="install-status" role="status" aria-live="polite"></div><div id="installAppleHelp" class="install-help" hidden><strong>On iPhone or iPad</strong><ol><li>Open this page in Safari.</li><li>Tap the Share button.</li><li>Choose <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>.</li></ol><p>Apple does not allow websites to open this system sheet programmatically. This is the native iOS installation flow.</p></div><div id="installOtherHelp" class="install-help" hidden><strong>Install from your browser</strong><p>Open the browser menu and choose <b>Install app</b> or <b>Add to Home screen</b>.</p></div></section>
 </div>
 <div id="vipModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="vipTitle">
   <section class="box vip-box">
@@ -212,24 +223,9 @@
         <div class="tool-field"><label for="playgroundCSS">CSS</label><textarea id="playgroundCSS" spellcheck="false"></textarea></div>
         <div class="tool-field"><label for="playgroundJS">JavaScript</label><textarea id="playgroundJS" spellcheck="false"></textarea></div>
       </div>
-      <div class="tool-field"><label>Live preview</label><iframe id="playgroundFrame" class="playground-preview" title="Code playground preview" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></div>
+      <div class="tool-field"><label>Preview</label><iframe id="playgroundFrame" class="playground-preview" title="Code playground preview" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe></div>
       <div id="playgroundStatus" class="tool-status" role="status" aria-live="polite">Ready. Press Run code to update the preview.</div>
     </div>
-  </section>
-</div>
-
-<div id="liveModal" class="overlay live-overlay" role="dialog" aria-modal="true" aria-labelledby="liveTitle">
-  <section class="box live-box">
-    <div class="top live-head"><div><h3 id="liveTitle">Glitch Live</h3><span id="liveStatus" class="live-status">Ready when you are</span></div><button class="mini" id="liveClose" type="button" aria-label="Close Live">✕</button></div>
-    <div class="live-visual" id="liveVisual"><div class="live-orb" id="liveOrb"><span>G</span><i></i></div><video id="liveVideo" autoplay muted playsinline hidden></video></div>
-    <div class="live-captions" id="liveCaptions" aria-live="polite"><p>Start Live and just talk. You can interrupt Glitch naturally.</p></div>
-    <div class="live-consent" id="liveConsent">
-      <p>Live sends microphone audio to Google Gemini for real-time conversation. Camera or screen content is sent only when you explicitly turn on sharing. On Google's free API tier, submitted content may be used to improve Google products. Avoid sharing passwords, private messages, financial details or other sensitive content.</p>
-      <label class="live-consent-check"><input id="liveConsentCheck" type="checkbox"> I understand and want to start a Live session.</label>
-      <button class="cta" id="liveStart" type="button" disabled>Start Live</button>
-    </div>
-    <div class="live-controls" id="liveControls" hidden><button class="mini" id="liveMute" type="button">Mute mic</button><button class="mini" id="liveCamera" type="button">Camera</button><button class="mini" id="liveScreen" type="button">Share screen</button><button class="cta live-end" id="liveEnd" type="button">End session</button></div>
-    <p class="live-footnote">Camera and screen sharing are optional. Your browser will ask for permission, and you can stop sharing at any time.</p>
   </section>
 </div>
 

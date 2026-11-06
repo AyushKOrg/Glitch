@@ -74,7 +74,7 @@
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
-    <div class="me-text"><span id="who">Signed out</span><span id="vipProfileBadge" class="vip-pill" hidden>✦ VIP</span><span id="vipTaglineDisplay" class="vip-tagline" hidden></span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
+    <div class="me-text"><span id="who">Signed out</span><span id="devBadge" class="dev-pill" hidden>DEV</span><span id="vipProfileBadge" class="vip-pill" hidden>✦ VIP</span><span id="vipTaglineDisplay" class="vip-tagline" hidden></span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
     <button class="mini" id="signout" type="button">Sign out</button>
   </div>
 </aside>
@@ -123,7 +123,7 @@
       <div class="vip-hero"><strong>GLITCH VIP ACCESS</strong><span>Exclusive looks, assistant styles, profile customisation and the VIP Lounge.</span></div>
       <div id="vipLock" class="vip-lock">
         <strong>🔐 Invite-only access</strong>
-        <p>VIP codes are issued personally by the Glitch owner. Each code can be redeemed once and is linked to your account.</p>
+        <p>VIP codes are issued personally by the Glitch owner. The daily code can be redeemed by multiple accounts until it rotates.</p>
         <form id="vipRedeemForm"><input id="vipCode" type="password" autocomplete="off" placeholder="Enter your VIP invite code" maxlength="100" required><button class="cta" id="vipRedeem" type="submit">Unlock VIP</button></form>
       </div>
       <div id="vipUnlocked" hidden>
@@ -140,7 +140,7 @@
           <div class="vip-card"><label for="vipEffect">Visual effect</label><select id="vipEffect"><option value="stars">Golden stars</option><option value="neon">Neon pulse</option><option value="orbit">Orbit glow</option><option value="none">No extra effect</option></select><small>Extra ambience across the chat.</small></div>
           <div class="vip-card"><label for="vipSound">Sound pack</label><select id="vipSound"><option value="classic">Classic</option><option value="soft">Soft tones</option><option value="arcade">Arcade</option></select><small>Changes interface sound character.</small></div>
         </div>
-        <div class="vip-actions"><button class="cta" id="vipSave" type="button">Save VIP customisation</button><button class="mini" id="vipReset" type="button">Reset customisation</button></div>
+        <div id="vipDeveloperTools" class="vip-dev-tools" hidden><strong>Developer controls</strong><p>Generate a fresh 13-character code and email both developer accounts. The previous code expires immediately.</p><button class="cta" id="vipRegenerate" type="button">Regenerate code &amp; email both</button></div><div class="vip-actions"><button class="cta" id="vipSave" type="button">Save VIP customisation</button><button class="mini" id="vipReset" type="button">Reset customisation</button></div>
         <div class="vip-lounge"><strong>🌙 VIP Lounge</strong><p>Welcome to the private corner of Glitch. Get early feature previews, share feedback, and see owner announcements here.</p><p><b>Coming up:</b> sneak peeks, community challenges, and member-only updates.</p></div>
         <div class="vip-card"><strong>Secret commands</strong><small>Try <code>/vip</code>, <code>/stats</code>, <code>/lounge</code>, or <code>/theme gold</code> in the chat box.</small></div>
       </div>

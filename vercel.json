@@ -9,6 +9,12 @@
     },
     "api/live-token.js": {
       "maxDuration": 20
+    },
+    "api/vip-rotate.js": {
+      "maxDuration": 60
+    },
+    "api/vip-regenerate.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
@@ -32,6 +38,12 @@
           "value": "microphone=(self), camera=(self), display-capture=(self), geolocation=()"
         }
       ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/vip-rotate",
+      "schedule": "30 18 * * *"
     }
   ]
 }

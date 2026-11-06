@@ -163,78 +163,69 @@ create policy "Users can delete their own glitch chats"
   using (auth.uid() = user_id);
 
 
--- VIP invite system. Codes are stored only as SHA-256 hashes and can be redeemed once.
+-- Daily Glitch VIP code system. The active code is stored only as a SHA-256 hash.
 create extension if not exists pgcrypto with schema extensions;
-create table if not exists public.glitch_vip_codes (
-  code_hash text primary key check (code_hash ~ '^[0-9a-f]{64}$'),
-  redeemed_by uuid references auth.users(id) on delete set null,
-  redeemed_at timestamptz
+create table if not exists public.glitch_vip_active_code (
+ singleton boolean primary key default true check(singleton),
+ code_hash text not null check(code_hash ~ '^[0-9a-f]{64}$'),
+ rotated_at timestamptz not null default now()
 );
 create table if not exists public.glitch_vip_members (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  granted_at timestamptz not null default now()
+ user_id uuid primary key references auth.users(id) on delete cascade,
+ granted_at timestamptz not null default now()
 );
-alter table public.glitch_vip_codes enable row level security;
+alter table public.glitch_vip_active_code enable row level security;
 alter table public.glitch_vip_members enable row level security;
-revoke all on table public.glitch_vip_codes from public, anon, authenticated;
-revoke all on table public.glitch_vip_members from public, anon, authenticated;
+revoke all on table public.glitch_vip_active_code from public,anon,authenticated;
+revoke all on table public.glitch_vip_members from public,anon,authenticated;
 
 create or replace function public.get_glitch_vip_status()
-returns jsonb
-language plpgsql
-security definer
-set search_path = ''
+returns jsonb language plpgsql security definer set search_path=''
 as $$
-declare v_user_id uuid := auth.uid();
+declare v_user_id uuid:=auth.uid(); v_email text;
 begin
-  if v_user_id is null then raise exception 'Authentication required'; end if;
-  return jsonb_build_object('vip', exists(select 1 from public.glitch_vip_members where user_id = v_user_id));
-end;
-$$;
+ if v_user_id is null then raise exception 'Authentication required'; end if;
+ select lower(email) into v_email from auth.users where id=v_user_id;
+ return jsonb_build_object('vip',v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com') or exists(select 1 from public.glitch_vip_members where user_id=v_user_id),
+ 'developer',v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com'));
+end; $$;
 
 create or replace function public.redeem_glitch_vip_code(p_code text)
-returns jsonb
-language plpgsql
-security definer
-set search_path = ''
+returns jsonb language plpgsql security definer set search_path=''
 as $$
-declare
-  v_user_id uuid := auth.uid();
-  v_hash text;
-  v_redeemed_by uuid;
+declare v_user_id uuid:=auth.uid(); v_email text; v_hash text;
 begin
-  if v_user_id is null then raise exception 'Authentication required'; end if;
-  if exists(select 1 from auth.users where id = v_user_id and is_anonymous = true) then
-    raise exception 'Sign in with a registered account to redeem VIP access';
-  end if;
-  if exists(select 1 from public.glitch_vip_members where user_id = v_user_id) then
-    return jsonb_build_object('vip', true, 'already_vip', true);
-  end if;
-  if p_code is null or length(trim(p_code)) < 8 or length(trim(p_code)) > 100 then
-    raise exception 'Invalid invite code';
-  end if;
-  v_hash := encode(extensions.digest(lower(trim(p_code)), 'sha256'), 'hex');
-  update public.glitch_vip_codes
-    set redeemed_by = v_user_id, redeemed_at = now()
-    where code_hash = v_hash and redeemed_by is null
-    returning redeemed_by into v_redeemed_by;
-  if v_redeemed_by is null then raise exception 'That VIP code is invalid or has already been used'; end if;
-  insert into public.glitch_vip_members(user_id) values (v_user_id)
-    on conflict (user_id) do nothing;
-  return jsonb_build_object('vip', true, 'redeemed', true);
-end;
-$$;
+ if v_user_id is null then raise exception 'Authentication required'; end if;
+ if exists(select 1 from auth.users where id=v_user_id and is_anonymous=true) then raise exception 'Sign in with a registered account to redeem VIP access'; end if;
+ select lower(email) into v_email from auth.users where id=v_user_id;
+ if v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com') then return jsonb_build_object('vip',true,'already_vip',true,'developer',true); end if;
+ if exists(select 1 from public.glitch_vip_members where user_id=v_user_id) then return jsonb_build_object('vip',true,'already_vip',true); end if;
+ if p_code is null or length(trim(p_code))<>13 then raise exception 'Invalid invite code'; end if;
+ v_hash:=encode(extensions.digest(upper(trim(p_code)),'sha256'),'hex');
+ if not exists(select 1 from public.glitch_vip_active_code where singleton=true and code_hash=v_hash) then raise exception 'That VIP code is invalid or expired'; end if;
+ insert into public.glitch_vip_members(user_id) values(v_user_id) on conflict(user_id) do nothing;
+ return jsonb_build_object('vip',true,'redeemed',true);
+end; $$;
 
-revoke all on function public.get_glitch_vip_status() from public, anon;
-revoke all on function public.redeem_glitch_vip_code(text) from public, anon;
+create or replace function public.rotate_glitch_vip_code(p_code_hash text,p_secret text)
+returns jsonb language plpgsql security definer set search_path=''
+as $$
+declare v_secret text;
+begin
+ if p_code_hash !~ '^[0-9a-f]{64}$' then raise exception 'Invalid code hash'; end if;
+ select decrypted_secret into v_secret from vault.decrypted_secrets where name='glitch_vip_rotation_secret' limit 1;
+ if v_secret is null or p_secret is distinct from v_secret then raise exception 'Not authorised to rotate VIP code'; end if;
+ insert into public.glitch_vip_active_code(singleton,code_hash,rotated_at) values(true,p_code_hash,now())
+ on conflict(singleton) do update set code_hash=excluded.code_hash,rotated_at=excluded.rotated_at;
+ return jsonb_build_object('rotated',true);
+end; $$;
+
+revoke all on function public.get_glitch_vip_status() from public,anon;
+revoke all on function public.redeem_glitch_vip_code(text) from public,anon;
+revoke all on function public.rotate_glitch_vip_code(text,text) from public,anon,authenticated;
 grant execute on function public.get_glitch_vip_status() to authenticated;
 grant execute on function public.redeem_glitch_vip_code(text) to authenticated;
-
--- OWNER ONLY: create a one-time invite by replacing the example string, then run this
--- statement in the Supabase SQL Editor. Give the plain code to exactly one person.
--- insert into public.glitch_vip_codes(code_hash)
--- values (encode(extensions.digest(lower(trim('REPLACE-WITH-YOUR-PRIVATE-VIP-CODE')), 'sha256'), 'hex'));
-
+grant execute on function public.rotate_glitch_vip_code(text,text) to anon,authenticated;
 
 -- Pollinations image-generation quota: 15 successful daily generations for free accounts.
 -- VIP membership bypasses the counter. The database derives the account from auth.uid().
@@ -261,7 +252,7 @@ declare
   v_vip boolean := false;
 begin
   if v_user_id is null then raise exception 'Authentication required'; end if;
-  select exists(select 1 from public.glitch_vip_members where user_id = v_user_id) into v_vip;
+  select (exists(select 1 from public.glitch_vip_members where user_id=v_user_id) or exists(select 1 from auth.users where id=v_user_id and lower(email) in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com'))) into v_vip;
   select coalesce((select used from public.glitch_image_usage where user_id=v_user_id and usage_date=v_day),0) into v_used;
   return jsonb_build_object('vip',v_vip,'used',v_used,'remaining',case when v_vip then null else greatest(15-v_used,0) end,'limit',case when v_vip then null else 15 end,'date',v_day);
 end;
@@ -280,7 +271,7 @@ declare
   v_vip boolean := false;
 begin
   if v_user_id is null then raise exception 'Authentication required'; end if;
-  select exists(select 1 from public.glitch_vip_members where user_id = v_user_id) into v_vip;
+  select (exists(select 1 from public.glitch_vip_members where user_id=v_user_id) or exists(select 1 from auth.users where id=v_user_id and lower(email) in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com'))) into v_vip;
   if v_vip then return jsonb_build_object('allowed',true,'vip',true,'used',0,'remaining',null,'limit',null); end if;
   insert into public.glitch_image_usage(user_id,usage_date,used)
   values(v_user_id,v_day,0) on conflict(user_id,usage_date) do nothing;

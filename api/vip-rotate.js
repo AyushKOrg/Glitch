@@ -1,0 +1,2 @@
+const {rotateCode}=require('./_vip-rotate');
+module.exports=async(req,res)=>{if(req.method!=='GET'){res.setHeader('Allow','GET');return res.status(405).end();}const secret=process.env.CRON_SECRET;if(!secret||req.headers.authorization!=='Bearer '+secret)return res.status(401).json({error:'Unauthorized'});try{return res.status(200).json(await rotateCode());}catch(e){console.error('VIP daily rotation failed:',e.message);return res.status(500).json({error:e.message});}};

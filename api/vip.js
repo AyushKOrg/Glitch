@@ -1,4 +1,4 @@
-// GET /api/vip checks VIP status; POST /api/vip redeems a one-time owner-issued invite.
+// GET /api/vip checks membership; POST /api/vip redeems the current daily invite.
 const { requireUser, supabaseUrl } = require('./_lib');
 
 async function rpc(user, name, body = {}) {
@@ -29,10 +29,10 @@ module.exports = async (req, res) => {
   try {
     if (req.method === 'GET') {
       const result = await rpc(user, 'get_glitch_vip_status');
-      return res.status(200).json({ vip: result.vip === true });
+      return res.status(200).json({ vip: result.vip === true, developer: result.developer === true });
     }
     const code = String(req.body && req.body.code || '').trim();
-    if (code.length < 8 || code.length > 100) return res.status(400).json({ error: 'Enter a valid VIP invite code.' });
+    if (code.length !== 13) return res.status(400).json({ error: 'VIP codes must be exactly 13 characters.' });
     const result = await rpc(user, 'redeem_glitch_vip_code', { p_code: code });
     return res.status(200).json({ vip: result.vip === true, alreadyVip: result.already_vip === true });
   } catch (error) {

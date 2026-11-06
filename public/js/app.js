@@ -452,6 +452,7 @@
 
   // ---- invite-only VIP -------------------------------------------------------
   const VIP_PREF_KEY = 'glitch_vip_prefs_';
+  let vipDeveloper = false;
   function vipPrefsKey(){ return VIP_PREF_KEY + (user ? user.id : 'signedout'); }
   function setVipState(active){
     vipActive = Boolean(active);
@@ -461,6 +462,8 @@
     $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
     $('vipNavBadge').hidden = false;
     $('vipProfileBadge').hidden = !vipActive;
+    $('devBadge').hidden = !vipDeveloper;
+    $('vipDeveloperTools').hidden = !vipDeveloper;
     $('vipTaglineDisplay').hidden = !vipActive;
     $('vipLock').hidden = vipActive;
     $('vipUnlocked').hidden = !vipActive;
@@ -472,6 +475,9 @@
     if(!user || user.isAnonymous){setVipState(false);return;}
     const r=await api('/api/vip');
     if(!r.ok) throw new Error(r.data.error||'Could not check VIP status.');
+    vipDeveloper = r.data.developer === true;
+    $('devBadge').hidden = !vipDeveloper;
+    $('vipDeveloperTools').hidden = !vipDeveloper;
     setVipState(r.data.vip===true);
   }
   function applyVipPrefs(showToastMessage=false){
@@ -526,6 +532,7 @@
     }catch(err){$('vipStatus').textContent=err.message;}
     finally{b.disabled=false;}
   });
+  $('vipRegenerate').addEventListener('click',async()=>{if(!vipDeveloper)return;const b=$('vipRegenerate');b.disabled=true;b.textContent='Generating and emailing…';$('vipStatus').textContent='Rotating the active code and sending both emails…';try{const r=await api('/api/vip-regenerate',{method:'POST',body:'{}'});if(!r.ok)throw new Error(r.data.error||'Could not rotate VIP code.');$('vipStatus').textContent='New code generated and sent to both developer inboxes. The previous code is now invalid.';}catch(e){$('vipStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='Regenerate code & email both';}});
   $('vipSave').addEventListener('click',saveVipPrefs);
   $('vipReset').addEventListener('click',()=>{
     if(!vipActive)return;
@@ -695,6 +702,7 @@
   });
 
   function onSignedIn(u, accessToken) {
+    vipDeveloper=false; $('devBadge').hidden=true; $('vipDeveloperTools').hidden=true;
     const changedUser = !user || user.id !== u.id;
     user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous), accessToken };
     $('who').textContent = user.isAnonymous ? 'Guest' : user.email; $('avatar').textContent = user.isAnonymous ? 'G' : (user.email[0] || 'U').toUpperCase(); $('dot').classList.add('on');
@@ -707,7 +715,7 @@
   }
   function onSignedOut() {
     user = null; setVipState(false); memoryItems = []; renderMemoryList(); pending = null; undo = null; history = []; conversations = []; activeChatId = null;
-    $('who').textContent = 'Signed out'; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
+    $('who').textContent = 'Signed out'; vipDeveloper=false; $('devBadge').hidden=true; $('vipDeveloperTools').hidden=true; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
     render(); renderHistoryList(); openGate();
   }
   $('guestSignIn').addEventListener('click', async () => {

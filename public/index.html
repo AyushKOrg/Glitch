@@ -131,24 +131,24 @@
 </div>
 <div id="vipModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="vipTitle">
   <section class="box vip-box">
-    <div class="top"><div><h3 id="vipTitle">✦ Glitch VIP</h3><p>Private perks for people with an invite from the owner.</p></div><button class="mini" id="vipClose" type="button" aria-label="Close VIP">✕</button></div>
+    <div class="top vip-top"><div class="vip-title-wrap"><span class="vip-title-icon" aria-hidden="true">✦</span><div><h3 id="vipTitle">VIP &amp; Developer Settings</h3><p>Access, membership and account controls</p></div></div><button class="mini" id="vipClose" type="button" aria-label="Close VIP">✕</button></div>
     <div class="vip-content">
-      <div class="vip-hero"><strong>GLITCH VIP ACCESS</strong><span>Exclusive looks, assistant styles, profile customisation and the VIP Lounge.</span></div>
+      <div class="vip-hero"><div class="vip-hero-mark" aria-hidden="true">✦</div><div class="vip-hero-copy"><span class="vip-eyebrow">GLITCH MEMBERSHIP</span><strong>Make Glitch yours.</strong><span>Manage your access, personalisation and developer tools in one place.</span></div></div>
       <div id="vipLock" class="vip-lock">
         <strong>🔐 Invite-only access</strong>
         <p>Each VIP code works once. After the first successful redemption it is deactivated, and a fresh code is generated and emailed to both developers. Unused codes also expire at the daily rotation.</p>
         <form id="vipRedeemForm"><input id="vipCode" type="password" autocomplete="off" placeholder="Enter your VIP invite code" maxlength="100" required><button class="cta" id="vipRedeem" type="submit">Unlock VIP</button></form>
       </div>
-      <div id="vipDeveloperTools" class="vip-dev-tools" hidden>
-        <div><strong>Developer controls</strong><p>Private controls for the two registered developer accounts only.</p></div>
-        <button class="cta" id="vipRegenerate" type="button">Regenerate code &amp; email both</button>
+      <section id="vipDeveloperTools" class="vip-dev-tools" hidden aria-label="Developer settings">
+        <div class="vip-dev-heading"><div><span class="vip-eyebrow">RESTRICTED AREA</span><strong>Developer console</strong><p>Private tools for the two registered developer accounts.</p></div><span class="vip-role-chip">DEV ACCESS</span></div>
+        <div class="vip-dev-action"><div><strong>Rotate invite code</strong><p>Generate a fresh one-time code and email it to both developers. The previous code is invalidated.</p></div><button class="cta" id="vipRegenerate" type="button">Regenerate &amp; email both</button></div>
         <form id="vipCodeVerifyForm" class="vip-code-verify">
-          <label for="vipCodePassword">View current code · confirm your password</label>
-          <input id="vipCodePassword" type="password" autocomplete="current-password" maxlength="256" placeholder="Your developer-account password" required>
-          <button class="mini" id="vipCodeVerify" type="submit">Verify &amp; show current code</button>
+          <div class="vip-verify-copy"><strong>Reveal the active code</strong><p>Confirm your developer-account password before viewing it.</p></div>
+          <label class="vip-sr-only" for="vipCodePassword">Developer-account password</label>
+          <div class="vip-password-row"><input id="vipCodePassword" type="password" autocomplete="current-password" maxlength="256" placeholder="Enter your password" required><button class="mini" id="vipCodeVerify" type="submit">Verify &amp; reveal</button></div>
         </form>
-        <div id="vipCurrentCode" class="vip-current-code" hidden><div><span>Active one-time code</span><code id="vipCurrentCodeValue"></code></div><div class="vip-code-actions"><button class="mini" id="vipCopyCode" type="button">Copy code</button><button class="mini" id="vipHideCode" type="button">Hide code</button></div></div>
-      </div>
+        <div id="vipCurrentCode" class="vip-current-code" hidden><div class="vip-current-code-main"><span>ACTIVE ONE-TIME CODE</span><code id="vipCurrentCodeValue"></code></div><div class="vip-code-actions"><button class="mini" id="vipCopyCode" type="button">Copy code</button><button class="mini" id="vipHideCode" type="button">Hide code</button></div></div>
+      </section>
       <div id="vipUnlocked" hidden>
         <div class="vip-stats">
           <div class="vip-stat"><b id="vipChatCount">0</b><span>Chats</span></div>

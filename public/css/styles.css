@@ -1062,3 +1062,14 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .settings-category svg,.settings-tile svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .settings-sidebar::-webkit-scrollbar,.settings-dashboard::-webkit-scrollbar,.settings-detail-body::-webkit-scrollbar{width:6px}
 .settings-sidebar::-webkit-scrollbar-thumb,.settings-dashboard::-webkit-scrollbar-thumb,.settings-detail-body::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px}
+
+.settings-detail-body .vip-dev-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 14px;border-bottom:1px solid var(--border)}
+.settings-detail-body .vip-dev-heading strong{display:block;margin-top:5px;color:var(--text);font-size:1.05rem;font-weight:850;letter-spacing:-.025em}
+.settings-detail-body .vip-dev-heading p,.settings-detail-body .vip-dev-action p,.settings-detail-body .vip-verify-copy p{margin:5px 0 0;color:var(--text-dim);font-size:.8rem;line-height:1.55}
+.settings-detail-body .vip-eyebrow{color:var(--accent-strong);font-size:.65rem;font-weight:850;letter-spacing:.12em}
+.settings-detail-body #vipRegenerate{width:100%;min-height:46px;border:1px solid var(--accent-strong);border-radius:10px;background:var(--accent-strong);color:#fff;font-weight:800;white-space:normal}
+.settings-detail-body #vipRegenerate:hover{filter:brightness(1.08)}
+.settings-detail-body .vip-password-row{display:flex;align-items:stretch;gap:9px}
+.settings-detail-body #vipCodeVerify{min-height:42px;padding:9px 14px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel-alt);color:var(--text);font-weight:750}
+.settings-detail-body .vip-current-code{flex-wrap:wrap}
+.settings-detail-body .inline-status{margin-top:5px}

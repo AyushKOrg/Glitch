@@ -5,6 +5,29 @@
     const stage = document.querySelector('.stage');
     const canvas = $('vfxCanvas');
     if (!stage || !canvas) return;
+    // A broad accent-tinted light field smoothly tracks the pointer across the workspace.
+    let pointerFrame = 0, targetX = 52, targetY = 38, currentX = 52, currentY = 38;
+    function movePointer(event) {
+      const rect = stage.getBoundingClientRect();
+      targetX = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+      targetY = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+      if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointerGlow);
+    }
+    function updatePointerGlow() {
+      currentX += (targetX - currentX) * .19;
+      currentY += (targetY - currentY) * .19;
+      stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
+      stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
+      if (Math.abs(targetX-currentX) > .08 || Math.abs(targetY-currentY) > .08) {
+        pointerFrame = requestAnimationFrame(updatePointerGlow);
+      } else {
+        currentX = targetX; currentY = targetY;
+        stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
+        stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
+        pointerFrame = 0;
+      }
+    }
+    stage.addEventListener('pointermove', movePointer, { passive:true });
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');

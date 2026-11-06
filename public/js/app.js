@@ -407,7 +407,6 @@
     const devLabel=document.querySelector('.settings-dev-label');if(devLabel)devLabel.hidden=!vipDeveloper;
     const contact=$('settingsContactDeveloper');if(contact)contact.hidden=vipActive||vipDeveloper;
     ['settingsVipAccess','settingsVipTile'].forEach(id=>{const el=$(id);if(el)el.hidden=vipActive||vipDeveloper;});
-    const vipTools=$('vipToolsOpen');if(vipTools)vipTools.hidden=!(vipActive||vipDeveloper);
   }
   function setVipState(active){
     vipActive = Boolean(active);

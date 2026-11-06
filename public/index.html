@@ -54,6 +54,7 @@
 </aside>
 
 <div class="stage">
+  <svg class="water-filter-defs" aria-hidden="true" focusable="false"><defs><filter id="glitch-water-ripple" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.008 0.018" numOctaves="2" seed="11" result="waterNoise"><animate attributeName="baseFrequency" values="0.007 0.014;0.012 0.022;0.007 0.014" dur="11s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="waterNoise" scale="78" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
   <canvas id="vfxCanvas" aria-hidden="true"></canvas>
   <div class="topbar"><button class="mini" id="menu" type="button" aria-label="Menu">Menu</button><img class="logo logo-dark" src="/logo.png" alt=""><img class="logo logo-light" src="/logo-light.png" alt=""><strong>Glitch</strong><span class="context-indicator" title="The latest 40 messages and saved memory are supplied to Glitch on each reply">Context on · 40 messages</span><button class="mini install-app-button" id="installApp" type="button">Install app</button></div>
   <main id="log" aria-live="polite"></main>

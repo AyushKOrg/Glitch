@@ -536,7 +536,7 @@
   }
   async function loadMemories(){if(!user){memoryItems=[];renderMemoryList();return;}const r=await api('/api/memory');if(!r.ok)throw new Error(r.data.error||'Could not load account memory.');memoryItems=Array.isArray(r.data.memories)?r.data.memories:[];renderMemoryList();}
   async function saveMemory(content,quiet=false){const value=String(content||'').trim().slice(0,500);if(!value)throw new Error('Write something to remember first.');const r=await api('/api/memory',{method:'POST',body:JSON.stringify({content:value})});if(!r.ok)throw new Error(r.data.error||'Could not save memory.');await loadMemories();if(!quiet)showToast('Saved to your account memory.');}
-  $('memoryOpen').addEventListener('click',async()=>{$('settingsModal').classList.remove('open');if(!user){showToast('Sign in or continue as guest to use account memory.');return;}$('memoryModal').classList.add('open');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
+  $('memoryOpen').addEventListener('click',async()=>{if(!user){showToast('Sign in or continue as guest to use account memory.');return;}$('memoryModal').classList.add('open');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
   $('memoryClose').addEventListener('click',()=>$('memoryModal').classList.remove('open'));
   $('memoryModal').addEventListener('click',e=>{if(e.target===$('memoryModal'))$('memoryModal').classList.remove('open');});
   $('memoryInput').addEventListener('input',()=>{$('memoryCount').textContent=$('memoryInput').value.length+' / 500';});
@@ -702,7 +702,7 @@
   $('settingsDetailModal').addEventListener('click',e=>{if(e.target===$('settingsDetailModal'))closeSettingsDetail();});
   document.querySelectorAll('[data-settings-detail]').forEach(button=>button.addEventListener('click',()=>openSettingsDetail(button.dataset.settingsDetail)));
   document.querySelectorAll('[data-settings-action]').forEach(button=>button.addEventListener('click',()=>{
-    const action=button.dataset.settingsAction;closeSettings();
+    const action=button.dataset.settingsAction;
     if(action==='memory')$('memoryOpen').click();
     else if(action==='personalize'||action==='vip')openVipModal();
     else if(action==='install')installGlitch();

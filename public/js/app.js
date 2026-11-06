@@ -403,13 +403,13 @@
   function syncAccountBadge(){
     const badge=$('accountBadge');
     if(badge){const role=vipDeveloper?'DEV':vipActive?'VIP':'FREE';badge.textContent=role;badge.className='account-pill '+role.toLowerCase();badge.hidden=!user;}
-    const devButton=$('vipDevOpen');if(devButton)devButton.hidden=!vipDeveloper;
+    const devButton=$('devSettingsOpen');if(devButton)devButton.hidden=!vipDeveloper;
     $('vipDeveloperTools').hidden=!vipDeveloper;
   }
   function setVipState(active){
     vipActive = Boolean(active);
     // VIP-only tools stay hidden until the server confirms membership.
-    ['openImageStudio','openImageEditor','openCodePlayground'].forEach(id=>{const button=$(id);if(button){button.hidden=false;button.setAttribute('aria-disabled',String(!vipActive));}});
+    ['openImageStudio','openImageEditor'].forEach(id=>{const button=$(id);if(button){button.hidden=false;button.setAttribute('aria-disabled',String(!vipActive));}});
     document.body.classList.toggle('vip-active', vipActive);
     $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
     $('vipNavBadge').hidden = false;
@@ -466,10 +466,8 @@
     try{await refreshVip();$('vipStatus').textContent=vipDeveloper?'Developer access confirmed.':vipActive?'VIP unlocked. Your perks are ready.':(user&&!user.isAnonymous?'Enter your one-time VIP code.':'Sign in with a registered account before redeeming a code.');}
     catch(e){$('vipStatus').textContent=e.message;}
     if(vipActive)renderVipStats();
-    if(vipDeveloper)$('vipDeveloperTools').scrollIntoView({block:'nearest',behavior:'smooth'});
   }
-  $('vipOpen').addEventListener('click',openVipModal);
-  $('vipDevOpen').addEventListener('click',openVipModal);
+  $('vipOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
   $('vipClose').addEventListener('click',()=>{$('vipModal').classList.remove('open');hideCurrentVipCode();});
   $('vipModal').addEventListener('click',e=>{if(e.target===$('vipModal')){$('vipModal').classList.remove('open');hideCurrentVipCode();}});
   $('vipRedeemForm').addEventListener('submit',async e=>{
@@ -487,17 +485,17 @@
   function hideCurrentVipCode(){$('vipCurrentCode').hidden=true;$('vipCurrentCodeValue').textContent='';$('vipCodePassword').value='';}
   $('vipCodeVerifyForm').addEventListener('submit',async e=>{
     e.preventDefault();if(!vipDeveloper)return;
-    const button=$('vipCodeVerify');button.disabled=true;button.textContent='Verifying password…';$('vipStatus').textContent='Confirming your developer password…';
-    try{const r=await api('/api/vip-current-code',{method:'POST',body:JSON.stringify({password:$('vipCodePassword').value})});if(!r.ok)throw Error(r.data.error||'Could not verify your password.');$('vipCurrentCodeValue').textContent=r.data.code;$('vipCurrentCode').hidden=false;$('vipCodePassword').value='';$('vipStatus').textContent='Password confirmed. This is the current one-time code.';}
-    catch(error){$('vipCodePassword').value='';$('vipStatus').textContent=error.message;}
+    const button=$('vipCodeVerify');button.disabled=true;button.textContent='Verifying…';$('vipVerifyStatus').textContent='Confirming your developer password…';
+    try{const r=await api('/api/vip-current-code',{method:'POST',body:JSON.stringify({password:$('vipCodePassword').value})});if(!r.ok)throw Error(r.data.error||'Could not verify your password.');$('vipCurrentCodeValue').textContent=r.data.code;$('vipCurrentCode').hidden=false;$('vipCodePassword').value='';$('vipVerifyStatus').textContent='Password confirmed. This is the active one-time code.';}
+    catch(error){$('vipCodePassword').value='';$('vipVerifyStatus').textContent=error.message;}
     finally{button.disabled=false;button.textContent='Verify & show current code';}
   });
-  $('vipCopyCode').addEventListener('click',async()=>{const code=$('vipCurrentCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('vipStatus').textContent='Current code copied.';}catch{$('vipStatus').textContent='Clipboard access was blocked. Select the code and copy it manually.';}});
+  $('vipCopyCode').addEventListener('click',async()=>{const code=$('vipCurrentCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('vipVerifyStatus').textContent='Current code copied.';}catch{$('vipVerifyStatus').textContent='Clipboard access was blocked. Select the code and copy it manually.';}});
   $('vipHideCode').addEventListener('click',hideCurrentVipCode);
   $('vipRegenerate').addEventListener('click',async()=>{
-    if(!vipDeveloper)return;const b=$('vipRegenerate');b.disabled=true;b.textContent='Generating and emailing…';hideCurrentVipCode();$('vipStatus').textContent='Rotating the active code and sending both emails…';
-    try{const r=await api('/api/vip-regenerate',{method:'POST',body:'{}'});if(!r.ok)throw Error(r.data.error||'Could not rotate VIP code.');$('vipStatus').textContent='Fresh one-time code generated and emailed to both developer inboxes. The previous code is invalid.';}
-    catch(e){$('vipStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='Regenerate code & email both';}
+    if(!vipDeveloper)return;const b=$('vipRegenerate');b.disabled=true;b.textContent='Generating and emailing…';hideCurrentVipCode();$('vipDevStatus').textContent='Rotating the active code and sending both emails…';
+    try{const r=await api('/api/vip-regenerate',{method:'POST',body:'{}'});if(!r.ok)throw Error(r.data.error||'Could not rotate VIP code.');$('vipDevStatus').textContent='New one-time code generated and emailed to both developers. The previous code is invalid.';}
+    catch(e){$('vipDevStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='↻ Rotate code & email both developers';}
   });
   $('vipSave').addEventListener('click',saveVipPrefs);
   $('vipReset').addEventListener('click',()=>{
@@ -663,12 +661,49 @@
     }
   });
 
+
+  function profileKey(){return 'glitch_profile_'+(user?user.id:'guest');}
+  function readProfile(){try{return JSON.parse(localStorage.getItem(profileKey())||'{}')}catch{return {}}}
+  function paintProfile(){
+    const saved=readProfile(),name=(user&&user.metadata&&user.metadata.display_name)||saved.name||(user&&user.email?user.email.split('@')[0]:'Guest');
+    const picture=saved.picture||'';
+    $('who').textContent=name;$('profileDisplayName').value=name;$('settingsEmail').textContent=user?(user.isAnonymous?'Guest session':user.email):'Not signed in';
+    for(const el of [$('avatar'),$('profilePreview')]){el.textContent=picture?'':(name.trim()[0]||'G').toUpperCase();el.style.backgroundImage=picture?'url("'+picture+'")':'';el.classList.toggle('has-picture',!!picture);}
+  }
+  $('settingsOpen').addEventListener('click',()=>{paintProfile();$('settingsModal').classList.add('open');});
+  $('settingsClose').addEventListener('click',()=>$('settingsModal').classList.remove('open'));
+  $('settingsModal').addEventListener('click',e=>{if(e.target===$('settingsModal'))$('settingsModal').classList.remove('open');});
+  $('vipOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
+  $('personalizeOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
+  $('devSettingsOpen').addEventListener('click',()=>{$('vipDeveloperTools').scrollIntoView({block:'start',behavior:'smooth'});});
+  $('installAppSide').addEventListener('click',()=>installGlitch());
+  $('profilePictureInput').addEventListener('change',e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)||file.size>1500000){$('profileStatus').textContent='Choose a PNG, JPG, WebP or GIF under 1.5 MB.';e.target.value='';return;}
+    const reader=new FileReader();reader.onload=()=>{const p=readProfile();p.picture=String(reader.result);try{localStorage.setItem(profileKey(),JSON.stringify(p));paintProfile();$('profileStatus').textContent='Picture updated on this device.';}catch{$('profileStatus').textContent='Could not save this picture. Try a smaller image.';}};reader.onerror=()=>$('profileStatus').textContent='Could not read that image.';reader.readAsDataURL(file);
+  });
+  $('profilePictureRemove').addEventListener('click',()=>{const p=readProfile();delete p.picture;try{localStorage.setItem(profileKey(),JSON.stringify(p));paintProfile();$('profileStatus').textContent='Profile picture removed.';}catch{$('profileStatus').textContent='Could not update the profile.';}});
+  $('profileSave').addEventListener('click',async()=>{
+    const name=$('profileDisplayName').value.trim().slice(0,40);if(!name){$('profileStatus').textContent='Enter a display name first.';return;}
+    const b=$('profileSave');b.disabled=true;$('profileStatus').textContent='Saving profile…';
+    try{if(user&&!user.isAnonymous&&sb){const {error}=await sb.auth.updateUser({data:{display_name:name}});if(error)throw error;user.metadata={...(user.metadata||{}),display_name:name};}
+      const p=readProfile();p.name=name;localStorage.setItem(profileKey(),JSON.stringify(p));paintProfile();$('profileStatus').textContent='Profile saved.';}
+    catch(error){$('profileStatus').textContent=error.message||'Could not save profile.';}finally{b.disabled=false;}
+  });
+  $('passwordReset').addEventListener('click',async()=>{
+    if(!user||user.isAnonymous||!user.email){$('accountStatus').textContent='Sign in with an email account to request a password reset.';return;}
+    const b=$('passwordReset');b.disabled=true;$('accountStatus').textContent='Sending password reset email…';
+    try{const {error}=await sb.auth.resetPasswordForEmail(user.email,{redirectTo:location.origin});if(error)throw error;$('accountStatus').textContent='Password reset email sent to '+user.email+'.';}
+    catch(error){$('accountStatus').textContent=error.message||'Could not send the reset email.';}finally{b.disabled=false;}
+  });
+
   function onSignedIn(u, accessToken) {
     vipDeveloper=false;vipActive=false;document.body.classList.remove('vip-active');
     const changedUser = !user || user.id !== u.id;
-    user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous), accessToken };
+    user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous), accessToken, metadata: u.user_metadata || {} };
+    paintProfile();
     syncAccountBadge();
-    $('who').textContent = user.isAnonymous ? 'Guest' : user.email; $('avatar').textContent = user.isAnonymous ? 'G' : (user.email[0] || 'U').toUpperCase(); $('dot').classList.add('on');
+    paintProfile(); $('dot').classList.add('on');
     $('gate').classList.remove('open');
     markMode();
     // Token refreshes call this again; only (re)load chats when the account really changed.
@@ -678,7 +713,7 @@
   }
   function onSignedOut() {
     user = null; vipDeveloper=false; setVipState(false); syncAccountBadge(); hideCurrentVipCode(); memoryItems = []; renderMemoryList(); pending = null; undo = null; history = []; conversations = []; activeChatId = null;
-    $('who').textContent = 'Signed out'; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
+    $('who').textContent = 'Signed out'; $('avatar').textContent = 'G'; $('settingsEmail').textContent='Not signed in'; $('dot').classList.remove('on'); $('quota').textContent = '';
     render(); renderHistoryList(); openGate();
   }
   $('guestSignIn').addEventListener('click', async () => {
@@ -1080,11 +1115,18 @@
     }
   });
   updateAccentSwatches();
-  $('scheme').addEventListener('click', () => {
-    playSfx('toggle');
-    const dark = root.dataset.scheme ? root.dataset.scheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-    root.dataset.scheme = dark ? 'light' : 'dark'; try { localStorage.setItem('glitch_scheme', root.dataset.scheme); } catch {}
-  });
+  const schemePreference = $('schemePreference');
+  function applySchemePreference(preference, persist=true) {
+    const pref = ['light','dark','system'].includes(preference) ? preference : 'system';
+    const resolved = pref === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : pref;
+    root.dataset.scheme = resolved; schemePreference.value = pref;
+    if (persist) { try { localStorage.setItem('glitch_scheme', pref); } catch {} }
+  }
+  let savedScheme = 'dark'; try { savedScheme = localStorage.getItem('glitch_scheme') || 'dark'; } catch {}
+  applySchemePreference(savedScheme, false);
+  schemePreference.addEventListener('change', () => { playSfx('toggle'); applySchemePreference(schemePreference.value); });
+  const systemScheme = matchMedia('(prefers-color-scheme: dark)');
+  systemScheme.addEventListener?.('change', () => { if (schemePreference.value === 'system') applySchemePreference('system', false); });
   $('menu').addEventListener('click', () => document.body.classList.toggle('nav-open'));
   $('side').addEventListener('click', (e) => { if (e.target.closest('[data-mode]')) document.body.classList.remove('nav-open'); });
   document.addEventListener('click', (e) => { if (document.body.classList.contains('nav-open') && !e.target.closest('#side,#menu')) document.body.classList.remove('nav-open'); });
@@ -1144,37 +1186,7 @@
   $('editorRotate').addEventListener('click',()=>{if(editorImage){editorRotation=(editorRotation+90)%360;renderEditor();}});
   $('editorReset').addEventListener('click',()=>{if(editorImage)resetEditor();});
   $('editorDownload').addEventListener('click',()=>{if(!editorImage)return;const a=document.createElement('a');a.download='glitch-edited-image.png';a.href=editorCanvas.toDataURL('image/png');a.click();});
-  const playgroundDefaults={html:'<main class="card">\n  <h1>Hello, Glitch!</h1>\n  <p>Edit the code and press Run.</p>\n  <button id="hello">Click me</button>\n  <p id="message"></p>\n</main>',css:'body { font-family: system-ui; background: #f4f0ff; padding: 2rem; }\n.card { max-width: 420px; margin: auto; padding: 2rem; border-radius: 18px; background: white; box-shadow: 0 12px 35px #33225522; }\nbutton { padding: .7rem 1rem; border: 0; border-radius: 9px; background: #7c3aed; color: white; cursor: pointer; }',js:'document.querySelector("#hello").addEventListener("click", () => {\n  document.querySelector("#message").textContent = "It works! ✨";\n});'};
-  function setPlaygroundDefaults(){ $('playgroundHTML').value=playgroundDefaults.html;$('playgroundCSS').value=playgroundDefaults.css;$('playgroundJS').value=playgroundDefaults.js;runPlayground(); }
-  function runPlayground(){
-    const html=$('playgroundHTML').value,css=$('playgroundCSS').value;
-    // Prevent user code from terminating the wrapper script element.
-    const js=$('playgroundJS').value.replace(/<\x2fscript/gi,'<\\x2fscript');
-    const errorBridge='<script>window.onerror=function(message,source,line){parent.postMessage({type:"glitch-playground-error",message:String(message),line:line||0},"*");return false;};</scr'+'ipt>';
-    const src='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:}"><style>'+css+'</style></head><body>'+html+errorBridge+'<script>'+js+'</scr'+'ipt></body></html>';
-    $('playgroundFrame').srcdoc=src;
-    $('playgroundStatus').textContent='Preview updated. Code runs in an isolated frame.';
-  }
-  const playgroundFrame=$('playgroundFrame');
-  window.addEventListener('message',event=>{
-    if(event.source!==playgroundFrame.contentWindow||!event.data||event.data.type!=='glitch-playground-error')return;
-    const line=event.data.line?' (line '+event.data.line+')':'';
-    $('playgroundStatus').textContent='JavaScript error'+line+': '+event.data.message;
-  });
-  ['playgroundHTML','playgroundCSS','playgroundJS'].forEach(id=>{
-    const editor=$(id);
-    editor.addEventListener('keydown',event=>{
-      if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();runPlayground();return;}
-      if(event.key==='Tab'){event.preventDefault();editor.setRangeText('  ',editor.selectionStart,editor.selectionEnd,'end');}
-    });
-  });
-  $('openCodePlayground').addEventListener('click',async()=>{if(await requireVipTool()){ $('codePlaygroundModal').classList.add('open');runPlayground();}});
-  $('codePlaygroundClose').addEventListener('click',()=>$('codePlaygroundModal').classList.remove('open'));
-  $('codePlaygroundModal').addEventListener('click',e=>{if(e.target===$('codePlaygroundModal'))$('codePlaygroundModal').classList.remove('open');});
-  $('playgroundRun').addEventListener('click',runPlayground);
-  $('playgroundReset').addEventListener('click',setPlaygroundDefaults);
-  $('playgroundClear').addEventListener('click',()=>{$('playgroundHTML').value='';$('playgroundCSS').value='';$('playgroundJS').value='';runPlayground();});
-  setPlaygroundDefaults();
+
 
   // ---- Pollinations image studio behavior ------------------------------------
   let imagePreviewUrl = '';

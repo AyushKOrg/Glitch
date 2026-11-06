@@ -401,7 +401,7 @@ body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)
 .vip-tool-nav{border:1px solid color-mix(in srgb,#a78bfa 38%,var(--border))}
 .vip-tool-nav .tool-lock-label{margin-left:auto;font-size:.66rem;color:#d99a08;font-weight:800;letter-spacing:.05em}
 body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
-@media(max-width:700px){.tool-grid,{grid-template-columns:1fr} textarea{height:150px}{height:300px}}
+@media(max-width:700px){.tool-grid{grid-template-columns:1fr}}
 
 
 /* Expanded, collapsible navigation and a cleaner conversation archive. */
@@ -656,8 +656,6 @@ html[data-scheme="light"] .image-box,
 html[data-scheme="light"] .memory-box,
 html[data-scheme="light"] .quota-box{background:#fff!important;color:#202638!important}
 html[data-scheme="light"] .editor-stage,
-html[data-scheme="light"] ,
-html[data-scheme="light"] ,
 html[data-scheme="light"] .code-artifact{
   background:#f8f9fc!important;color:#202638!important;border-color:rgba(25,32,48,.12)!important;
 }

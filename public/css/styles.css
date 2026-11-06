@@ -1073,3 +1073,16 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .settings-detail-body #vipCodeVerify{min-height:42px;padding:9px 14px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel-alt);color:var(--text);font-weight:750}
 .settings-detail-body .vip-current-code{flex-wrap:wrap}
 .settings-detail-body .inline-status{margin-top:5px}
+
+/* Keep light mode controls on Glitch surfaces, not browser-white defaults */
+html[data-scheme="light"] input:not([type=range]):not([type=checkbox]):not([type=radio]),
+html[data-scheme="light"] textarea,html[data-scheme="light"] select,
+html[data-scheme="light"] #input,html[data-scheme="light"] #histSearch{
+ background-color:var(--panel-alt)!important;color:var(--text)!important;border-color:var(--border-strong)!important;
+}
+html[data-scheme="light"] select{background-image:linear-gradient(45deg,transparent 50%,var(--text-dim) 50%),linear-gradient(135deg,var(--text-dim) 50%,transparent 50%)!important;background-position:calc(100% - 17px) 17px,calc(100% - 12px) 17px!important;background-size:5px 5px,5px 5px!important;background-repeat:no-repeat!important}
+html[data-scheme="light"] .vip-box .vip-card input,html[data-scheme="light"] .vip-box .vip-card select,
+html[data-scheme="light"] .image-content input,html[data-scheme="light"] .image-content textarea,html[data-scheme="light"] .image-content select,
+html[data-scheme="light"] .memory-box input,html[data-scheme="light"] .memory-box textarea,html[data-scheme="light"] .memory-box select{
+ background-color:var(--panel-alt)!important;color:var(--text)!important;border-color:var(--border-strong)!important;
+}

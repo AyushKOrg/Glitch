@@ -979,3 +979,5 @@ html[data-scheme=dark] .settings-box .vip-role-chip{color:#86efac}
 .settings-box .vip-current-code{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 16px;border:1px solid color-mix(in srgb,#16a34a 35%,var(--border));border-radius:13px;background:color-mix(in srgb,#16a34a 7%,var(--panel))}
 .settings-box .vip-current-code code{display:block;overflow-wrap:anywhere;color:var(--text);font:800 1.08rem/1.5 ui-monospace,monospace}
 .settings-box #vipRedeemStatus{margin-top:8px}
+
+.settings-heading-icon svg,.settings-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.shortcut-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}

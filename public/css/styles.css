@@ -1750,11 +1750,21 @@ html.liquid-glass button:hover:not(:disabled) {
 }
 
 
-/* Remove the visible cursor-centred spotlight; keep the independent ambient flow. */
+/* Restore cursor-reactive colour motion without drawing a circular spotlight.
+   Several offset, wide ellipses form a soft flowing plume that tracks the pointer. */
 html[data-scheme="dark"] .stage::after {
-  opacity:0 !important;
-  background:none !important;
-  filter:none !important;
+  opacity:.9 !important;
+  background:
+    radial-gradient(ellipse 760px 330px at calc(var(--pointer-x,52%) - 9%) calc(var(--pointer-y,38%) + 8%),
+      color-mix(in srgb,var(--accent) 43%,transparent) 0%, transparent 78%),
+    radial-gradient(ellipse 520px 470px at calc(var(--pointer-x,52%) + 12%) calc(var(--pointer-y,38%) - 7%),
+      color-mix(in srgb,var(--accent) 28%,transparent) 0%, transparent 80%),
+    radial-gradient(ellipse 900px 250px at var(--pointer-x,52%) var(--pointer-y,38%),
+      color-mix(in srgb,var(--accent-2) 20%,transparent) 0%, transparent 82%);
+  background-repeat:no-repeat;
+  filter:blur(24px) saturate(1.7) brightness(1.18);
+  mix-blend-mode:screen;
+  pointer-events:none;
 }
 
 /* Stronger Liquid Glass pass: visible translucent layers, edge reflections and depth. */

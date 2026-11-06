@@ -1260,3 +1260,97 @@ html[data-scheme=dark] .settings-dashboard {
   html:not([data-scheme=dark]) .stage::before,
   html[data-scheme=dark] .stage::before { animation:none; }
 }
+
+
+/* ===== Video-matched cosmic atmosphere: cyan nebula + quiet starfield ===== */
+@keyframes glitchNebulaDrift {
+  0%,100% { background-position: 0% 50%,100% 50%,50% 0%; transform:scale(1); }
+  50% { background-position: 100% 45%,0% 55%,58% 100%; transform:scale(1.035); }
+}
+@keyframes glitchStarDrift {
+  0%,100% { background-position: 0% 0%,100% 100%,15% 85%,85% 15%; opacity:.52; }
+  50% { background-position: 100% 65%,0% 35%,30% 65%,70% 35%; opacity:.82; }
+}
+@keyframes glitchStarTwinkle {
+  0%,100% { opacity:.42; filter:brightness(.9); }
+  45% { opacity:.78; filter:brightness(1.25); }
+  70% { opacity:.58; filter:brightness(1); }
+}
+
+/* The dark workspace follows the reference video: midnight blue, cyan light,
+   a restrained violet edge, and small stars that never compete with the chat. */
+html[data-scheme=dark] .stage {
+  background:
+    radial-gradient(ellipse at 18% 15%,rgba(0,190,220,.13),transparent 43%),
+    radial-gradient(ellipse at 86% 82%,rgba(90,65,170,.14),transparent 46%),
+    radial-gradient(ellipse at 52% 100%,rgba(0,95,135,.09),transparent 48%),
+    #090d17;
+}
+html[data-scheme=dark] .stage::before {
+  inset:-15%;
+  z-index:0;
+  background:
+    radial-gradient(ellipse at 18% 24%,rgba(0,210,225,.19),transparent 39%),
+    radial-gradient(ellipse at 84% 76%,rgba(55,112,210,.16),transparent 43%),
+    radial-gradient(ellipse at 52% 4%,rgba(125,85,205,.10),transparent 48%);
+  background-size:180% 180%,190% 190%,170% 170%;
+  filter:blur(38px);
+  opacity:.95;
+  animation:glitchNebulaDrift 24s ease-in-out infinite;
+}
+/* Star points are separate, sparse layers so the effect reads as a night sky,
+   not a tiled texture. The pointer glow remains as the first background layer. */
+html[data-scheme=dark] .stage::after {
+  z-index:1;
+  background-image:
+    radial-gradient(520px circle at var(--pointer-x,52%) var(--pointer-y,38%),rgba(0,205,225,.12),transparent 72%),
+    radial-gradient(circle at 7% 13%,rgba(218,250,255,.82) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 15% 72%,rgba(157,225,255,.72) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 23% 31%,rgba(226,248,255,.68) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 31% 87%,rgba(155,216,255,.62) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 39% 16%,rgba(224,249,255,.72) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 47% 61%,rgba(174,228,255,.62) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 56% 28%,rgba(224,249,255,.78) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 64% 82%,rgba(164,224,255,.66) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 72% 12%,rgba(226,249,255,.76) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 81% 48%,rgba(166,226,255,.66) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 91% 22%,rgba(225,249,255,.78) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 94% 88%,rgba(163,222,255,.62) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 11% 43%,rgba(0,222,238,.78) 0 1.1px,transparent 2.4px),
+    radial-gradient(circle at 36% 49%,rgba(0,207,232,.68) 0 1px,transparent 2.2px),
+    radial-gradient(circle at 69% 67%,rgba(0,207,232,.72) 0 1px,transparent 2.2px),
+    radial-gradient(circle at 87% 75%,rgba(0,222,238,.72) 0 1px,transparent 2.2px);
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+  opacity:.72;
+  animation:glitchStarTwinkle 6.5s ease-in-out infinite;
+  pointer-events:none;
+}
+/* Keep the sidebar in the same midnight colour family, with a quiet cyan rim. */
+html[data-scheme=dark] .side {
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(0,180,205,.12),transparent 48%),
+    radial-gradient(ellipse at 100% 100%,rgba(92,70,165,.12),transparent 52%),
+    #111521;
+  border-right-color:rgba(92,180,205,.16);
+  box-shadow:inset -1px 0 0 rgba(0,210,225,.08),8px 0 38px -27px rgba(0,205,225,.3);
+}
+/* Light mode retains the brighter gradient treatment already requested; stars
+   become a faint cool detail rather than dark specks over the page. */
+html:not([data-scheme=dark]) .stage::after {
+  background-image:
+    radial-gradient(560px circle at var(--pointer-x,52%) var(--pointer-y,38%),color-mix(in srgb,var(--accent) 15%,transparent),transparent 72%),
+    radial-gradient(circle at 12% 18%,rgba(36,130,160,.24) 0 .8px,transparent 1.8px),
+    radial-gradient(circle at 29% 74%,rgba(36,130,160,.2) 0 .8px,transparent 1.8px),
+    radial-gradient(circle at 48% 29%,rgba(36,130,160,.2) 0 .8px,transparent 1.8px),
+    radial-gradient(circle at 71% 68%,rgba(36,130,160,.2) 0 .8px,transparent 1.8px),
+    radial-gradient(circle at 88% 22%,rgba(36,130,160,.2) 0 .8px,transparent 1.8px);
+  background-repeat:no-repeat;
+  animation:glitchStarTwinkle 8s ease-in-out infinite;
+}
+.stage > * { position:relative;z-index:2; }
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before,
+  html[data-scheme=dark] .stage::after,
+  html:not([data-scheme=dark]) .stage::after { animation:none!important; }
+}

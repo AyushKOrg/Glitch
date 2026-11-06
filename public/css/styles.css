@@ -1486,3 +1486,70 @@ html[data-scheme=dark] .stage::after {
 @media(prefers-reduced-motion:reduce) {
   html[data-scheme=dark] .stage::before { animation:none!important; }
 }
+
+/* Reference-video background recreation: muted, liquid colour currents over plum charcoal. */
+@keyframes glitchReferenceCurrent {
+  0% {
+    background-position: 0% 48%, 100% 44%, 18% 100%, 82% 0%;
+  }
+  50% {
+    background-position: 42% 56%, 58% 50%, 58% 42%, 38% 64%;
+  }
+  100% {
+    background-position: 100% 52%, 0% 58%, 88% 0%, 12% 100%;
+  }
+}
+html[data-scheme=dark] .stage {
+  background-color:#1e1c26 !important;
+  background-image:none !important;
+}
+html[data-scheme=dark] .stage::before {
+  content:"";
+  position:absolute;
+  inset:-24%;
+  z-index:0;
+  pointer-events:none;
+  filter:blur(58px) saturate(.92);
+  opacity:.82;
+  background-image:
+    radial-gradient(ellipse 56% 42% at 77% 20%, rgba(17,48,57,.88) 0%, rgba(17,48,57,.36) 46%, transparent 78%),
+    radial-gradient(ellipse 54% 44% at 18% 88%, rgba(13,48,49,.78) 0%, rgba(13,48,49,.3) 48%, transparent 80%),
+    radial-gradient(ellipse 52% 46% at 92% 91%, rgba(65,25,48,.76) 0%, rgba(65,25,48,.3) 48%, transparent 80%),
+    radial-gradient(ellipse 48% 40% at 7% 8%, rgba(65,39,34,.58) 0%, rgba(65,39,34,.22) 48%, transparent 80%);
+  background-size:190% 185%,185% 190%,190% 185%,180% 190%;
+  background-repeat:no-repeat;
+  animation:glitchReferenceCurrent 42s ease-in-out infinite alternate;
+  will-change:background-position;
+}
+/* Keep the pointer light present but restrained; the reference's main colour motion is automatic. */
+html[data-scheme=dark] .stage::after {
+  z-index:1;
+  opacity:.72;
+  background:radial-gradient(ellipse 620px 540px at var(--pointer-x,52%) var(--pointer-y,38%),
+    color-mix(in srgb,var(--accent) 13%,transparent) 0%,
+    color-mix(in srgb,var(--accent) 5%,transparent) 42%,
+    transparent 78%);
+}
+/* Hover/focus light catches controls throughout the workspace and sidebar, like the recording. */
+.layout button:not(:disabled),
+.layout input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=range]),
+.layout textarea,
+.layout select {
+  transition:border-color .2s ease,box-shadow .22s ease,background-color .22s ease,filter .22s ease;
+}
+.layout button:hover:not(:disabled),
+.layout button:focus-visible,
+.layout input:hover:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=range]),
+.layout input:focus,
+.layout textarea:hover,
+.layout textarea:focus,
+.layout select:hover,
+.layout select:focus {
+  border-color:color-mix(in srgb,var(--accent) 52%,var(--border-strong)) !important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent),
+             0 0 20px -11px color-mix(in srgb,var(--accent) 68%,transparent) !important;
+  filter:brightness(1.055);
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before { animation:none!important; }
+}

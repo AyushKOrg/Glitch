@@ -524,8 +524,8 @@
   }
   $('vipOpen').addEventListener('click',openVipModal);
   $('vipDevOpen').addEventListener('click',openVipModal);
-  $('vipClose').addEventListener('click',()=>$('vipModal').classList.remove('open'));
-  $('vipModal').addEventListener('click',e=>{if(e.target===$('vipModal'))$('vipModal').classList.remove('open');});
+  $('vipClose').addEventListener('click',()=>{$('vipModal').classList.remove('open');hideCurrentVipCode();});
+  $('vipModal').addEventListener('click',e=>{if(e.target===$('vipModal')){$('vipModal').classList.remove('open');hideCurrentVipCode();}});
   $('vipRedeemForm').addEventListener('submit',async e=>{
     e.preventDefault();
     if(!user||user.isAnonymous){$('vipStatus').textContent='Sign in with a registered account first.';return;}
@@ -722,7 +722,7 @@
   });
 
   function onSignedIn(u, accessToken) {
-    vipDeveloper=false;
+    vipDeveloper=false;vipActive=false;document.body.classList.remove('vip-active');
     const changedUser = !user || user.id !== u.id;
     user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous), accessToken };
     syncAccountBadge();

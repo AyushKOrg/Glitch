@@ -778,7 +778,11 @@
   };
   function closeSettingsDetail(){
     if(activeSettingsNode){$('settingsVault').appendChild(activeSettingsNode);if(activeSettingsNode.id==='vipDeveloperTools')activeSettingsNode.hidden=true;activeSettingsNode=null;}
-    $('settingsDetailModal').classList.remove('open');
+    $('settingsContentInline').hidden=true;
+    $('settingsWelcome').hidden=false;
+    $('settingsDashboardGrid').hidden=false;
+    $('settingsDashboardFoot').hidden=false;
+    document.querySelectorAll('.settings-category[aria-current="page"]').forEach(el=>el.removeAttribute('aria-current'));
   }
   function openSettingsDetail(key){
     const item=settingsDetails[key];if(!item)return;
@@ -786,18 +790,21 @@
     closeSettingsDetail();
     const node=$(item.id);if(!node)return;
     if(key==='developer')node.hidden=false;
-    activeSettingsNode=node;$('settingsDetailBody').appendChild(node);
-    $('settingsDetailTitle').textContent=item.title;$('settingsDetailSubtitle').textContent=item.subtitle;$('settingsDetailMark').textContent=item.icon;
-    $('settingsDetailModal').classList.add('open');
-    if(key==='profile')paintProfile();
-    if(key==='account')paintProfile();
+    activeSettingsNode=node;
+    $('settingsContentInline').appendChild(node);
+    $('settingsContentInline').hidden=false;
+    $('settingsWelcome').hidden=true;
+    $('settingsDashboardGrid').hidden=true;
+    $('settingsDashboardFoot').hidden=true;
+    document.querySelectorAll('.settings-category[data-settings-detail]').forEach(el=>{
+      if(el.dataset.settingsDetail===key)el.setAttribute('aria-current','page');
+    });
+    if(key==='profile'||key==='account')paintProfile();
   }
-  function closeSettings(){closeSettingsDetail();$('settingsModal').classList.remove('open');}
-  $('settingsOpen').addEventListener('click',()=>{paintProfile();$('settingsModal').classList.add('open');});
+  function closeSettings(){$('settingsModal').classList.remove('open');closeSettingsDetail();}
+  $('settingsOpen').addEventListener('click',()=>{closeSettingsDetail();paintProfile();$('settingsModal').classList.add('open');});
   $('settingsClose').addEventListener('click',closeSettings);
   $('settingsModal').addEventListener('click',e=>{if(e.target===$('settingsModal'))closeSettings();});
-  $('settingsDetailClose').addEventListener('click',closeSettingsDetail);
-  $('settingsDetailModal').addEventListener('click',e=>{if(e.target===$('settingsDetailModal'))closeSettingsDetail();});
   document.querySelectorAll('[data-settings-detail]').forEach(button=>button.addEventListener('click',()=>openSettingsDetail(button.dataset.settingsDetail)));
   document.querySelectorAll('[data-settings-action]').forEach(button=>button.addEventListener('click',()=>{
     const action=button.dataset.settingsAction;

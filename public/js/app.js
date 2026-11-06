@@ -1254,6 +1254,18 @@
   let savedScheme = 'dark'; try { savedScheme = localStorage.getItem('glitch_scheme') || 'dark'; } catch {}
   applySchemePreference(savedScheme, false);
   schemePreference.addEventListener('change', () => { playSfx('toggle'); applySchemePreference(schemePreference.value); });
+  const liquidGlassToggle = $('liquidGlassToggle');
+  function applyLiquidGlass(enabled, persist=true) {
+    const active = Boolean(enabled);
+    root.classList.toggle('liquid-glass', active);
+    liquidGlassToggle.setAttribute('aria-pressed', String(active));
+    $('liquidGlassLabel').textContent = 'Liquid Glass: ' + (active ? 'on' : 'off');
+    if (persist) { try { localStorage.setItem('glitch_liquid_glass', active ? 'on' : 'off'); } catch {} }
+  }
+  let savedLiquidGlass = false;
+  try { savedLiquidGlass = localStorage.getItem('glitch_liquid_glass') === 'on'; } catch {}
+  applyLiquidGlass(savedLiquidGlass, false);
+  liquidGlassToggle.addEventListener('click', () => { playSfx('toggle'); applyLiquidGlass(liquidGlassToggle.getAttribute('aria-pressed') !== 'true'); });
   const systemScheme = matchMedia('(prefers-color-scheme: dark)');
   systemScheme.addEventListener?.('change', () => { if (schemePreference.value === 'system') applySchemePreference('system', false); });
   $('menu').addEventListener('click', () => document.body.classList.toggle('nav-open'));

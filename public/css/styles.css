@@ -970,3 +970,6 @@ html[data-scheme="light"] #vipModal .vip-box,html[data-scheme="dark"] #vipModal 
 .vip-command-note .note-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-strong);font-weight:800;flex:none}.vip-command-note div{display:flex;flex-direction:column;gap:3px}.vip-command-note strong{font-size:.78rem}.vip-command-note small{color:var(--text-dim);font-size:.72rem;line-height:1.5}
 #vipModal .vip-dev-action{flex-direction:column;align-items:stretch}.settings-box .vip-dev-tools[hidden]{display:none!important}
 @media(max-width:600px){.settings-content{padding:14px}.settings-header{padding:16px}.settings-section{padding:14px}.settings-shortcuts{grid-template-columns:1fr}.settings-box{width:calc(100vw - 14px)!important;max-height:94dvh!important}.settings-box .vip-password-row{flex-direction:column}.settings-box #vipCodeVerify{width:100%}.profile-preview{width:60px;height:60px}}
+
+.settings-box #vipCurrentCode[hidden]{display:none!important}
+.settings-box #vipDeveloperTools[hidden]{display:none!important}

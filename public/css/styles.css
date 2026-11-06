@@ -973,3 +973,11 @@ html[data-scheme="light"] #vipModal .vip-box,html[data-scheme="dark"] #vipModal 
 
 .settings-box #vipCurrentCode[hidden]{display:none!important}
 .settings-box #vipDeveloperTools[hidden]{display:none!important}
+
+.settings-box .vip-dev-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.settings-box .vip-role-chip{flex:none;padding:7px 10px;border:1px solid color-mix(in srgb,#16a34a 30%,var(--border));border-radius:999px;background:color-mix(in srgb,#16a34a 10%,var(--panel));color:#15803d;font-size:.65rem;font-weight:850;letter-spacing:.08em}
+html[data-scheme=dark] .settings-box .vip-role-chip{color:#86efac}
+.settings-box .vip-code-verify{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid var(--border);border-radius:13px;background:var(--panel)}
+.settings-box .vip-current-code{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 16px;border:1px solid color-mix(in srgb,#16a34a 35%,var(--border));border-radius:13px;background:color-mix(in srgb,#16a34a 7%,var(--panel))}
+.settings-box .vip-current-code code{display:block;overflow-wrap:anywhere;color:var(--text);font:800 1.08rem/1.5 ui-monospace,monospace}
+.settings-box #vipRedeemStatus{margin-top:8px}

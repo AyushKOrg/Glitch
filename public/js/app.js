@@ -533,7 +533,7 @@
   }
   async function loadMemories(){if(!user){memoryItems=[];renderMemoryList();return;}const r=await api('/api/memory');if(!r.ok)throw new Error(r.data.error||'Could not load account memory.');memoryItems=Array.isArray(r.data.memories)?r.data.memories:[];renderMemoryList();}
   async function saveMemory(content,quiet=false){const value=String(content||'').trim().slice(0,500);if(!value)throw new Error('Write something to remember first.');const r=await api('/api/memory',{method:'POST',body:JSON.stringify({content:value})});if(!r.ok)throw new Error(r.data.error||'Could not save memory.');await loadMemories();if(!quiet)showToast('Saved to your account memory.');}
-  $('memoryOpen').addEventListener('click',async()=>{if(!user){showToast('Sign in or continue as guest to use account memory.');return;}$('memoryModal').classList.add('open');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
+  $('memoryOpen').addEventListener('click',async()=>{$('settingsModal').classList.remove('open');if(!user){showToast('Sign in or continue as guest to use account memory.');return;}$('memoryModal').classList.add('open');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
   $('memoryClose').addEventListener('click',()=>$('memoryModal').classList.remove('open'));
   $('memoryModal').addEventListener('click',e=>{if(e.target===$('memoryModal'))$('memoryModal').classList.remove('open');});
   $('memoryInput').addEventListener('input',()=>{$('memoryCount').textContent=$('memoryInput').value.length+' / 500';});
@@ -673,7 +673,7 @@
   $('vipOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
   $('personalizeOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
   $('devSettingsOpen').addEventListener('click',()=>{$('vipDeveloperTools').scrollIntoView({block:'start',behavior:'smooth'});});
-  $('installAppSide').addEventListener('click',()=>installGlitch());
+  $('installAppSide').addEventListener('click',()=>{$('settingsModal').classList.remove('open');installGlitch();});
   $('profilePictureInput').addEventListener('change',e=>{
     const file=e.target.files&&e.target.files[0];if(!file)return;
     if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)||file.size>1500000){$('profileStatus').textContent='Choose a PNG, JPG, WebP or GIF under 1.5 MB.';e.target.value='';return;}
@@ -727,7 +727,7 @@
       gateMsg(message);
     } finally { button.disabled = false; }
   });
-  $('signout').addEventListener('click', () => sb && sb.auth.signOut());
+  $('signout').addEventListener('click', () => { $('settingsModal').classList.remove('open'); if(sb) sb.auth.signOut(); });
 
   // ---- file reading: PDF, Office documents, code and plain-text formats --------
   const TEXT_EXTS = new Set(('txt md markdown json jsonl xml html htm css scss less js mjs cjs ts tsx jsx py ipynb java c h cpp hpp cs go rs php rb swift kt kts sql sh bash ps1 bat yml yaml toml ini cfg conf env log csv tsv tex vue svelte dart lua r pl ex exs erl hs scala clj diff patch gitignore dockerfile makefile gradle properties rtf').split(' '));

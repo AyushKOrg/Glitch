@@ -405,7 +405,7 @@
     if(badge){const role=vipDeveloper?'DEV':vipActive?'VIP':'FREE';badge.textContent=role;badge.className='account-pill '+role.toLowerCase();badge.hidden=!user;}
     const devButton=$('devSettingsOpen');if(devButton)devButton.hidden=!vipDeveloper;
     const devLabel=document.querySelector('.settings-dev-label');if(devLabel)devLabel.hidden=!vipDeveloper;
-    const contact=$('settingsContactDeveloper');if(contact)contact.hidden=vipDeveloper;
+    const contact=$('settingsContactDeveloper');if(contact)contact.hidden=vipActive||vipDeveloper;
     ['settingsVipAccess','settingsVipTile'].forEach(id=>{const el=$(id);if(el)el.hidden=vipActive||vipDeveloper;});
     const vipTools=$('vipToolsOpen');if(vipTools)vipTools.hidden=!(vipActive||vipDeveloper);
   }

@@ -454,6 +454,12 @@
   const VIP_PREF_KEY = 'glitch_vip_prefs_';
   let vipDeveloper = false;
   function vipPrefsKey(){ return VIP_PREF_KEY + (user ? user.id : 'signedout'); }
+  function syncAccountBadge(){
+    const badge=$('accountBadge');
+    if(badge){const role=vipDeveloper?'DEV':vipActive?'VIP':'FREE';badge.textContent=role;badge.className='account-pill '+role.toLowerCase();badge.hidden=!user;}
+    const devButton=$('vipDevOpen');if(devButton)devButton.hidden=!vipDeveloper;
+    $('vipDeveloperTools').hidden=!vipDeveloper;
+  }
   function setVipState(active){
     vipActive = Boolean(active);
     // VIP-only tools stay hidden until the server confirms membership.
@@ -461,10 +467,8 @@
     document.body.classList.toggle('vip-active', vipActive);
     $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
     $('vipNavBadge').hidden = false;
-    $('vipProfileBadge').hidden = !vipActive;
-    $('devBadge').hidden = !vipDeveloper;
-    $('vipDeveloperTools').hidden = !vipDeveloper;
-    $('vipTaglineDisplay').hidden = !vipActive;
+    syncAccountBadge();
+    $('vipTaglineDisplay').hidden = !vipActive || vipDeveloper;
     $('vipLock').hidden = vipActive;
     $('vipUnlocked').hidden = !vipActive;
     document.querySelectorAll('.tool-lock-label').forEach(el=>{el.textContent=vipActive?'UNLOCKED':'VIP';});
@@ -476,8 +480,6 @@
     const r=await api('/api/vip');
     if(!r.ok) throw new Error(r.data.error||'Could not check VIP status.');
     vipDeveloper = r.data.developer === true;
-    $('devBadge').hidden = !vipDeveloper;
-    $('vipDeveloperTools').hidden = !vipDeveloper;
     setVipState(r.data.vip===true);
   }
   function applyVipPrefs(showToastMessage=false){
@@ -513,12 +515,15 @@
     $('vipMessageCount').textContent=String(chats.reduce((n,c)=>n+c.messages.length,0));
     $('vipSince').textContent='Member';
   }
-  $('vipOpen').addEventListener('click',async()=>{
-    $('vipModal').classList.add('open');$('vipStatus').textContent='Checking your invite status…';
-    try{await refreshVip();$('vipStatus').textContent=vipActive?'VIP unlocked. Your perks are ready.':(user&&!user.isAnonymous?'Enter the private code you received from the owner.':'Sign in with a registered account before redeeming a code.');}
+  async function openVipModal(){
+    $('vipModal').classList.add('open');$('vipStatus').textContent='Checking your account…';
+    try{await refreshVip();$('vipStatus').textContent=vipDeveloper?'Developer access confirmed.':vipActive?'VIP unlocked. Your perks are ready.':(user&&!user.isAnonymous?'Enter your one-time VIP code.':'Sign in with a registered account before redeeming a code.');}
     catch(e){$('vipStatus').textContent=e.message;}
     if(vipActive)renderVipStats();
-  });
+    if(vipDeveloper)$('vipDeveloperTools').scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+  $('vipOpen').addEventListener('click',openVipModal);
+  $('vipDevOpen').addEventListener('click',openVipModal);
   $('vipClose').addEventListener('click',()=>$('vipModal').classList.remove('open'));
   $('vipModal').addEventListener('click',e=>{if(e.target===$('vipModal'))$('vipModal').classList.remove('open');});
   $('vipRedeemForm').addEventListener('submit',async e=>{
@@ -528,11 +533,26 @@
     try{
       const r=await api('/api/vip',{method:'POST',body:JSON.stringify({code:$('vipCode').value.trim()})});
       if(!r.ok)throw new Error(r.data.error||'Could not redeem that code.');
-      $('vipCode').value='';setVipState(true);renderVipStats();$('vipStatus').textContent=r.data.alreadyVip?'This account already has VIP.':'VIP unlocked! Welcome aboard.';
+      $('vipCode').value='';setVipState(true);renderVipStats();
+      $('vipStatus').textContent=r.data.alreadyVip?'This account already has VIP.':r.data.codeRotated?'VIP unlocked! Your code was consumed, and a fresh one-time code was emailed to both developers.':r.data.rotationWarning?'VIP unlocked, but replacement-code delivery needs developer attention. Both developers can use Regenerate code & email both.':'VIP unlocked! Welcome aboard.';
     }catch(err){$('vipStatus').textContent=err.message;}
     finally{b.disabled=false;}
   });
-  $('vipRegenerate').addEventListener('click',async()=>{if(!vipDeveloper)return;const b=$('vipRegenerate');b.disabled=true;b.textContent='Generating and emailing…';$('vipStatus').textContent='Rotating the active code and sending both emails…';try{const r=await api('/api/vip-regenerate',{method:'POST',body:'{}'});if(!r.ok)throw new Error(r.data.error||'Could not rotate VIP code.');$('vipStatus').textContent='New code generated and sent to both developer inboxes. The previous code is now invalid.';}catch(e){$('vipStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='Regenerate code & email both';}});
+  function hideCurrentVipCode(){$('vipCurrentCode').hidden=true;$('vipCurrentCodeValue').textContent='';$('vipCodePassword').value='';}
+  $('vipCodeVerifyForm').addEventListener('submit',async e=>{
+    e.preventDefault();if(!vipDeveloper)return;
+    const button=$('vipCodeVerify');button.disabled=true;button.textContent='Verifying password…';$('vipStatus').textContent='Confirming your developer password…';
+    try{const r=await api('/api/vip-current-code',{method:'POST',body:JSON.stringify({password:$('vipCodePassword').value})});if(!r.ok)throw Error(r.data.error||'Could not verify your password.');$('vipCurrentCodeValue').textContent=r.data.code;$('vipCurrentCode').hidden=false;$('vipCodePassword').value='';$('vipStatus').textContent='Password confirmed. This is the current one-time code.';}
+    catch(error){$('vipCodePassword').value='';$('vipStatus').textContent=error.message;}
+    finally{button.disabled=false;button.textContent='Verify & show current code';}
+  });
+  $('vipCopyCode').addEventListener('click',async()=>{const code=$('vipCurrentCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('vipStatus').textContent='Current code copied.';}catch{$('vipStatus').textContent='Clipboard access was blocked. Select the code and copy it manually.';}});
+  $('vipHideCode').addEventListener('click',hideCurrentVipCode);
+  $('vipRegenerate').addEventListener('click',async()=>{
+    if(!vipDeveloper)return;const b=$('vipRegenerate');b.disabled=true;b.textContent='Generating and emailing…';hideCurrentVipCode();$('vipStatus').textContent='Rotating the active code and sending both emails…';
+    try{const r=await api('/api/vip-regenerate',{method:'POST',body:'{}'});if(!r.ok)throw Error(r.data.error||'Could not rotate VIP code.');$('vipStatus').textContent='Fresh one-time code generated and emailed to both developer inboxes. The previous code is invalid.';}
+    catch(e){$('vipStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='Regenerate code & email both';}
+  });
   $('vipSave').addEventListener('click',saveVipPrefs);
   $('vipReset').addEventListener('click',()=>{
     if(!vipActive)return;
@@ -702,9 +722,10 @@
   });
 
   function onSignedIn(u, accessToken) {
-    vipDeveloper=false; $('devBadge').hidden=true; $('vipDeveloperTools').hidden=true;
+    vipDeveloper=false;
     const changedUser = !user || user.id !== u.id;
     user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous), accessToken };
+    syncAccountBadge();
     $('who').textContent = user.isAnonymous ? 'Guest' : user.email; $('avatar').textContent = user.isAnonymous ? 'G' : (user.email[0] || 'U').toUpperCase(); $('dot').classList.add('on');
     $('gate').classList.remove('open');
     markMode();
@@ -714,8 +735,8 @@
     refreshUsage();
   }
   function onSignedOut() {
-    user = null; setVipState(false); memoryItems = []; renderMemoryList(); pending = null; undo = null; history = []; conversations = []; activeChatId = null;
-    $('who').textContent = 'Signed out'; vipDeveloper=false; $('devBadge').hidden=true; $('vipDeveloperTools').hidden=true; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
+    user = null; vipDeveloper=false; setVipState(false); syncAccountBadge(); hideCurrentVipCode(); memoryItems = []; renderMemoryList(); pending = null; undo = null; history = []; conversations = []; activeChatId = null;
+    $('who').textContent = 'Signed out'; $('avatar').textContent = 'G'; $('dot').classList.remove('on'); $('quota').textContent = '';
     render(); renderHistoryList(); openGate();
   }
   $('guestSignIn').addEventListener('click', async () => {
@@ -994,6 +1015,7 @@
   const accentWheelLabel = $('accentWheelLabel');
   const accentBrightness = $('accentBrightness');
   const accentBrightnessValue = $('accentBrightnessValue');
+  const accentHexInput = $('accentHex');
   let hue = 260, saturation = 75, brightness = 92;
   const clamp = (n,min,max) => Math.min(max,Math.max(min,n));
   function hsvToHex(h,s,v) {
@@ -1017,6 +1039,7 @@
     if(root.dataset.theme!=='custom'){try{localStorage.setItem('glitch_base_theme',root.dataset.theme||'default');}catch{}}
     root.dataset.theme='custom';root.style.setProperty('--accent',hex);
     accentWheelLabel.textContent=hex.toUpperCase();
+    accentHexInput.value=hex.toUpperCase();
     accentBrightness.value=String(Math.round(brightness));
     accentBrightnessValue.textContent=Math.round(brightness)+'%';
     if(persist){try{localStorage.setItem('glitch_accent',hex);localStorage.setItem('glitch_theme','custom');}catch{}}
@@ -1060,7 +1083,7 @@
     if (open) colorWheel.focus();
   });
   function updateAccentSwatches() {
-    const current = root.style.getPropertyValue('--accent').trim().toLowerCase();
+    const current = getComputedStyle(root).getPropertyValue('--accent').trim().toLowerCase();
     document.querySelectorAll('.accent-swatch').forEach((swatch) => {
       const active = swatch.dataset.accent.toLowerCase() === current;
       swatch.classList.toggle('active', active);
@@ -1073,6 +1096,15 @@
     paintWheel(true);
     updateAccentSwatches();
   }
+  function applyAccentHex(){
+    const match=/^#?([0-9a-f]{6})$/i.exec(String(accentHexInput.value||'').trim());
+    if(!match){accentHexInput.setCustomValidity('Enter a valid six-digit HEX colour, such as #7C3AED.');accentHexInput.reportValidity();return false;}
+    accentHexInput.setCustomValidity('');selectPresetAccent('#'+match[1].toLowerCase());return true;
+  }
+  $('accentHexApply').addEventListener('click',applyAccentHex);
+  accentHexInput.addEventListener('change',applyAccentHex);
+  accentHexInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyAccentHex();}});
+  accentHexInput.addEventListener('input',()=>accentHexInput.setCustomValidity(''));
   document.querySelectorAll('.accent-swatch').forEach((swatch) => {
     swatch.addEventListener('click', () => selectPresetAccent(swatch.dataset.accent));
   });
@@ -1084,6 +1116,9 @@
     const hsv = hexToHsv(baseHex);
     hue = hsv.h; saturation = hsv.s; brightness = hsv.v;
     accentWheelLabel.textContent = 'Theme default · ' + baseHex.toUpperCase();
+    const angle=(hue-90)*Math.PI/180,radius=42*(saturation/100);
+    colorWheelMarker.style.left=(50+Math.cos(angle)*radius)+'%';colorWheelMarker.style.top=(50+Math.sin(angle)*radius)+'%';
+    colorWheel.style.setProperty('--wheel-selected',baseHex);accentHexInput.value=baseHex.toUpperCase();
     accentBrightness.value=String(Math.round(brightness));
     accentBrightnessValue.textContent=Math.round(brightness)+'%';
     try { localStorage.removeItem('glitch_accent'); localStorage.setItem('glitch_theme', baseTheme); localStorage.removeItem('glitch_base_theme'); } catch {}

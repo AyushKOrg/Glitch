@@ -27,6 +27,7 @@
   <button class="nav vip-tool-nav" id="openCodePlayground" type="button" title="VIP code playground"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></svg>Code Playground <span class="tool-lock-label">VIP</span></button>
   <button class="nav live-nav vip-tool-nav" id="liveOpen" type="button" title="Start a real-time voice and vision conversation"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/></svg><span>Live</span><span class="tool-lock-label">VIP</span><span class="live-nav-dot"></span></button>
   <button class="nav vip-nav" id="vipOpen" type="button" title="VIP membership and exclusive features"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3z"/></svg>VIP <span id="vipNavBadge" class="vip-pill">LOCKED</span></button>
+  <button class="nav dev-control-nav" id="vipDevOpen" type="button" title="Open developer controls" hidden><svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg>Developer controls</button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
   <div id="historyList" class="history-list" aria-label="Recent chats"></div>
@@ -42,9 +43,8 @@
       <span class="accent-picker-copy"><strong>Accent colour</strong><span id="accentWheelLabel">Choose a custom shade</span></span>
       <svg class="accent-trigger-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
     </button>
-  </div>
   <section class="accent-picker-panel" id="accentPickerPanel" aria-label="Colour selection" hidden>
-    <div class="accent-panel-head"><strong>Choose a colour</strong><button id="accentReset" type="button">Reset</button></div>
+    <div class="accent-panel-head"><strong>Choose a colour</strong><button class="accent-reset" id="accentReset" type="button">Restore default</button></div>
     <div class="accent-wheel-stage">
       <div class="color-wheel" id="colorWheel" role="slider" tabindex="0" aria-label="Choose a custom accent colour" aria-valuemin="0" aria-valuemax="359" aria-valuenow="260">
         <span class="color-wheel-marker" id="colorWheelMarker" style="left:50%;top:8%"></span>
@@ -55,6 +55,7 @@
       <div class="accent-brightness-head"><label for="accentBrightness">Brightness</label><output id="accentBrightnessValue" for="accentBrightness">92%</output></div>
       <input id="accentBrightness" type="range" min="5" max="100" step="1" value="92" aria-label="Adjust accent colour brightness">
     </div>
+    <div class="accent-hex-row"><label for="accentHex">HEX colour</label><div class="accent-hex-controls"><input id="accentHex" type="text" inputmode="text" maxlength="7" placeholder="#7C3AED" autocomplete="off" spellcheck="false" aria-describedby="accentHexHint"><button id="accentHexApply" type="button">Apply</button></div><small id="accentHexHint">Enter a six-digit HEX value, with or without #.</small></div>
     <div class="accent-presets" role="group" aria-label="Preset accent colours">
       <button type="button" class="accent-swatch" data-accent="#7c3aed" style="--swatch:#7c3aed" aria-label="Purple"></button>
       <button type="button" class="accent-swatch" data-accent="#2563eb" style="--swatch:#2563eb" aria-label="Blue"></button>
@@ -68,13 +69,14 @@
       <button type="button" class="accent-swatch" data-accent="#64748b" style="--swatch:#64748b" aria-label="Slate"></button>
     </div>
   </section>
+  </div>
   <button class="nav" id="scheme" type="button" style="margin-top:10px"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>Light / dark</button>
   <button class="nav" id="soundToggle" type="button" aria-pressed="true" title="Toggle interface sound effects"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg><span id="soundLabel">Sound effects: on</span></button>
   <button class="nav" id="speakToggle" type="button" aria-pressed="false" title="Read Glitch's replies out loud"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4"/></svg><span id="speakLabel">Spoken replies: off</span></button>
   <div class="spacer"></div>
   <div class="me">
     <div class="avatar" id="avatar">G</div>
-    <div class="me-text"><span id="who">Signed out</span><span id="devBadge" class="dev-pill" hidden>DEV</span><span id="vipProfileBadge" class="vip-pill" hidden>✦ VIP</span><span id="vipTaglineDisplay" class="vip-tagline" hidden></span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
+    <div class="me-text"><span id="who">Signed out</span><span id="accountBadge" class="account-pill free" hidden>FREE</span><span id="vipTaglineDisplay" class="vip-tagline" hidden></span><span class="me-sub"><span id="dot" class="dot"></span>Glitch</span><span id="quota" class="me-sub" aria-live="polite"></span></div>
     <button class="mini" id="signout" type="button">Sign out</button>
   </div>
 </aside>
@@ -123,8 +125,18 @@
       <div class="vip-hero"><strong>GLITCH VIP ACCESS</strong><span>Exclusive looks, assistant styles, profile customisation and the VIP Lounge.</span></div>
       <div id="vipLock" class="vip-lock">
         <strong>🔐 Invite-only access</strong>
-        <p>VIP codes are issued personally by the Glitch owner. The daily code can be redeemed by multiple accounts until it rotates.</p>
+        <p>Each VIP code works once. After the first successful redemption it is deactivated, and a fresh code is generated and emailed to both developers. Unused codes also expire at the daily rotation.</p>
         <form id="vipRedeemForm"><input id="vipCode" type="password" autocomplete="off" placeholder="Enter your VIP invite code" maxlength="100" required><button class="cta" id="vipRedeem" type="submit">Unlock VIP</button></form>
+      </div>
+      <div id="vipDeveloperTools" class="vip-dev-tools" hidden>
+        <div><strong>Developer controls</strong><p>Private controls for the two registered developer accounts only.</p></div>
+        <button class="cta" id="vipRegenerate" type="button">Regenerate code &amp; email both</button>
+        <form id="vipCodeVerifyForm" class="vip-code-verify">
+          <label for="vipCodePassword">View current code · confirm your password</label>
+          <input id="vipCodePassword" type="password" autocomplete="current-password" maxlength="256" placeholder="Your developer-account password" required>
+          <button class="mini" id="vipCodeVerify" type="submit">Verify &amp; show current code</button>
+        </form>
+        <div id="vipCurrentCode" class="vip-current-code" hidden><div><span>Active one-time code</span><code id="vipCurrentCodeValue"></code></div><div class="vip-code-actions"><button class="mini" id="vipCopyCode" type="button">Copy code</button><button class="mini" id="vipHideCode" type="button">Hide code</button></div></div>
       </div>
       <div id="vipUnlocked" hidden>
         <div class="vip-stats">
@@ -140,7 +152,7 @@
           <div class="vip-card"><label for="vipEffect">Visual effect</label><select id="vipEffect"><option value="stars">Golden stars</option><option value="neon">Neon pulse</option><option value="orbit">Orbit glow</option><option value="none">No extra effect</option></select><small>Extra ambience across the chat.</small></div>
           <div class="vip-card"><label for="vipSound">Sound pack</label><select id="vipSound"><option value="classic">Classic</option><option value="soft">Soft tones</option><option value="arcade">Arcade</option></select><small>Changes interface sound character.</small></div>
         </div>
-        <div id="vipDeveloperTools" class="vip-dev-tools" hidden><strong>Developer controls</strong><p>Generate a fresh 13-character code and email both developer accounts. The previous code expires immediately.</p><button class="cta" id="vipRegenerate" type="button">Regenerate code &amp; email both</button></div><div class="vip-actions"><button class="cta" id="vipSave" type="button">Save VIP customisation</button><button class="mini" id="vipReset" type="button">Reset customisation</button></div>
+<div class="vip-actions"><button class="cta" id="vipSave" type="button">Save VIP customisation</button><button class="mini" id="vipReset" type="button">Reset customisation</button></div>
         <div class="vip-lounge"><strong>🌙 VIP Lounge</strong><p>Welcome to the private corner of Glitch. Get early feature previews, share feedback, and see owner announcements here.</p><p><b>Coming up:</b> sneak peeks, community challenges, and member-only updates.</p></div>
         <div class="vip-card"><strong>Secret commands</strong><small>Try <code>/vip</code>, <code>/stats</code>, <code>/lounge</code>, or <code>/theme gold</code> in the chat box.</small></div>
       </div>

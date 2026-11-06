@@ -411,8 +411,6 @@
     // VIP-only tools stay hidden until the server confirms membership.
     ['openImageStudio','openImageEditor'].forEach(id=>{const button=$(id);if(button){button.hidden=false;button.setAttribute('aria-disabled',String(!vipActive));}});
     document.body.classList.toggle('vip-active', vipActive);
-    $('vipNavBadge').textContent = vipActive ? 'ACTIVE' : 'LOCKED';
-    $('vipNavBadge').hidden = false;
     syncAccountBadge();
     $('vipTaglineDisplay').hidden = !vipActive || vipDeveloper;
     $('vipLock').hidden = vipActive;
@@ -467,7 +465,6 @@
     catch(e){$('vipStatus').textContent=e.message;}
     if(vipActive)renderVipStats();
   }
-  $('vipOpen').addEventListener('click',()=>{$('settingsModal').classList.remove('open');openVipModal();});
   $('vipClose').addEventListener('click',()=>{$('vipModal').classList.remove('open');hideCurrentVipCode();});
   $('vipModal').addEventListener('click',e=>{if(e.target===$('vipModal')){$('vipModal').classList.remove('open');hideCurrentVipCode();}});
   $('vipRedeemForm').addEventListener('submit',async e=>{
@@ -488,7 +485,7 @@
     const button=$('vipCodeVerify');button.disabled=true;button.textContent='Verifying…';$('vipVerifyStatus').textContent='Confirming your developer password…';
     try{const r=await api('/api/vip-current-code',{method:'POST',body:JSON.stringify({password:$('vipCodePassword').value})});if(!r.ok)throw Error(r.data.error||'Could not verify your password.');$('vipCurrentCodeValue').textContent=r.data.code;$('vipCurrentCode').hidden=false;$('vipCodePassword').value='';$('vipVerifyStatus').textContent='Password confirmed. This is the active one-time code.';}
     catch(error){$('vipCodePassword').value='';$('vipVerifyStatus').textContent=error.message;}
-    finally{button.disabled=false;button.textContent='Verify & show current code';}
+    finally{button.disabled=false;button.textContent='Verify & reveal';}
   });
   $('vipCopyCode').addEventListener('click',async()=>{const code=$('vipCurrentCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('vipVerifyStatus').textContent='Current code copied.';}catch{$('vipVerifyStatus').textContent='Clipboard access was blocked. Select the code and copy it manually.';}});
   $('vipHideCode').addEventListener('click',hideCurrentVipCode);
@@ -703,7 +700,7 @@
     user = { id: u.id, email: u.email || '', isAnonymous: Boolean(u.is_anonymous), accessToken, metadata: u.user_metadata || {} };
     paintProfile();
     syncAccountBadge();
-    paintProfile(); $('dot').classList.add('on');
+    $('dot').classList.add('on');
     $('gate').classList.remove('open');
     markMode();
     // Token refreshes call this again; only (re)load chats when the account really changed.

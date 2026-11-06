@@ -10,6 +10,12 @@
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let width = 0, height = 0, dpr = 1, stars = [], raf = 0, lastFrame = 0;
     const random = (min, max) => min + Math.random() * (max - min);
+    function toRgb(value, fallback) {
+      const match = /^#?([0-9a-f]{6})$/i.exec(String(value || '').trim());
+      if (!match) return fallback;
+      const hex = match[1];
+      return [parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)].join(',');
+    }
     function resize() {
       const rect = stage.getBoundingClientRect();
       width = Math.max(1, rect.width); height = Math.max(1, rect.height);
@@ -29,10 +35,13 @@
     function draw(time, staticFrame = false) {
       ctx.clearRect(0, 0, width, height);
       const dark = document.documentElement.dataset.scheme !== 'light';
+      const rootStyle = getComputedStyle(document.documentElement);
+      const accentRgb = toRgb(rootStyle.getPropertyValue('--accent').trim(), '124,58,237');
+      const accent2Rgb = toRgb(rootStyle.getPropertyValue('--accent-2').trim(), accentRgb);
       for (const star of stars) {
         const pulse = staticFrame ? .88 : .62 + (Math.sin(time * .001 * star.speed + star.phase) + 1) * .18;
         const alpha = pulse * (dark ? 1 : .42);
-        const tint = star.cyan ? (dark ? '105,224,244' : '25,125,155') : (dark ? '220,241,255' : '60,105,130');
+        const tint = star.cyan ? accentRgb : accent2Rgb;
         ctx.fillStyle = 'rgba(' + tint + ',' + alpha + ')';
         ctx.beginPath(); ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2); ctx.fill();
         if (star.flare) {

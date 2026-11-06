@@ -1354,3 +1354,36 @@ html:not([data-scheme=dark]) .stage::after {
   html[data-scheme=dark] .stage::after,
   html:not([data-scheme=dark]) .stage::after { animation:none!important; }
 }
+
+
+/* Precise video reference pass: dark space, restrained light pools, real star particles. */
+html[data-scheme=dark] .stage {
+  background:
+    radial-gradient(ellipse 58% 66% at 48% 48%, rgba(0,104,137,.16), transparent 76%),
+    radial-gradient(ellipse 46% 55% at 92% 88%, rgba(82,48,139,.13), transparent 78%),
+    radial-gradient(ellipse 38% 48% at 7% 4%, rgba(0,83,113,.09), transparent 78%),
+    #080d18;
+}
+html[data-scheme=dark] .stage::before {
+  inset:-8%; z-index:0; filter:blur(48px); opacity:.72;
+  background:
+    radial-gradient(ellipse 42% 52% at 43% 52%, rgba(0,194,213,.12), transparent 78%),
+    radial-gradient(ellipse 34% 42% at 88% 86%, rgba(104,73,177,.11), transparent 78%),
+    radial-gradient(ellipse 28% 34% at 12% 12%, rgba(0,118,145,.08), transparent 78%);
+  animation:glitchNebulaDrift 34s ease-in-out infinite alternate;
+}
+#vfxCanvas { position:absolute; inset:0; z-index:1; width:100%; height:100%; pointer-events:none; opacity:.88; }
+.stage > *:not(#vfxCanvas) { position:relative; z-index:2; }
+html[data-scheme=dark] .stage::after {
+  z-index:1; opacity:.52;
+  background:radial-gradient(480px circle at var(--pointer-x,52%) var(--pointer-y,38%), rgba(0,202,226,.09), transparent 74%);
+}
+html[data-scheme=dark] .side {
+  background:linear-gradient(180deg,#111725 0%,#101522 55%,#121426 100%);
+  border-right-color:rgba(76,157,183,.14);
+}
+html:not([data-scheme=dark]) #vfxCanvas { opacity:.22; }
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before { animation:none!important; }
+  #vfxCanvas { opacity:.45; }
+}

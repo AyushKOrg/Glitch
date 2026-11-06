@@ -1025,3 +1025,40 @@ select option{background:var(--panel);color:var(--text)}
 .vip-tools-launch{margin-bottom:8px}
 @media(max-width:700px){.settings-shell{width:calc(100vw - 14px)!important;max-height:94dvh!important}.settings-layout{grid-template-columns:70px minmax(0,1fr)}.settings-sidebar{padding:12px 6px;align-items:stretch}.settings-nav-label{font-size:0;padding:7px 0}.settings-category{justify-content:center;padding:8px 4px;font-size:0;gap:0}.settings-category>span{width:32px;height:32px;font-size:17px}.settings-dashboard{padding:16px 12px}.settings-dashboard-grid{grid-template-columns:1fr}.settings-tile{min-height:100px}.settings-detail-body{padding:15px}}
 @media(max-width:420px){.settings-layout{grid-template-columns:58px minmax(0,1fr)}.settings-dashboard-grid{gap:8px}.settings-welcome h4{font-size:1.1rem}}
+
+
+/* Unified Glitch controls across every overlay and workspace */
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=submit]):not([type=button]),
+textarea,select{
+  font-family:Inter,system-ui,sans-serif;
+}
+select{
+  appearance:none;-webkit-appearance:none;
+  min-height:40px;padding:9px 38px 9px 12px;
+  border:1px solid var(--border-strong);border-radius:10px;
+  background-color:var(--panel-alt);color:var(--text);
+  background-image:linear-gradient(45deg,transparent 50%,var(--text-dim) 50%),linear-gradient(135deg,var(--text-dim) 50%,transparent 50%);
+  background-position:calc(100% - 17px) 17px,calc(100% - 12px) 17px;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+  box-shadow:none;outline:none;cursor:pointer;
+}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=submit]):not([type=button]),
+textarea{
+  border-color:var(--border-strong);border-radius:10px;
+  background-color:var(--panel-alt);color:var(--text);
+  box-shadow:none;outline:none;
+}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=submit]):not([type=button]):focus,
+textarea:focus,select:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);outline:none;
+}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:1}
+select option{background:var(--panel);color:var(--text)}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent)}
+input[type=range]{accent-color:var(--accent)}
+button,select,input,textarea{font-family:Inter,system-ui,sans-serif}
+button:disabled{opacity:.55;cursor:not-allowed}
+.vip-tools-launch[hidden],.settings-contact[hidden],.settings-nav-label[hidden],.settings-dev-only[hidden],.settings-free-only[hidden]{display:none!important}
+.settings-category svg,.settings-tile svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.settings-sidebar::-webkit-scrollbar,.settings-dashboard::-webkit-scrollbar,.settings-detail-body::-webkit-scrollbar{width:6px}
+.settings-sidebar::-webkit-scrollbar-thumb,.settings-dashboard::-webkit-scrollbar-thumb,.settings-detail-body::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px}

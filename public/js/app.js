@@ -665,7 +665,7 @@
     const saved=readProfile(),name=(user&&user.metadata&&user.metadata.display_name)||saved.name||(user&&user.email?user.email.split('@')[0]:'Guest');
     const picture=saved.picture||'';
     $('who').textContent=name;$('profileDisplayName').value=name;$('settingsEmail').textContent=user?(user.isAnonymous?'Guest session':user.email):'Not signed in';
-    for(const el of [$('avatar'),$('profilePreview')]){el.textContent=picture?'':(name.trim()[0]||'G').toUpperCase();el.style.backgroundImage=picture?'url("'+picture+'")':'';el.classList.toggle('has-picture',!!picture);}
+    for(const el of [$('avatar'),$('profilePreview')]){el.textContent=picture?'':(name.trim()[0]||'G').toUpperCase();el.style.backgroundImage=picture?'url("'+picture+'")':'';el.style.backgroundSize=picture?'cover':'200% 200%';el.style.backgroundPosition='center';el.classList.toggle('has-picture',!!picture);}
   }
   $('settingsOpen').addEventListener('click',()=>{paintProfile();$('settingsModal').classList.add('open');});
   $('settingsClose').addEventListener('click',()=>$('settingsModal').classList.remove('open'));

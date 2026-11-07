@@ -1,35 +1,105 @@
 (async () => {
   const $ = (id) => document.getElementById(id);
-  // Lightweight ambient particles; respects reduced-motion and never blocks input.
-  (() => {
-    const canvas = $('vfxCanvas'), ctx = canvas && canvas.getContext && canvas.getContext('2d');
-    if (!ctx || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const stage = canvas.parentElement; let w = 0, h = 0, raf = 0, dots = [], stars = [];
-    const lightMq = matchMedia('(prefers-color-scheme: light)');
-    const isLight = () => { const sc = document.documentElement.dataset.scheme; return sc ? sc === 'light' : lightMq.matches; };
-    const resize = () => { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 1.5); w = r.width; h = r.height; canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); dots = Array.from({length:Math.min(54,Math.max(22,Math.floor(w*h/26000)))},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.35,a:Math.random()*.42+.12,p:Math.random()*6.28})); stars = Array.from({length:Math.min(260,Math.max(60,Math.floor(w*h/4200)))},()=>{const big=Math.random()<.07;return {x:Math.random()*w,y:Math.random()*h,r:big?1.15+Math.random()*.7:.35+Math.random()*.65,a:big?.55+Math.random()*.35:.18+Math.random()*.4,sp:.5+Math.random()*1.8,ph:Math.random()*6.28,glint:big||Math.random()<.04,warm:Math.random()<.18};}); };
-    const draw = t => { ctx.clearRect(0,0,w,h); const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8b5cf6';
-      // faint twinkling stars + a few sparkles (white on dark, soft violet specks on light)
-      const light = isLight(), sec = t / 1000;
-      for (let k = 0; k < stars.length; k++) {
-        const st = stars[k], tw = .5 + .5 * Math.sin(sec * st.sp + st.ph), al = st.a * (.25 + .75 * tw) * (light ? .85 : 1);
-        ctx.fillStyle = light ? (st.warm ? '#c08457' : accent) : (st.warm ? '#ffe9c7' : '#f2efff');
-        ctx.globalAlpha = al; ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.2832); ctx.fill();
-        if (st.glint && tw > .8) {   // brief four-point glint at the peak of the twinkle
-          const L = st.r * 5.5 * ((tw - .8) / .2 + .3); ctx.globalAlpha = al * .8; ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth = .6;
-          ctx.beginPath(); ctx.moveTo(st.x - L, st.y); ctx.lineTo(st.x + L, st.y); ctx.moveTo(st.x, st.y - L); ctx.lineTo(st.x, st.y + L); ctx.stroke();
-        }
+  // Reference-matched starfield: fine points and a few cross-shaped glints.
+  function initGlitchStarfield() {
+    const stage = document.querySelector('.stage');
+    const canvas = $('vfxCanvas');
+    if (!stage || !canvas) return;
+    // A broad accent-tinted light field smoothly tracks the pointer across the workspace.
+    let pointerFrame = 0, targetX = 52, targetY = 38, currentX = 52, currentY = 38;
+    function movePointer(event) {
+      const rect = stage.getBoundingClientRect();
+      targetX = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+      targetY = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+      if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointerGlow);
+    }
+    function updatePointerGlow() {
+      currentX += (targetX - currentX) * .19;
+      currentY += (targetY - currentY) * .19;
+      stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
+      stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
+      if (Math.abs(targetX-currentX) > .08 || Math.abs(targetY-currentY) > .08) {
+        pointerFrame = requestAnimationFrame(updatePointerGlow);
+      } else {
+        currentX = targetX; currentY = targetY;
+        stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
+        stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
+        pointerFrame = 0;
       }
-      ctx.globalAlpha = 1;
-      for (let i=0;i<dots.length;i++){const p=dots[i];p.x+=p.vx;p.y+=p.vy;p.p+=.018;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;ctx.globalAlpha=p.a*(.65+.35*Math.sin(p.p));ctx.fillStyle=accent;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-        for(let j=i+1;j<dots.length;j++){const q=dots[j],dx=p.x-q.x,dy=p.y-q.y,dist=Math.hypot(dx,dy);if(dist<105){ctx.globalAlpha=(1-dist/105)*.075;ctx.strokeStyle=accent;ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}}
-      }ctx.globalAlpha=1;raf=requestAnimationFrame(draw); };
-    const observer = new ResizeObserver(resize); observer.observe(stage); resize(); draw(0);
-    window.addEventListener('pagehide',()=>{cancelAnimationFrame(raf);observer.disconnect();},{once:true});
-  })();
-  const stageEl = document.querySelector('.stage');
-  stageEl.addEventListener('pointermove', e => { const r=stageEl.getBoundingClientRect(); stageEl.style.setProperty('--pointer-x',(e.clientX-r.left)+'px'); stageEl.style.setProperty('--pointer-y',(e.clientY-r.top)+'px'); }, {passive:true});
-    const sideCollapseButton = $('sideCollapse');
+    }
+    stage.addEventListener('pointermove', movePointer, { passive:true });
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let width = 0, height = 0, dpr = 1, stars = [], raf = 0, lastFrame = 0;
+    const random = (min, max) => min + Math.random() * (max - min);
+    function toRgb(value, fallback) {
+      const match = /^#?([0-9a-f]{6})$/i.exec(String(value || '').trim());
+      if (!match) return fallback;
+      const hex = match[1];
+      return [parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)].join(',');
+    }
+    function resize() {
+      const rect = stage.getBoundingClientRect();
+      width = Math.max(1, rect.width); height = Math.max(1, rect.height);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+      canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.max(90, Math.min(260, Math.round(width * height / 6500)));
+      stars = Array.from({ length: count }, (_, i) => ({
+        x: random(0, width), y: random(0, height), r: random(.55, 1.3),
+        phase: random(0, Math.PI * 2), speed: random(.22, .72),
+        cyan: Math.random() < .32, flare: Math.random() < .13,
+        flareLength: random(5.5, 9), drift: random(-.055, .055)
+      }));
+      draw(0, true);
+    }
+    function draw(time, staticFrame = false) {
+      ctx.clearRect(0, 0, width, height);
+      const dark = document.documentElement.dataset.scheme !== 'light';
+      const rootStyle = getComputedStyle(document.documentElement);
+      const accentRgb = toRgb(rootStyle.getPropertyValue('--accent').trim(), '124,58,237');
+      const accent2Rgb = toRgb(rootStyle.getPropertyValue('--accent-2').trim(), accentRgb);
+      for (const star of stars) {
+        const pulse = staticFrame ? .88 : .62 + (Math.sin(time * .001 * star.speed + star.phase) + 1) * .18;
+        const alpha = pulse * (dark ? 1 : .42);
+        const tint = star.cyan ? accentRgb : accent2Rgb;
+        ctx.fillStyle = 'rgba(' + tint + ',' + alpha + ')';
+        ctx.beginPath(); ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2); ctx.fill();
+        if (star.flare) {
+          const glow = alpha * .92, length = star.flareLength;
+          ctx.save(); ctx.globalAlpha = glow;
+          ctx.shadowColor = star.cyan ? '#49eaff' : '#d7f5ff'; ctx.shadowBlur = 13;
+          ctx.strokeStyle = star.cyan ? 'rgba(90,235,255,.85)' : 'rgba(220,245,255,.82)';
+          ctx.lineWidth = .85; ctx.beginPath();
+          ctx.moveTo(star.x - length, star.y); ctx.lineTo(star.x + length, star.y);
+          ctx.moveTo(star.x, star.y - length); ctx.lineTo(star.x, star.y + length);
+          ctx.stroke(); ctx.restore();
+        }
+        if (!staticFrame) { star.y += star.drift; if (star.y < -2) star.y = height + 2; if (star.y > height + 2) star.y = -2; }
+      }
+    }
+    function frame(time) {
+      if (time - lastFrame >= 40) { draw(time); lastFrame = time; }
+      raf = requestAnimationFrame(frame);
+    }
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(resize) : null;
+    observer?.observe(stage);
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+    if (!reducedMotion.matches) raf = requestAnimationFrame(frame);
+    reducedMotion.addEventListener?.('change', event => {
+      if (event.matches) { cancelAnimationFrame(raf); draw(0, true); }
+      else { lastFrame = 0; raf = requestAnimationFrame(frame); }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else if (!reducedMotion.matches) raf = requestAnimationFrame(frame);
+    });
+  }
+  initGlitchStarfield();
+  const sideCollapseButton = $('sideCollapse');
   let sidebarCollapsed = false;
   try { sidebarCollapsed = localStorage.getItem('glitch_sidebar_collapsed') === '1' && window.matchMedia('(min-width: 761px)').matches; } catch {}
   function setSidebarCollapsed(collapsed) {

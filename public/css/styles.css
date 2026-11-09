@@ -2076,3 +2076,39 @@ html[data-scheme="light"] .stage .suggest button:focus-visible {
   html[data-scheme="dark"] .stage::before,
   html[data-scheme="light"] .stage::before { animation:none !important; }
 }
+
+
+/* Subtle fluid pull: the pointer shifts the entire atmosphere, never a cursor glow. */
+.stage::after {
+  content:"";
+  position:absolute;
+  inset:-3%;
+  z-index:0;
+  pointer-events:none;
+  opacity:.16;
+  background:
+    linear-gradient(112deg,transparent 10%,color-mix(in srgb,var(--accent) 12%,transparent) 34%,transparent 56%,color-mix(in srgb,var(--accent-2) 11%,transparent) 78%,transparent 92%),
+    radial-gradient(ellipse 72% 58% at 12% 78%,color-mix(in srgb,var(--accent-2) 15%,transparent),transparent 76%),
+    radial-gradient(ellipse 68% 56% at 88% 20%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 78%);
+  filter:blur(54px) saturate(1.3);
+  transform:translate3d(calc(var(--fluid-pull-x,0) * .62%),calc(var(--fluid-pull-y,0) * .62%),0) scale(1.04);
+  transition:transform 1.8s cubic-bezier(.2,.65,.25,1);
+  will-change:transform;
+}
+html[data-scheme="dark"] .stage::before {
+  opacity:.66;
+  filter:blur(62px) saturate(1.52);
+  background-image:
+    linear-gradient(118deg,transparent 7%,color-mix(in srgb,var(--accent) 13%,transparent) 25%,transparent 43%,color-mix(in srgb,var(--accent-2) 13%,transparent) 61%,transparent 80%),
+    radial-gradient(ellipse 58% 43% at 18% 68%,color-mix(in srgb,var(--accent-2) 34%,transparent) 0%,color-mix(in srgb,var(--accent-2) 14%,transparent) 44%,transparent 78%),
+    radial-gradient(ellipse 62% 48% at 78% 22%,color-mix(in srgb,var(--accent) 36%,transparent) 0%,color-mix(in srgb,var(--accent) 15%,transparent) 46%,transparent 80%),
+    radial-gradient(ellipse 54% 40% at 72% 88%,color-mix(in srgb,var(--accent) 23%,white 3%) 0%,color-mix(in srgb,var(--accent-2) 12%,transparent) 43%,transparent 80%);
+}
+html[data-scheme="light"] .stage::before {
+  opacity:.34;
+  filter:blur(62px) saturate(1.35);
+}
+html[data-scheme="light"] .stage::after { opacity:.075; }
+@media(prefers-reduced-motion:reduce) {
+  .stage::after { transition:none; }
+}

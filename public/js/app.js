@@ -172,10 +172,10 @@
         if (key && cloudKeyAllowed(key)) values[key]=localStorage.getItem(key);
       }
     } catch {}
-    return { version: 1, values };
+    let chatStore=null;try{if(user)chatStore=store().getItem(storeKey());}catch{}\n    return { version: 1, values, chatStore };
   }
   function scheduleCloudSync() {
-    if (cloudHydrating || !user || user.isAnonymous || !user.email) return;
+    if (cloudHydrating || !user) return;
     clearTimeout(cloudSyncTimer);
     cloudSyncTimer=setTimeout(()=>{
       const snapshot=collectCloudSnapshot();
@@ -186,7 +186,7 @@
     },900);
   }
   async function hydrateCloudAccount() {
-    if(!user || user.isAnonymous) return false;
+    if(!user) return false;
     const result=await api('/api/account-data');
     if(!result.ok) throw new Error(result.data.error||'Could not load your cloud account data.');
     const cloud=result.data.data;
@@ -196,6 +196,7 @@
         const allowed=new Set(Object.keys(cloud.values).filter(cloudKeyAllowed));
         for(let i=localStorage.length-1;i>=0;i--){const key=localStorage.key(i);if(key&&cloudKeyAllowed(key)&&!allowed.has(key))localStorage.removeItem(key);}
         for(const [key,value] of Object.entries(cloud.values)) if(cloudKeyAllowed(key)&&typeof value==='string') localStorage.setItem(key,value);
+        if(typeof cloud.chatStore==='string') store().setItem(storeKey(),cloud.chatStore);
       } else {
         // First sign-in after this feature: migrate existing browser data only if cloud is empty.
         scheduleCloudSync();

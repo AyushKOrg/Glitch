@@ -12,6 +12,12 @@
     },
     "api/vip-regenerate.js": {
       "maxDuration": 60
+    },
+    "api/creative-outline.js": {
+      "maxDuration": 60
+    },
+    "api/creative-ppt.js": {
+      "maxDuration": 60
     }
   },
   "headers": [

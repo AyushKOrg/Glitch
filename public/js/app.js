@@ -7,32 +7,26 @@
     if (!stage || !canvas) return;
     // A broad accent-tinted light field smoothly tracks the pointer across the workspace.
     let pointerFrame = 0, targetX = 52, targetY = 38, currentX = 52, currentY = 38;
-    // Recent pointer samples form a short-lived liquid wake on the VFX canvas.
-    let waterTrail = [];
+    // Pointer motion gently pulls the full ambient field; no cursor-attached effect.
     function movePointer(event) {
       const rect = stage.getBoundingClientRect();
       const localX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
       const localY = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
-      targetX = (localX / rect.width) * 100;
-      targetY = (localY / rect.height) * 100;
-      const previous = waterTrail[waterTrail.length - 1];
-      if (!previous || Math.hypot(localX - previous.x, localY - previous.y) > 3.5) {
-        waterTrail.push({ x: localX, y: localY, t: performance.now() });
-        if (waterTrail.length > 46) waterTrail.shift();
-      }
+      targetX = (localX / rect.width) * 2 - 1;
+      targetY = (localY / rect.height) * 2 - 1;
       if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointerGlow);
     }
     function updatePointerGlow() {
-      currentX += (targetX - currentX) * .19;
-      currentY += (targetY - currentY) * .19;
-      stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
-      stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
-      if (Math.abs(targetX-currentX) > .08 || Math.abs(targetY-currentY) > .08) {
+      currentX += (targetX - currentX) * .045;
+      currentY += (targetY - currentY) * .045;
+      stage.style.setProperty('--fluid-pull-x', currentX.toFixed(3));
+      stage.style.setProperty('--fluid-pull-y', currentY.toFixed(3));
+      if (Math.abs(targetX-currentX) > .006 || Math.abs(targetY-currentY) > .006) {
         pointerFrame = requestAnimationFrame(updatePointerGlow);
       } else {
         currentX = targetX; currentY = targetY;
-        stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
-        stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
+        stage.style.setProperty('--fluid-pull-x', currentX.toFixed(3));
+        stage.style.setProperty('--fluid-pull-y', currentY.toFixed(3));
         pointerFrame = 0;
       }
     }
@@ -64,57 +58,12 @@
       }));
       draw(0, true);
     }
-    function drawWater(time, accentRgb, accent2Rgb) {
-      const lifetime = 980;
-      waterTrail = waterTrail.filter(point => time - point.t < lifetime);
-      if (waterTrail.length < 2) return;
-      const fade = Math.max(0, 1 - (time - waterTrail[0].t) / lifetime);
-      if (fade <= 0) return;
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      function strokeWake(offset, wobble, phase, width, color, alpha, blur) {
-        const points = waterTrail.map((point, index) => {
-          const before = waterTrail[Math.max(0, index - 1)];
-          const after = waterTrail[Math.min(waterTrail.length - 1, index + 1)];
-          const dx = after.x - before.x, dy = after.y - before.y;
-          const length = Math.max(1, Math.hypot(dx, dy));
-          const wave = offset + Math.sin(index * .72 + time * .0032 + phase) * wobble;
-          return { x: point.x - (dy / length) * wave, y: point.y + (dx / length) * wave };
-        });
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        for (let i = 1; i < points.length - 1; i++) {
-          const midX = (points[i].x + points[i + 1].x) * .5;
-          const midY = (points[i].y + points[i + 1].y) * .5;
-          ctx.quadraticCurveTo(points[i].x, points[i].y, midX, midY);
-        }
-        const last = points[points.length - 1];
-        ctx.lineTo(last.x, last.y);
-        ctx.lineWidth = width;
-        ctx.strokeStyle = color;
-        ctx.globalAlpha = alpha * fade;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = blur;
-        ctx.stroke();
-      }
-
-      // Broad refracted colour beneath two fine, offset caustic highlights.
-      strokeWake(0, 5, .2, 34, 'rgb(' + accentRgb + ')', .105, 28);
-      strokeWake(3, 7, 1.8, 13, 'rgb(' + accent2Rgb + ')', .19, 19);
-      strokeWake(-3, 4, 3.1, 2.2, 'rgba(226,250,255,.88)', .42, 10);
-      strokeWake(7, 3, 4.4, 1, 'rgba(255,255,255,.72)', .28, 7);
-      ctx.restore();
-    }
     function draw(time, staticFrame = false) {
       ctx.clearRect(0, 0, width, height);
       const dark = document.documentElement.dataset.scheme !== 'light';
       const rootStyle = getComputedStyle(document.documentElement);
       const accentRgb = toRgb(rootStyle.getPropertyValue('--accent').trim(), '124,58,237');
       const accent2Rgb = toRgb(rootStyle.getPropertyValue('--accent-2').trim(), accentRgb);
-      drawWater(time, accentRgb, accent2Rgb);
       for (const star of stars) {
         const pulse = staticFrame ? .88 : .62 + (Math.sin(time * .001 * star.speed + star.phase) + 1) * .18;
         const alpha = pulse * (dark ? 1 : .42);

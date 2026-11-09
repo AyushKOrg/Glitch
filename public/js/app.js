@@ -160,6 +160,54 @@
   let mode = 'flash';
   try { const m = localStorage.getItem(MODE_KEY); if (MODES.includes(m)) mode = m; } catch {}
   let user = null;                                              // {id, email} when signed in
+  // Account-scoped cloud snapshot: chat index, profile, appearance and user preferences.
+  // Only Glitch-owned keys are synced; Supabase auth/session keys are never included.
+  let cloudHydrating = false, cloudSyncTimer = 0, cloudSyncInFlight = Promise.resolve();
+  const cloudKeyAllowed = key => /^glitch_/.test(key) || (user && key === 'glitch_profile_' + user.id);
+  function collectCloudSnapshot() {
+    const values = {};
+    try {
+      for (let i=0;i<localStorage.length;i++) {
+        const key=localStorage.key(i);
+        if (key && cloudKeyAllowed(key)) values[key]=localStorage.getItem(key);
+      }
+    } catch {}
+    return { version: 1, values };
+  }
+  function scheduleCloudSync() {
+    if (cloudHydrating || !user || user.isAnonymous || !user.email) return;
+    clearTimeout(cloudSyncTimer);
+    cloudSyncTimer=setTimeout(()=>{
+      const snapshot=collectCloudSnapshot();
+      cloudSyncInFlight=cloudSyncInFlight.catch(()=>{}).then(async()=>{
+        const result=await api('/api/account-data',{method:'PUT',body:JSON.stringify({data:snapshot})});
+        if(!result.ok) throw new Error(result.data.error||'Cloud sync failed.');
+      }).catch(error=>{ console.warn('[Glitch cloud sync]',error); showToast('Cloud sync paused: '+error.message); });
+    },900);
+  }
+  async function hydrateCloudAccount() {
+    if(!user || user.isAnonymous) return false;
+    const result=await api('/api/account-data');
+    if(!result.ok) throw new Error(result.data.error||'Could not load your cloud account data.');
+    const cloud=result.data.data;
+    cloudHydrating=true;
+    try {
+      if(cloud && cloud.version===1 && cloud.values && typeof cloud.values==='object') {
+        const allowed=new Set(Object.keys(cloud.values).filter(cloudKeyAllowed));
+        for(let i=localStorage.length-1;i>=0;i--){const key=localStorage.key(i);if(key&&cloudKeyAllowed(key)&&!allowed.has(key))localStorage.removeItem(key);}
+        for(const [key,value] of Object.entries(cloud.values)) if(cloudKeyAllowed(key)&&typeof value==='string') localStorage.setItem(key,value);
+      } else {
+        // First sign-in after this feature: migrate existing browser data only if cloud is empty.
+        scheduleCloudSync();
+      }
+    } finally { cloudHydrating=false; }
+    return Boolean(cloud && cloud.values);
+  }
+  // Catch all existing preference writes without having to rewrite every settings control.
+  const nativeSetItem=Storage.prototype.setItem, nativeRemoveItem=Storage.prototype.removeItem;
+  Storage.prototype.setItem=function(key,value){nativeSetItem.call(this,key,value);if(this===localStorage&&cloudKeyAllowed(String(key)))scheduleCloudSync();};
+  Storage.prototype.removeItem=function(key){nativeRemoveItem.call(this,key);if(this===localStorage&&cloudKeyAllowed(String(key)))scheduleCloudSync();};
+
   let vipActive = false, vipPersonality = 'default', vipSoundPack = 'classic';
   let history = [];                                             // [{role, content}]
   let conversations = [];
@@ -871,7 +919,16 @@
     $('gate').classList.remove('open');
     markMode();
     // Token refreshes call this again; only (re)load chats when the account really changed.
-    if (changedUser) { quotaDone = false; pending = null; loadHistory(); render(); loadMemories().catch(e => showToast('Memory could not load: ' + e.message)); }
+    if (changedUser) {
+      quotaDone = false; pending = null;
+      // Do not render or write an empty local chat list before the cloud snapshot is fetched.
+      (async()=>{
+        try { await hydrateCloudAccount(); }
+        catch(error) { showToast('Cloud data could not load: '+error.message); }
+        loadHistory(); render();
+        loadMemories().catch(e => showToast('Memory could not load: ' + e.message));
+      })();
+    }
     refreshVip().catch(() => setVipState(false));
     refreshUsage();
   }

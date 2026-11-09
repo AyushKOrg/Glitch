@@ -634,9 +634,8 @@
   }
   async function loadMemories(){if(!user){memoryItems=[];renderMemoryList();return;}const r=await api('/api/memory');if(!r.ok)throw new Error(r.data.error||'Could not load account memory.');memoryItems=Array.isArray(r.data.memories)?r.data.memories:[];renderMemoryList();}
   async function saveMemory(content,quiet=false){const value=String(content||'').trim().slice(0,500);if(!value)throw new Error('Write something to remember first.');const r=await api('/api/memory',{method:'POST',body:JSON.stringify({content:value})});if(!r.ok)throw new Error(r.data.error||'Could not save memory.');await loadMemories();if(!quiet)showToast('Saved to your account memory.');}
-  $('memoryOpen').addEventListener('click',async()=>{if(!user){showToast('Sign in or continue as guest to use account memory.');return;}$('memoryModal').classList.add('open');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
+  $('memoryOpen').addEventListener('click',async()=>{if(!user){showToast('Sign in or continue as a registered account to use account memory.');return;}openSettingsDetail('memory');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
   $('memoryClose').addEventListener('click',()=>$('memoryModal').classList.remove('open'));
-  $('memoryModal').addEventListener('click',e=>{if(e.target===$('memoryModal'))$('memoryModal').classList.remove('open');});
   $('memoryInput').addEventListener('input',()=>{$('memoryCount').textContent=$('memoryInput').value.length+' / 500';});
   $('memoryForm').addEventListener('submit',async e=>{e.preventDefault();const b=$('memorySave');b.disabled=true;$('memoryStatus').textContent='Saving…';try{await saveMemory($('memoryInput').value);$('memoryInput').value='';$('memoryCount').textContent='0 / 500';$('memoryStatus').textContent='Saved. Glitch can use this in future chats.';}catch(err){$('memoryStatus').textContent=err.message;}finally{b.disabled=false;}});
 
@@ -768,16 +767,23 @@
     $('who').textContent=name;$('profileDisplayName').value=name;$('settingsEmail').textContent=user?(user.isAnonymous?'Guest session':user.email):'Not signed in';
     for(const el of [$('avatar'),$('profilePreview')]){el.textContent=picture?'':(name.trim()[0]||'G').toUpperCase();el.style.backgroundImage=picture?'url("'+picture+'")':'';el.style.backgroundSize=picture?'cover':'200% 200%';el.style.backgroundPosition='center';el.classList.toggle('has-picture',!!picture);}
   }
-  let activeSettingsNode=null;
+  let activeSettingsNode=null, activeSettingsOriginalParent=null;
   const settingsDetails={
     profile:{id:'profileSettingsSection',title:'Profile',subtitle:'Your display name and profile picture.',icon:'◉'},
     account:{id:'accountSettingsSection',title:'Account',subtitle:'Your sign-in details and account security.',icon:'♙'},
     appearance:{id:'appearanceSettings',title:'Appearance',subtitle:'Choose your colour mode and accent.',icon:'◐'},
     audio:{id:'audioSettingsSection',title:'Audio',subtitle:'Control sound effects and spoken replies.',icon:'♫'},
+    memory:{id:'memorySettingsSection',title:'Memory',subtitle:'Manage what Glitch remembers.',icon:'◈'},
+    personalize:{id:'vipContent',title:'Personalize Glitch',subtitle:'Your VIP customisation and membership settings.',icon:'✧'},
+    vip:{id:'vipContent',title:'Request VIP access',subtitle:'Redeem an invitation and unlock VIP features.',icon:'♛'},
     developer:{id:'vipDeveloperTools',title:'Developer settings',subtitle:'Restricted developer-only tools.',icon:'⌘'}
   };
   function closeSettingsDetail(){
-    if(activeSettingsNode){$('settingsVault').appendChild(activeSettingsNode);if(activeSettingsNode.id==='vipDeveloperTools')activeSettingsNode.hidden=true;activeSettingsNode=null;}
+    if(activeSettingsNode){
+      (activeSettingsOriginalParent||$('settingsVault')).appendChild(activeSettingsNode);
+      if(activeSettingsNode.id==='vipDeveloperTools')activeSettingsNode.hidden=true;
+      activeSettingsNode=null;activeSettingsOriginalParent=null;
+    }
     $('settingsContentInline').hidden=true;
     $('settingsWelcome').hidden=false;
     $('settingsDashboardGrid').hidden=false;
@@ -791,6 +797,7 @@
     const node=$(item.id);if(!node)return;
     if(key==='developer')node.hidden=false;
     activeSettingsNode=node;
+    activeSettingsOriginalParent=node.parentElement;
     $('settingsContentInline').appendChild(node);
     $('settingsContentInline').hidden=false;
     $('settingsWelcome').hidden=true;
@@ -806,10 +813,18 @@
   $('settingsClose').addEventListener('click',closeSettings);
   $('settingsModal').addEventListener('click',e=>{if(e.target===$('settingsModal'))closeSettings();});
   document.querySelectorAll('[data-settings-detail]').forEach(button=>button.addEventListener('click',()=>openSettingsDetail(button.dataset.settingsDetail)));
-  document.querySelectorAll('[data-settings-action]').forEach(button=>button.addEventListener('click',()=>{
+  document.querySelectorAll('[data-settings-action]').forEach(button=>button.addEventListener('click',async()=>{
     const action=button.dataset.settingsAction;
     if(action==='memory')$('memoryOpen').click();
-    else if(action==='personalize'||action==='vip')openVipModal();
+    else if(action==='personalize'||action==='vip'){
+      openSettingsDetail(action);
+      $('vipStatus').textContent='Checking your account…';
+      try{
+        await refreshVip();
+        $('vipStatus').textContent=vipDeveloper?'Developer access confirmed.':vipActive?'VIP unlocked. Your personalisation controls are ready.':(user&&!user.isAnonymous?'Enter your one-time VIP code below.':'Sign in with a registered account before redeeming a code.');
+        if(vipActive)renderVipStats();
+      }catch(e){$('vipStatus').textContent=e.message;}
+    }
     else if(action==='install')installGlitch();
   }));
   $('vipToolsOpen').addEventListener('click',()=>openVipModal());

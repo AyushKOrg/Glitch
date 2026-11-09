@@ -7,36 +7,27 @@
     if (!stage || !canvas) return;
     // A broad accent-tinted light field smoothly tracks the pointer across the workspace.
     let pointerFrame = 0, targetX = 52, targetY = 38, currentX = 52, currentY = 38;
-    // Pointer motion gently pulls the full ambient field; no cursor-attached effect.
     function movePointer(event) {
       const rect = stage.getBoundingClientRect();
-      const localX = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
-      const localY = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
-      targetX = (localX / rect.width) * 2 - 1;
-      targetY = (localY / rect.height) * 2 - 1;
+      targetX = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+      targetY = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
       if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointerGlow);
     }
     function updatePointerGlow() {
-      // Use the same quick, soft easing while entering, moving, and leaving.
-      currentX += (targetX - currentX) * .105;
-      currentY += (targetY - currentY) * .105;
-      stage.style.setProperty('--fluid-pull-x', currentX.toFixed(3));
-      stage.style.setProperty('--fluid-pull-y', currentY.toFixed(3));
-      if (Math.abs(targetX-currentX) > .006 || Math.abs(targetY-currentY) > .006) {
+      currentX += (targetX - currentX) * .19;
+      currentY += (targetY - currentY) * .19;
+      stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
+      stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
+      if (Math.abs(targetX-currentX) > .08 || Math.abs(targetY-currentY) > .08) {
         pointerFrame = requestAnimationFrame(updatePointerGlow);
       } else {
         currentX = targetX; currentY = targetY;
-        stage.style.setProperty('--fluid-pull-x', currentX.toFixed(3));
-        stage.style.setProperty('--fluid-pull-y', currentY.toFixed(3));
+        stage.style.setProperty('--pointer-x', currentX.toFixed(2) + '%');
+        stage.style.setProperty('--pointer-y', currentY.toFixed(2) + '%');
         pointerFrame = 0;
       }
     }
     stage.addEventListener('pointermove', movePointer, { passive:true });
-    stage.addEventListener('pointerleave', () => {
-      targetX = 0;
-      targetY = 0;
-      if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointerGlow);
-    }, { passive:true });
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');

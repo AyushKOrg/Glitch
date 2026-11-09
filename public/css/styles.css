@@ -2114,22 +2114,22 @@ html[data-scheme="light"] .stage::after { opacity:.075; }
 }
 
 
-/* Brightness correction: keep the ambient current deep, soft and peripheral. */
+/* Balanced ambient current: clearly visible colour, diffused rather than glaring. */
 html[data-scheme="dark"] .stage::before {
-  opacity:.24 !important;
-  filter:blur(78px) saturate(1.16) !important;
+  opacity:.54 !important;
+  filter:blur(66px) saturate(1.34) !important;
   background-image:
-    linear-gradient(118deg,transparent 8%,color-mix(in srgb,var(--accent) 6%,transparent) 28%,transparent 48%,color-mix(in srgb,var(--accent-2) 6%,transparent) 68%,transparent 86%),
-    radial-gradient(ellipse 58% 43% at 18% 68%,color-mix(in srgb,var(--accent-2) 18%,transparent),transparent 78%),
-    radial-gradient(ellipse 62% 48% at 78% 22%,color-mix(in srgb,var(--accent) 19%,transparent),transparent 80%),
-    radial-gradient(ellipse 54% 40% at 72% 88%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 80%) !important;
+    linear-gradient(118deg,transparent 8%,color-mix(in srgb,var(--accent) 12%,transparent) 28%,transparent 48%,color-mix(in srgb,var(--accent-2) 12%,transparent) 68%,transparent 86%),
+    radial-gradient(ellipse 58% 43% at 18% 68%,color-mix(in srgb,var(--accent-2) 42%,transparent),transparent 78%),
+    radial-gradient(ellipse 62% 48% at 78% 22%,color-mix(in srgb,var(--accent) 44%,transparent),transparent 80%),
+    radial-gradient(ellipse 54% 40% at 72% 88%,color-mix(in srgb,var(--accent) 28%,white 2%),transparent 80%) !important;
 }
 html[data-scheme="dark"] .stage::after {
-  opacity:.055 !important;
-  filter:blur(76px) saturate(1.08) !important;
+  opacity:.13 !important;
+  filter:blur(66px) saturate(1.24) !important;
 }
 html[data-scheme="light"] .stage::before {
-  opacity:.18 !important;
-  filter:blur(78px) saturate(1.12) !important;
+  opacity:.32 !important;
+  filter:blur(68px) saturate(1.28) !important;
 }
-html[data-scheme="light"] .stage::after { opacity:.035 !important; }
+html[data-scheme="light"] .stage::after { opacity:.065 !important; }

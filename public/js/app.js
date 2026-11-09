@@ -255,7 +255,7 @@
     }
     showToast('Storage is full, so this chat may not be saved after a refresh.');
   }
-  function persistChats() { if (user) writeStore(); renderHistoryList(); }
+  function persistChats() { if (user) { writeStore(); scheduleCloudSync(); } renderHistoryList(); }
 
   // Bring the current in-memory history up to date with what the chat object holds.
   function syncActiveFromHistory() {

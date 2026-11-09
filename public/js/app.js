@@ -17,8 +17,9 @@
       if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointerGlow);
     }
     function updatePointerGlow() {
-      currentX += (targetX - currentX) * .045;
-      currentY += (targetY - currentY) * .045;
+      // Use the same quick, soft easing while entering, moving, and leaving.
+      currentX += (targetX - currentX) * .105;
+      currentY += (targetY - currentY) * .105;
       stage.style.setProperty('--fluid-pull-x', currentX.toFixed(3));
       stage.style.setProperty('--fluid-pull-y', currentY.toFixed(3));
       if (Math.abs(targetX-currentX) > .006 || Math.abs(targetY-currentY) > .006) {
@@ -31,6 +32,11 @@
       }
     }
     stage.addEventListener('pointermove', movePointer, { passive:true });
+    stage.addEventListener('pointerleave', () => {
+      targetX = 0;
+      targetY = 0;
+      if (!pointerFrame) pointerFrame = requestAnimationFrame(updatePointerGlow);
+    }, { passive:true });
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');

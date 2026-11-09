@@ -808,8 +808,21 @@
     });
     if(key==='profile'||key==='account')paintProfile();
   }
-  function closeSettings(){$('settingsModal').classList.remove('open');closeSettingsDetail();}
-  $('settingsOpen').addEventListener('click',()=>{closeSettingsDetail();paintProfile();$('settingsModal').classList.add('open');});
+  // Keep the close interaction inside the INP budget: hide the modal immediately,
+  // then move the potentially large settings subtree after the next paint.
+  let settingsCleanupFrame = 0;
+  function closeSettings(){
+    $('settingsModal').classList.remove('open');
+    if(settingsCleanupFrame)cancelAnimationFrame(settingsCleanupFrame);
+    settingsCleanupFrame=requestAnimationFrame(()=>{
+      settingsCleanupFrame=0;
+      closeSettingsDetail();
+    });
+  }
+  $('settingsOpen').addEventListener('click',()=>{
+    if(settingsCleanupFrame){cancelAnimationFrame(settingsCleanupFrame);settingsCleanupFrame=0;}
+    closeSettingsDetail();paintProfile();$('settingsModal').classList.add('open');
+  });
   $('settingsClose').addEventListener('click',closeSettings);
   $('settingsModal').addEventListener('click',e=>{if(e.target===$('settingsModal'))closeSettings();});
   document.querySelectorAll('[data-settings-detail]').forEach(button=>button.addEventListener('click',()=>openSettingsDetail(button.dataset.settingsDetail)));

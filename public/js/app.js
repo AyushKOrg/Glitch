@@ -925,7 +925,23 @@
       (async()=>{
         try { await hydrateCloudAccount(); }
         catch(error) { showToast('Cloud data could not load: '+error.message); }
+        // Re-apply values after cloud hydration; the initial page boot may have read
+        // stale device-local preferences before the account snapshot arrived.
+        paintProfile();
+        try {
+          const savedMode=localStorage.getItem(MODE_KEY);
+          if(MODES.includes(savedMode)) mode=savedMode;
+          markMode();
+          soundOn=localStorage.getItem('glitch_sfx')!=='off';syncSoundButton();
+          const savedScheme=localStorage.getItem('glitch_scheme')||'dark';applySchemePreference(savedScheme,false);
+          const savedGlass=localStorage.getItem('glitch_liquid_glass')==='on';applyLiquidGlass(savedGlass,false);
+          const savedTheme=localStorage.getItem('glitch_theme')||'';
+          const savedAccent=localStorage.getItem('glitch_accent')||'';
+          if(savedTheme==='custom'&&/^#[0-9a-f]{6}$/i.test(savedAccent)){document.documentElement.dataset.theme='custom';document.documentElement.style.setProperty('--accent',savedAccent);}
+          else if(savedTheme){document.documentElement.dataset.theme=savedTheme;document.documentElement.style.removeProperty('--accent');}
+        } catch {}
         loadHistory(); render();
+        refreshVip().catch(()=>{});
         loadMemories().catch(e => showToast('Memory could not load: ' + e.message));
       })();
     }

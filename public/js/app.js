@@ -1073,7 +1073,7 @@
   function detectChatCreativeTool(text) {
     const t=String(text||'').trim();
     if (/\b(presentation|powerpoint|\.pptx|slide deck|slides)\b/i.test(t) && /\b(make|create|generate|build|prepare|design|turn|need|want)\b/i.test(t)) return 'presentation';
-    if (/\b(flow|google flow|text.to.video|video prompt|cinematic video)\b/i.test(t) && /\b(make|create|generate|build|prepare|refine|write|turn|need|want)\b/i.test(t)) return 'flow';
+    if (/\b(flow|google flow|text.to.video|video prompt|video|video clip|cinematic video)\b/i/i.test(t) && /\b(make|create|generate|build|prepare|refine|write|turn|need|want)\b/i.test(t)) return 'flow';
     if (/\b(edit|enhance|crop|rotate|adjust)\b/i.test(t) && /\b(image|photo|picture)\b/i.test(t)) return 'image-editor';
     return null;
   }

@@ -1943,3 +1943,113 @@ body.empty .suggest { justify-content:center; }
   opacity:0 !important;
   transition:none !important;
 }
+
+/* SETTINGS: every navigation destination lives in the existing right pane. */
+.settings-content-inline { display:block; min-height:100%; }
+.settings-content-inline[hidden] { display:none !important; }
+.settings-content-inline > .settings-section,
+.settings-content-inline > .vip-content {
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.settings-content-inline > .memory-settings { gap:18px; }
+.settings-content-inline .settings-section-title { display:flex; align-items:center; gap:13px; margin:0 0 24px; }
+.settings-content-inline .settings-section-title #memoryClose { margin-left:auto; flex:none; }
+.settings-content-inline .vip-content { overflow:visible; }
+.settings-content-inline .vip-hero { margin-top:0; }
+.settings-content-inline #vipStatus { margin-top:14px; }
+.settings-sidebar .settings-category[aria-current="page"] {
+  background:color-mix(in srgb,var(--accent) 17%,transparent) !important;
+  border-color:color-mix(in srgb,var(--accent) 48%,transparent) !important;
+  color:var(--accent-strong) !important;
+}
+#settingsDetailModal,#memoryModal { display:none !important; }
+
+/* Clear, colour-rich Liquid Glass: transparent surfaces, vivid refraction and crisp edges.
+   Avoid the milky white layer used by the earlier pass. */
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-dashboard,
+html.liquid-glass .settings-sidebar,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-content-inline .settings-section,
+html.liquid-glass .settings-content-inline .vip-content,
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass .composer,
+html.liquid-glass #chat,
+html.liquid-glass .box,
+html.liquid-glass .chip,
+html.liquid-glass .msg.bot {
+  background:
+    linear-gradient(132deg,rgba(255,255,255,.105) 0%,rgba(255,255,255,.018) 22%,transparent 58%),
+    linear-gradient(315deg,color-mix(in srgb,var(--accent) 13%,transparent),transparent 68%),
+    color-mix(in srgb,var(--bg) 19%,transparent) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(2.8) brightness(1.12);
+  backdrop-filter:blur(30px) saturate(2.8) brightness(1.12);
+  border-color:color-mix(in srgb,var(--accent) 48%,rgba(255,255,255,.48)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.56),
+    inset 0 0 0 1px color-mix(in srgb,var(--accent) 17%,transparent),
+    0 18px 48px rgba(0,0,0,.22),
+    0 0 28px color-mix(in srgb,var(--accent) 13%,transparent) !important;
+}
+html.liquid-glass .settings-dashboard {
+  background:
+    radial-gradient(ellipse at 88% 8%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 48%),
+    radial-gradient(ellipse at 8% 94%,color-mix(in srgb,var(--accent-2) 13%,transparent),transparent 46%),
+    color-mix(in srgb,var(--bg) 15%,transparent) !important;
+}
+html.liquid-glass .settings-sidebar {
+  background:color-mix(in srgb,var(--bg) 24%,transparent) !important;
+  border-right-color:color-mix(in srgb,var(--accent) 35%,transparent) !important;
+}
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-toggle,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .settings-content-inline input:not([type=range]),
+html.liquid-glass .settings-content-inline textarea,
+html.liquid-glass .settings-content-inline select {
+  background-color:color-mix(in srgb,var(--bg) 23%,transparent) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(2.7);
+  backdrop-filter:blur(22px) saturate(2.7);
+  border-color:color-mix(in srgb,var(--accent) 42%,rgba(255,255,255,.34)) !important;
+}
+html.liquid-glass .settings-box::before,
+html.liquid-glass .box::before {
+  background:linear-gradient(118deg,rgba(255,255,255,.48),transparent 13%,transparent 78%,color-mix(in srgb,var(--accent) 25%,transparent)) !important;
+  opacity:.58 !important;
+}
+html.liquid-glass .settings-tile:hover,
+html.liquid-glass .settings-category:hover,
+html.liquid-glass .settings-category[aria-current="page"],
+html.liquid-glass button:hover:not(:disabled) {
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.19),transparent 45%),
+    color-mix(in srgb,var(--accent) 27%,transparent) !important;
+  border-color:color-mix(in srgb,var(--accent) 72%,white 28%) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.62),0 0 26px color-mix(in srgb,var(--accent) 36%,transparent),0 12px 32px rgba(0,0,0,.2) !important;
+}
+html.liquid-glass[data-scheme="dark"] .settings-box,
+html.liquid-glass[data-scheme="dark"] .settings-dashboard,
+html.liquid-glass[data-scheme="dark"] .settings-sidebar {
+  background-color:rgba(7,10,18,.16) !important;
+}
+html.liquid-glass[data-scheme="light"] .settings-box,
+html.liquid-glass[data-scheme="light"] .settings-dashboard,
+html.liquid-glass[data-scheme="light"] .settings-sidebar {
+  background-color:rgba(245,248,255,.13) !important;
+}
+@media(max-width:700px) {
+  .settings-content-inline { padding:0; }
+  .settings-content-inline .settings-section-title { margin-bottom:17px; }
+  .settings-content-inline .vip-grid { grid-template-columns:1fr; }
+}

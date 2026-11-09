@@ -324,3 +324,28 @@ revoke all on function public.refund_glitch_image_generation() from public, anon
 grant execute on function public.get_glitch_image_usage() to authenticated;
 grant execute on function public.reserve_glitch_image_generation() to authenticated;
 grant execute on function public.refund_glitch_image_generation() to authenticated;
+
+ 
+-- Unified private cloud snapshot for account chat history, profile and preferences.
+-- The API validates the authenticated user and writes with their JWT; RLS provides
+-- an additional owner-only boundary. This does not store credentials or auth tokens.
+create table if not exists public.glitch_account_data (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  data jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.glitch_account_data enable row level security;
+revoke all on table public.glitch_account_data from public, anon, authenticated;
+drop policy if exists "Users can read their own Glitch account data" on public.glitch_account_data;
+create policy "Users can read their own Glitch account data"
+  on public.glitch_account_data for select to authenticated
+  using (auth.uid() = user_id);
+drop policy if exists "Users can insert their own Glitch account data" on public.glitch_account_data;
+create policy "Users can insert their own Glitch account data"
+  on public.glitch_account_data for insert to authenticated
+  with check (auth.uid() = user_id);
+drop policy if exists "Users can update their own Glitch account data" on public.glitch_account_data;
+create policy "Users can update their own Glitch account data"
+  on public.glitch_account_data for update to authenticated
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+grant select, insert, update on public.glitch_account_data to authenticated;

@@ -1070,6 +1070,27 @@
   $('quotaClose').addEventListener('click', () => quotaModal.classList.remove('open'));
   quotaModal.addEventListener('click', (e) => { if (e.target === quotaModal) quotaModal.classList.remove('open'); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') quotaModal.classList.remove('open'); });
+  function detectChatCreativeTool(text) {
+    const t=String(text||'').trim();
+    if (/\b(presentation|powerpoint|\.pptx|slide deck|slides)\b/i.test(t) && /\b(make|create|generate|build|prepare|design|turn|need|want)\b/i.test(t)) return 'presentation';
+    if (/\b(flow|google flow|text.to.video|video prompt|cinematic video)\b/i.test(t) && /\b(make|create|generate|build|prepare|refine|write|turn|need|want)\b/i.test(t)) return 'flow';
+    if (/\b(edit|enhance|crop|rotate|adjust)\b/i.test(t) && /\b(image|photo|picture)\b/i.test(t)) return 'image-editor';
+    return null;
+  }
+  async function runChatCreativeTool(kind, prompt) {
+    if (!await requireVipTool()) throw new Error('This tool requires a registered VIP or DEV account.');
+    if (kind === 'image-editor') { $('imageEditorModal').classList.add('open'); return 'Image Editor opened. Upload the image in the editor to begin; edits stay in your browser and are not uploaded.'; }
+    const result=await api('/api/images',{method:'POST',body:JSON.stringify({action:'outline',kind:kind==='flow'?'flow':'presentation',prompt:String(prompt||'').slice(0,5000)})});
+    if(!result.ok) throw new Error(result.data.error||'Creative tool request failed.');
+    if(kind==='flow') return 'Your refined Google Flow prompt is ready:\n\n'+result.data.prompt+'\n\nOpen Google Flow to generate the video: https://labs.google/fx/tools/flow';
+    const outline=result.data.outline;
+    const response=await fetch('/api/images',{method:'POST',signal:AbortSignal.timeout(65000),headers:{'Content-Type':'application/json',Authorization:'Bearer '+(user&&user.accessToken||'')},body:JSON.stringify({...outline,action:'ppt'})});
+    if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.error||'PowerPoint generation failed.');}
+    const blob=await response.blob(),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=(String(outline.title||'glitch-presentation').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'glitch-presentation')+'.pptx';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+    return 'Your editable PowerPoint is ready and has been downloaded. Title: '+outline.title+' ('+outline.slides.length+' slides).';
+  }
   function isImageGenerationPrompt(text) {
     const t = String(text || '').trim();
     return /\b(generate|create|draw|make|design|illustrate|paint|render)\b.{0,90}\b(image|picture|illustration|wallpaper|logo|poster|artwork|portrait|concept art|comic panel)\b/i.test(t)
@@ -1105,7 +1126,9 @@
         if (!imageSource) throw new Error('The image service returned no image. Please try again.');
         result = { ok: true, status: 200, data: { reply: 'Here is the image you requested.\n\n[[GLITCH_IMAGE:' + imageSource + ']]', mode: sentMode } };
       } else {
-        result = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: payload, mode: sentMode, vipPersonality: vipActive ? vipPersonality : 'default' }), signal: abortCtl.signal });
+        const creativeKind=detectChatCreativeTool(requestText);
+        if(creativeKind){const toolReply=await runChatCreativeTool(creativeKind,requestText);result={ok:true,status:200,data:{reply:toolReply,mode:sentMode}};}
+        else result = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: payload, mode: sentMode, vipPersonality: vipActive ? vipPersonality : 'default' }), signal: abortCtl.signal });
       }
       const { ok, status, data } = result;
       if (status === 401) { pending = null; await sb.auth.signOut(); return; }

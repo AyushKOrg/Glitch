@@ -2133,3 +2133,74 @@ html[data-scheme="light"] .stage::before {
   filter:blur(68px) saturate(1.28) !important;
 }
 html[data-scheme="light"] .stage::after { opacity:.065 !important; }
+
+
+/* Clearer Liquid Glass: let the ambient current remain visible through surfaces. */
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass .composer,
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-detail-box,
+html.liquid-glass .vip-box,
+html.liquid-glass .image-box,
+html.liquid-glass .memory-box {
+  background:
+    linear-gradient(142deg,rgba(255,255,255,.17),rgba(255,255,255,.045) 36%,transparent 76%),
+    color-mix(in srgb,var(--panel) 30%,transparent) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(1.95) contrast(1.06);
+  backdrop-filter:blur(22px) saturate(1.95) contrast(1.06);
+  border:1px solid rgba(255,255,255,.27) !important;
+  box-shadow:
+    inset 0 1.2px 0 rgba(255,255,255,.38),
+    inset 1px 0 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(255,255,255,.08),
+    0 16px 44px rgba(0,0,0,.19),
+    0 0 0 1px rgba(255,255,255,.035);
+}
+html.liquid-glass .side { background-color:color-mix(in srgb,var(--panel) 38%,transparent) !important; }
+html.liquid-glass .composer,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .vip-box button,
+html.liquid-glass .settings-box button {
+  background-color:color-mix(in srgb,var(--panel-alt) 28%,transparent) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(1.85);
+  backdrop-filter:blur(16px) saturate(1.85);
+  border-color:rgba(255,255,255,.23) !important;
+}
+.stage #chat {
+  background:
+    linear-gradient(142deg,rgba(255,255,255,.17),rgba(255,255,255,.035) 42%,transparent 78%),
+    linear-gradient(325deg,color-mix(in srgb,var(--accent) 12%,transparent),transparent 68%),
+    color-mix(in srgb,var(--panel) 29%,transparent) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(1.9) contrast(1.05);
+  backdrop-filter:blur(20px) saturate(1.9) contrast(1.05);
+  border-color:rgba(255,255,255,.27) !important;
+}
+.stage .suggest button {
+  background:
+    linear-gradient(142deg,rgba(255,255,255,.15),rgba(255,255,255,.025) 58%,transparent),
+    color-mix(in srgb,var(--panel) 30%,transparent) !important;
+  -webkit-backdrop-filter:blur(15px) saturate(1.8);
+  backdrop-filter:blur(15px) saturate(1.8);
+  border-color:rgba(255,255,255,.22) !important;
+}
+html[data-scheme="light"] .stage #chat {
+  background:
+    linear-gradient(142deg,rgba(255,255,255,.42),rgba(255,255,255,.12) 45%,transparent),
+    color-mix(in srgb,var(--accent) 6%,rgba(255,255,255,.38)) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.8);
+  backdrop-filter:blur(18px) saturate(1.8);
+}
+html[data-scheme="light"] .stage .suggest button {
+  background:
+    linear-gradient(142deg,rgba(255,255,255,.5),rgba(255,255,255,.16) 62%,transparent),
+    color-mix(in srgb,var(--accent) 5%,rgba(255,255,255,.4)) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(1.7);
+  backdrop-filter:blur(14px) saturate(1.7);
+}
+/* JS supplies the easing, so CSS does not keep restarting a long transition. */
+.stage::after {
+  transition:none !important;
+}

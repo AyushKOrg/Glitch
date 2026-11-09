@@ -635,7 +635,7 @@
   async function loadMemories(){if(!user){memoryItems=[];renderMemoryList();return;}const r=await api('/api/memory');if(!r.ok)throw new Error(r.data.error||'Could not load account memory.');memoryItems=Array.isArray(r.data.memories)?r.data.memories:[];renderMemoryList();}
   async function saveMemory(content,quiet=false){const value=String(content||'').trim().slice(0,500);if(!value)throw new Error('Write something to remember first.');const r=await api('/api/memory',{method:'POST',body:JSON.stringify({content:value})});if(!r.ok)throw new Error(r.data.error||'Could not save memory.');await loadMemories();if(!quiet)showToast('Saved to your account memory.');}
   $('memoryOpen').addEventListener('click',async()=>{if(!user){showToast('Sign in or continue as a registered account to use account memory.');return;}openSettingsDetail('memory');$('memoryInput').focus();$('memoryStatus').textContent='Loading your saved memories…';try{await loadMemories();$('memoryStatus').textContent='';}catch(e){$('memoryStatus').textContent=e.message;}});
-  $('memoryClose').addEventListener('click',()=>$('memoryModal').classList.remove('open'));
+  $('memoryClose').addEventListener('click',closeSettingsDetail);
   $('memoryInput').addEventListener('input',()=>{$('memoryCount').textContent=$('memoryInput').value.length+' / 500';});
   $('memoryForm').addEventListener('submit',async e=>{e.preventDefault();const b=$('memorySave');b.disabled=true;$('memoryStatus').textContent='Saving…';try{await saveMemory($('memoryInput').value);$('memoryInput').value='';$('memoryCount').textContent='0 / 500';$('memoryStatus').textContent='Saved. Glitch can use this in future chats.';}catch(err){$('memoryStatus').textContent=err.message;}finally{b.disabled=false;}});
 

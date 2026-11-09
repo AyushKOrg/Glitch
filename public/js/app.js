@@ -172,7 +172,8 @@
         if (key && cloudKeyAllowed(key)) values[key]=localStorage.getItem(key);
       }
     } catch {}
-    let chatStore=null;try{if(user)chatStore=store().getItem(storeKey());}catch{}\n    return { version: 1, values, chatStore };
+    let chatStore=null;try{if(user)chatStore=store().getItem(storeKey());}catch{}
+    return { version: 1, values, chatStore };
   }
   function scheduleCloudSync() {
     if (cloudHydrating || !user) return;

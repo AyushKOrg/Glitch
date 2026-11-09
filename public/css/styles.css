@@ -1932,3 +1932,14 @@ body.empty .suggest { justify-content:center; }
   body.empty .hero { margin-bottom:.25rem !important; }
   body.empty .hero-sub { margin-bottom:.8rem !important; }
 }
+
+/* Remove every pointer-following spotlight/ripple layer in every theme and account mode.
+   The canvas starfield remains independent and is intentionally preserved. */
+.stage::after {
+  background:none !important;
+  background-image:none !important;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+  opacity:0 !important;
+  transition:none !important;
+}

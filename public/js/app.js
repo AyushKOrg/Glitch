@@ -1459,7 +1459,7 @@
     $('presentationStatus').textContent = 'Glitch is planning the audience, storyline and slides…';
     $('presentationOutlineWrap').hidden = true;
     try {
-      const result = await api('/api/creative-outline', { method: 'POST', body: JSON.stringify({ kind: 'presentation', prompt }) });
+      const result = await api('/api/images', { method: 'POST', body: JSON.stringify({ action: 'outline', kind: 'presentation', prompt }) });
       if (!result.ok) throw new Error(result.data.error || 'Could not create the outline.');
       $('presentationOutlineJson').value = JSON.stringify(result.data.outline, null, 2);
       $('presentationOutlineWrap').hidden = false;
@@ -1474,10 +1474,10 @@
     const button = $('presentationDownload'); button.disabled = true; button.textContent = 'Building your deck…';
     $('presentationStatus').textContent = 'Creating editable PowerPoint slides…';
     try {
-      const response = await fetch('/api/creative-ppt', {
+      const response = await fetch('/api/images', {
         method: 'POST', signal: AbortSignal.timeout(65000),
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (user && user.accessToken || '') },
-        body: JSON.stringify(outline),
+        body: JSON.stringify({ ...outline, action: 'ppt' }),
       });
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
@@ -1500,7 +1500,7 @@
     $('flowResult').value = 'Glitch is improving the scene, composition, lighting and motion…';
     $('flowCopy').disabled = true; $('flowOpen').disabled = true;
     try {
-      const result = await api('/api/creative-outline', { method: 'POST', body: JSON.stringify({ kind: 'flow', prompt }) });
+      const result = await api('/api/images', { method: 'POST', body: JSON.stringify({ action: 'outline', kind: 'flow', prompt }) });
       if (!result.ok) throw new Error(result.data.error || 'Prompt refinement failed.');
       $('flowResult').value = result.data.prompt;
       $('flowCopy').disabled = false; $('flowOpen').disabled = false;

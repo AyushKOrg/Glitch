@@ -1439,6 +1439,80 @@
   $('editorDownload').addEventListener('click',()=>{if(!editorImage)return;const a=document.createElement('a');a.download='glitch-edited-image.png';a.href=editorCanvas.toDataURL('image/png');a.click();});
 
 
+  // ---- VIP + DEV creative studio ---------------------------------------------
+  const presentationModal = $('presentationModal'), flowModal = $('flowModal');
+  $('openPresentationStudio').addEventListener('click', async () => {
+    if (await requireVipTool()) { presentationModal.classList.add('open'); $('presentationPrompt').focus(); }
+  });
+  $('openFlowCreator').addEventListener('click', async () => {
+    if (await requireVipTool()) { flowModal.classList.add('open'); $('flowPrompt').focus(); }
+  });
+  $('presentationClose').addEventListener('click', () => presentationModal.classList.remove('open'));
+  presentationModal.addEventListener('click', e => { if (e.target === presentationModal) presentationModal.classList.remove('open'); });
+  $('flowClose').addEventListener('click', () => flowModal.classList.remove('open'));
+  flowModal.addEventListener('click', e => { if (e.target === flowModal) flowModal.classList.remove('open'); });
+
+  $('presentationOutline').addEventListener('click', async () => {
+    const prompt = $('presentationPrompt').value.trim();
+    if (prompt.length < 5) { $('presentationStatus').textContent = 'Describe the presentation topic first.'; return; }
+    const button = $('presentationOutline'); button.disabled = true; button.textContent = 'Refining your idea…';
+    $('presentationStatus').textContent = 'Glitch is planning the audience, storyline and slides…';
+    $('presentationOutlineWrap').hidden = true;
+    try {
+      const result = await api('/api/creative-outline', { method: 'POST', body: JSON.stringify({ kind: 'presentation', prompt }) });
+      if (!result.ok) throw new Error(result.data.error || 'Could not create the outline.');
+      $('presentationOutlineJson').value = JSON.stringify(result.data.outline, null, 2);
+      $('presentationOutlineWrap').hidden = false;
+      $('presentationStatus').textContent = 'Outline ready. You can edit the JSON before exporting.';
+    } catch (error) { $('presentationStatus').textContent = error.message || 'Outline generation failed.'; }
+    finally { button.disabled = false; button.textContent = '✧ Refine & create outline'; }
+  });
+  $('presentationDownload').addEventListener('click', async () => {
+    let outline;
+    try { outline = JSON.parse($('presentationOutlineJson').value); }
+    catch { $('presentationStatus').textContent = 'The outline JSON is invalid. Fix it before exporting.'; return; }
+    const button = $('presentationDownload'); button.disabled = true; button.textContent = 'Building your deck…';
+    $('presentationStatus').textContent = 'Creating editable PowerPoint slides…';
+    try {
+      const response = await fetch('/api/creative-ppt', {
+        method: 'POST', signal: AbortSignal.timeout(65000),
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (user && user.accessToken || '') },
+        body: JSON.stringify(outline),
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'PowerPoint generation failed (' + response.status + ').');
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = (String(outline.title || 'glitch-presentation').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'glitch-presentation') + '.pptx';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      $('presentationStatus').textContent = 'Your editable PowerPoint is ready.';
+    } catch (error) { $('presentationStatus').textContent = error.message || 'PowerPoint generation failed.'; }
+    finally { button.disabled = false; button.textContent = '↓ Generate editable .PPTX'; }
+  });
+
+  $('flowRefine').addEventListener('click', async () => {
+    const prompt = $('flowPrompt').value.trim();
+    if (prompt.length < 5) { $('flowResult').value = 'Describe your image or video idea first.'; return; }
+    const button = $('flowRefine'); button.disabled = true; button.textContent = 'Refining…';
+    $('flowResult').value = 'Glitch is improving the scene, composition, lighting and motion…';
+    $('flowCopy').disabled = true; $('flowOpen').disabled = true;
+    try {
+      const result = await api('/api/creative-outline', { method: 'POST', body: JSON.stringify({ kind: 'flow', prompt }) });
+      if (!result.ok) throw new Error(result.data.error || 'Prompt refinement failed.');
+      $('flowResult').value = result.data.prompt;
+      $('flowCopy').disabled = false; $('flowOpen').disabled = false;
+    } catch (error) { $('flowResult').value = error.message || 'Prompt refinement failed.'; }
+    finally { button.disabled = false; button.textContent = '✧ Refine Flow prompt'; }
+  });
+  $('flowCopy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('flowResult').value); $('flowCopy').textContent = 'Copied ✓'; }
+    catch { $('flowResult').focus(); $('flowResult').select(); $('flowCopy').textContent = 'Select & copy'; }
+  });
+  $('flowOpen').addEventListener('click', () => window.open('https://labs.google/fx/tools/flow', '_blank', 'noopener,noreferrer'));
+
   // ---- Pollinations image studio behavior ------------------------------------
   let imagePreviewUrl = '';
   const imageModal = $('imageModal');

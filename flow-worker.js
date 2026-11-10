@@ -51,7 +51,8 @@ let publicConfig = null;
 function loadPlaywright() {
   try { return require('playwright'); } catch {}
   try {
-    const root = execFileSync('npm', ['root', '-g'], { encoding: 'utf8' }).trim();
+    const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    const root = execFileSync(npmCommand, ['root', '-g'], { encoding: 'utf8' }).trim();
     return require(path.join(root, 'playwright'));
   } catch (error) {
     throw new Error('Playwright is not installed. Run: npm install -g playwright');
@@ -234,8 +235,6 @@ async function waitForGeneratedMedia(page, kind, before) {
 }
 
 async function extractMedia(page, media, kind) {
-  const selector = kind === 'image' ? 'img' : 'video';
-  const locator = page.locator(selector).filter({ has: page.locator('body') }).last();
   const browserResult = await page.evaluate(async ({ type, source }) => {
     const elements = Array.from(document.querySelectorAll(type === 'image' ? 'img' : 'video'));
     const el = elements.find(item => (item.currentSrc || item.src || '') === source);
@@ -270,8 +269,10 @@ async function extractMedia(page, media, kind) {
 
   if (kind === 'image') {
     try {
-      const image = page.locator('img').filter({ has: page.locator('body') }).last();
-      const bytes = await image.screenshot({ timeout: 15000 });
+      const images = page.locator('img');
+      const imageIndex = await images.evaluateAll((els, src) => els.findIndex(el => (el.currentSrc || el.src || '') === src), media.src);
+      if (imageIndex < 0) throw new Error('Generated image element disappeared.');
+      const bytes = await images.nth(imageIndex).screenshot({ timeout: 15000 });
       return { bytes, mime: 'image/png' };
     } catch {}
   }
@@ -343,7 +344,7 @@ async function generateWithFlow(kind, prompt, token, user, cfg) {
   const agentButton = page.getByRole('button', { name: /^agent$/i }).last();
   if (await agentButton.count().catch(() => 0) && await agentButton.isVisible().catch(() => false)) {
     const pressed = await agentButton.getAttribute('aria-pressed').catch(() => null);
-    if (pressed !== 'true') await agentButton.click().catch(() => {});
+    if (pressed === 'false') await agentButton.click().catch(() => {});
   }
 
   const before = await mediaSnapshot(page, kind);

@@ -1587,29 +1587,19 @@
   async function openImageStudio(){
     if(!user){openGate('Sign in to generate images.');return;}
     imageModal.classList.add('open');
-    $('imageGenerate').disabled=true;
-    $('imageStatus').textContent='Checking image-generation service…';
+    $('imageGenerate').disabled=false;
+    $('imageStatus').textContent='Images are generated through your connected Google Flow session.';
     $('imagePrompt').focus();
-    try{
-      const configResult=await api('/api/config');
-      if(configResult.ok&&configResult.data.imageGeneration===false){
-        $('imageStatus').textContent='Image generation is not configured on this deployment. Add POLLINATIONS_API_KEY to the Vercel environment variables, then redeploy.';
-      }else{
-        $('imageGenerate').disabled=false;
-        $('imageStatus').textContent='';
-      }
-    }catch(error){
-      $('imageStatus').textContent='Could not check image-generation configuration: '+(error.message||'Please try again.');
-    }
-    refreshImageUsage().catch(e=>{$('imageUsage').textContent=e.message||'Could not load image quota.';});
+    const modelField=$('imageModel').closest('div');
+    if(modelField)modelField.hidden=true;
+    const description=imageModal.querySelector('.top p');
+    if(description)description.textContent='Generate with Google Flow. Your private result is saved to Glitch Storage.';
+    refreshImageUsage();
   }
   function closeImageStudio(){imageModal.classList.remove('open');}
   $('openImageStudio').addEventListener('click',async()=>{if(await requireVipTool())openImageStudio();});
-  async function refreshImageUsage(){
-    if(!user)return;
-    const r=await api('/api/images');
-    if(!r.ok)throw new Error(r.data.error||'Could not load image quota.');
-    $('imageUsage').textContent=r.data.vip?'VIP: unlimited image generations':('Today: '+r.data.used+' / 15 used · '+r.data.remaining+' free generations left');
+  function refreshImageUsage(){
+    $('imageUsage').textContent='Uses your Google Flow account’s available credits · Private copy saved to Glitch';
   }
   // Image generation is invoked from chat prompts; no separate launcher is required.
   $('imageClose').addEventListener('click',closeImageStudio);
@@ -1618,33 +1608,18 @@
     const prompt=$('imagePrompt').value.trim();
     if(!prompt){$('imageStatus').textContent='Enter a description first.';return;}
     const btn=$('imageGenerate');btn.disabled=true;btn.textContent='Generating…';
-    $('imageStatus').textContent='Creating your image. This can take a little while.';
+    $('imageStatus').textContent='Google Flow is creating your image…';
     $('imageDownload').hidden=true;$('imagePreview').hidden=true;
     try{
-      const r=await api('/api/images',{method:'POST',body:JSON.stringify({prompt,model:$('imageModel').value})});
-      if(!r.ok){
-        $('imageStatus').textContent=r.data.error||'Image generation failed.';
-        if(r.data.usage&&!r.data.vip)$('imageUsage').textContent='Today: '+r.data.usage.used+' / 15 used · '+r.data.usage.remaining+' left';
-        return;
-      }
+      const media=await generateWithLocalFlow('image',prompt);
+      if(!media.url)throw new Error('Google Flow returned no saved image.');
       if(imagePreviewUrl){URL.revokeObjectURL(imagePreviewUrl);imagePreviewUrl='';}
-      // Use Pollinations-hosted media directly when available; fall back to the
-      // compact data URI for providers that do not return an enclosure URL.
-      const imageSource=r.data.imageUrl||r.data.image;
-      if(!imageSource)throw new Error('The image provider returned no image. Please try again.');
-      if(imageSource.startsWith('data:')){
-        const blob=await (await fetch(imageSource)).blob();
-        imagePreviewUrl=URL.createObjectURL(blob);
-        $('imagePreview').src=imagePreviewUrl;
-        $('imageDownload').href=imagePreviewUrl;
-      }else{
-        $('imagePreview').src=imageSource;
-        $('imageDownload').href=imageSource;
-      }
+      $('imagePreview').src=media.url;
+      $('imageDownload').href=media.url;
       $('imagePreview').hidden=false;
       $('imageDownload').hidden=false;
-      $('imageStatus').textContent='Image ready!';
-      await refreshImageUsage();
+      $('imageStatus').textContent='Image ready! Saved privately to Glitch Storage.';
+      refreshImageUsage();
       playSfx('reply');
     }catch(e){$('imageStatus').textContent=e.message||'Could not generate the image.';}
     finally{btn.disabled=false;btn.textContent='Generate image';}

@@ -2546,3 +2546,98 @@ html.liquid-glass button:hover:not(:disabled) {
 .tool-group-label[hidden] {
   display: none !important;
 }
+
+
+/* Phone-first layout polish: keep the chat usable on narrow touch screens. */
+@media (max-width: 760px) {
+  html, body { width:100%; min-width:0; min-height:100%; overflow:hidden; }
+  .layout { width:100%; height:100vh; height:100dvh; min-height:0; overflow:hidden; }
+  .stage { width:100%; min-width:0; min-height:0; height:100%; overflow:hidden; }
+  .side {
+    width:min(320px,88vw);
+    max-width:calc(100vw - 34px);
+    height:100vh;
+    height:100dvh;
+    padding:calc(10px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom));
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .topbar {
+    flex:0 0 auto;
+    min-height:52px;
+    padding:calc(7px + env(safe-area-inset-top)) 12px 8px;
+    gap:9px;
+  }
+  .topbar .context-indicator { display:none; }
+  .topbar .install-app-button { margin-left:auto; min-height:40px; }
+  #log {
+    width:100%;
+    min-height:0;
+    padding:16px 12px 20px;
+    gap:14px;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .msg { max-width:92%; font-size:.94rem; overflow-wrap:anywhere; }
+  .msg.bot { margin-left:30px; }
+  .msg.bot::before { left:-30px; width:23px; height:23px; }
+  .hero { max-width:100%; padding:0 18px; text-align:center; font-size:clamp(1.65rem,7vw,2.25rem); }
+  .hero-sub { max-width:100%; padding:0 20px; text-align:center; font-size:.88rem; }
+  #fileStatus { max-width:calc(100% - 24px)!important; overflow-wrap:anywhere; }
+  #chat {
+    flex:0 0 auto;
+    width:calc(100% - 20px)!important;
+    max-width:780px;
+    margin:8px auto calc(8px + env(safe-area-inset-bottom))!important;
+    padding:6px!important;
+    gap:5px!important;
+    align-items:flex-end;
+    border-radius:20px!important;
+  }
+  #chat #input {
+    min-height:40px!important;
+    max-height:min(28dvh,150px)!important;
+    padding:9px 4px!important;
+    font-size:16px!important;
+    line-height:1.4!important;
+  }
+  #chat .round {
+    width:40px!important;
+    height:40px!important;
+    min-width:40px;
+    min-height:40px;
+  }
+  #chat #attach { font-size:20px!important; }
+  .suggest { width:calc(100% - 24px); max-width:780px; margin:8px auto 0; }
+  .suggest button { min-height:42px; padding:10px 12px; }
+  .overlay {
+    align-items:flex-end;
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+    overflow-y:auto;
+  }
+  .overlay>.box,
+  .overlay>.settings-box,
+  .overlay>section {
+    width:100%!important;
+    max-width:100%!important;
+    max-height:calc(100dvh - 16px - env(safe-area-inset-top))!important;
+    margin:auto 0 0;
+    border-radius:20px 20px 14px 14px!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+  }
+  button, [role="button"], input, select, textarea { touch-action:manipulation; }
+  button { -webkit-tap-highlight-color:transparent; }
+  .code-artifact, pre, .table-wrap { max-width:100%; overflow-x:auto; }
+}
+@media (max-width: 420px) {
+  .topbar { gap:7px; padding-left:9px; padding-right:9px; }
+  .topbar strong { font-size:.96rem; }
+  .topbar .mini { min-height:40px; padding:8px 10px; }
+  #log { padding-left:9px; padding-right:9px; }
+  #chat { width:calc(100% - 12px)!important; }
+  #chat .round { width:38px!important; height:38px!important; min-width:38px; min-height:38px; }
+  .msg { max-width:94%; }
+}

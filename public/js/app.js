@@ -479,6 +479,15 @@
     }
     return artifacts;
   }
+  function downloadPowerPoint(filename, base64) {
+    const binary = atob(String(base64 || ''));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = safeFilename(filename, 'glitch-presentation.pptx');
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }
   function downloadArtifact(filename, content) {
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -1124,6 +1133,11 @@
     return /\b(video|video clip|clip|short film|animation|animated scene|cinematic sequence)\b/i.test(t)
       && /\b(generate|create|make|render|produce|animate|build|design|i want|i need|please make|give me)\b/i.test(t);
   }
+  function isPowerPointRequest(text) {
+    const t = String(text || '').trim();
+    return /\b(make|create|generate|build|prepare|produce|design)\b.{0,90}\b(pptx?|powerpoint|presentation|slide deck)\b/i.test(t)
+      || /\b(pptx?|powerpoint|presentation|slide deck)\b.{0,70}\b(on|about|for|of)\b/i.test(t);
+  }
   function isImageGenerationPrompt(text) {
     const t = String(text || '').trim();
     return /\b(generate|create|draw|make|design|illustrate|paint|render)\b.{0,90}\b(image|picture|illustration|wallpaper|logo|poster|artwork|portrait|concept art|comic panel)\b/i.test(t)
@@ -1151,7 +1165,9 @@
     const note = (kind, msg) => { if (inActive()) { pending = null; render(); showError(msg, kind === 'retry'); } else { pending = null; showToast(msg); } Voice.onFailed(); };
     try {
       let result;
-      if (isVideoGenerationPrompt(requestText)) {
+      if (isPowerPointRequest(requestText)) {
+        result = await api('/api/presentation', { method: 'POST', body: JSON.stringify({ prompt: requestText }), signal: abortCtl.signal });
+      } else if (isVideoGenerationPrompt(requestText)) {
         if (!vipActive) {
           result = { ok: false, status: 403, data: { error: 'ShortGPT Video Studio is a VIP feature. Redeem a VIP invite to unlock it.', vipRequired: true } };
         } else {
@@ -1173,6 +1189,7 @@
         if (status === 403 && data.vipRequired) { $('vipModal').classList.add('open'); $('vipStatus').textContent = data.error || 'This feature is VIP-only. Redeem your invite to unlock it.'; }
         throw new Error(data.error || 'Request failed (' + status + ')');
       }
+      if (data.pptxBase64) downloadPowerPoint(data.filename, data.pptxBase64);
       const target = conversations.find(c => c.id === chatId);
       if (!target) { pending = null; return; }                     // chat was deleted meanwhile
       if (data.mode === 'cognition' && mode !== 'cognition') { mode = 'cognition'; try { localStorage.setItem(MODE_KEY, mode); } catch {} markMode(); }

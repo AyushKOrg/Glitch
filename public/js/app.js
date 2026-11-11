@@ -503,7 +503,7 @@
       const figure = document.createElement('figure'); figure.style.cssText = 'margin:14px 0 4px;max-width:min(100%,680px)';
       const img = document.createElement('img'); img.src = imageMatch[1]; img.alt = 'Image generated in Glitch'; img.loading = 'lazy'; img.referrerPolicy = 'no-referrer'; img.style.cssText = 'display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--border)';
       const link = document.createElement('a'); link.href = imageMatch[1]; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = 'Open full-size image'; link.style.cssText = 'display:inline-block;margin-top:8px;font-size:.82rem';
-      const attribution = document.createElement('small'); attribution.textContent = imageMatch[1].includes('.supabase.co/') ? 'Generated with Google Flow · Saved to Glitch' : 'Generated with Glitch';
+      const attribution = document.createElement('small'); attribution.textContent = imageMatch[1].includes('.supabase.co/') ? 'Generated with Glitch' : 'Generated with Glitch';
       attribution.style.cssText = 'display:block;margin-top:7px;color:var(--muted);font-size:.75rem';
       figure.append(img, link, attribution); el.appendChild(figure); return;
     }
@@ -512,7 +512,7 @@
       const figure = document.createElement('figure'); figure.style.cssText = 'margin:14px 0 4px;max-width:min(100%,760px)';
       const video = document.createElement('video'); video.src = videoMatch[1]; video.controls = true; video.playsInline = true; video.preload = 'metadata'; video.style.cssText = 'display:block;width:100%;max-height:70vh;border-radius:16px;border:1px solid var(--border);background:#080a12';
       const link = document.createElement('a'); link.href = videoMatch[1]; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = 'Open or save generated video'; link.style.cssText = 'display:inline-block;margin-top:8px;font-size:.82rem';
-      const attribution = document.createElement('small'); attribution.textContent = 'Generated with Google Flow · Saved to Glitch';
+      const attribution = document.createElement('small'); attribution.textContent = 'Generated with ShortGPT · Saved to Glitch';
       attribution.style.cssText = 'display:block;margin-top:7px;color:var(--muted);font-size:.75rem';
       figure.append(video, link, attribution); el.appendChild(figure); return;
     }
@@ -1103,7 +1103,7 @@
     if (kind === 'image-editor') { $('imageEditorModal').classList.add('open'); return 'Image Editor opened. Upload the image in the editor to begin; edits stay in your browser and are not uploaded.'; }
     const result=await api('/api/images',{method:'POST',body:JSON.stringify({action:'outline',kind:kind==='flow'?'flow':'presentation',prompt:String(prompt||'').slice(0,5000)})});
     if(!result.ok) throw new Error(result.data.error||'Creative tool request failed.');
-    if(kind==='flow') return 'Your refined Google Flow prompt is ready:\n\n'+result.data.prompt+'\n\nOpen Google Flow to generate the video: https://labs.google/fx/tools/flow';
+    if(kind==='flow') return 'Video generation now runs through the ShortGPT Video Studio. Ask me to create a video to open it.';
     const outline=result.data.outline;
     const response=await fetch('/api/images',{method:'POST',signal:AbortSignal.timeout(65000),headers:{'Content-Type':'application/json',Authorization:'Bearer '+(user&&user.accessToken||'')},body:JSON.stringify({...outline,action:'ppt'})});
     if(!response.ok){const error=await response.json().catch(()=>({}));throw new Error(error.error||'PowerPoint generation failed.');}
@@ -1160,7 +1160,7 @@
         }
       } else if (isImageGenerationPrompt(requestText)) {
         const media = await generateImageForChat(requestText);
-        result = { ok: true, status: 200, data: { reply: 'Here is your image.\\n\\n[[GLITCH_IMAGE:' + media + ']]', mode: sentMode } };
+        result = { ok: true, status: 200, data: { reply: 'Here is your image.\n\n[[GLITCH_IMAGE:' + media + ']]', mode: sentMode } };
       } else {
         const creativeKind=detectChatCreativeTool(requestText);
         if(creativeKind){const toolReply=await runChatCreativeTool(creativeKind,requestText);result={ok:true,status:200,data:{reply:toolReply,mode:sentMode}};}
@@ -1608,10 +1608,8 @@
     $('imageGenerate').disabled=false;
     $('imageStatus').textContent='Generate an image with the configured image provider.';
     $('imagePrompt').focus();
-    const modelField=$('imageModel').closest('div');
-    if(modelField)modelField.hidden=true;
     const description=imageModal.querySelector('.top p');
-    if(description)description.textContent='Generate with Google Flow. Your private result is saved to Glitch Storage.';
+    if(description)description.textContent='Generate with the selected image model. Download the result when it is ready.';
     refreshImageUsage();
   }
   function closeImageStudio(){imageModal.classList.remove('open');}
@@ -1629,7 +1627,7 @@
     $('imageStatus').textContent='Your image provider is creating the image…';
     $('imageDownload').hidden=true;$('imagePreview').hidden=true;
     try{
-      const generated=await api('/api/images',{method:'POST',body:JSON.stringify({prompt}),signal:AbortSignal.timeout(70000)});
+      const generated=await api('/api/images',{method:'POST',body:JSON.stringify({prompt,model:$('imageModel').value}),signal:AbortSignal.timeout(70000)});
       if(!generated.ok)throw new Error(generated.data.error||'Image generation failed.');
       const media=generated.data.imageUrl||generated.data.image;
       if(!media)throw new Error('The image provider returned no image.');

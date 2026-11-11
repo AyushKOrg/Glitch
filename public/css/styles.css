@@ -2641,3 +2641,87 @@ html.liquid-glass button:hover:not(:disabled) {
   #chat .round { width:38px!important; height:38px!important; min-width:38px; min-height:38px; }
   .msg { max-width:94%; }
 }
+
+
+/* Touch-first layouts: keep Glitch's ambient visuals, simplify secondary controls. */
+html[data-device="phone"] #clear,
+html[data-device="phone"] #exportChat,
+html[data-device="phone"] #contextOpen,
+html[data-device="tablet"] #clear,
+html[data-device="tablet"] #exportChat,
+html[data-device="tablet"] #contextOpen {
+  display: none !important;
+}
+html[data-device="phone"] .settings-shortcuts,
+html[data-device="tablet"] .settings-shortcuts {
+  display: none !important;
+}
+@media (max-width: 900px) {
+  .side {
+    width: min(310px, 88vw);
+    padding: 12px 10px calc(14px + env(safe-area-inset-bottom));
+  }
+  .topbar {
+    min-height: 54px;
+    padding: 8px 12px;
+    gap: 9px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .topbar #menu {
+    min-width: 42px;
+    min-height: 40px;
+    padding: 8px 11px;
+    font-size: 0;
+  }
+  .topbar #menu::before {
+    content: "☰";
+    font-size: 18px;
+    line-height: 1;
+  }
+  .topbar strong { font-size: 1rem; }
+  .topbar .install-app-button {
+    min-height: 38px;
+    padding: 7px 10px;
+    font-size: .72rem;
+  }
+  #log {
+    width: 100%;
+    padding: 1rem clamp(12px, 3vw, 22px);
+    gap: .85rem;
+  }
+  .msg {
+    max-width: min(92%, 680px);
+    padding: .7rem .85rem;
+    font-size: .93rem;
+  }
+  #chat {
+    width: calc(100% - 20px) !important;
+    margin: 0 auto calc(10px + env(safe-area-inset-bottom));
+    padding: 5px;
+    gap: 4px;
+    border-radius: 22px;
+  }
+  #chat .round {
+    width: 42px;
+    height: 42px;
+  }
+  #chat #input {
+    min-height: 42px;
+    max-height: 112px !important;
+    padding: 10px 5px;
+    font-size: 16px;
+  }
+  #chips { width: calc(100% - 24px); padding-inline: 0; }
+  .hero { margin-bottom: 1rem; }
+  .hero-sub { max-width: calc(100% - 32px); margin-inline: auto; text-align: center; }
+}
+@media (max-width: 520px) {
+  #chat { width: calc(100% - 14px) !important; }
+  #chat #attach { width: 38px; height: 38px; font-size: 19px !important; }
+  #chat #mic { width: 38px; height: 38px; }
+  #chat #send { width: 40px; height: 40px; }
+  .topbar .install-app-button { padding-inline: 8px; }
+  .msg.bot { margin-left: 28px; }
+  .msg.bot::before { left: -28px; width: 22px; height: 22px; }
+}

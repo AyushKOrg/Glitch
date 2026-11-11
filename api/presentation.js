@@ -112,21 +112,73 @@ module.exports = async (req, res) => {
       'Avoid markdown fences and all text outside the JSON object.',
       'User request: ' + prompt,
     ].join('\n');
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(MODEL) + ':generateContent';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GOOGLE_API_KEY },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: instruction }] }],
-        generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 7000, temperature: 0.55 },
-      }),
-      signal: AbortSignal.timeout(45000),
-    });
-    if (!response.ok) throw new Error('Gemini returned ' + response.status + ': ' + (await response.text()).slice(0, 220));
-    const payload = await response.json();
-    const candidate = payload.candidates && payload.candidates[0];
-    const raw = candidate && candidate.content && candidate.content.parts ? candidate.content.parts.map(p => p.text || '').join('') : '';
-    if (!raw.trim()) throw new Error('The slide planner returned an empty response. Try again with a more specific topic.');
+    const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(MODEL) + ':generateContent';
+    const geminiBody = {
+      contents: [{ role: 'user', parts: [{ text: instruction }] }],
+      generationConfig: { responseMimeType: 'application/json', maxOutputTokens: 7000, temperature: 0.55 },
+    };
+    let raw = '';
+    let geminiFailure = null;
+    // Google can return transient 503/429 overloads. Retry briefly, then use the
+    // already-configured free OpenRouter model rather than returning an empty reply.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const response = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GOOGLE_API_KEY },
+          body: JSON.stringify(geminiBody),
+          signal: AbortSignal.timeout(25000),
+        });
+        if (!response.ok) {
+          const detail = (await response.text()).slice(0, 220);
+          const error = new Error('Gemini returned ' + response.status + ': ' + detail);
+          error.status = response.status;
+          throw error;
+        }
+        const payload = await response.json();
+        const candidate = payload.candidates && payload.candidates[0];
+        raw = candidate && candidate.content && candidate.content.parts ? candidate.content.parts.map(p => p.text || '').join('') : '';
+        if (!raw.trim()) throw new Error('Gemini returned an empty slide plan.');
+        break;
+      } catch (error) {
+        geminiFailure = error;
+        const retryable = [429, 500, 502, 503, 504].includes(Number(error.status)) ||
+          /timeout|temporar|overload|empty slide plan/i.test(String(error.message || ''));
+        if (attempt === 0 && retryable) {
+          await new Promise(resolve => setTimeout(resolve, 900));
+          continue;
+        }
+        break;
+      }
+    }
+    if (!raw.trim() && process.env.OPENROUTER_API_KEY) {
+      const fallbackModel = process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-ultra-550b-a55b:free';
+      const fallback = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + process.env.OPENROUTER_API_KEY },
+        body: JSON.stringify({
+          model: fallbackModel,
+          messages: [
+            { role: 'system', content: 'You create polished PowerPoint slide plans. Return only valid JSON with title, subtitle, and slides. Each slide has title, bullets, takeaway, and layout. Do not invent statistics or product capabilities.' },
+            { role: 'user', content: instruction },
+          ],
+          max_tokens: 7000,
+          response_format: { type: 'json_object' },
+        }),
+        signal: AbortSignal.timeout(35000),
+      });
+      if (!fallback.ok) throw new Error('Gemini was temporarily overloaded (' + (geminiFailure && geminiFailure.status || 'unavailable') + ') and the free backup model returned ' + fallback.status + '. Please retry shortly.');
+      const fallbackData = await fallback.json();
+      raw = String(fallbackData.choices && fallbackData.choices[0] && fallbackData.choices[0].message && fallbackData.choices[0].message.content || '').trim();
+      if (!raw) throw new Error('Both Gemini and the free backup model returned an empty slide plan. Please retry.');
+    }
+    if (!raw.trim()) {
+      const status = geminiFailure && geminiFailure.status;
+      if (status === 503 || status === 429) {
+        return res.status(503).json({ error: 'Gemini is temporarily overloaded, and no OpenRouter backup key is configured. Please retry in a minute.' });
+      }
+      throw geminiFailure || new Error('The slide planner returned an empty response. Try again with a more specific topic.');
+    }
     const deck = parseDeck(raw);
     const buffer = await buildPresentation(deck);
     const filename = (deck.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'glitch-presentation') + '.pptx';

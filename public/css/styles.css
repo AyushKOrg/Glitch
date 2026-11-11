@@ -2530,3 +2530,11 @@ html.liquid-glass button:hover:not(:disabled) {
     animation-iteration-count:1 !important;
   }
 }
+
+
+/* Compact chat composer */
+#chat{width:min(660px,calc(100% - 2.8rem))!important;gap:5px!important;padding:5px 6px!important;border-radius:22px!important}
+#chat #input{min-height:34px!important;max-height:96px!important;padding:7px 3px!important;line-height:1.4!important;font-size:.94rem!important}
+#chat .round{width:34px!important;height:34px!important}
+#chat #attach{font-size:19px!important}
+@media(max-width:600px){#chat{width:calc(100% - 1.5rem)!important}#chat #input{max-height:88px!important}}

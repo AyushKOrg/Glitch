@@ -12,6 +12,9 @@
     },
     "api/vip-regenerate.js": {
       "maxDuration": 60
+    },
+    "api/presentation.js": {
+      "maxDuration": 60
     }
   },
   "headers": [

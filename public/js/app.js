@@ -647,7 +647,7 @@
       const r=await api('/api/vip',{method:'POST',body:JSON.stringify({code:$('vipCode').value.trim()})});
       if(!r.ok)throw new Error(r.data.error||'Could not redeem that code.');
       $('vipCode').value='';setVipState(true);renderVipStats();
-      $('vipRedeemStatus').textContent=r.data.alreadyVip?'This account already has VIP.':r.data.codeRotated?'VIP unlocked! Your code was consumed, and a fresh one-time code was emailed to both developers.':r.data.rotationWarning?'VIP unlocked, but replacement-code delivery needs developer attention. Both developers can use Regenerate code & email both.':'VIP unlocked! Welcome aboard.';
+      $('vipRedeemStatus').textContent=r.data.alreadyVip?'This account already has VIP.':r.data.codeRotated?'VIP unlocked! Your code was consumed, and a fresh one-time code was emailed to all developers.':r.data.rotationWarning?'VIP unlocked, but replacement-code delivery needs developer attention. Both developers can use Regenerate code & email both.':'VIP unlocked! Welcome aboard.';
     }catch(err){$('vipRedeemStatus').textContent=err.message;}
     finally{b.disabled=false;}
   });
@@ -662,9 +662,9 @@
   $('vipCopyCode').addEventListener('click',async()=>{const code=$('vipCurrentCodeValue').textContent;try{await navigator.clipboard.writeText(code);$('vipVerifyStatus').textContent='Current code copied.';}catch{$('vipVerifyStatus').textContent='Clipboard access was blocked. Select the code and copy it manually.';}});
   $('vipHideCode').addEventListener('click',hideCurrentVipCode);
   $('vipRegenerate').addEventListener('click',async()=>{
-    if(!vipDeveloper)return;const b=$('vipRegenerate');b.disabled=true;b.textContent='Generating and emailing…';hideCurrentVipCode();$('vipDevStatus').textContent='Rotating the active code and sending both emails…';
-    try{const r=await api('/api/vip-regenerate',{method:'POST',body:'{}'});if(!r.ok)throw Error(r.data.error||'Could not rotate VIP code.');$('vipDevStatus').textContent='New one-time code generated and emailed to both developers. The previous code is invalid.';}
-    catch(e){$('vipDevStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='↻ Rotate code & email both developers';}
+    if(!vipDeveloper)return;const b=$('vipRegenerate');b.disabled=true;b.textContent='Generating and emailing…';hideCurrentVipCode();$('vipDevStatus').textContent='Rotating the active code and sending all developer emails…';
+    try{const r=await api('/api/vip-regenerate',{method:'POST',body:'{}'});if(!r.ok)throw Error(r.data.error||'Could not rotate VIP code.');$('vipDevStatus').textContent='New one-time code generated and emailed to all developers. The previous code is invalid.';}
+    catch(e){$('vipDevStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='↻ Rotate code & email all developers';}
   });
   $('vipSave').addEventListener('click',saveVipPrefs);
   $('vipReset').addEventListener('click',()=>{

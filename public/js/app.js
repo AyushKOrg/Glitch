@@ -42,15 +42,15 @@
     function resize() {
       const rect = stage.getBoundingClientRect();
       width = Math.max(1, rect.width); height = Math.max(1, rect.height);
-      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.1);
       canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
       canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.max(90, Math.min(260, Math.round(width * height / 6500)));
+      const count = Math.max(48, Math.min(120, Math.round(width * height / 14500)));
       stars = Array.from({ length: count }, (_, i) => ({
         x: random(0, width), y: random(0, height), r: random(.55, 1.3),
         phase: random(0, Math.PI * 2), speed: random(.22, .72),
-        cyan: Math.random() < .32, flare: Math.random() < .13,
+        cyan: Math.random() < .32, flare: Math.random() < .06,
         flareLength: random(5.5, 9), drift: random(-.055, .055)
       }));
       draw(0, true);
@@ -70,7 +70,7 @@
         if (star.flare) {
           const glow = alpha * .92, length = star.flareLength;
           ctx.save(); ctx.globalAlpha = glow;
-          ctx.shadowColor = star.cyan ? '#49eaff' : '#d7f5ff'; ctx.shadowBlur = 13;
+          ctx.shadowColor = star.cyan ? '#49eaff' : '#d7f5ff'; ctx.shadowBlur = 5;
           ctx.strokeStyle = star.cyan ? 'rgba(90,235,255,.85)' : 'rgba(220,245,255,.82)';
           ctx.lineWidth = .85; ctx.beginPath();
           ctx.moveTo(star.x - length, star.y); ctx.lineTo(star.x + length, star.y);
@@ -81,7 +81,7 @@
       }
     }
     function frame(time) {
-      if (time - lastFrame >= 40) { draw(time); lastFrame = time; }
+      if (time - lastFrame >= 33) { draw(time); lastFrame = time; }
       raf = requestAnimationFrame(frame);
     }
     const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(resize) : null;
@@ -1112,25 +1112,12 @@
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
     return 'Your editable PowerPoint is ready and has been downloaded. Title: '+outline.title+' ('+outline.slides.length+' slides).';
   }
-  async function generateWithLocalFlow(kind, prompt, signal) {
-    if (!user || !user.accessToken || user.isAnonymous) throw new Error('Sign in with a registered Glitch account to use Google Flow generation.');
-    const endpoint = 'http://127.0.0.1:8765/generate';
-    let response;
-    try {
-      response = await fetch(endpoint, {
-        method: 'POST', mode: 'cors', credentials: 'omit',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + user.accessToken },
-        body: JSON.stringify({ kind, prompt: String(prompt || '').slice(0, 5000) }),
-        signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(8 * 60 * 1000)]) : AbortSignal.timeout(8 * 60 * 1000)
-      });
-    } catch (error) {
-      if (error && error.name === 'AbortError') throw new Error('Generation was cancelled.');
-      throw new Error('Glitch Flow Worker is not running on this PC. Start it with node flow-worker.js and keep its terminal open. If Chrome asks, allow Glitch to access your local network.');
-    }
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || 'Google Flow generation failed (' + response.status + ').');
-    if (!data.url) throw new Error('Google Flow returned no saved media URL.');
-    return data;
+  async function generateImageForChat(prompt) {
+    const result = await api('/api/images', { method: 'POST', body: JSON.stringify({ prompt: String(prompt || '').slice(0, 1000) }), signal: abortCtl && abortCtl.signal });
+    if (!result.ok) throw new Error(result.data.error || 'Image generation failed (' + result.status + ').');
+    const media = result.data.imageUrl || result.data.image;
+    if (!media) throw new Error('The image provider returned no image.');
+    return media;
   }
   function isVideoGenerationPrompt(text) {
     const t = String(text || '').trim();
@@ -1165,11 +1152,15 @@
     try {
       let result;
       if (isVideoGenerationPrompt(requestText)) {
-        const media = await generateWithLocalFlow('video', requestText, abortCtl.signal);
-        result = { ok: true, status: 200, data: { reply: 'Here is your video. It has been saved to your Glitch account.\n\n[[GLITCH_VIDEO:' + media.url + ']]', mode: sentMode } };
+        if (!vipActive) {
+          result = { ok: false, status: 403, data: { error: 'ShortGPT Video Studio is a VIP feature. Redeem a VIP invite to unlock it.', vipRequired: true } };
+        } else {
+          openShortGPTStudio(requestText);
+          result = { ok: true, status: 200, data: { reply: 'I opened ShortGPT Video Studio. Your prompt is ready in the Prompt from chat box—copy it into ShortGPT and generate your video there.', mode: sentMode } };
+        }
       } else if (isImageGenerationPrompt(requestText)) {
-        const media = await generateWithLocalFlow('image', requestText, abortCtl.signal);
-        result = { ok: true, status: 200, data: { reply: 'Here is your image. It has been saved to your Glitch account.\n\n[[GLITCH_IMAGE:' + media.url + ']]', mode: sentMode } };
+        const media = await generateImageForChat(requestText);
+        result = { ok: true, status: 200, data: { reply: 'Here is your image.\\n\\n[[GLITCH_IMAGE:' + media + ']]', mode: sentMode } };
       } else {
         const creativeKind=detectChatCreativeTool(requestText);
         if(creativeKind){const toolReply=await runChatCreativeTool(creativeKind,requestText);result={ok:true,status:200,data:{reply:toolReply,mode:sentMode}};}
@@ -1508,17 +1499,17 @@
 
 
   // ---- VIP + DEV creative studio ---------------------------------------------
-  const presentationModal = $('presentationModal'), flowModal = $('flowModal');
+  const presentationModal = $('presentationModal'), videoModal = $('videoModal');
   $('openPresentationStudio').addEventListener('click', async () => {
     if (await requireVipTool()) { presentationModal.classList.add('open'); $('presentationPrompt').focus(); }
   });
-  $('openFlowCreator').addEventListener('click', async () => {
-    if (await requireVipTool()) { flowModal.classList.add('open'); $('flowPrompt').focus(); }
+  $('openVideoStudio').addEventListener('click', async () => {
+    if (await requireVipTool()) openShortGPTStudio();
   });
   $('presentationClose').addEventListener('click', () => presentationModal.classList.remove('open'));
   presentationModal.addEventListener('click', e => { if (e.target === presentationModal) presentationModal.classList.remove('open'); });
-  $('flowClose').addEventListener('click', () => flowModal.classList.remove('open'));
-  flowModal.addEventListener('click', e => { if (e.target === flowModal) flowModal.classList.remove('open'); });
+  $('videoClose').addEventListener('click', () => videoModal.classList.remove('open'));
+  videoModal.addEventListener('click', e => { if (e.target === videoModal) videoModal.classList.remove('open'); });
 
   $('presentationOutline').addEventListener('click', async () => {
     const prompt = $('presentationPrompt').value.trim();
@@ -1561,25 +1552,52 @@
     finally { button.disabled = false; button.textContent = '↓ Generate editable .PPTX'; }
   });
 
-  $('flowRefine').addEventListener('click', async () => {
-    const prompt = $('flowPrompt').value.trim();
-    if (prompt.length < 5) { $('flowResult').value = 'Describe your image or video idea first.'; return; }
-    const button = $('flowRefine'); button.disabled = true; button.textContent = 'Refining…';
-    $('flowResult').value = 'Glitch is improving the scene, composition, lighting and motion…';
-    $('flowCopy').disabled = true; $('flowOpen').disabled = true;
-    try {
-      const result = await api('/api/images', { method: 'POST', body: JSON.stringify({ action: 'outline', kind: 'flow', prompt }) });
-      if (!result.ok) throw new Error(result.data.error || 'Prompt refinement failed.');
-      $('flowResult').value = result.data.prompt;
-      $('flowCopy').disabled = false; $('flowOpen').disabled = false;
-    } catch (error) { $('flowResult').value = error.message || 'Prompt refinement failed.'; }
-    finally { button.disabled = false; button.textContent = '✧ Refine Flow prompt'; }
+  const shortgptNotebookUrl = 'https://colab.research.google.com/github/AyushKOrg/Glitch/blob/main/shortgpt-colab.ipynb';
+  let shortgptConnectedUrl = '';
+  function openShortGPTStudio(prompt = '') {
+    if (prompt) $('shortgptPrompt').value = String(prompt).slice(0, 5000);
+    videoModal.classList.add('open');
+    if (!shortgptConnectedUrl) {
+      try { const saved = localStorage.getItem('glitch_shortgpt_url') || ''; if (saved) { $('shortgptUrl').value = saved; connectShortGPT(saved, true); } } catch {}
+    }
+    $('shortgptPrompt').focus();
+  }
+  function connectShortGPT(rawUrl, quiet = false) {
+    const raw = String(rawUrl || $('shortgptUrl').value || '').trim();
+    let parsed;
+    try { parsed = new URL(raw); } catch { $('shortgptStatus').textContent = 'Paste the full HTTPS Gradio share URL from Colab.'; return false; }
+    const host = parsed.hostname.toLowerCase();
+    if (parsed.protocol !== 'https:' || !(host === 'gradio.live' || host.endsWith('.gradio.live') || host.endsWith('.gradio.app'))) {
+      $('shortgptStatus').textContent = 'For safety, connect only to an HTTPS *.gradio.live or *.gradio.app URL from your own Colab session.';
+      return false;
+    }
+    shortgptConnectedUrl = parsed.origin + parsed.pathname.replace(/\/$/, '') + parsed.search;
+    $('shortgptUrl').value = shortgptConnectedUrl;
+    $('shortgptFrame').src = shortgptConnectedUrl;
+    $('shortgptFrame').hidden = false;
+    $('shortgptOpenTab').disabled = false;
+    $('shortgptStatus').textContent = 'Connected to your ShortGPT session. If the embedded page does not load, use Open tab.';
+    try { localStorage.setItem('glitch_shortgpt_url', shortgptConnectedUrl); } catch {}
+    return true;
+  }
+  $('shortgptLaunchColab').addEventListener('click', () => window.open(shortgptNotebookUrl, '_blank', 'noopener,noreferrer'));
+  $('shortgptConnect').addEventListener('click', () => connectShortGPT());
+  $('shortgptOpenTab').addEventListener('click', () => { if (shortgptConnectedUrl) window.open(shortgptConnectedUrl, '_blank', 'noopener,noreferrer'); });
+  $('shortgptDisconnect').addEventListener('click', () => {
+    shortgptConnectedUrl = '';
+    $('shortgptFrame').src = 'about:blank';
+    $('shortgptFrame').hidden = true;
+    $('shortgptOpenTab').disabled = true;
+    $('shortgptUrl').value = '';
+    $('shortgptStatus').textContent = 'Disconnected. The saved session URL was cleared.';
+    try { localStorage.removeItem('glitch_shortgpt_url'); } catch {}
   });
-  $('flowCopy').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText($('flowResult').value); $('flowCopy').textContent = 'Copied ✓'; }
-    catch { $('flowResult').focus(); $('flowResult').select(); $('flowCopy').textContent = 'Select & copy'; }
+  $('shortgptCopyPrompt').addEventListener('click', async () => {
+    const value = $('shortgptPrompt').value.trim();
+    if (!value) { $('shortgptStatus').textContent = 'There is no chat prompt to copy yet.'; return; }
+    try { await navigator.clipboard.writeText(value); $('shortgptStatus').textContent = 'Prompt copied. Paste it into ShortGPT.'; }
+    catch { $('shortgptPrompt').focus(); $('shortgptPrompt').select(); $('shortgptStatus').textContent = 'Select the prompt and copy it manually.'; }
   });
-  $('flowOpen').addEventListener('click', () => window.open('https://labs.google/fx/tools/flow', '_blank', 'noopener,noreferrer'));
 
   // ---- Pollinations image studio behavior ------------------------------------
   let imagePreviewUrl = '';
@@ -1588,7 +1606,7 @@
     if(!user){openGate('Sign in to generate images.');return;}
     imageModal.classList.add('open');
     $('imageGenerate').disabled=false;
-    $('imageStatus').textContent='Images are generated through your connected Google Flow session.';
+    $('imageStatus').textContent='Generate an image with the configured image provider.';
     $('imagePrompt').focus();
     const modelField=$('imageModel').closest('div');
     if(modelField)modelField.hidden=true;
@@ -1599,7 +1617,7 @@
   function closeImageStudio(){imageModal.classList.remove('open');}
   $('openImageStudio').addEventListener('click',async()=>{if(await requireVipTool())openImageStudio();});
   function refreshImageUsage(){
-    $('imageUsage').textContent='Uses your Google Flow account’s available credits · Private copy saved to Glitch';
+    $('imageUsage').textContent='VIP image generation · provider availability and limits may apply';
   }
   // Image generation is invoked from chat prompts; no separate launcher is required.
   $('imageClose').addEventListener('click',closeImageStudio);
@@ -1608,14 +1626,16 @@
     const prompt=$('imagePrompt').value.trim();
     if(!prompt){$('imageStatus').textContent='Enter a description first.';return;}
     const btn=$('imageGenerate');btn.disabled=true;btn.textContent='Generating…';
-    $('imageStatus').textContent='Google Flow is creating your image…';
+    $('imageStatus').textContent='Your image provider is creating the image…';
     $('imageDownload').hidden=true;$('imagePreview').hidden=true;
     try{
-      const media=await generateWithLocalFlow('image',prompt);
-      if(!media.url)throw new Error('Google Flow returned no saved image.');
+      const generated=await api('/api/images',{method:'POST',body:JSON.stringify({prompt}),signal:AbortSignal.timeout(70000)});
+      if(!generated.ok)throw new Error(generated.data.error||'Image generation failed.');
+      const media=generated.data.imageUrl||generated.data.image;
+      if(!media)throw new Error('The image provider returned no image.');
       if(imagePreviewUrl){URL.revokeObjectURL(imagePreviewUrl);imagePreviewUrl='';}
-      $('imagePreview').src=media.url;
-      $('imageDownload').href=media.url;
+      $('imagePreview').src=media;
+      $('imageDownload').href=media;
       $('imagePreview').hidden=false;
       $('imageDownload').hidden=false;
       $('imageStatus').textContent='Image ready! Saved privately to Glitch Storage.';

@@ -3,7 +3,7 @@ const { requireUser, supabaseUrl } = require('./_lib');
 
 const DAILY_LIMIT = 15;
 const MODELS = new Set([
-  'black-forest-labs/flux.1-schnell',
+  'qwen/qwen-image-2.1',
   'krea/krea-2-medium',
   'google/gemini-3.1-flash-image',
 ]);
@@ -105,7 +105,7 @@ module.exports = async (req, res) => {
     }
     if (!process.env.POLLINATIONS_API_KEY) return res.status(503).json({ error: 'POLLINATIONS_API_KEY is missing from the server environment.' });
     const prompt = String(req.body && req.body.prompt || '').trim();
-    const model = String(req.body && req.body.model || 'black-forest-labs/flux.1-schnell');
+    const model = String(req.body && req.body.model || 'qwen/qwen-image-2.1');
     if (!prompt || prompt.length > 1000) return res.status(400).json({ error: 'Enter an image prompt between 1 and 1000 characters.' });
     if (!MODELS.has(model)) return res.status(400).json({ error: 'That image model is not available.' });
     const vipStatus = await rpc(user, 'get_glitch_vip_status');

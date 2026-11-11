@@ -36,7 +36,7 @@
   <button class="nav vip-tools-launch" id="vipToolsOpen" type="button" title="Open VIP tools"><svg viewBox="0 0 24 24"><path d="m3 7 4 3 5-6 5 6 4-3-2 12H5L3 7Z"/><path d="M5 21h14"/></svg>VIP Tools <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-tool-nav" id="openImageStudio" type="button" title="VIP image generation"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/><path d="m17 2 .7 1.8L20 5l-2.3 1.2L17 8l-.7-1.8L14 5l2.3-1.2L17 2z"/></svg>Image Generation <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-tool-nav" id="openPresentationStudio" type="button" title="VIP presentation generation"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H4zM8 20h8M12 16v4M8 8h8M8 11h5"/></svg>Presentation Studio <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openFlowCreator" type="button" title="VIP Google Flow prompt studio"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-4 2 2 3-5M8 8h.01"/></svg>Flow Creator <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openVideoStudio" type="button" title="VIP ShortGPT video studio"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>Video Studio <span class="tool-lock-label">VIP</span></button>
   <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
@@ -199,15 +199,16 @@
     </div>
   </section>
 </div>
-<div id="flowModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="flowTitle">
-  <section class="box image-box creative-box">
-    <div class="top"><div><h3 id="flowTitle">✦ Glitch Flow Creator</h3><p>Glitch refines your idea. You generate and export inside Google Flow.</p></div><button class="mini" id="flowClose" type="button" aria-label="Close Flow Creator">✕</button></div>
-    <div class="image-content">
-      <div><label for="flowPrompt">Describe the image or video you want</label><textarea id="flowPrompt" rows="5" maxlength="5000" placeholder="A cinematic shot of a futuristic city at sunrise, with..."></textarea></div>
-      <div class="creative-actions"><button class="cta" id="flowRefine" type="button">✧ Refine Flow prompt</button><button class="mini" id="flowCopy" type="button" disabled>Copy prompt</button><button class="mini" id="flowOpen" type="button" disabled>Open Google Flow ↗</button></div>
-      <div><label for="flowResult">Ready-to-paste prompt</label><textarea id="flowResult" rows="7" readonly placeholder="Your refined prompt will appear here."></textarea></div>
-      <p class="image-status">Manual handoff: sign in to your own Google account, paste the prompt into Flow, generate, then download your result from Flow. Glitch does not access your Google password or account.</p>
+<div id="videoModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="videoTitle">
+  <section class="box image-box creative-box video-studio-box">
+    <div class="top"><div><h3 id="videoTitle">✦ Glitch Video Studio · ShortGPT</h3><p>Run ShortGPT remotely in Google Colab, then use its full studio here.</p></div><button class="mini" id="videoClose" type="button" aria-label="Close Video Studio">✕</button></div>
+    <div class="video-studio-connect">
+      <div class="video-studio-step"><strong>1. Start your cloud video engine</strong><p>Open the notebook, run its cells from top to bottom, and wait for the public <code>gradio.live</code> link. Use your free Gemini and Pexels keys in the hidden prompts; choose Edge TTS for free voiceovers.</p><button class="cta" id="shortgptLaunchColab" type="button">Open ShortGPT in Google Colab ↗</button></div>
+      <div class="video-studio-step"><strong>2. Connect the running studio</strong><p>Paste the <code>https://….gradio.live</code> URL printed by Colab. It is saved in this browser for next time.</p><div class="video-studio-url-row"><input id="shortgptUrl" type="url" inputmode="url" autocomplete="url" placeholder="https://your-session.gradio.live"><button class="cta" id="shortgptConnect" type="button">Connect</button><button class="mini" id="shortgptOpenTab" type="button" disabled>Open tab ↗</button><button class="mini" id="shortgptDisconnect" type="button">Disconnect</button></div><div id="shortgptStatus" class="image-status" role="status" aria-live="polite">Not connected yet.</div></div>
+      <div class="video-studio-step"><strong>Prompt from chat</strong><textarea id="shortgptPrompt" rows="3" maxlength="5000" placeholder="A narrated cinematic video about…"></textarea><div class="creative-actions"><button class="mini" id="shortgptCopyPrompt" type="button">Copy prompt</button></div></div>
     </div>
+    <iframe id="shortgptFrame" class="shortgpt-frame" title="ShortGPT remote video studio" loading="lazy" allow="clipboard-read; clipboard-write; microphone; autoplay" referrerpolicy="no-referrer" hidden></iframe>
+    <p class="image-status video-studio-footnote">Colab is free but temporary: its runtime can disconnect or reclaim resources. If that happens, restart the notebook and reconnect using its new share URL. No local installation is required.</p>
   </section>
 </div>
 <div id="imageModal" class="overlay" role="dialog" aria-modal="true" aria-labelledby="imageTitle">

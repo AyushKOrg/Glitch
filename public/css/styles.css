@@ -2895,3 +2895,21 @@ html[data-device="tablet"] .settings-shortcuts {
   .topbar img { flex-basis: 26px; width: 26px; height: 26px; min-width: 26px; }
   .topbar .install-app-button { padding-inline: 7px; font-size: .68rem; }
 }
+
+
+/* Enforce the requested clean touch landing screen regardless of body state. */
+@media screen and (max-width: 760px) {
+  .suggest,
+  .suggest button {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  .suggest {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+}

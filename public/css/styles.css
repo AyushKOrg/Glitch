@@ -2808,3 +2808,9 @@ html[data-device="tablet"] .settings-shortcuts {
   body.empty .hero { margin-top: 24px; }
   body.empty .suggest button { min-height: 82px; }
 }
+
+
+/* On touch layouts, keep the landing screen focused on the chat composer. */
+@media (max-width: 760px) {
+  body.empty .suggest { display: none !important; }
+}

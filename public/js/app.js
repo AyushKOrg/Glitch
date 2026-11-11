@@ -590,7 +590,11 @@
   function setVipState(active){
     vipActive = Boolean(active);
     // VIP-only tools stay hidden until the server confirms membership.
-    ['openImageStudio','openImageEditor'].forEach(id=>{const button=$(id);if(button){button.hidden=false;button.setAttribute('aria-disabled',String(!vipActive));}});
+    // Hide the entire VIP tools section unless the server confirms VIP/DEV access.
+    const vipToolIds=['vipToolsOpen','openImageStudio','openPresentationStudio','openVideoStudio','openImageEditor'];
+    vipToolIds.forEach(id=>{const button=$(id);if(button)button.hidden=!vipActive;});
+    const vipHeading=document.querySelector('.tool-group-label');
+    if(vipHeading)vipHeading.hidden=!vipActive;
     document.body.classList.toggle('vip-active', vipActive);
     syncAccountBadge();
     $('vipTaglineDisplay').hidden = !vipActive || vipDeveloper;

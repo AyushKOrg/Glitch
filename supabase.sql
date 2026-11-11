@@ -187,7 +187,7 @@ declare v_user_id uuid:=auth.uid();v_email text;
 begin
  if v_user_id is null then raise exception 'Authentication required';end if;
  select lower(email) into v_email from auth.users where id=v_user_id;
- return jsonb_build_object('vip',v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com') or exists(select 1 from public.glitch_vip_members where user_id=v_user_id),'developer',v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com'));
+ return jsonb_build_object('vip',v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com','aaravkrishprof@gmail.com','aayushispro67@gmail.com','aayushcmshri@gmail.com','aaravkrish713@gmail.com','aaravkrish0510@gmail.com') or exists(select 1 from public.glitch_vip_members where user_id=v_user_id),'developer',v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com','aaravkrishprof@gmail.com','aayushispro67@gmail.com','aayushcmshri@gmail.com','aaravkrish713@gmail.com','aaravkrish0510@gmail.com'));
 end; $$;
 create or replace function public.redeem_glitch_vip_code(p_code text)
 returns jsonb language plpgsql security definer set search_path=''
@@ -197,7 +197,7 @@ begin
  if v_user_id is null then raise exception 'Authentication required';end if;
  if exists(select 1 from auth.users where id=v_user_id and is_anonymous=true) then raise exception 'Sign in with a registered account to redeem VIP access';end if;
  select lower(email) into v_email from auth.users where id=v_user_id;
- if v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com') then return jsonb_build_object('vip',true,'already_vip',true,'developer',true);end if;
+ if v_email in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com','aaravkrishprof@gmail.com','aayushispro67@gmail.com','aayushcmshri@gmail.com','aaravkrish713@gmail.com','aaravkrish0510@gmail.com') then return jsonb_build_object('vip',true,'already_vip',true,'developer',true);end if;
  if exists(select 1 from public.glitch_vip_members where user_id=v_user_id) then return jsonb_build_object('vip',true,'already_vip',true);end if;
  if p_code is null or length(trim(p_code))<>13 then raise exception 'Invalid invite code';end if;
  v_hash:=encode(extensions.digest(upper(trim(p_code)),'sha256'),'hex');
@@ -266,7 +266,7 @@ declare
   v_vip boolean := false;
 begin
   if v_user_id is null then raise exception 'Authentication required'; end if;
-  select (exists(select 1 from public.glitch_vip_members where user_id=v_user_id) or exists(select 1 from auth.users where id=v_user_id and lower(email) in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com'))) into v_vip;
+  select (exists(select 1 from public.glitch_vip_members where user_id=v_user_id) or exists(select 1 from auth.users where id=v_user_id and lower(email) in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com','aaravkrishprof@gmail.com','aayushispro67@gmail.com','aayushcmshri@gmail.com','aaravkrish713@gmail.com','aaravkrish0510@gmail.com'))) into v_vip;
   select coalesce((select used from public.glitch_image_usage where user_id=v_user_id and usage_date=v_day),0) into v_used;
   return jsonb_build_object('vip',v_vip,'used',v_used,'remaining',case when v_vip then null else greatest(15-v_used,0) end,'limit',case when v_vip then null else 15 end,'date',v_day);
 end;
@@ -285,7 +285,7 @@ declare
   v_vip boolean := false;
 begin
   if v_user_id is null then raise exception 'Authentication required'; end if;
-  select (exists(select 1 from public.glitch_vip_members where user_id=v_user_id) or exists(select 1 from auth.users where id=v_user_id and lower(email) in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com'))) into v_vip;
+  select (exists(select 1 from public.glitch_vip_members where user_id=v_user_id) or exists(select 1 from auth.users where id=v_user_id and lower(email) in ('aayushyt2013@gmail.com','aarav.krish62442@gmail.com','aaravkrishprof@gmail.com','aayushispro67@gmail.com','aayushcmshri@gmail.com','aaravkrish713@gmail.com','aaravkrish0510@gmail.com'))) into v_vip;
   if v_vip then return jsonb_build_object('allowed',true,'vip',true,'used',0,'remaining',null,'limit',null); end if;
   insert into public.glitch_image_usage(user_id,usage_date,used)
   values(v_user_id,v_day,0) on conflict(user_id,usage_date) do nothing;

@@ -2725,3 +2725,86 @@ html[data-device="tablet"] .settings-shortcuts {
   .msg.bot { margin-left: 28px; }
   .msg.bot::before { left: -28px; width: 22px; height: 22px; }
 }
+
+
+/* Mobile landing-page polish: prevent hero/composer overlap and reduce vertical clutter. */
+@media (max-width: 760px) {
+  html, body { max-width: 100%; overflow-x: clip; }
+  .stage { min-width: 0; width: 100%; overflow-x: clip; }
+  body.empty .stage {
+    justify-content: flex-start;
+    padding: 0 0 calc(18px + env(safe-area-inset-bottom));
+  }
+  body.empty .hero {
+    width: calc(100% - 32px);
+    margin: clamp(14px, 3vh, 26px) auto 8px;
+    font-size: clamp(1.8rem, 6.2vw, 2.45rem);
+    line-height: 1.12;
+    letter-spacing: -.045em;
+  }
+  body.empty .hero-sub {
+    width: calc(100% - 40px);
+    margin: 0 auto 18px;
+    font-size: .92rem;
+    line-height: 1.45;
+  }
+  .hero-sub .context-inline { display: none !important; }
+  #fileStatus { max-width: calc(100% - 28px); overflow-wrap: anywhere; }
+  #cognitionBuddy { display: none !important; }
+  body.empty #chat {
+    width: calc(100% - 28px) !important;
+    min-height: 66px;
+    margin: 0 auto 12px;
+    padding: 6px;
+    align-items: center;
+    border-radius: 22px;
+    gap: 5px;
+  }
+  body.empty #chat #input {
+    min-height: 44px;
+    height: 44px;
+    max-height: 104px !important;
+    padding: 10px 5px;
+    line-height: 1.4;
+    font-size: 16px;
+  }
+  body.empty #chat .round {
+    width: 42px;
+    height: 42px;
+  }
+  body.empty .suggest {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: calc(100% - 28px);
+    gap: 9px;
+    margin: 2px auto 0;
+  }
+  body.empty .suggest button {
+    min-width: 0;
+    min-height: 76px;
+    padding: 11px 12px;
+    border-radius: 15px;
+    gap: 4px;
+    overflow-wrap: anywhere;
+  }
+  body.empty .suggest button b {
+    font-size: .82rem;
+    line-height: 1.25;
+  }
+  body.empty .suggest button span {
+    font-size: .7rem;
+    line-height: 1.3;
+  }
+  #log { min-width: 0; }
+}
+@media (max-width: 420px) {
+  body.empty .hero { font-size: clamp(1.7rem, 7vw, 2rem); }
+  body.empty .hero-sub { font-size: .84rem; margin-bottom: 14px; }
+  body.empty .suggest { gap: 7px; }
+  body.empty .suggest button { min-height: 70px; padding: 9px 10px; }
+  body.empty .suggest button b { font-size: .77rem; }
+}
+@media (min-width: 521px) and (max-width: 760px) {
+  body.empty .hero { margin-top: 24px; }
+  body.empty .suggest button { min-height: 82px; }
+}

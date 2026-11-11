@@ -2538,3 +2538,11 @@ html.liquid-glass button:hover:not(:disabled) {
 #chat .round{width:34px!important;height:34px!important}
 #chat #attach{font-size:19px!important}
 @media(max-width:600px){#chat{width:calc(100% - 1.5rem)!important}#chat #input{max-height:88px!important}}
+
+
+/* Keep VIP sidebar entries genuinely hidden for Free accounts. The base .nav rule sets display:flex, so explicitly preserve the HTML hidden state. */
+.vip-tool-nav[hidden],
+.vip-tools-launch[hidden],
+.tool-group-label[hidden] {
+  display: none !important;
+}

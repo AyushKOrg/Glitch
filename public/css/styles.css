@@ -2449,3 +2449,84 @@ html.liquid-glass[data-scheme="light"] #chat #input::placeholder {
   .creative-box { width:calc(100vw - 18px); max-height:92vh; }
   .creative-actions > button { flex:1 1 auto; }
 }
+
+/* ShortGPT Video Studio */
+.video-studio-box { width:min(1120px,calc(100vw - 28px)); }
+.video-studio-connect { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.video-studio-step { min-width:0; display:flex; flex-direction:column; gap:9px; padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--panel-alt); }
+.video-studio-step:first-child { grid-column:1/-1; }
+.video-studio-step strong { color:var(--text); font-size:.94rem; }
+.video-studio-step p,.video-studio-footnote { margin:0; color:var(--text-dim); font-size:.82rem; line-height:1.6; }
+.video-studio-url-row { display:flex; gap:8px; flex-wrap:wrap; }
+.video-studio-url-row input { flex:1 1 300px; min-width:0; }
+.shortgpt-frame { display:block; width:100%; min-height:68vh; border:1px solid var(--border); border-radius:14px; background:#fff; }
+.shortgpt-frame[hidden] { display:none; }
+.video-studio-footnote { margin-top:10px; }
+@media(max-width:700px) {
+  .video-studio-connect { grid-template-columns:1fr; }
+  .video-studio-step:first-child { grid-column:auto; }
+  .shortgpt-frame { min-height:65vh; }
+  .video-studio-url-row > button { flex:1 1 auto; }
+}
+/* LGI performance pass: retain the glass and cursor light, remove paint-heavy perpetual motion. */
+html[data-scheme=dark] .stage::before {
+  inset:-10% !important;
+  opacity:.9 !important;
+  filter:blur(28px) saturate(1.25) !important;
+  background-size:100% 100% !important;
+  animation:none !important;
+  transform:none !important;
+  will-change:auto !important;
+}
+html[data-scheme=dark] .stage::after {
+  filter:none !important;
+  transition:opacity .18s ease !important;
+}
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass .composer,
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-detail-box,
+html.liquid-glass .vip-box,
+html.liquid-glass .image-box,
+html.liquid-glass .memory-box {
+  -webkit-backdrop-filter:blur(16px) saturate(1.28) !important;
+  backdrop-filter:blur(16px) saturate(1.28) !important;
+}
+html.liquid-glass .composer,
+html.liquid-glass #input,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .settings-toggle {
+  -webkit-backdrop-filter:blur(10px) saturate(1.18) !important;
+  backdrop-filter:blur(10px) saturate(1.18) !important;
+}
+html.liquid-glass button,
+html.liquid-glass input,
+html.liquid-glass textarea,
+html.liquid-glass select {
+  transition:background-color .14s ease,border-color .14s ease,box-shadow .14s ease !important;
+}
+html.liquid-glass button:hover:not(:disabled) {
+  transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 5px 16px color-mix(in srgb,var(--accent) 16%,transparent) !important;
+}
+@media(max-width:700px) {
+  html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass .composer,
+  html.liquid-glass .settings-box,html.liquid-glass .settings-detail-box,
+  html.liquid-glass .vip-box,html.liquid-glass .image-box,html.liquid-glass .memory-box {
+    -webkit-backdrop-filter:blur(10px) saturate(1.15) !important;
+    backdrop-filter:blur(10px) saturate(1.15) !important;
+  }
+  html[data-scheme=dark] .stage::before { filter:blur(20px) saturate(1.15) !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before,
+  html[data-scheme=dark] .stage::after { animation:none !important; }
+  html.liquid-glass *,html.liquid-glass *::before,html.liquid-glass *::after {
+    transition-duration:.01ms !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+  }
+}

@@ -1,7 +1,7 @@
 const crypto=require('node:crypto');
 const nodemailer=require('nodemailer');
 const {supabaseUrl}=require('./_lib');
-const DEVELOPERS=['aayushyt2013@gmail.com','aarav.krish62442@gmail.com'];
+const DEVELOPERS=["aayushyt2013@gmail.com","aarav.krish62442@gmail.com","aaravkrishprof@gmail.com","aayushispro67@gmail.com","aayushcmshri@gmail.com","aaravkrish713@gmail.com","aaravkrish0510@gmail.com"];
 const ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function makeCode(){return Array.from({length:13},()=>ALPHABET[crypto.randomInt(ALPHABET.length)]).join('');}
 function key(secret){return crypto.createHash('sha256').update(secret,'utf8').digest();}

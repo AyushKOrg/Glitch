@@ -32,12 +32,12 @@
   <button class="nav" id="clear" type="button" title="Clear messages in the current conversation"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/></svg>Clear chat</button>
   <button class="nav" id="exportChat" type="button" title="Download this conversation as Markdown"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export chat</button>
   <button class="nav" id="contextOpen" type="button" title="View this conversation’s context"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3V5Z"/><path d="M8 9h8M8 13h5"/></svg>Chat context</button>
-<h4 class="tool-group-label">VIP TOOLS</h4>
-  <button class="nav vip-tools-launch" id="vipToolsOpen" type="button" title="Open VIP tools"><svg viewBox="0 0 24 24"><path d="m3 7 4 3 5-6 5 6 4-3-2 12H5L3 7Z"/><path d="M5 21h14"/></svg>VIP Tools <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openImageStudio" type="button" title="VIP image generation"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/><path d="m17 2 .7 1.8L20 5l-2.3 1.2L17 8l-.7-1.8L14 5l2.3-1.2L17 2z"/></svg>Image Generation <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openPresentationStudio" type="button" title="VIP presentation generation"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H4zM8 20h8M12 16v4M8 8h8M8 11h5"/></svg>Presentation Studio <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openVideoStudio" type="button" title="VIP ShortGPT video studio"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>Video Studio <span class="tool-lock-label">VIP</span></button>
-  <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
+<h4 class="tool-group-label" hidden>VIP TOOLS</h4>
+  <button class="nav vip-tools-launch" id="vipToolsOpen" type="button" title="Open VIP tools" hidden><svg viewBox="0 0 24 24"><path d="m3 7 4 3 5-6 5 6 4-3-2 12H5L3 7Z"/><path d="M5 21h14"/></svg>VIP Tools <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openImageStudio" type="button" title="VIP image generation" hidden><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/><path d="m17 2 .7 1.8L20 5l-2.3 1.2L17 8l-.7-1.8L14 5l2.3-1.2L17 2z"/></svg>Image Generation <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openPresentationStudio" type="button" title="VIP presentation generation" hidden><svg viewBox="0 0 24 24"><path d="M4 4h16v12H4zM8 20h8M12 16v4M8 8h8M8 11h5"/></svg>Presentation Studio <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openVideoStudio" type="button" title="VIP ShortGPT video studio" hidden><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>Video Studio <span class="tool-lock-label">VIP</span></button>
+  <button class="nav vip-tool-nav" id="openImageEditor" type="button" title="VIP image editor" hidden><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 15l3-3 2 2 3-4 4 5M8 9h.01"/></svg>Image Editor <span class="tool-lock-label">VIP</span></button>
   <div class="history-head"><h4>Recent chats</h4></div>
   <div class="history-search" id="histSearchWrap" hidden><input id="histSearch" type="search" placeholder="Search chats (Ctrl+K)" aria-label="Search chats" autocomplete="off"></div>
   <div id="historyList" class="history-list" aria-label="Recent chats"></div>

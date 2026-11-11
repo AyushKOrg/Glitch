@@ -647,7 +647,7 @@
       const r=await api('/api/vip',{method:'POST',body:JSON.stringify({code:$('vipCode').value.trim()})});
       if(!r.ok)throw new Error(r.data.error||'Could not redeem that code.');
       $('vipCode').value='';setVipState(true);renderVipStats();
-      $('vipRedeemStatus').textContent=r.data.alreadyVip?'This account already has VIP.':r.data.codeRotated?'VIP unlocked! Your code was consumed, and a fresh one-time code was emailed to all developers.':r.data.rotationWarning?'VIP unlocked, but replacement-code delivery needs developer attention. Both developers can use Regenerate code & email both.':'VIP unlocked! Welcome aboard.';
+      $('vipRedeemStatus').textContent=r.data.alreadyVip?'This account already has VIP.':r.data.codeRotated?'VIP unlocked! Your code was consumed, and a fresh one-time code was emailed to all developers.':r.data.rotationWarning?'VIP unlocked, but replacement-code delivery needs developer attention. All developers can use Regenerate code & email all.':'VIP unlocked! Welcome aboard.';
     }catch(err){$('vipRedeemStatus').textContent=err.message;}
     finally{b.disabled=false;}
   });

@@ -3008,3 +3008,27 @@ html[data-device="tablet"] .settings-shortcuts {
 @media(max-width:520px){.gradient-color-pair{grid-template-columns:1fr}.gradient-color-control{display:grid;grid-template-columns:1fr 1fr;align-items:center}.gradient-color-head,.gradient-color-control>label,.gradient-hex-row,.gradient-presets{grid-column:1/-1}.gradient-wheel{grid-column:1/-1;width:112px;height:112px}.gradient-wheel::after{inset:42px}}
 html[data-gradient=off]{--accent-2:var(--accent);--grad:linear-gradient(135deg,var(--accent),var(--accent))}
 html[data-gradient=off] .stage::before,html[data-gradient=off] .stage::after{opacity:0!important}
+
+
+/* Accent-driven custom VIP theme dropdown (native option popup replaced). */
+.appearance-vip-theme{position:relative}
+.custom-select-source{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;opacity:0!important;pointer-events:none!important}
+.accent-dropdown{position:relative;width:100%;z-index:8}
+.accent-dropdown-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--accent) 48%,var(--border-strong));border-radius:11px;background:linear-gradient(115deg,color-mix(in srgb,var(--accent) 13%,var(--panel)),color-mix(in srgb,var(--accent-2) 13%,var(--panel)));color:var(--text);font:700 .82rem Inter,system-ui,sans-serif;text-align:left;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff20,0 3px 12px color-mix(in srgb,var(--accent) 10%,transparent);transition:border-color .18s,box-shadow .18s,transform .18s}
+.accent-dropdown-trigger:hover,.accent-dropdown.open .accent-dropdown-trigger{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent),0 7px 22px color-mix(in srgb,var(--accent-2) 13%,transparent)}
+.accent-dropdown-trigger:active{transform:scale(.995)}
+.accent-dropdown-current{display:flex;align-items:center;gap:10px;min-width:0}
+.accent-dropdown-current>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.accent-dropdown-swatch{width:23px;height:23px;flex:none;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:1px solid #ffffff55;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 2px 8px color-mix(in srgb,var(--accent) 30%,transparent)}
+.accent-dropdown-chevron{width:9px;height:9px;flex:none;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(45deg) translateY(-2px);transition:transform .18s}
+.accent-dropdown.open .accent-dropdown-chevron{transform:rotate(225deg) translate(-2px,-1px)}
+.accent-dropdown-menu{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(390px,55vh);overflow:auto;padding:7px;border:1px solid color-mix(in srgb,var(--accent) 38%,var(--border-strong));border-radius:14px;background:color-mix(in srgb,var(--panel) 94%,var(--accent) 6%);box-shadow:0 18px 45px #0004,0 0 0 1px color-mix(in srgb,var(--accent-2) 13%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:none;overscroll-behavior:contain}
+.accent-dropdown.open .accent-dropdown-menu{display:block;animation:rise .16s ease both}
+.accent-dropdown-group-label{padding:9px 9px 5px;color:var(--accent-strong);font-size:.65rem;font-weight:850;letter-spacing:.09em;text-transform:uppercase}
+.accent-dropdown-option{display:flex;align-items:center;gap:10px;width:100%;padding:8px 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text);font:600 .77rem Inter,system-ui,sans-serif;text-align:left;cursor:pointer;transition:background .14s,border-color .14s,transform .14s}
+.accent-dropdown-option:hover,.accent-dropdown-option:focus-visible{background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--accent-2) 12%,transparent));border-color:color-mix(in srgb,var(--accent) 34%,transparent);outline:none}
+.accent-dropdown-option[aria-selected=true]{background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 22%,transparent),color-mix(in srgb,var(--accent-2) 19%,transparent));border-color:color-mix(in srgb,var(--accent) 48%,transparent);color:var(--accent-strong)}
+.accent-dropdown-option .accent-dropdown-swatch{width:18px;height:18px;border-radius:6px}
+.accent-dropdown-option .option-check{margin-left:auto;color:var(--accent);font-size:.9rem;font-weight:900;opacity:0}
+.accent-dropdown-option[aria-selected=true] .option-check{opacity:1}
+@media(prefers-reduced-motion:reduce){.accent-dropdown-trigger,.accent-dropdown-option,.accent-dropdown-chevron{transition:none}.accent-dropdown.open .accent-dropdown-menu{animation:none}}

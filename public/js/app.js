@@ -651,7 +651,7 @@
     document.body.classList.toggle('vip-stars',effect==='stars');
     document.body.classList.toggle('vip-neon',effect==='neon');
     document.body.classList.toggle('vip-orbit',effect==='orbit');
-    $('vipTheme').value=theme;$('vipEffect').value=effect;$('vipPersonality').value=vipPersonality;$('vipSound').value=vipSoundPack;
+    $('vipTheme').value=theme;syncVipThemeDropdown();$('vipEffect').value=effect;$('vipPersonality').value=vipPersonality;$('vipSound').value=vipSoundPack;
     $('vipAvatar').value=p.avatar||'';
     $('vipTagline').value=p.tagline||'';
     $('vipTaglineDisplay').textContent=p.tagline||'';
@@ -712,7 +712,7 @@
   $('vipReset').addEventListener('click',()=>{
     if(!vipActive)return;
     try{localStorage.removeItem(vipPrefsKey())}catch{}
-    $('vipTheme').value='gold';$('vipEffect').value='stars';$('vipPersonality').value='default';$('vipSound').value='classic';$('vipAvatar').value='';
+    $('vipTheme').value='gold';syncVipThemeDropdown();$('vipEffect').value='stars';$('vipPersonality').value='default';$('vipSound').value='classic';$('vipAvatar').value='';
     applyVipPrefs(true);
   });
   function runVipCommand(raw){
@@ -1528,6 +1528,67 @@
     renderGradientColor(which,false);
   }
   $('gradientToggle').addEventListener('click',()=>{const enabled=root.dataset.gradient!=='on';try{localStorage.setItem('glitch_gradient',enabled?'on':'off')}catch{}applyGradientSettings(false);});
+  // Replace the browser-native VIP theme popup with an accent-reactive, keyboard-accessible menu.
+  const vipThemeSelect=$('vipTheme');
+  const vipThemeDropdown=document.createElement('div');
+  vipThemeDropdown.className='accent-dropdown';
+  vipThemeDropdown.innerHTML='<button type="button" class="accent-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false"><span class="accent-dropdown-current"><span class="accent-dropdown-swatch"></span><span class="accent-dropdown-label"></span></span><span class="accent-dropdown-chevron" aria-hidden="true"></span></button><div class="accent-dropdown-menu" role="listbox" aria-label="VIP theme presets"></div>';
+  vipThemeSelect.insertAdjacentElement('afterend',vipThemeDropdown);
+  const vipThemeTrigger=vipThemeDropdown.querySelector('.accent-dropdown-trigger');
+  const vipThemeMenu=vipThemeDropdown.querySelector('.accent-dropdown-menu');
+  function syncVipThemeDropdown(){
+    const selected=vipThemeSelect.selectedOptions[0];
+    vipThemeDropdown.querySelector('.accent-dropdown-label').textContent=selected?.textContent||'Choose a theme';
+    vipThemeMenu.querySelectorAll('[role=option]').forEach(option=>{
+      const active=option.dataset.value===vipThemeSelect.value;
+      option.setAttribute('aria-selected',String(active));
+      option.querySelector('.option-check').textContent=active?'✓':'';
+    });
+  }
+  function closeVipThemeDropdown(returnFocus=false){
+    vipThemeDropdown.classList.remove('open');
+    vipThemeTrigger.setAttribute('aria-expanded','false');
+    if(returnFocus)vipThemeTrigger.focus();
+  }
+  function chooseVipTheme(value){
+    vipThemeSelect.value=value;
+    vipThemeSelect.dispatchEvent(new Event('change',{bubbles:true}));
+    syncVipThemeDropdown();
+    closeVipThemeDropdown(true);
+  }
+  [...vipThemeSelect.children].forEach(group=>{
+    if(group.tagName==='OPTGROUP'){
+      const heading=document.createElement('div');heading.className='accent-dropdown-group-label';heading.textContent=group.label;vipThemeMenu.appendChild(heading);
+      [...group.children].forEach(option=>addVipThemeOption(option));
+    }else if(group.tagName==='OPTION')addVipThemeOption(group);
+  });
+  function addVipThemeOption(option){
+    const button=document.createElement('button');button.type='button';button.className='accent-dropdown-option';button.setAttribute('role','option');button.dataset.value=option.value;
+    button.innerHTML='<span class="accent-dropdown-swatch" aria-hidden="true"></span><span></span><span class="option-check" aria-hidden="true"></span>';
+    button.children[1].textContent=option.textContent;
+    button.addEventListener('click',()=>chooseVipTheme(option.value));
+    button.addEventListener('keydown',event=>{
+      const options=[...vipThemeMenu.querySelectorAll('[role=option]')],index=options.indexOf(button);
+      if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();options[(index+(event.key==='ArrowDown'?1:-1)+options.length)%options.length].focus();}
+      else if(event.key==='Home'){event.preventDefault();options[0]?.focus();}
+      else if(event.key==='End'){event.preventDefault();options.at(-1)?.focus();}
+      else if(event.key==='Escape'){event.preventDefault();closeVipThemeDropdown(true);}
+    });
+    vipThemeMenu.appendChild(button);
+  }
+  vipThemeTrigger.addEventListener('click',()=>{
+    const open=!vipThemeDropdown.classList.contains('open');
+    vipThemeDropdown.classList.toggle('open',open);
+    vipThemeTrigger.setAttribute('aria-expanded',String(open));
+    if(open){const active=vipThemeMenu.querySelector('[aria-selected=true]');(active||vipThemeMenu.querySelector('[role=option]'))?.focus();}
+  });
+  vipThemeTrigger.addEventListener('keydown',event=>{
+    if(event.key==='ArrowDown'||event.key==='Enter'||event.key===' '){event.preventDefault();vipThemeDropdown.classList.add('open');vipThemeTrigger.setAttribute('aria-expanded','true');(vipThemeMenu.querySelector('[aria-selected=true]')||vipThemeMenu.querySelector('[role=option]'))?.focus();}
+  });
+  document.addEventListener('pointerdown',event=>{if(!vipThemeDropdown.contains(event.target))closeVipThemeDropdown();});
+  vipThemeSelect.addEventListener('change',syncVipThemeDropdown);
+  syncVipThemeDropdown();
+
   // Choosing a VIP preset also loads that preset's own two palette colours into the gradient editor.
   $('vipTheme').addEventListener('change',()=>{
     root.style.removeProperty('--accent');root.style.removeProperty('--accent-2');

@@ -1556,12 +1556,6 @@
     syncVipThemeDropdown();
     closeVipThemeDropdown(true);
   }
-  [...vipThemeSelect.children].forEach(group=>{
-    if(group.tagName==='OPTGROUP'){
-      const heading=document.createElement('div');heading.className='accent-dropdown-group-label';heading.textContent=group.label;vipThemeMenu.appendChild(heading);
-      [...group.children].forEach(option=>addVipThemeOption(option));
-    }else if(group.tagName==='OPTION')addVipThemeOption(group);
-  });
   const vipThemePaletteColors={
     gold:['#d6a12b','#fff0a6'],obsidian:['#f1c75b','#a78bfa'],champagne:['#c6a66b','#fff4d0'],rosegold:['#b86d68','#f4b5a5'],titanium:['#8e9baa','#edf3f8'],carbon:['#a5b4c7','#64748b'],
     aurora:['#00b894','#55e6c1'],emerald:['#087f5b','#b7e36b'],jade:['#168b83','#9be7cf'],toxic:['#a3e635','#d9ff36'],
@@ -1571,11 +1565,19 @@
     solar:['#ea580c','#fde047'],amber:['#b45309','#fcd34d'],inferno:['#dc2626','#f97316'],citrus:['#65a30d','#facc15'],
     monsoon:['#0f766e','#5eead4'],copperhead:['#b45309','#67a6a0'],pearl:['#94a3b8','#f5d0fe'],circuit:['#84cc16','#38bdf8']
   };
+  [...vipThemeSelect.children].forEach(group=>{
+    if(group.tagName==='OPTGROUP'){
+      const heading=document.createElement('div');heading.className='accent-dropdown-group-label';heading.textContent=group.label;vipThemeMenu.appendChild(heading);
+      [...group.children].forEach(option=>addVipThemeOption(option));
+    }else if(group.tagName==='OPTION')addVipThemeOption(group);
+  });
+
   function addVipThemeOption(option){
     const button=document.createElement('button');button.type='button';button.className='accent-dropdown-option';button.setAttribute('role','option');button.dataset.value=option.value;
     button.innerHTML='<span class="accent-dropdown-swatch" aria-hidden="true"></span><span></span><span class="option-check" aria-hidden="true"></span>';
-    const themeColors=vipThemePaletteColors[option.value]||['var(--accent)','var(--accent-2)'];
-    button.querySelector('.accent-dropdown-swatch').style.backgroundImage='linear-gradient(135deg,'+themeColors[0]+','+themeColors[1]+')';
+    const themeColors=vipThemePaletteColors[option.value];
+    const swatch=button.querySelector('.accent-dropdown-swatch');
+    if(themeColors)swatch.style.setProperty('--theme-swatch','linear-gradient(135deg,'+themeColors[0]+','+themeColors[1]+')');
     button.children[1].textContent=option.textContent;
     button.addEventListener('click',()=>chooseVipTheme(option.value));
     button.addEventListener('keydown',event=>{

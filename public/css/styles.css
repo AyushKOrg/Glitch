@@ -3028,7 +3028,7 @@ html[data-gradient=off] .stage::before,html[data-gradient=off] .stage::after{opa
 .accent-dropdown-option{display:flex;align-items:center;gap:10px;width:100%;padding:8px 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text);font:600 .77rem Inter,system-ui,sans-serif;text-align:left;cursor:pointer;transition:background .14s,border-color .14s,transform .14s}
 .accent-dropdown-option:hover,.accent-dropdown-option:focus-visible{background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--accent-2) 12%,transparent));border-color:color-mix(in srgb,var(--accent) 34%,transparent);outline:none}
 .accent-dropdown-option[aria-selected=true]{background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 22%,transparent),color-mix(in srgb,var(--accent-2) 19%,transparent));border-color:color-mix(in srgb,var(--accent) 48%,transparent);color:var(--accent-strong)}
-.accent-dropdown-option .accent-dropdown-swatch{width:18px;height:18px;border-radius:6px}
+.accent-dropdown-option .accent-dropdown-swatch{width:18px;height:18px;border-radius:6px;background:var(--theme-swatch,linear-gradient(135deg,#64748b,#cbd5e1))!important;box-shadow:0 0 0 1px #ffffff55,0 2px 7px #0003}
 .accent-dropdown-option .option-check{margin-left:auto;color:var(--accent);font-size:.9rem;font-weight:900;opacity:0}
 .accent-dropdown-option[aria-selected=true] .option-check{opacity:1}
 @media(prefers-reduced-motion:reduce){.accent-dropdown-trigger,.accent-dropdown-option,.accent-dropdown-chevron{transition:none}.accent-dropdown.open .accent-dropdown-menu{animation:none}}

@@ -231,6 +231,7 @@
   Storage.prototype.removeItem=function(key){nativeRemoveItem.call(this,key);if(this===localStorage&&cloudKeyAllowed(String(key)))scheduleCloudSync();};
 
   let vipActive = false, vipPersonality = 'default', vipSoundPack = 'classic';
+  var gradientState = null;
   let history = [];                                             // [{role, content}]
   let conversations = [];
   let activeChatId = null;
@@ -646,7 +647,7 @@
     vipSoundPack=['classic','soft','arcade'].includes(p.sound)?p.sound:'classic';
     document.documentElement.dataset.theme=theme;
     try{localStorage.removeItem('glitch_theme');localStorage.removeItem('glitch_accent')}catch{}
-    if(typeof applyGradientSettings==='function')applyGradientSettings(false);
+    if(gradientState)applyGradientSettings(false);
     document.body.classList.toggle('vip-stars',effect==='stars');
     document.body.classList.toggle('vip-neon',effect==='neon');
     document.body.classList.toggle('vip-orbit',effect==='orbit');
@@ -1468,7 +1469,7 @@
   updateAccentSwatches();
 
   // Two-colour gradient editor. The two wheels share the same HSV maths but persist independently.
-  const gradientState={a:{h:260,s:75,v:92,hex:'#7c3aed'},b:{h:330,s:69,v:92,hex:'#ec4899'}};
+  gradientState={a:{h:260,s:75,v:92,hex:'#7c3aed'},b:{h:330,s:69,v:92,hex:'#ec4899'}};
   function gradientHex(h,s,v){
     const chroma=(v/100)*(s/100),x=chroma*(1-Math.abs((h/60)%2-1)),m=v/100-chroma;
     const rgb=h<60?[chroma,x,0]:h<120?[x,chroma,0]:h<180?[0,chroma,x]:h<240?[0,x,chroma]:h<300?[x,0,chroma]:[chroma,0,x];

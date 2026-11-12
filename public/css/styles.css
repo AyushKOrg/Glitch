@@ -3006,4 +3006,5 @@ html[data-device="tablet"] .settings-shortcuts {
 .gradient-presets button{width:100%;aspect-ratio:1;border:2px solid var(--panel);border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px var(--border);cursor:pointer}
 .gradient-presets button:hover,.gradient-presets button:focus-visible{transform:scale(1.12);box-shadow:0 0 0 2px var(--accent)}
 @media(max-width:520px){.gradient-color-pair{grid-template-columns:1fr}.gradient-color-control{display:grid;grid-template-columns:1fr 1fr;align-items:center}.gradient-color-head,.gradient-color-control>label,.gradient-hex-row,.gradient-presets{grid-column:1/-1}.gradient-wheel{grid-column:1/-1;width:112px;height:112px}.gradient-wheel::after{inset:42px}}
-html[data-gradient=off] .stage::before,html[data-gradient=off] .stage::after{opacity:.12}
+html[data-gradient=off]{--accent-2:var(--accent);--grad:linear-gradient(135deg,var(--accent),var(--accent))}
+html[data-gradient=off] .stage::before,html[data-gradient=off] .stage::after{opacity:0!important}

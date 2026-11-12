@@ -621,8 +621,12 @@
     $('vipLock').hidden = vipActive;
     $('vipUnlocked').hidden = !vipActive;
     document.querySelectorAll('.tool-lock-label').forEach(el=>{el.textContent=vipActive?'UNLOCKED':'VIP';});
-    if(!vipActive){ document.body.classList.remove('vip-stars','vip-neon','vip-orbit'); vipPersonality='default'; }
-    else applyVipPrefs(false);
+    if(!vipActive){
+      document.body.classList.remove('vip-stars','vip-neon','vip-orbit'); vipPersonality='default';
+      const exclusiveThemes=['gold','obsidian','cosmic','aurora','emerald','crimson','arctic','sakura','solar','ocean','amethyst','carbon'];
+      if(exclusiveThemes.includes(document.documentElement.dataset.theme||''))document.documentElement.dataset.theme='default';
+      try{if(exclusiveThemes.includes(localStorage.getItem('glitch_theme')||''))localStorage.removeItem('glitch_theme')}catch{}
+    } else applyVipPrefs(false);
   }
   async function refreshVip(){
     if(!user || user.isAnonymous){setVipState(false);return;}
@@ -634,12 +638,13 @@
   function applyVipPrefs(showToastMessage=false){
     if(!vipActive)return;
     let p={};try{p=JSON.parse(localStorage.getItem(vipPrefsKey())||'{}')}catch{}
-    const theme=['gold','obsidian','cosmic','aurora'].includes(p.theme)?p.theme:'gold';
+    const exclusiveThemes=['gold','obsidian','cosmic','aurora','emerald','crimson','arctic','sakura','solar','ocean','amethyst','carbon'];
+    const theme=exclusiveThemes.includes(p.theme)?p.theme:'gold';
     const effect=['stars','neon','orbit','none'].includes(p.effect)?p.effect:'stars';
     vipPersonality=['default','witty','mentor','coder','chill'].includes(p.personality)?p.personality:'default';
     vipSoundPack=['classic','soft','arcade'].includes(p.sound)?p.sound:'classic';
     document.documentElement.dataset.theme=theme;
-    try{localStorage.setItem('glitch_theme',theme);localStorage.removeItem('glitch_accent')}catch{}
+    try{localStorage.removeItem('glitch_theme');localStorage.removeItem('glitch_accent')}catch{}
     document.body.classList.toggle('vip-stars',effect==='stars');
     document.body.classList.toggle('vip-neon',effect==='neon');
     document.body.classList.toggle('vip-orbit',effect==='orbit');
@@ -700,6 +705,7 @@
     catch(e){$('vipDevStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='↻ Rotate code & email all developers';}
   });
   $('vipSave').addEventListener('click',saveVipPrefs);
+  $('vipTheme').addEventListener('change',saveVipPrefs);
   $('vipReset').addEventListener('click',()=>{
     if(!vipActive)return;
     try{localStorage.removeItem(vipPrefsKey())}catch{}
@@ -715,7 +721,7 @@
     if(cmd==='/lounge'){openVipModal();return true;}
     if(cmd==='/theme'){
       const name=(bits[1]||'gold').toLowerCase();
-      if(!['gold','obsidian','cosmic','aurora'].includes(name)){showToast('Themes: gold, obsidian, cosmic, aurora');return true;}
+      if(!['gold','obsidian','cosmic','aurora','emerald','crimson','arctic','sakura','solar','ocean','amethyst','carbon'].includes(name)){showToast('Themes: gold, obsidian, cosmic, aurora, emerald, crimson, arctic, sakura, solar, ocean, amethyst, carbon');return true;}
       $('vipTheme').value=name;saveVipPrefs();return true;
     }
     return false;

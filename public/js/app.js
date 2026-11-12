@@ -1856,7 +1856,7 @@
   window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;updateInstallButtons();showToast('Glitch was installed successfully.');});
   async function installGlitch(){if(isStandalone()){showToast('Glitch is already installed.');return;}if(deferredInstallPrompt){const prompt=deferredInstallPrompt;deferredInstallPrompt=null;try{await prompt.prompt();const choice=await prompt.userChoice;if(choice&&choice.outcome==='accepted')showToast('Glitch installation started.');else showToast('Installation was cancelled.');}catch{openInstallHelp();}updateInstallButtons();return;}openInstallHelp();}
   installButtons.forEach(button=>button.addEventListener('click',installGlitch));$('installClose').addEventListener('click',()=>$('installModal').classList.remove('open'));installModal.addEventListener('click',e=>{if(e.target===installModal)installModal.classList.remove('open');});
-  updateInstallButtons();if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(error=>console.warn('PWA service worker registration failed:',error));
+  updateInstallButtons();if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js',{scope:'/',updateViaCache:'none'}).then(registration=>registration.update()).catch(error=>console.warn('PWA service worker update failed:',error));}
 
   // ---- start ----------------------------------------------------------------------
   if(user) refreshVip().catch(()=>setVipState(false));

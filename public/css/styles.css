@@ -2924,3 +2924,21 @@ html[data-device="tablet"] .settings-shortcuts {
     overflow: hidden !important;
   }
 }
+
+
+/* Additional VIP/DEV preset palettes — intentionally grouped by colour family */
+[data-theme=champagne]{--accent:#d8bd83;--accent-2:#fff0c2;--accent-soft:color-mix(in srgb,#d8bd83 17%,transparent);--accent-strong:#9f8147}
+[data-theme=rosegold]{--accent:#c98278;--accent-2:#f2b6a8;--accent-soft:color-mix(in srgb,#c98278 17%,transparent);--accent-strong:#a65350}
+[data-theme=titanium]{--accent:#a8b4c2;--accent-2:#e2e8f0;--accent-soft:color-mix(in srgb,#a8b4c2 18%,transparent);--accent-strong:#64748b}
+[data-theme=jade]{--accent:#0f9f78;--accent-2:#6ee7b7;--accent-soft:color-mix(in srgb,#0f9f78 17%,transparent);--accent-strong:#047857}
+[data-theme=toxic]{--accent:#a3e635;--accent-2:#22c55e;--accent-soft:color-mix(in srgb,#a3e635 18%,transparent);--accent-strong:#4d7c0f}
+[data-theme=ultraviolet]{--accent:#7c3aed;--accent-2:#d946ef;--accent-soft:color-mix(in srgb,#7c3aed 17%,transparent);--accent-strong:#6d28d9}
+[data-theme=lavender]{--accent:#a78bfa;--accent-2:#f0abfc;--accent-soft:color-mix(in srgb,#a78bfa 17%,transparent);--accent-strong:#7c3aed}
+[data-theme=sapphire]{--accent:#2563eb;--accent-2:#60a5fa;--accent-soft:color-mix(in srgb,#2563eb 17%,transparent);--accent-strong:#1d4ed8}
+[data-theme=glacier]{--accent:#67e8f9;--accent-2:#bfdbfe;--accent-soft:color-mix(in srgb,#67e8f9 18%,transparent);--accent-strong:#0891b2}
+[data-theme=ruby]{--accent:#be123c;--accent-2:#fb7185;--accent-soft:color-mix(in srgb,#be123c 17%,transparent);--accent-strong:#9f1239}
+[data-theme=blush]{--accent:#f472b6;--accent-2:#fecdd3;--accent-soft:color-mix(in srgb,#f472b6 17%,transparent);--accent-strong:#db2777}
+[data-theme=fuchsia]{--accent:#d946ef;--accent-2:#fb7185;--accent-soft:color-mix(in srgb,#d946ef 17%,transparent);--accent-strong:#a21caf}
+[data-theme=amber]{--accent:#f59e0b;--accent-2:#fcd34d;--accent-soft:color-mix(in srgb,#f59e0b 17%,transparent);--accent-strong:#b45309}
+[data-theme=inferno]{--accent:#ea580c;--accent-2:#dc2626;--accent-soft:color-mix(in srgb,#ea580c 17%,transparent);--accent-strong:#c2410c}
+[data-theme=citrus]{--accent:#ca8a04;--accent-2:#bef264;--accent-soft:color-mix(in srgb,#ca8a04 17%,transparent);--accent-strong:#854d0e}

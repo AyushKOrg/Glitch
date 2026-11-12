@@ -623,7 +623,7 @@
     document.querySelectorAll('.tool-lock-label').forEach(el=>{el.textContent=vipActive?'UNLOCKED':'VIP';});
     if(!vipActive){
       document.body.classList.remove('vip-stars','vip-neon','vip-orbit'); vipPersonality='default';
-      const exclusiveThemes=['gold','obsidian','cosmic','aurora','emerald','crimson','arctic','sakura','solar','ocean','amethyst','carbon'];
+      const exclusiveThemes=['gold','obsidian','champagne','rosegold','titanium','carbon','aurora','emerald','jade','toxic','cosmic','amethyst','ultraviolet','lavender','arctic','ocean','sapphire','glacier','crimson','ruby','sakura','blush','fuchsia','solar','amber','inferno','citrus'];
       if(exclusiveThemes.includes(document.documentElement.dataset.theme||''))document.documentElement.dataset.theme='default';
       try{if(exclusiveThemes.includes(localStorage.getItem('glitch_theme')||''))localStorage.removeItem('glitch_theme')}catch{}
     } else applyVipPrefs(false);
@@ -638,7 +638,7 @@
   function applyVipPrefs(showToastMessage=false){
     if(!vipActive)return;
     let p={};try{p=JSON.parse(localStorage.getItem(vipPrefsKey())||'{}')}catch{}
-    const exclusiveThemes=['gold','obsidian','cosmic','aurora','emerald','crimson','arctic','sakura','solar','ocean','amethyst','carbon'];
+    const exclusiveThemes=['gold','obsidian','champagne','rosegold','titanium','carbon','aurora','emerald','jade','toxic','cosmic','amethyst','ultraviolet','lavender','arctic','ocean','sapphire','glacier','crimson','ruby','sakura','blush','fuchsia','solar','amber','inferno','citrus'];
     const theme=exclusiveThemes.includes(p.theme)?p.theme:'gold';
     const effect=['stars','neon','orbit','none'].includes(p.effect)?p.effect:'stars';
     vipPersonality=['default','witty','mentor','coder','chill'].includes(p.personality)?p.personality:'default';
@@ -721,7 +721,7 @@
     if(cmd==='/lounge'){openVipModal();return true;}
     if(cmd==='/theme'){
       const name=(bits[1]||'gold').toLowerCase();
-      if(!['gold','obsidian','cosmic','aurora','emerald','crimson','arctic','sakura','solar','ocean','amethyst','carbon'].includes(name)){showToast('Themes: gold, obsidian, cosmic, aurora, emerald, crimson, arctic, sakura, solar, ocean, amethyst, carbon');return true;}
+      if(!['gold','obsidian','champagne','rosegold','titanium','carbon','aurora','emerald','jade','toxic','cosmic','amethyst','ultraviolet','lavender','arctic','ocean','sapphire','glacier','crimson','ruby','sakura','blush','fuchsia','solar','amber','inferno','citrus'].includes(name)){showToast('VIP themes: gold, obsidian, champagne, rosegold, titanium, carbon, aurora, emerald, jade, toxic, cosmic, amethyst, ultraviolet, lavender, arctic, ocean, sapphire, glacier, crimson, ruby, sakura, blush, fuchsia, solar, amber, inferno, citrus');return true;}
       $('vipTheme').value=name;saveVipPrefs();return true;
     }
     return false;

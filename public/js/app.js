@@ -707,7 +707,7 @@
     catch(e){$('vipDevStatus').textContent=e.message;}finally{b.disabled=false;b.textContent='↻ Rotate code & email all developers';}
   });
   $('vipSave').addEventListener('click',saveVipPrefs);
-  $('vipTheme').addEventListener('change',saveVipPrefs);
+
   $('vipReset').addEventListener('click',()=>{
     if(!vipActive)return;
     try{localStorage.removeItem(vipPrefsKey())}catch{}
@@ -956,7 +956,7 @@
     }
     else if(action==='install')installGlitch();
   }));
-  $('vipToolsOpen').addEventListener('click',()=>openVipModal());
+
   $('profilePictureInput').addEventListener('change',e=>{
     const file=e.target.files&&e.target.files[0];if(!file)return;
     if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)||file.size>1500000){$('profileStatus').textContent='Choose a PNG, JPG, WebP or GIF under 1.5 MB.';e.target.value='';return;}
@@ -1496,14 +1496,14 @@
     input.setCustomValidity('');Object.assign(gradientState[which],gradientHsv(hex),{hex});renderGradientColor(which,true);
   }
   function applyGradientSettings(persist=true){
-    const enabled=localStorage.getItem('glitch_gradient')!=='off';
+    let enabled=true;try{enabled=localStorage.getItem('glitch_gradient')!=='off'}catch{}
     root.dataset.gradient=enabled?'on':'off';
     $('gradientToggle').setAttribute('aria-pressed',String(enabled));
     $('gradientToggleLabel').textContent='Gradient: '+(enabled?'on':'off');
     $('gradientEditor').hidden=!enabled;
-    if(enabled){root.style.setProperty('--accent',gradientState.a.hex);root.style.setProperty('--accent-2',gradientState.b.hex);}
+    if(enabled){root.style.setProperty('--accent',gradientState.a.hex);root.style.setProperty('--accent-2',gradientState.b.hex);root.style.setProperty('--accent-soft','color-mix(in srgb,'+gradientState.a.hex+' 16%,transparent)');root.style.setProperty('--accent-strong',gradientState.a.hex);}
     else {
-      root.style.removeProperty('--accent-2');root.style.removeProperty('--accent');
+      root.style.removeProperty('--accent-2');root.style.removeProperty('--accent');root.style.removeProperty('--accent-soft');root.style.removeProperty('--accent-strong');
       try{const accent=localStorage.getItem('glitch_accent');if(accent&&validHex(accent))root.style.setProperty('--accent',accent);}catch{}
     }
     if(persist)try{localStorage.setItem('glitch_gradient',enabled?'on':'off')}catch{}
@@ -1527,6 +1527,18 @@
     renderGradientColor(which,false);
   }
   $('gradientToggle').addEventListener('click',()=>{const enabled=root.dataset.gradient!=='on';try{localStorage.setItem('glitch_gradient',enabled?'on':'off')}catch{}applyGradientSettings(false);});
+  // Choosing a VIP preset also loads that preset's own two palette colours into the gradient editor.
+  $('vipTheme').addEventListener('change',()=>{
+    root.style.removeProperty('--accent');root.style.removeProperty('--accent-2');
+    root.dataset.theme=$('vipTheme').value;
+    const palette=getComputedStyle(root);
+    const first=validHex(palette.getPropertyValue('--accent').trim())||'#d6a12b';
+    const second=validHex(palette.getPropertyValue('--accent-2').trim())||first;
+    Object.assign(gradientState.a,gradientHsv(first),{hex:first});
+    Object.assign(gradientState.b,gradientHsv(second),{hex:second});
+    renderGradientColor('a',true);renderGradientColor('b',true);
+    saveVipPrefs();
+  });
   applyGradientSettings(false);
 
   const schemePreference = $('schemePreference');

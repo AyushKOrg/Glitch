@@ -611,10 +611,11 @@
     vipActive = Boolean(active);
     // VIP-only tools stay hidden until the server confirms membership.
     // Hide the entire VIP tools section unless the server confirms VIP/DEV access.
-    const vipToolIds=['vipToolsOpen','openImageStudio','openPresentationStudio','openVideoStudio','openImageEditor'];
+    const vipToolIds=['openImageStudio','openPresentationStudio','openVideoStudio','openImageEditor'];
     vipToolIds.forEach(id=>{const button=$(id);if(button)button.hidden=!vipActive;});
     const vipHeading=document.querySelector('.tool-group-label');
     if(vipHeading)vipHeading.hidden=!vipActive;
+    const appearanceTheme=$('appearanceVipTheme');if(appearanceTheme)appearanceTheme.hidden=!vipActive;
     document.body.classList.toggle('vip-active', vipActive);
     syncAccountBadge();
     $('vipTaglineDisplay').hidden = !vipActive || vipDeveloper;
@@ -645,6 +646,7 @@
     vipSoundPack=['classic','soft','arcade'].includes(p.sound)?p.sound:'classic';
     document.documentElement.dataset.theme=theme;
     try{localStorage.removeItem('glitch_theme');localStorage.removeItem('glitch_accent')}catch{}
+    if(typeof applyGradientSettings==='function')applyGradientSettings(false);
     document.body.classList.toggle('vip-stars',effect==='stars');
     document.body.classList.toggle('vip-neon',effect==='neon');
     document.body.classList.toggle('vip-orbit',effect==='orbit');
@@ -929,6 +931,10 @@
       closeSettingsDetail();
     });
   }
+  $('sidebarAppearanceShortcut').addEventListener('click',()=>{
+    if(settingsCleanupFrame){cancelAnimationFrame(settingsCleanupFrame);settingsCleanupFrame=0;}
+    closeSettingsDetail();paintProfile();$('settingsModal').classList.add('open');openSettingsDetail('appearance');
+  });
   $('settingsOpen').addEventListener('click',()=>{
     if(settingsCleanupFrame){cancelAnimationFrame(settingsCleanupFrame);settingsCleanupFrame=0;}
     closeSettingsDetail();paintProfile();$('settingsModal').classList.add('open');
@@ -1460,6 +1466,69 @@
     }
   });
   updateAccentSwatches();
+
+  // Two-colour gradient editor. The two wheels share the same HSV maths but persist independently.
+  const gradientState={a:{h:260,s:75,v:92,hex:'#7c3aed'},b:{h:330,s:69,v:92,hex:'#ec4899'}};
+  function gradientHex(h,s,v){
+    const chroma=(v/100)*(s/100),x=chroma*(1-Math.abs((h/60)%2-1)),m=v/100-chroma;
+    const rgb=h<60?[chroma,x,0]:h<120?[x,chroma,0]:h<180?[0,chroma,x]:h<240?[0,x,chroma]:h<300?[x,0,chroma]:[chroma,0,x];
+    return '#'+rgb.map(n=>Math.round((n+m)*255).toString(16).padStart(2,'0')).join('');
+  }
+  function gradientHsv(hex){
+    const r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+    const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;let h=0;
+    if(d){if(max===r)h=60*(((g-b)/d)%6);else if(max===g)h=60*((b-r)/d+2);else h=60*((r-g)/d+4);}
+    return {h:(h+360)%360,s:max?d/max*100:0,v:max*100};
+  }
+  function validHex(value){const m=/^#?([0-9a-f]{6})$/i.exec(String(value||'').trim());return m?'#'+m[1].toLowerCase():null;}
+  function renderGradientColor(which,persist=true){
+    const state=gradientState[which],wheel=$('gradientWheel'+which.toUpperCase()),marker=$('gradientMarker'+which.toUpperCase());
+    const angle=(state.h-90)*Math.PI/180,radius=42*(state.s/100);
+    marker.style.left=(50+Math.cos(angle)*radius)+'%';marker.style.top=(50+Math.sin(angle)*radius)+'%';
+    wheel.style.setProperty('--wheel-selected',state.hex);wheel.setAttribute('aria-valuenow',String(Math.round(state.h)));
+    $('gradientHex'+which.toUpperCase()).value=state.hex.toUpperCase();$('gradientHexLabel'+which.toUpperCase()).textContent=state.hex.toUpperCase();
+    if(persist)try{localStorage.setItem('glitch_gradient_'+which,state.hex)}catch{}
+    applyGradientSettings(false);
+  }
+  function setGradientHex(which,value){
+    const hex=validHex(value);const input=$('gradientHex'+which.toUpperCase());
+    if(!hex){input.setCustomValidity('Enter a valid six-digit HEX colour.');input.reportValidity();return;}
+    input.setCustomValidity('');Object.assign(gradientState[which],gradientHsv(hex),{hex});renderGradientColor(which,true);
+  }
+  function applyGradientSettings(persist=true){
+    const enabled=localStorage.getItem('glitch_gradient')!=='off';
+    root.dataset.gradient=enabled?'on':'off';
+    $('gradientToggle').setAttribute('aria-pressed',String(enabled));
+    $('gradientToggleLabel').textContent='Gradient: '+(enabled?'on':'off');
+    $('gradientEditor').hidden=!enabled;
+    if(enabled){root.style.setProperty('--accent',gradientState.a.hex);root.style.setProperty('--accent-2',gradientState.b.hex);}
+    else {
+      root.style.removeProperty('--accent-2');root.style.removeProperty('--accent');
+      try{const accent=localStorage.getItem('glitch_accent');if(accent&&validHex(accent))root.style.setProperty('--accent',accent);}catch{}
+    }
+    if(persist)try{localStorage.setItem('glitch_gradient',enabled?'on':'off')}catch{}
+  }
+  for(const which of ['a','b']){
+    const wheel=$('gradientWheel'+which.toUpperCase());
+    function moveGradientWheel(e){
+      const r=wheel.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);
+      gradientState[which].h=(Math.atan2(y,x)*180/Math.PI+90+360)%360;
+      gradientState[which].s=Math.min(100,Math.hypot(x,y)/(r.width*.47)*100);
+      gradientState[which].hex=gradientHex(gradientState[which].h,gradientState[which].s,gradientState[which].v);
+      renderGradientColor(which,true);
+    }
+    wheel.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;wheel.setPointerCapture(e.pointerId);moveGradientWheel(e);});
+    wheel.addEventListener('pointermove',e=>{if(wheel.hasPointerCapture(e.pointerId))moveGradientWheel(e);});
+    $('gradientHex'+which.toUpperCase()).addEventListener('change',e=>setGradientHex(which,e.target.value));
+    $('gradientHex'+which.toUpperCase()).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setGradientHex(which,e.target.value);}});
+    document.querySelectorAll('[data-gradient-apply="'+which+'"]').forEach(b=>b.addEventListener('click',()=>setGradientHex(which,$('gradientHex'+which.toUpperCase()).value)));
+    document.querySelectorAll('[data-gradient-preset="'+which+'"]').forEach(b=>b.addEventListener('click',()=>setGradientHex(which,b.dataset.color)));
+    try{const saved=validHex(localStorage.getItem('glitch_gradient_'+which));if(saved){Object.assign(gradientState[which],gradientHsv(saved),{hex:saved});}}catch{}
+    renderGradientColor(which,false);
+  }
+  $('gradientToggle').addEventListener('click',()=>{const enabled=root.dataset.gradient!=='on';try{localStorage.setItem('glitch_gradient',enabled?'on':'off')}catch{}applyGradientSettings(false);});
+  applyGradientSettings(false);
+
   const schemePreference = $('schemePreference');
   function applySchemePreference(preference, persist=true) {
     const pref = ['light','dark','system'].includes(preference) ? preference : 'system';

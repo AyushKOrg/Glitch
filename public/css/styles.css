@@ -2976,3 +2976,34 @@ html[data-device="tablet"] .settings-shortcuts {
 [data-theme=copperhead]{--accent:#b45309;--accent-2:#67a6a0;--accent-soft:color-mix(in srgb,#b45309 19%,transparent);--accent-strong:#713f12;--theme-glow:color-mix(in srgb,#67a6a0 32%,transparent)}
 [data-theme=pearl]{--accent:#94a3b8;--accent-2:#f5d0fe;--accent-soft:color-mix(in srgb,#94a3b8 19%,transparent);--accent-strong:#475569;--theme-glow:color-mix(in srgb,#f5d0fe 32%,transparent)}
 [data-theme=circuit]{--accent:#84cc16;--accent-2:#38bdf8;--accent-soft:color-mix(in srgb,#84cc16 19%,transparent);--accent-strong:#3f6212;--theme-glow:color-mix(in srgb,#38bdf8 32%,transparent)}
+
+/* Appearance shortcut and independent two-colour gradient controls */
+.sidebar-appearance-shortcut{flex:none;margin:0 0 7px;border:1px solid var(--border);background:var(--panel);font-size:.8rem;font-weight:700}
+.sidebar-appearance-shortcut svg{color:var(--accent-strong)}
+.appearance-vip-theme{display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-alt)}
+.appearance-vip-theme[hidden]{display:none!important}
+.appearance-vip-theme>label{font-size:.78rem;font-weight:800;color:var(--text)}
+.appearance-vip-theme>select{width:100%;min-width:0}
+.appearance-vip-theme>small,.gradient-editor-heading small{font-size:.69rem;color:var(--text-dim)}
+.gradient-toggle-row{margin-top:2px}
+.gradient-editor{display:flex;flex-direction:column;gap:12px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--panel-alt)}
+.gradient-editor[hidden]{display:none!important}
+.gradient-editor-heading{display:flex;flex-direction:column;gap:2px}
+.gradient-editor-heading strong{font-size:.82rem}
+.gradient-color-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.gradient-color-control{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:11px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+.gradient-color-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.gradient-color-head strong{font-size:.76rem}
+.gradient-color-head output{font:750 .68rem ui-monospace,monospace;color:var(--accent-strong)}
+.gradient-color-control>label{font-size:.69rem;font-weight:750;color:var(--text-dim)}
+.gradient-wheel{width:104px;height:104px;align-self:center;position:relative;border:4px solid var(--panel-alt);border-radius:50%;background:radial-gradient(circle,white 0%,transparent 78%),conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);cursor:crosshair;touch-action:none;box-shadow:0 4px 16px #0002}
+.gradient-wheel::after{content:"";position:absolute;inset:38px;border-radius:50%;background:var(--wheel-selected,#7c3aed);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--border);pointer-events:none}
+.gradient-wheel-marker{position:absolute;left:50%;top:8%;width:12px;height:12px;border:2px solid white;border-radius:50%;box-shadow:0 1px 4px #000b;transform:translate(-50%,-50%);pointer-events:none;z-index:1}
+.gradient-hex-row{width:100%;display:flex;gap:5px}
+.gradient-hex-row input{width:0;min-width:0;flex:1;padding:8px!important;font:750 .72rem ui-monospace,monospace!important}
+.gradient-hex-row button{padding:7px 9px;border:1px solid var(--border-strong);border-radius:8px;background:var(--accent-soft);color:var(--text);font-size:.7rem;font-weight:800}
+.gradient-presets{width:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.gradient-presets button{width:100%;aspect-ratio:1;border:2px solid var(--panel);border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px var(--border);cursor:pointer}
+.gradient-presets button:hover,.gradient-presets button:focus-visible{transform:scale(1.12);box-shadow:0 0 0 2px var(--accent)}
+@media(max-width:520px){.gradient-color-pair{grid-template-columns:1fr}.gradient-color-control{display:grid;grid-template-columns:1fr 1fr;align-items:center}.gradient-color-head,.gradient-color-control>label,.gradient-hex-row,.gradient-presets{grid-column:1/-1}.gradient-wheel{grid-column:1/-1;width:112px;height:112px}.gradient-wheel::after{inset:42px}}
+html[data-gradient=off] .stage::before,html[data-gradient=off] .stage::after{opacity:.12}

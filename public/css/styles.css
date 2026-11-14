@@ -3210,3 +3210,34 @@ body.empty .suggest button:nth-child(4) { animation-delay: .21s; }
     transition: none !important;
   }
 }
+
+
+/* Landing composer refinement: single-line pill and right-docked companion. */
+@media (min-width: 761px) {
+  body.empty #chat {
+    width: min(660px, calc(100% - 2.8rem)) !important;
+    min-height: 62px !important;
+    height: 62px !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 7px 8px !important;
+    border-radius: 999px !important;
+  }
+  body.empty #chat #input {
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    overflow-y: auto !important;
+    padding: 10px 5px !important;
+    line-height: 22px !important;
+  }
+  body.empty #chat .round {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  body.empty #cognitionBuddy {
+    left: auto !important;
+    right: 16px !important;
+    top: -54px !important;
+  }
+}

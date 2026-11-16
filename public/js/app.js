@@ -921,7 +921,8 @@
     document.querySelectorAll('.settings-category[data-settings-detail]').forEach(el=>{
       if(el.dataset.settingsDetail===key)el.setAttribute('aria-current','page');
     });
-    if(key==='profile'||key==='account')paintProfile();\n    if(key==='connectors')loadConnectorStatus();
+    if(key==='profile'||key==='account')paintProfile();
+    if(key==='connectors')loadConnectorStatus();
   }
   // Keep the close interaction inside the INP budget: hide the modal immediately,
   // then move the potentially large settings subtree after the next paint.

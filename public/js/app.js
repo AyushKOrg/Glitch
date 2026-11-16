@@ -1953,8 +1953,13 @@
     const { data, error } = await sb.auth.getSession();
     if (error) throw error;
     authInitError = 'Supabase authentication is unavailable. Check your Supabase project URL and anon key.';
-    if (data.session) onSignedIn(data.session.user, data.session.access_token);
-    else openGate();
+    if (data.session) {
+      onSignedIn(data.session.user, data.session.access_token);
+    } else {
+      // Only show a signed-out state after Supabase has finished restoring the persisted session.
+      $('who').textContent = 'Not signed in';
+      openGate();
+    }
   } catch (error) {
     authInitError = 'Authentication setup failed: ' + (error && error.message ? error.message : 'unknown error') + '. Check Vercel environment variables and /vendor/supabase.js.';
     openGate(authInitError);

@@ -1945,21 +1945,30 @@
     if (!cfg.cognition) { const b = document.querySelector('[data-mode="cognition"]'); b.classList.add('off'); b.title += ' (not configured on the server)'; }
     if (!cfg.flash) { const b = document.querySelector('[data-mode="flash"]'); b.classList.add('off'); b.title += ' (not configured on the server)'; }
 
+    let initialAuthResolved = false;
+    // INITIAL_SESSION is emitted by Supabase after it has restored persisted auth.
+    // Avoid calling getSession() alongside the auth listener: both can contend for
+    // the same browser storage lock in some environments and leave startup hanging.
     sb.auth.onAuthStateChange((event, session) => {
-      // Use the access token supplied in the event; do not call Supabase again inside this callback.
+      if (event === 'INITIAL_SESSION') {
+        initialAuthResolved = true;
+        if (session && session.user) onSignedIn(session.user, session.access_token);
+        else {
+          $('who').textContent = 'Not signed in';
+          openGate();
+        }
+        return;
+      }
       if (session && session.user) onSignedIn(session.user, session.access_token);
       else if (event === 'SIGNED_OUT') onSignedOut();
     });
-    const { data, error } = await sb.auth.getSession();
-    if (error) throw error;
-    authInitError = 'Supabase authentication is unavailable. Check your Supabase project URL and anon key.';
-    if (data.session) {
-      onSignedIn(data.session.user, data.session.access_token);
-    } else {
-      // Only show a signed-out state after Supabase has finished restoring the persisted session.
-      $('who').textContent = 'Not signed in';
-      openGate();
-    }
+    // Fail visibly instead of leaving the sidebar stuck forever if storage recovery fails.
+    setTimeout(() => {
+      if (initialAuthResolved || user) return;
+      authInitError = 'Glitch could not restore the saved login. Check that cookies and site storage are enabled, then reload. Your account has not been deleted.';
+      $('who').textContent = 'Session unavailable';
+      openGate(authInitError);
+    }, 12000);
   } catch (error) {
     authInitError = 'Authentication setup failed: ' + (error && error.message ? error.message : 'unknown error') + '. Check Vercel environment variables and /vendor/supabase.js.';
     openGate(authInitError);

@@ -581,7 +581,15 @@
     $('speakToggle').addEventListener('click',()=>{speakOn=!speakOn;put(KEY_SPEAK,speakOn);if(!speakOn)stopSpeaking();paint();if(speakOn){synth.resume();speak('Spoken replies are on.',null);}});
     if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}window.addEventListener('pagehide',()=>{stopSpeaking();stopListening();});paint();
     return {canSpeak,toggleSpeak,stop:stopSpeaking,onReply(text){if(speakOn)speak(text,null);},onSend(){stopSpeaking();if(listening)stopListening();},onFailed(){}};
-  })();
+  })().catch(error => {
+  console.error('Glitch startup failed:', error);
+  const who = document.getElementById('who');
+  const gate = document.getElementById('gate');
+  const message = document.getElementById('gateMsg');
+  if (who) who.textContent = 'Startup error';
+  if (message) message.textContent = 'Glitch could not finish starting: ' + (error && error.message ? error.message : 'unknown error') + '. Please reload once; if it repeats, send this message to the developer.';
+  if (gate) gate.classList.add('open');
+});
 
 
   function refreshContextPanel(){const list=$('contextList'),summary=$('contextSummary');if(!list||!summary)return;const rows=history.slice(-40);summary.textContent=rows.length+' messages in this conversation are available (up to 40), plus '+memoryItems.length+' saved memories.';list.textContent='';if(!rows.length){const empty=document.createElement('p');empty.className='history-empty';empty.textContent='Start chatting and this panel will show the context Glitch can refer to.';list.appendChild(empty);return;}rows.forEach(m=>{const row=document.createElement('div');row.className='context-row '+(m.role==='user'?'context-user':'context-assistant');const label=document.createElement('strong');label.textContent=m.role==='user'?'You':'Glitch';const body=document.createElement('p');body.textContent=String(m.content||'').slice(0,700);row.append(label,body);list.appendChild(row);});}
@@ -1930,7 +1938,7 @@
   markMode(); render(); renderHistoryList();
   let cfg = null;
   try {
-    const response = await fetch('/api/config', { cache: 'no-store' });
+    const response = await fetch('/api/config', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
     if (!response.ok) throw new Error('Configuration endpoint returned HTTP ' + response.status + '.');
     cfg = await response.json();
     if (!cfg.configured) {

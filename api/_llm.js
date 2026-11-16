@@ -60,6 +60,8 @@ async function webSearch(ctx, query) {
 async function runTool(ctx, name, args) {
   args = args && typeof args === 'object' ? args : {};
   if (name === 'web_search') return webSearch(ctx, String(args.query || '').slice(0, 300));
+  if (name.startsWith('google_') && ctx.user) return runGoogleTool(ctx.user, name, args);
+  if (name.startsWith('google_')) return 'Sign in and connect Google in Settings → Connectors first.';
   return `Unknown tool: ${name}`;
 }
 

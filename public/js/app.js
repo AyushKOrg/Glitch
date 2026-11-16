@@ -878,7 +878,8 @@
     profile:{id:'profileSettingsSection',title:'Profile',subtitle:'Your display name and profile picture.',icon:'◉'},
     account:{id:'accountSettingsSection',title:'Account',subtitle:'Your sign-in details and account security.',icon:'♙'},
     appearance:{id:'appearanceSettings',title:'Appearance',subtitle:'Choose your colour mode and accent.',icon:'◐'},
-    audio:{id:'audioSettingsSection',title:'Audio',subtitle:'Control sound effects and spoken replies.',icon:'♫'},\n    connectors:{id:'connectorsSettingsSection',title:'Connectors',subtitle:'Connect Google, GitHub and Vercel.',icon:'⌘'},
+    audio:{id:'audioSettingsSection',title:'Audio',subtitle:'Control sound effects and spoken replies.',icon:'♫'},
+    connectors:{id:'connectorsSettingsSection',title:'Connectors',subtitle:'Connect Google, GitHub and Vercel.',icon:'⌘'},
     memory:{id:'memorySettingsSection',title:'Memory',subtitle:'Manage what Glitch remembers.',icon:'◈'},
     personalize:{id:'vipContent',title:'Personalize Glitch',subtitle:'Your VIP customisation and membership settings.',icon:'✧'},
     vip:{id:'vipContent',title:'Request VIP access',subtitle:'Redeem an invitation and unlock VIP features.',icon:'♛'},
@@ -955,7 +956,8 @@
   async function loadConnectorStatus(){const b=$('googleConnectorButton'),label=$('googleConnectorStatus'),status=$('connectorStatus');if(!user||user.isAnonymous){label.textContent='Sign in required';b.disabled=true;b.textContent='Sign in first';return;}b.disabled=true;try{const r=await api('/api/config?action=connectors');if(!r.ok)throw new Error(r.data.error||'Could not load connectors.');const g=(r.data.connectors||[]).find(x=>x.provider==='google');b.dataset.connected=g?'true':'false';b.textContent=g?'Disconnect':'Connect Google';label.textContent=g?'Connected as '+(g.account_email||'Google account'):'Not connected';}catch(e){label.textContent='Setup required';status.textContent=e.message;}finally{b.disabled=false;}}
   $('googleConnectorButton').addEventListener('click',async()=>{const b=$('googleConnectorButton'),status=$('connectorStatus');b.disabled=true;try{if(b.dataset.connected==='true'){if(!confirm('Disconnect Google from Glitch?'))return;const r=await api('/api/config?action=disconnect',{method:'POST',body:JSON.stringify({action:'disconnect'})});if(!r.ok)throw new Error(r.data.error||'Disconnect failed.');await loadConnectorStatus();}else{const r=await api('/api/config?action=google-start',{method:'POST',body:JSON.stringify({action:'google-start'})});if(!r.ok)throw new Error(r.data.error||'Could not start Google authorization.');location.href=r.data.url;}}catch(e){status.textContent=e.message;}finally{b.disabled=false;}});
   if(new URLSearchParams(location.search).get('connector')==='google-connected')showToast('Google connected. Open Settings → Connectors.');
-\n  $('profilePictureInput').addEventListener('change',e=>{
+
+  $('profilePictureInput').addEventListener('change',e=>{
     const file=e.target.files&&e.target.files[0];if(!file)return;
     if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)||file.size>1500000){$('profileStatus').textContent='Choose a PNG, JPG, WebP or GIF under 1.5 MB.';e.target.value='';return;}
     const reader=new FileReader();reader.onload=()=>{const p=readProfile();p.picture=String(reader.result);try{localStorage.setItem(profileKey(),JSON.stringify(p));paintProfile();$('profileStatus').textContent='Picture updated on this device.';}catch{$('profileStatus').textContent='Could not save this picture. Try a smaller image.';}};reader.onerror=()=>$('profileStatus').textContent='Could not read that image.';reader.readAsDataURL(file);

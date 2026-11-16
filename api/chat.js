@@ -112,7 +112,7 @@ module.exports = async (req, res) => {
     }
 
     await autoLearnFromChat(user, lastUserText);
-    const ctx = { userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
+    const ctx = { user, userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
     let system = systemPrompt(mode) + '\\n\\nCHAT CONTEXT: Use the preceding user and assistant messages in this same conversation to resolve references, preserve decisions, and avoid asking the user to repeat information. The latest 40 messages (within the request size limit) are provided in order.';
     const requestedPersonality = String(req.body && req.body.vipPersonality || 'default');
     if (requestedPersonality !== 'default') {

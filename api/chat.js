@@ -58,6 +58,38 @@ function buildSearchQuery(messages) {
   return cleaned.slice(0, 300);
 }
 
+
+// Directly handle the common “latest Gmail emails” request server-side.
+// Do not depend on Gemini choosing to invoke a function call.
+function isLatestGmailRequest(text) {
+  const t = String(text || '').toLowerCase();
+  return /\b(gmail|inbox|emails?|messages?)\b/.test(t)
+    && /\b(latest|newest|most recent|recent)\b/.test(t)
+    && /\b(search|find|check|show|list|get|read|look|fetch|what are|what's)\b/.test(t);
+}
+
+function formatLatestGmailResult(raw) {
+  if (typeof raw !== 'string') return 'I could not read the Gmail connector response.';
+  if (raw.startsWith('Google connector:') || raw.startsWith('Sign in and connect Google')) {
+    return 'I could not retrieve your Gmail: ' + raw.replace(/^Google connector:\s*/, '');
+  }
+  let data;
+  try { data = JSON.parse(raw); } catch {
+    return 'I could not interpret the Gmail connector response. No email contents are being guessed.';
+  }
+  const messages = Array.isArray(data) ? data : (Array.isArray(data.messages) ? data.messages : []);
+  if (!messages.length) return 'I checked your connected Gmail, but the API returned no messages.';
+  const header = (m, name) => (m.headers || m.payload?.headers || []).find((h) => String(h.name || '').toLowerCase() === name.toLowerCase())?.value || '';
+  const lines = messages.slice(0, 10).map((m, i) => {
+    const from = header(m, 'From') || 'Unknown sender';
+    const subject = header(m, 'Subject') || '(no subject)';
+    const date = header(m, 'Date') || (m.internalDate ? new Date(Number(m.internalDate)).toISOString() : 'Date unavailable');
+    const snippet = String(m.snippet || '').replace(/\s+/g, ' ').trim();
+    return (i + 1) + '. **' + subject + '**\n   - From: ' + from + '\n   - Date: ' + date + (snippet ? '\n   - Preview: ' + snippet.slice(0, 320) : '');
+  });
+  return 'I checked your connected Gmail. Here are the ' + messages.length + ' newest messages returned by Gmail (newest first):\n\n' + lines.join('\n\n');
+}
+
 function clean(raw) {
   if (!Array.isArray(raw)) return null;
   const out = []; let remaining = MAX_TOTAL_CHARS;
@@ -113,6 +145,18 @@ module.exports = async (req, res) => {
 
     await autoLearnFromChat(user, lastUserText);
     const ctx = { user, userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
+    // This path guarantees latest-email retrieval even if the Flash model declines to call tools.
+    if (mode === 'flash' && isLatestGmailRequest(lastUserText)) {
+      const gmailResult = await runTool(ctx, 'gmail_search', { query: '' });
+      const reply = formatLatestGmailResult(gmailResult);
+      return res.status(200).json({
+        reply,
+        mode,
+        usage: user.isAnonymous
+          ? { used: usage.used, remaining: usage.remaining, limit: GUEST_MESSAGE_LIMIT }
+          : null,
+      });
+    }
     let system = systemPrompt(mode) + '\\n\\nCHAT CONTEXT: Use the preceding user and assistant messages in this same conversation to resolve references, preserve decisions, and avoid asking the user to repeat information. The latest 40 messages (within the request size limit) are provided in order.';
     const requestedPersonality = String(req.body && req.body.vipPersonality || 'default');
     if (requestedPersonality !== 'default') {

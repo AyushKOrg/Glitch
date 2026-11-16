@@ -3265,3 +3265,5 @@ body.empty .suggest button:nth-child(4) { animation-delay: .21s; }
 .library-empty{grid-column:1/-1;padding:34px 18px;text-align:center;color:var(--text-dim);border:1px dashed var(--border-strong);border-radius:14px;font-size:.88rem}
 .library-chat-download{display:inline-flex;margin-top:10px;align-items:center;gap:7px}
 @media(max-width:600px){.library-box{max-height:90vh}.library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.library-item{padding:8px}.library-item-preview{height:92px}}
+
+#libraryAttach{background:var(--panel);border:1px solid var(--border);color:var(--text);display:grid;place-items:center}

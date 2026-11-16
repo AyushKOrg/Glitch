@@ -1128,7 +1128,10 @@
     return inserted.data;
   }
   async function saveGeneratedImage(url) {
-    const result = await api('/api/library-save', { method:'POST', body:JSON.stringify({ url, name:'glitch-generated-image', source:'generated' }), signal:abortCtl && abortCtl.signal });
+    if(/^data:image\\/(?:png|jpeg|webp);base64,/i.test(String(url||''))){
+      const response=await fetch(url);const blob=await response.blob();return saveLibraryBlob(blob,'glitch-generated-image.'+(blob.type==='image/jpeg'?'jpg':blob.type==='image/webp'?'webp':'png'),'generated');
+    }
+    const result = await api('/api/images', { method:'POST', body:JSON.stringify({ action:'save-library-image', url }), signal:abortCtl && abortCtl.signal });
     if (!result.ok) throw new Error(result.data.error || 'Could not save the generated image.');
     return result.data.item;
   }

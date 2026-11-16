@@ -517,6 +517,7 @@
   }
   function renderBotContent(el, text) {
     const raw = String(text);
+    const libraryMatch = raw.match(/\[\[GLITCH_LIBRARY_ITEM:([0-9a-f-]{20,})\]\]/i);
     const imageMatch = raw.match(/\[\[GLITCH_IMAGE:(https:\/\/[^\]\s]+|data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+)\]\]/);
     const videoMatch = raw.match(/\[\[GLITCH_VIDEO:(https:\/\/[^\]\s]+)\]\]/);
     const mediaMatch = imageMatch || videoMatch;
@@ -535,7 +536,9 @@
       const link = document.createElement('a'); link.href = imageMatch[1]; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = 'Open full-size image'; link.style.cssText = 'display:inline-block;margin-top:8px;font-size:.82rem';
       const attribution = document.createElement('small'); attribution.textContent = imageMatch[1].includes('.supabase.co/') ? 'Generated with Glitch' : 'Generated with Glitch';
       attribution.style.cssText = 'display:block;margin-top:7px;color:var(--muted);font-size:.75rem';
-      figure.append(img, link, attribution); el.appendChild(figure); return;
+      figure.append(img, link, attribution);
+      if(libraryMatch){const download=document.createElement('button');download.type='button';download.className='code-download library-chat-download';download.textContent='↓ Download saved image';download.addEventListener('click',()=>downloadLibraryItem(libraryMatch[1]));figure.append(download);}
+      el.appendChild(figure); return;
     }
     if (videoMatch && safeMediaUrl(videoMatch[1])) {
       if (visibleText) { const body = document.createElement('div'); body.className = 'md'; renderMarkdown(body, visibleText); el.appendChild(body); }
@@ -546,6 +549,7 @@
       attribution.style.cssText = 'display:block;margin-top:7px;color:var(--muted);font-size:.75rem';
       figure.append(video, link, attribution); el.appendChild(figure); return;
     }
+    if(libraryMatch){const clean=raw.replace(libraryMatch[0],'').trim();if(clean){const body=document.createElement('div');body.className='md';renderMarkdown(body,clean);el.appendChild(body);}const button=document.createElement('button');button.type='button';button.className='code-download library-chat-download';button.textContent='↓ Download file';button.addEventListener('click',()=>downloadLibraryItem(libraryMatch[1]));el.append(button);return;}
     const artifacts = findArtifacts(text);
     if (!artifacts.length) { const body = document.createElement('div'); body.className = 'md'; renderMarkdown(body, text); el.appendChild(body); return; }
     let cursor = 0;
@@ -1095,6 +1099,8 @@
     for (const file of files) {
       renderAttachments('Reading ' + file.name + '…');
       try {
+        try { await saveLibraryBlob(file, file.name, 'upload'); }
+        catch (libraryError) { showToast('Could not save ' + file.name + ' to Library: ' + libraryError.message); }
         let content = await extractFile(file), trimmed = false;
         const used = attachedFiles.reduce((n, f) => n + f.content.length, 0), room = TOTAL_ATTACH_CHARS - used;
         if (room < 500) throw new Error('attachment limit reached (about 24,000 characters in total).');
@@ -1105,6 +1111,95 @@
     reading--; if (!reading && !busy) sendBtn.disabled = false;
     renderAttachments(problem, Boolean(problem));
   });
+
+
+  // ---- private cloud Library ----------------------------------------------------
+  const LIBRARY_BUCKET = 'glitch-library';
+  function librarySafeName(name) {
+    return String(name || 'file').split(/[\\/]/).pop().replace(/[^a-zA-Z0-9._ -]/g, '-').replace(/\\s+/g, '-').slice(0, 110) || 'file';
+  }
+  async function saveLibraryBlob(blob, name, source='upload') {
+    if (!user || !sb) throw new Error('Sign in to save files to your Library.');
+    if (!blob || !Number.isFinite(blob.size) || blob.size < 1) throw new Error('The file is empty.');
+    if (blob.size > 25 * 1024 * 1024) throw new Error('Library files must be 25 MB or smaller.');
+    const safeName = librarySafeName(name);
+    const ext = safeName.includes('.') ? safeName.split('.').pop() : 'bin';
+    const path = user.id + '/' + Date.now() + '-' + (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)) + '.' + ext;
+    const mime = blob.type || 'application/octet-stream';
+    const upload = await sb.storage.from(LIBRARY_BUCKET).upload(path, blob, { contentType: mime, upsert: false, cacheControl: '3600' });
+    if (upload.error) throw new Error(upload.error.message || 'Cloud upload failed.');
+    const inserted = await sb.from('glitch_library_items').insert({
+      user_id: user.id, object_path: path, name: safeName, mime_type: mime,
+      size_bytes: blob.size, source: source === 'generated' ? 'generated' : 'upload'
+    }).select('id,user_id,object_path,name,mime_type,size_bytes,source,created_at').single();
+    if (inserted.error) {
+      await sb.storage.from(LIBRARY_BUCKET).remove([path]).catch(()=>{});
+      throw new Error(inserted.error.message || 'Could not index this file in your Library.');
+    }
+    return inserted.data;
+  }
+  async function saveGeneratedImage(url) {
+    const result = await api('/api/library-save', { method:'POST', body:JSON.stringify({ url, name:'glitch-generated-image', source:'generated' }), signal:abortCtl && abortCtl.signal });
+    if (!result.ok) throw new Error(result.data.error || 'Could not save the generated image.');
+    return result.data.item;
+  }
+  async function downloadLibraryItem(id) {
+    if (!user || !sb) { openGate('Sign in to access your Library.'); return; }
+    const { data, error } = await sb.from('glitch_library_items').select('object_path,name').eq('id', id).eq('user_id', user.id).single();
+    if (error || !data) { showToast('This Library item is unavailable.'); return; }
+    const signed = await sb.storage.from(LIBRARY_BUCKET).createSignedUrl(data.object_path, 90, { download: data.name });
+    if (signed.error || !signed.data?.signedUrl) { showToast(signed.error?.message || 'Could not prepare the download.'); return; }
+    const a=document.createElement('a');a.href=signed.data.signedUrl;a.download=data.name;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+  }
+  const libraryModal = $('libraryModal');
+  let libraryCache = [];
+  function formatLibrarySize(bytes) {
+    const n=Number(bytes)||0;
+    return n>=1048576?(n/1048576).toFixed(1)+' MB':n>=1024?(n/1024).toFixed(0)+' KB':n+' B';
+  }
+  function renderLibraryItems() {
+    const grid=$('libraryGrid'), query=$('librarySearch').value.trim().toLowerCase();
+    grid.textContent='';
+    const items=libraryCache.filter(item=>!query || (item.name+' '+item.mime_type+' '+item.source).toLowerCase().includes(query));
+    if(!items.length){const empty=document.createElement('div');empty.className='library-empty';empty.textContent=query?'No Library items match your search.':'Your Library is empty. Upload a file or generate an image to save it here.';grid.append(empty);return;}
+    items.forEach(item=>{
+      const card=document.createElement('article');card.className='library-item';
+      const preview=document.createElement('div');preview.className='library-item-preview';
+      const isImage=String(item.mime_type||'').startsWith('image/');
+      const name=document.createElement('div');name.className='library-item-name';name.textContent=item.name;
+      const meta=document.createElement('div');meta.className='library-item-meta';meta.textContent=formatLibrarySize(item.size_bytes)+' · '+(item.source==='generated'?'Generated':'Uploaded');
+      if(isImage){
+        const img=document.createElement('img');img.alt=item.name;img.loading='lazy';img.src='/favicon.ico';
+        sb.storage.from(LIBRARY_BUCKET).createSignedUrl(item.object_path,600).then(({data,error})=>{if(!error&&data?.signedUrl)img.src=data.signedUrl;});
+        preview.append(img);
+      }else{
+        const glyph=document.createElement('span');glyph.textContent=(item.name.split('.').pop()||'FILE').slice(0,5).toUpperCase();preview.append(glyph);
+      }
+      const actions=document.createElement('div');actions.className='library-item-actions';
+      const download=document.createElement('button');download.type='button';download.className='mini';download.textContent='↓ Download';download.addEventListener('click',()=>downloadLibraryItem(item.id));
+      const remove=document.createElement('button');remove.type='button';remove.className='mini';remove.textContent='Delete';remove.addEventListener('click',async()=>{
+        if(!confirm('Delete "'+item.name+'" from your Library?'))return;
+        remove.disabled=true;
+        const storage=await sb.storage.from(LIBRARY_BUCKET).remove([item.object_path]);
+        if(storage.error){showToast('Could not delete file: '+storage.error.message);remove.disabled=false;return;}
+        const row=await sb.from('glitch_library_items').delete().eq('id',item.id).eq('user_id',user.id);
+        if(row.error){showToast('File removed, but its Library record could not be deleted.');}
+        libraryCache=libraryCache.filter(x=>x.id!==item.id);renderLibraryItems();
+      });
+      actions.append(download,remove);card.append(preview,name,meta,actions);grid.append(card);
+    });
+  }
+  async function openLibrary() {
+    if(!user){openGate('Sign in to use your private cloud Library.');return;}
+    libraryModal.classList.add('open');$('libraryStatus').textContent='Loading your files…';
+    const {data,error}=await sb.from('glitch_library_items').select('id,object_path,name,mime_type,size_bytes,source,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(200);
+    if(error){$('libraryStatus').textContent='Library setup is not complete: '+error.message;libraryCache=[];renderLibraryItems();return;}
+    libraryCache=data||[];$('libraryStatus').textContent=libraryCache.length+' item'+(libraryCache.length===1?'':'s')+' · Private to your account';renderLibraryItems();
+  }
+  $('libraryOpen').addEventListener('click',openLibrary);
+  $('libraryClose').addEventListener('click',()=>libraryModal.classList.remove('open'));
+  libraryModal.addEventListener('click',e=>{if(e.target===libraryModal)libraryModal.classList.remove('open');});
+  $('librarySearch').addEventListener('input',renderLibraryItems);
 
   // ---- sending a message --------------------------------------------------------
   async function refreshUsage() {
@@ -1140,7 +1235,6 @@
   function detectChatCreativeTool(text) {
     const t=String(text||'').trim();
     if (/\b(presentation|powerpoint|\.pptx|slide deck|slides)\b/i.test(t) && /\b(make|create|generate|build|prepare|design|turn|need|want)\b/i.test(t)) return 'presentation';
-    if (/\b(flow|google flow|text.to.video|video prompt|video|video clip|cinematic video)\b/i.test(t) && /\b(make|create|generate|build|prepare|refine|write|turn|need|want)\b/i.test(t)) return 'flow';
     if (/\b(edit|enhance|crop|rotate|adjust)\b/i.test(t) && /\b(image|photo|picture)\b/i.test(t)) return 'image-editor';
     return null;
   }
@@ -1164,11 +1258,6 @@
     const media = result.data.imageUrl || result.data.image;
     if (!media) throw new Error('The image provider returned no image.');
     return media;
-  }
-  function isVideoGenerationPrompt(text) {
-    const t = String(text || '').trim();
-    return /\b(video|video clip|clip|short film|animation|animated scene|cinematic sequence)\b/i.test(t)
-      && /\b(generate|create|make|render|produce|animate|build|design|i want|i need|please make|give me)\b/i.test(t);
   }
   function isPowerPointRequest(text) {
     const t = String(text || '').trim();
@@ -1204,16 +1293,12 @@
       let result;
       if (isPowerPointRequest(requestText)) {
         result = await api('/api/presentation', { method: 'POST', body: JSON.stringify({ prompt: requestText }), signal: abortCtl.signal });
-      } else if (isVideoGenerationPrompt(requestText)) {
-        if (!vipActive) {
-          result = { ok: false, status: 403, data: { error: 'ShortGPT Video Studio is a VIP feature. Redeem a VIP invite to unlock it.', vipRequired: true } };
-        } else {
-          openShortGPTStudio(requestText);
-          result = { ok: true, status: 200, data: { reply: 'I opened ShortGPT Video Studio. Your prompt is ready in the Prompt from chat box—copy it into ShortGPT and generate your video there.', mode: sentMode } };
-        }
       } else if (isImageGenerationPrompt(requestText)) {
         const media = await generateImageForChat(requestText);
-        result = { ok: true, status: 200, data: { reply: 'Here is your image.\n\n[[GLITCH_IMAGE:' + media + ']]', mode: sentMode } };
+        let libraryItem = null;
+        try { libraryItem = await saveGeneratedImage(media); }
+        catch (error) { showToast('Image generated, but Library save failed: ' + error.message); }
+        result = { ok: true, status: 200, data: { reply: 'Here is your image.\n\n[[GLITCH_IMAGE:' + media + ']]' + (libraryItem ? '\n\n[[GLITCH_LIBRARY_ITEM:' + libraryItem.id + ']]' : ''), mode: sentMode } };
       } else {
         const creativeKind=detectChatCreativeTool(requestText);
         if(creativeKind){const toolReply=await runChatCreativeTool(creativeKind,requestText);result={ok:true,status:200,data:{reply:toolReply,mode:sentMode}};}
@@ -1226,7 +1311,15 @@
         if (status === 403 && data.vipRequired) { $('vipModal').classList.add('open'); $('vipStatus').textContent = data.error || 'This feature is VIP-only. Redeem your invite to unlock it.'; }
         throw new Error(data.error || 'Request failed (' + status + ')');
       }
-      if (data.pptxBase64) downloadPowerPoint(data.filename, data.pptxBase64);
+      if (data.pptxBase64) {
+        try {
+          const binary = atob(String(data.pptxBase64));
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+          const item = await saveLibraryBlob(new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }), data.filename || 'glitch-presentation.pptx', 'generated');
+          data.reply = String(data.reply || 'Your presentation is ready.') + '\\n\\nSaved to your Library.\\n\\n[[GLITCH_LIBRARY_ITEM:' + item.id + ']]';
+        } catch (error) { showToast('Presentation ready, but Library save failed: ' + error.message); }
+      }
       const target = conversations.find(c => c.id === chatId);
       if (!target) { pending = null; return; }                     // chat was deleted meanwhile
       if (data.mode === 'cognition' && mode !== 'cognition') { mode = 'cognition'; try { localStorage.setItem(MODE_KEY, mode); } catch {} markMode(); }
@@ -1702,17 +1795,12 @@
 
 
   // ---- VIP + DEV creative studio ---------------------------------------------
-  const presentationModal = $('presentationModal'), videoModal = $('videoModal');
+  const presentationModal = $('presentationModal');
   $('openPresentationStudio').addEventListener('click', async () => {
     if (await requireVipTool()) { presentationModal.classList.add('open'); $('presentationPrompt').focus(); }
   });
-  $('openVideoStudio').addEventListener('click', async () => {
-    if (await requireVipTool()) openShortGPTStudio();
-  });
   $('presentationClose').addEventListener('click', () => presentationModal.classList.remove('open'));
   presentationModal.addEventListener('click', e => { if (e.target === presentationModal) presentationModal.classList.remove('open'); });
-  $('videoClose').addEventListener('click', () => videoModal.classList.remove('open'));
-  videoModal.addEventListener('click', e => { if (e.target === videoModal) videoModal.classList.remove('open'); });
 
   $('presentationOutline').addEventListener('click', async () => {
     const prompt = $('presentationPrompt').value.trim();
@@ -1753,53 +1841,6 @@
       $('presentationStatus').textContent = 'Your editable PowerPoint is ready.';
     } catch (error) { $('presentationStatus').textContent = error.message || 'PowerPoint generation failed.'; }
     finally { button.disabled = false; button.textContent = '↓ Generate editable .PPTX'; }
-  });
-
-  const shortgptNotebookUrl = 'https://colab.research.google.com/github/AyushKOrg/Glitch/blob/main/shortgpt-colab.ipynb';
-  let shortgptConnectedUrl = '';
-  function openShortGPTStudio(prompt = '') {
-    if (prompt) $('shortgptPrompt').value = String(prompt).slice(0, 5000);
-    videoModal.classList.add('open');
-    if (!shortgptConnectedUrl) {
-      try { const saved = localStorage.getItem('glitch_shortgpt_url') || ''; if (saved) { $('shortgptUrl').value = saved; connectShortGPT(saved, true); } } catch {}
-    }
-    $('shortgptPrompt').focus();
-  }
-  function connectShortGPT(rawUrl, quiet = false) {
-    const raw = String(rawUrl || $('shortgptUrl').value || '').trim();
-    let parsed;
-    try { parsed = new URL(raw); } catch { $('shortgptStatus').textContent = 'Paste the full HTTPS Gradio share URL from Colab.'; return false; }
-    const host = parsed.hostname.toLowerCase();
-    if (parsed.protocol !== 'https:' || !(host === 'gradio.live' || host.endsWith('.gradio.live') || host.endsWith('.gradio.app'))) {
-      $('shortgptStatus').textContent = 'For safety, connect only to an HTTPS *.gradio.live or *.gradio.app URL from your own Colab session.';
-      return false;
-    }
-    shortgptConnectedUrl = parsed.origin + parsed.pathname.replace(/\/$/, '') + parsed.search;
-    $('shortgptUrl').value = shortgptConnectedUrl;
-    $('shortgptFrame').src = shortgptConnectedUrl;
-    $('shortgptFrame').hidden = false;
-    $('shortgptOpenTab').disabled = false;
-    $('shortgptStatus').textContent = 'Connected to your ShortGPT session. If the embedded page does not load, use Open tab.';
-    try { localStorage.setItem('glitch_shortgpt_url', shortgptConnectedUrl); } catch {}
-    return true;
-  }
-  $('shortgptLaunchColab').addEventListener('click', () => window.open(shortgptNotebookUrl, '_blank', 'noopener,noreferrer'));
-  $('shortgptConnect').addEventListener('click', () => connectShortGPT());
-  $('shortgptOpenTab').addEventListener('click', () => { if (shortgptConnectedUrl) window.open(shortgptConnectedUrl, '_blank', 'noopener,noreferrer'); });
-  $('shortgptDisconnect').addEventListener('click', () => {
-    shortgptConnectedUrl = '';
-    $('shortgptFrame').src = 'about:blank';
-    $('shortgptFrame').hidden = true;
-    $('shortgptOpenTab').disabled = true;
-    $('shortgptUrl').value = '';
-    $('shortgptStatus').textContent = 'Disconnected. The saved session URL was cleared.';
-    try { localStorage.removeItem('glitch_shortgpt_url'); } catch {}
-  });
-  $('shortgptCopyPrompt').addEventListener('click', async () => {
-    const value = $('shortgptPrompt').value.trim();
-    if (!value) { $('shortgptStatus').textContent = 'There is no chat prompt to copy yet.'; return; }
-    try { await navigator.clipboard.writeText(value); $('shortgptStatus').textContent = 'Prompt copied. Paste it into ShortGPT.'; }
-    catch { $('shortgptPrompt').focus(); $('shortgptPrompt').select(); $('shortgptStatus').textContent = 'Select the prompt and copy it manually.'; }
   });
 
   // ---- Pollinations image studio behavior ------------------------------------

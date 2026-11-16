@@ -69,15 +69,39 @@ function isLatestGmailRequest(text) {
 }
 
 function formatLatestGmailResult(raw) {
-  if (typeof raw !== 'string') return 'I could not read the Gmail connector response.';
-  if (raw.startsWith('Google connector:') || raw.startsWith('Sign in and connect Google')) {
-    return 'I could not retrieve your Gmail: ' + raw.replace(/^Google connector:\s*/, '');
+  // runGoogleTool normally returns JSON text. Accept structured values and
+  // common wrapped/fenced JSON too, so a harmless response-shape difference
+  // cannot turn a successful Gmail fetch into a false parsing failure.
+  let data = raw;
+  if (typeof data === 'string') {
+    const candidates = [data.trim(), data.trim().replace(/^\u0060\u0060\u0060(?:json)?\s*/i, '').replace(/\s*\u0060\u0060\u0060$/, '')];
+    let parsed = false;
+    for (const candidate of candidates) {
+      try { data = JSON.parse(candidate); parsed = true; break; } catch {}
+    }
+    if (!parsed) {
+      const message = data.trim();
+      if (/^(Google connector:|Sign in and connect Google)/i.test(message)) {
+        return 'I could not retrieve your Gmail: ' + message.replace(/^Google connector:\s*/i, '');
+      }
+      return message
+        ? 'The Gmail connector responded, but not in the expected structured format: ' + message.slice(0, 500)
+        : 'The Gmail connector returned an empty response.';
+    }
   }
-  let data;
-  try { data = JSON.parse(raw); } catch {
-    return 'I could not interpret the Gmail connector response. No email contents are being guessed.';
+  if (!data || typeof data !== 'object') return 'The Gmail connector returned an unsupported response type.';
+  if (typeof data.result === 'string') {
+    try { data = JSON.parse(data.result); } catch {}
+  } else if (data.result && typeof data.result === 'object') {
+    data = data.result;
   }
-  const messages = Array.isArray(data) ? data : (Array.isArray(data.messages) ? data.messages : []);
+  if (data.error || data.message && !Array.isArray(data.messages)) {
+    return 'I could not retrieve your Gmail: ' + String(data.error?.message || data.error || data.message).slice(0, 500);
+  }
+  const messages = Array.isArray(data) ? data
+    : Array.isArray(data.messages) ? data.messages
+    : Array.isArray(data.data?.messages) ? data.data.messages
+    : [];
   if (!messages.length) return 'I checked your connected Gmail, but the API returned no messages.';
   const header = (m, name) => (m.headers || m.payload?.headers || []).find((h) => String(h.name || '').toLowerCase() === name.toLowerCase())?.value || '';
   const lines = messages.slice(0, 10).map((m, i) => {

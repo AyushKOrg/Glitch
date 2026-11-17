@@ -1,6 +1,5 @@
 // Keyless Wikipedia fallback provider.
 const { short } = require('../_shared/text');
-// ---- 3. Wikipedia (keyless) ---------------------------------------------------
 async function wikipedia(query, deadline, attempts) {
   const remaining = deadline - Date.now();
   if (remaining < 1500) { attempts.push('wikipedia: skipped (out of time)'); return null; }
@@ -26,5 +25,4 @@ async function wikipedia(query, deadline, attempts) {
     return null;
   }
 }
-
 module.exports = { wikipedia };

@@ -1,5 +1,24 @@
-// Google Search grounding provider and model cooldown state.
+// Google Search grounding provider, model selection, and cooldown state.
 const { short } = require('../_shared/text');
+const DEFAULT_GROUNDING_MODELS = [
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-3.5-flash',
+  'gemini-2.5-flash-lite', // legacy: only works while Google still serves it
+];
+
+function groundingModels() {
+  const fromEnv = String(process.env.GOOGLE_SEARCH_MODELS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  return fromEnv.length ? fromEnv : DEFAULT_GROUNDING_MODELS;
+}
+
+// Per-instance cooldown so a dead model (404/403/400) or a rate-limited one isn't retried on every call.
+const cooldown = new Map(); // model -> timestamp until which it is skipped
+function coolOff(model, status) {
+  const ms = status === 429 ? 60 * 1000 : 5 * 60 * 1000;
+  cooldown.set(model, Date.now() + ms);
+}
+const isCooling = (model) => (cooldown.get(model) || 0) > Date.now();
 
 // ---- 1. Google Search grounding ---------------------------------------------
 async function googleGrounded(query, context, deadline, attempts) {
@@ -55,5 +74,4 @@ async function googleGrounded(query, context, deadline, attempts) {
   }
   return null;
 }
-
 module.exports = { googleGrounded, groundingModels };

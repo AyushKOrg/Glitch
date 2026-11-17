@@ -1,7 +1,6 @@
 // Optional Tavily search provider.
 const { short } = require('../_shared/text');
 const tavilyKey = () => process.env.TAVILY_API_KEY || '';
-// ---- 2. Tavily (optional) -----------------------------------------------------
 async function tavily(query, deadline, attempts) {
   const key = tavilyKey();
   if (!key) return null;
@@ -25,5 +24,4 @@ async function tavily(query, deadline, attempts) {
     return null;
   }
 }
-
 module.exports = { tavily, tavilyKey };

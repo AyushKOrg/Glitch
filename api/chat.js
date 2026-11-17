@@ -38,8 +38,8 @@ function isCodeWritingRequest(text) {
 // Calendar retrieval is deterministic: avoid an unrelated web search and a model tool-call round trip.
 function isUpcomingCalendarRequest(text) {
   const t = String(text || '').toLowerCase();
-  return /\\b(calendar|agenda)\\b/.test(t)
-    && /\\b(check|show|list|get|find|fetch|look|what|upcoming|next|events?)\\b/.test(t);
+  return /\b(calendar|agenda)\b/.test(t)
+    && /\b(check|show|list|get|find|fetch|look|what|upcoming|next|events?)\b/.test(t);
 }
 function formatUpcomingCalendarResult(raw) {
   let data = raw;
@@ -47,7 +47,7 @@ function formatUpcomingCalendarResult(raw) {
     try { data = JSON.parse(data); }
     catch {
       return /^(Google connector:|Sign in and connect Google)/i.test(data)
-        ? 'I could not retrieve your calendar: ' + data.replace(/^Google connector:\\s*/i, '')
+        ? 'I could not retrieve your calendar: ' + data.replace(/^Google connector:\s*/i, '')
         : 'The Calendar connector returned an unexpected response: ' + data.slice(0, 400);
     }
   }
@@ -68,10 +68,10 @@ function formatUpcomingCalendarResult(raw) {
     const when = formatDate(start.dateTime || start.date, allDay);
     const until = end.dateTime || end.date;
     const place = event.location ? ' · ' + String(event.location).slice(0, 120) : '';
-    const link = event.link ? '\\n' + event.link : '';
-    return (i + 1) + '. ' + String(event.summary || '(Untitled event)') + '\\n   ' + when + (until && !allDay ? ' – ' + formatDate(until, false) : '') + place + link;
+    const link = event.link ? '\n' + event.link : '';
+    return (i + 1) + '. ' + String(event.summary || '(Untitled event)') + '\n   ' + when + (until && !allDay ? ' – ' + formatDate(until, false) : '') + place + link;
   });
-  return 'Here are your next ' + Math.min(data.length, 10) + ' upcoming calendar events:\\n\\n' + lines.join('\\n\\n');
+  return 'Here are your next ' + Math.min(data.length, 10) + ' upcoming calendar events:\n\n' + lines.join('\n\n');
 }
 
 // Search for nearly all factual/entity questions up front; models can also call web_search for follow-ups.
@@ -239,7 +239,7 @@ module.exports = async (req, res) => {
           : null,
       });
     }
-    let system = systemPrompt(mode) + '\\n\\nCHAT CONTEXT: Use the preceding user and assistant messages in this same conversation to resolve references, preserve decisions, and avoid asking the user to repeat information. The latest 40 messages (within the request size limit) are provided in order.';
+    let system = systemPrompt(mode) + '\n\nCHAT CONTEXT: Use the preceding user and assistant messages in this same conversation to resolve references, preserve decisions, and avoid asking the user to repeat information. The latest 40 messages (within the request size limit) are provided in order.';
     const requestedPersonality = String(req.body && req.body.vipPersonality || 'default');
     if (requestedPersonality !== 'default') {
       const allowedStyles = {
@@ -259,7 +259,7 @@ module.exports = async (req, res) => {
       });
       const statusData = statusResponse.ok ? await statusResponse.json() : {};
       if (!statusData.vip) return res.status(403).json({ error: 'This assistant style requires VIP access.' });
-      system += `\\n\\nAssistant style: ${allowedStyles[requestedPersonality]}`;
+      system += `\n\nAssistant style: ${allowedStyles[requestedPersonality]}`;
     }
     // Account memories are private to this authenticated user and are supplied as trusted context data.
     try {

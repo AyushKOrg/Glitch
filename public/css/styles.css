@@ -3630,3 +3630,145 @@ html.liquid-glass #settingsModal .settings-content-inline .connector-card,html.l
 html.liquid-glass .settings-header,html.liquid-glass .top,html.liquid-glass .settings-detail-header{background:color-mix(in srgb,var(--panel) 18%,transparent)!important}
 html.liquid-glass button,html.liquid-glass input,html.liquid-glass textarea,html.liquid-glass select{-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
 @media(max-width:600px){#libraryModal .library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#libraryModal .library-item{padding:10px}}
+
+
+/* Liquid Glass is reserved for floating controls and navigation.
+   Content cards remain solid so text never competes with moving background detail. */
+:root{
+  --glass-blur:20.6px;
+  --glass-tint:22.3%;
+  --glass-edge:.56;
+}
+.glass-strength-setting{margin:12px 0 18px;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--panel-alt);display:flex;flex-direction:column;gap:10px}
+.glass-strength-setting[hidden]{display:none!important}
+.glass-strength-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.glass-strength-heading label{font-size:.84rem;font-weight:700;color:var(--text)}
+.glass-strength-heading output{font-size:.76rem;font-weight:700;color:var(--accent-strong)}
+#glassStrength{width:100%;min-width:0;accent-color:var(--accent);cursor:pointer}
+.glass-strength-ends{display:flex;justify-content:space-between;gap:12px;color:var(--text-dim);font-size:.7rem;line-height:1.35}
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass #chat,
+html.liquid-glass .settings-header,
+html.liquid-glass .settings-sidebar,
+html.liquid-glass .settings-detail-header,
+html.liquid-glass .attach-menu,
+html.liquid-glass .accent-picker-panel,
+html.liquid-glass .gradient-picker-panel{
+  background:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important;
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.85)!important;
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.85)!important;
+  border-color:color-mix(in srgb,var(--accent) 30%,var(--border))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,var(--glass-edge)),inset 0 -1px 2px rgba(255,255,255,calc(var(--glass-edge)*.22)),0 12px 38px rgba(0,0,0,.18)!important;
+}
+/* Large information surfaces are standard materials, never see-through glass. */
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-detail-box,
+html.liquid-glass .vip-box,
+html.liquid-glass .image-box,
+html.liquid-glass .memory-box,
+html.liquid-glass .library-box,
+html.liquid-glass .context-box,
+html.liquid-glass .install-box,
+html.liquid-glass .settings-dashboard,
+html.liquid-glass .settings-content-inline,
+html.liquid-glass .settings-content-inline .settings-section,
+html.liquid-glass .connector-card,
+html.liquid-glass .connector-intro,
+html.liquid-glass .vip-card,
+html.liquid-glass .vip-lock,
+html.liquid-glass .vip-stat,
+html.liquid-glass .library-item{
+  background:var(--panel)!important;
+  background-image:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  box-shadow:0 12px 36px rgba(0,0,0,.12)!important;
+  color:var(--text)!important;
+}
+html.liquid-glass .settings-sidebar{background:color-mix(in srgb,var(--panel) 78%,transparent)!important}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-toggle,
+html.liquid-glass .nav,
+html.liquid-glass .mini,
+html.liquid-glass .round,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .attach-menu button{
+  background:color-mix(in srgb,var(--panel) calc(var(--glass-tint) + 10%),transparent)!important;
+  -webkit-backdrop-filter:blur(calc(var(--glass-blur)*.72)) saturate(1.7)!important;
+  backdrop-filter:blur(calc(var(--glass-blur)*.72)) saturate(1.7)!important;
+  border-color:color-mix(in srgb,var(--accent) 24%,var(--border))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,calc(var(--glass-edge)*.72)),0 3px 12px rgba(0,0,0,.08)!important;
+  color:var(--text)!important;
+}
+html.liquid-glass .settings-category[aria-current="page"],
+html.liquid-glass .settings-toggle[aria-pressed="true"],
+html.liquid-glass .nav[aria-pressed="true"]{
+  background:color-mix(in srgb,var(--accent) 24%,var(--panel))!important;
+  border-color:color-mix(in srgb,var(--accent) 62%,var(--border))!important;
+}
+html.liquid-glass .settings-category *,
+html.liquid-glass .settings-tile *,
+html.liquid-glass .settings-toggle *,
+html.liquid-glass .nav *,
+html.liquid-glass .mini *,
+html.liquid-glass .round *{position:relative;z-index:1}
+html.liquid-glass .settings-content-inline p,
+html.liquid-glass .settings-content-inline small,
+html.liquid-glass .settings-content-inline label,
+html.liquid-glass .settings-content-inline strong,
+html.liquid-glass .settings-dashboard p,
+html.liquid-glass .settings-dashboard small{color:inherit}
+html.liquid-glass .settings-content-inline p,
+html.liquid-glass .settings-dashboard p{color:var(--text-dim)}
+html.liquid-glass .settings-content-inline input,
+html.liquid-glass .settings-content-inline textarea,
+html.liquid-glass .settings-content-inline select,
+html.liquid-glass .settings-dashboard input,
+html.liquid-glass .settings-dashboard textarea,
+html.liquid-glass .settings-dashboard select{
+  background:var(--panel-alt)!important;color:var(--text)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-content-inline *,
+html.liquid-glass .settings-dashboard *{min-width:0}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile{white-space:normal;overflow-wrap:anywhere;line-height:1.4}
+html.liquid-glass .settings-category{min-height:44px}
+html.liquid-glass .settings-tile{min-height:112px}
+html.liquid-glass .settings-content-inline .connector-card,
+html.liquid-glass .settings-content-inline .connector-intro{padding:16px!important;margin:0 0 14px!important}
+html.liquid-glass .settings-content-inline .connector-card *{overflow-wrap:anywhere}
+html.liquid-glass .settings-content-inline .vip-grid{gap:14px!important}
+html.liquid-glass .settings-content-inline .vip-card{padding:16px!important}
+html.liquid-glass .settings-header,
+html.liquid-glass .settings-detail-header{color:var(--text)!important}
+html.liquid-glass .settings-heading-icon,
+html.liquid-glass .settings-detail-mark{background:color-mix(in srgb,var(--accent) 18%,var(--panel))!important;color:var(--accent)!important}
+html.liquid-glass .settings-content-inline .settings-section-title{margin-bottom:18px!important}
+html.liquid-glass .stage,
+html.liquid-glass .msg.bot,
+html.liquid-glass #log,
+html.liquid-glass .library-item-name,
+html.liquid-glass .library-item-meta{background:transparent}
+html.liquid-glass .msg.bot{background:var(--panel-alt)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+@media(prefers-reduced-transparency:reduce){
+  html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,
+  html.liquid-glass .settings-header,html.liquid-glass .settings-sidebar,
+  html.liquid-glass .settings-detail-header,html.liquid-glass .attach-menu,
+  html.liquid-glass .accent-picker-panel,html.liquid-glass .gradient-picker-panel,
+  html.liquid-glass .settings-category,html.liquid-glass .settings-tile,
+  html.liquid-glass .settings-toggle,html.liquid-glass .nav,
+  html.liquid-glass .mini,html.liquid-glass .round,html.liquid-glass .accent-picker-trigger{
+    background:var(--panel)!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    box-shadow:0 0 0 1px var(--border)!important;
+  }
+}
+@media(max-width:620px){
+  .glass-strength-setting{padding:12px}
+  .glass-strength-ends{font-size:.66rem}
+}

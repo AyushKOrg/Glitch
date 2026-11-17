@@ -1831,16 +1831,15 @@
   const glassStrength = $('glassStrength'), glassStrengthSetting = $('glassStrengthSetting');
   function applyGlassStrength(value,persist=true) {
     const amount=Math.max(0,Math.min(100,Number(value)||0));
-    // 0 = clear, low-opacity glass; 100 = strongly tinted glass with heavier blur.
-    const blur=2+amount*.38, tint=2+amount*.78, edge=.18+amount*.0065;
-    root.style.setProperty('--glass-blur',blur.toFixed(1)+'px');
+    // This control changes ONLY material opacity: clear = transparent, tinted = opaque.
+    // Blur, saturation, highlights and edge treatment stay constant at every position.
+    const tint=10+amount*.78;
     root.style.setProperty('--glass-tint',tint.toFixed(1)+'%');
-    root.style.setProperty('--glass-edge',edge.toFixed(2));
     root.style.setProperty('--glass-clear',((100-amount)/100).toFixed(2));
     root.style.setProperty('--glass-strength',String(Math.round(amount)));
     root.dataset.glassStrength=String(Math.round(amount));
     glassStrength.value=String(Math.round(amount));
-    glassStrength.setAttribute('aria-valuetext',amount<20?'More Clear':amount>80?'More Tinted with more blur':'Balanced translucency');
+    glassStrength.setAttribute('aria-valuetext',amount<20?'More Clear':amount>80?'More Tinted':'Balanced transparency');
     $('glassStrengthValue').textContent=amount<20?'More Clear':amount>80?'More Tinted':'Balanced';
     if(persist){try{localStorage.setItem('glitch_glass_strength',String(Math.round(amount)));}catch{}}
   }

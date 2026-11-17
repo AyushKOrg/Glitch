@@ -20,7 +20,7 @@ async function autoLearnFromChat(user,text) {
   if(!content)return;
   try{await fetch(`${supabaseUrl()}/rest/v1/glitch_memories?on_conflict=user_id,content`,{method:'POST',headers:{apikey:process.env.SUPABASE_ANON_KEY,Authorization:`Bearer ${user.accessToken}`,'Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({user_id:user.id,content}),signal:AbortSignal.timeout(5000)});}catch{}
 }
-const { isDocumentRequest, isCodeWritingRequest, isUpcomingCalendarRequest, formatUpcomingCalendarResult, needsLiveSearch, buildSearchQuery, isLatestGmailRequest, formatLatestGmailResult, clean } = require('./chat/intent');
+const { isDocumentRequest, isCodeWritingRequest, isUpcomingCalendarRequest, formatUpcomingCalendarResult, needsLiveSearch, buildSearchQuery, isLatestGmailRequest, formatLatestGmailResult, clean } = require('../lib/chat/intent');
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');

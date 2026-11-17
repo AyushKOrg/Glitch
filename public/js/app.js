@@ -476,10 +476,7 @@
   // ---- voice: explicit push-to-talk and optional spoken replies; no continuous listening ----
   const Voice = window.GlitchVoice.init({ $, input, getBusy: () => busy, getUser: () => user, showToast });
 
-  function refreshContextPanel(){const list=$('contextList'),summary=$('contextSummary');if(!list||!summary)return;const rows=history.slice(-40);summary.textContent=rows.length+' messages in this conversation are available (up to 40), plus '+memoryItems.length+' saved memories.';list.textContent='';if(!rows.length){const empty=document.createElement('p');empty.className='history-empty';empty.textContent='Start chatting and this panel will show the context Glitch can refer to.';list.appendChild(empty);return;}rows.forEach(m=>{const row=document.createElement('div');row.className='context-row '+(m.role==='user'?'context-user':'context-assistant');const label=document.createElement('strong');label.textContent=m.role==='user'?'You':'Glitch';const body=document.createElement('p');body.textContent=String(m.content||'').slice(0,700);row.append(label,body);list.appendChild(row);});}
-  $('contextOpen').addEventListener('click',async()=>{$('contextModal').classList.add('open');refreshContextPanel();if(user){try{await loadMemories();refreshContextPanel();}catch{}}});
-  $('contextClose').addEventListener('click',()=>$('contextModal').classList.remove('open'));
-  $('contextModal').addEventListener('click',e=>{if(e.target===$('contextModal'))$('contextModal').classList.remove('open');});
+  window.GlitchContextPanel.init({ $, getHistory: () => history, getMemoryCount: () => memoryItems.length, getUser: () => user, loadMemories });
 
   // ---- invite-only VIP -------------------------------------------------------
   const VIP_PREF_KEY = 'glitch_vip_prefs_';

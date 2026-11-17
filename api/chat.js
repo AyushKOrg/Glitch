@@ -140,7 +140,11 @@ module.exports = async (req, res) => {
   const messages = clean(req.body && req.body.messages);
   if (!messages) return res.status(400).json({ error: 'Send {messages:[...]} ending with a user message.' });
   let mode = req.body && req.body.mode === 'cognition' ? 'cognition' : 'flash';
+  const requestedMode = mode;
   const lastUserText = messages[messages.length - 1].text;
+  const gmailIntent = /\b(gmail|inbox|emails?|messages?)\b/i.test(lastUserText) && /\b(latest|newest|most recent|recent)\b/i.test(lastUserText);
+  const gmailAction = isLatestGmailRequest(lastUserText);
+  if (gmailIntent) console.info('[glitch-gmail] request_received', { requestedMode, messageCount: messages.length, gmailAction, codeWriting: isCodeWritingRequest(lastUserText), anonymous: !!user.isAnonymous });
   if (isCodeWritingRequest(lastUserText)) {
     let vip = false;
     try { vip = await isVipUser(user); } catch (error) { return res.status(503).json({ error: error.message || 'VIP status could not be verified.' }); }
@@ -170,9 +174,13 @@ module.exports = async (req, res) => {
     await autoLearnFromChat(user, lastUserText);
     const ctx = { user, userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
     // This path guarantees latest-email retrieval even if the Flash model declines to call tools.
-    if (mode === 'flash' && isLatestGmailRequest(lastUserText)) {
+    if (gmailIntent && gmailAction) {
+      res.setHeader('X-Glitch-Gmail-Path', 'direct');
+      console.info('[glitch-gmail] direct_path_entered', { requestedMode, effectiveMode: mode });
       const gmailResult = await runTool(ctx, 'gmail_search', { query: '' });
+      console.info('[glitch-gmail] connector_returned', { resultType: typeof gmailResult, resultLength: typeof gmailResult === 'string' ? gmailResult.length : null, resultPrefix: typeof gmailResult === 'string' ? gmailResult.slice(0, 100) : '' });
       const reply = formatLatestGmailResult(gmailResult);
+      console.info('[glitch-gmail] response_formatted', { parsedAsFailure: /could not retrieve|unexpected|unsupported|empty response/i.test(reply) });
       return res.status(200).json({
         reply,
         mode,
@@ -237,6 +245,7 @@ module.exports = async (req, res) => {
         : null,
     });
   } catch (e) {
+    if (gmailIntent) console.error('[glitch-gmail] handler_error', { name: e.name, message: String(e.message || e).slice(0, 250) });
     return res.status(502).json({ error: e.message || 'The AI request failed.' });
   }
 };

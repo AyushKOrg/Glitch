@@ -36,6 +36,12 @@ const TOOLS = [
   {name:'google_form_read',description:'Read a Google Form structure and questions by form ID (read-only).',parameters:{type:'object',properties:{form_id:{type:'string'}},required:['form_id']}},
   {name:'google_form_responses',description:'Read recent responses to a Google Form by form ID (read-only; only when the connected account has permission).',parameters:{type:'object',properties:{form_id:{type:'string'},page_size:{type:'integer'}},required:['form_id']}},
   {name:'google_slides_read',description:'Read slide text from a Google Slides presentation by presentation ID (read-only).',parameters:{type:'object',properties:{presentation_id:{type:'string'}},required:['presentation_id']}},
+
+  {name:'google_drive_download_text',description:'Read text content from a Drive file by ID.',parameters:{type:'object',properties:{file_id:{type:'string'}},required:['file_id']}},
+  {name:'google_drive_upload_text',description:'Create a text file in Drive from supplied content.',parameters:{type:'object',properties:{name:{type:'string'},mime_type:{type:'string'},content:{type:'string'},parent_id:{type:'string'}},required:['name','content']}},
+  {name:'google_drive_trash',description:'Move a Drive file to trash only when the user explicitly asks.',parameters:{type:'object',properties:{file_id:{type:'string'}},required:['file_id']}},
+  {name:'gmail_create_draft',description:'Create a Gmail draft without sending it.',parameters:{type:'object',properties:{to:{type:'string'},subject:{type:'string'},body:{type:'string'}},required:['to','subject','body']}},
+  {name:'google_calendar_delete',description:'Delete a calendar event only when the user explicitly asks.',parameters:{type:'object',properties:{event_id:{type:'string'}},required:['event_id']}},
   {name:'google_drive_create',description:'Create a Drive file or blank Google Workspace document when explicitly requested.',parameters:{type:'object',properties:{name:{type:'string'},mime_type:{type:'string'},parent_id:{type:'string'}},required:['name'] }},
   {name:'google_drive_update',description:'Rename a Drive file when explicitly requested.',parameters:{type:'object',properties:{file_id:{type:'string'},name:{type:'string'}},required:['file_id','name']}},
   {name:'google_doc_create',description:'Create a Google Doc with optional initial text.',parameters:{type:'object',properties:{title:{type:'string'},text:{type:'string'}}}},

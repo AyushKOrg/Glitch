@@ -1,0 +1,193 @@
+
+
+
+.composer-attach-wrap{position:relative;display:flex;align-items:center;flex:none;z-index:30}
+#chat #attach{flex:none}
+.attach-menu{position:absolute;left:0;bottom:calc(100% + 12px);width:min(250px,calc(100vw - 36px));padding:7px;border:1px solid var(--border-strong);border-radius:16px;background:color-mix(in srgb,var(--panel) 82%,transparent);-webkit-backdrop-filter:blur(28px) saturate(1.7);backdrop-filter:blur(28px) saturate(1.7);box-shadow:0 18px 55px #0004;display:flex;flex-direction:column;gap:5px}
+.attach-menu[hidden]{display:none!important}
+.attach-menu button{display:flex;align-items:center;gap:11px;width:100%;padding:11px;border:0;border-radius:11px;background:transparent;color:var(--text);text-align:left;cursor:pointer}
+.attach-menu button:hover{background:var(--accent-soft)}
+.attach-menu button>span:first-child{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:var(--accent-soft);color:var(--accent);font-size:1.1rem}
+.attach-menu button>span:last-child{display:flex;flex-direction:column;gap:2px}
+.attach-menu strong{font-size:.8rem}.attach-menu small{font-size:.68rem;color:var(--text-dim)}
+#libraryModal>.library-box{width:min(720px,calc(100vw - 32px))!important;max-width:720px!important;padding:22px!important}
+#libraryModal .library-toolbar{gap:12px;margin:18px 0 16px;align-items:center}
+#libraryModal .library-toolbar input{min-width:0;min-height:44px;padding:12px 14px}
+#libraryModal .library-toolbar span{line-height:1.45;flex:1 1 100%;padding:0 2px}
+#libraryModal .library-grid{gap:16px;padding:4px 3px 14px;align-content:start}
+#libraryModal .library-item{gap:10px;padding:13px;border-radius:17px}
+#libraryModal .library-item-preview{height:124px;margin-bottom:2px}
+#libraryModal .library-item-name{line-height:1.45;min-height:2.5em}
+#libraryModal .library-item-meta{line-height:1.4}
+#libraryModal .library-item-actions{gap:9px;padding-top:5px}
+#libraryModal .library-item-actions button{min-height:36px;padding:8px 9px}
+#settingsModal #settingsContentInline #vipContent,
+#settingsModal #settingsContentInline #vipContent #vipLock,
+#settingsModal #settingsContentInline #vipContent #vipUnlocked{display:flex;flex-direction:column;gap:18px;min-width:0}
+#settingsModal #settingsContentInline #vipContent .vip-hero,
+#settingsModal #settingsContentInline #vipContent .vip-lock,
+#settingsModal #settingsContentInline #vipContent .vip-stats,
+#settingsModal #settingsContentInline #vipContent .vip-grid,
+#settingsModal #settingsContentInline #vipContent .vip-card{margin:0;min-width:0}
+#settingsModal #settingsContentInline #vipContent .vip-lock,
+#settingsModal #settingsContentInline #vipContent .vip-card{padding:17px;border-radius:15px}
+#settingsModal #settingsContentInline #vipContent .vip-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#settingsModal #settingsContentInline #vipContent .vip-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#settingsModal #settingsContentInline #vipContent .vip-stat{padding:13px;border-radius:13px;min-width:0}
+#settingsModal #settingsContentInline #vipContent form{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+#settingsModal #settingsContentInline #vipContent form input{flex:1 1 190px;min-width:0}
+@media(max-width:620px){#settingsModal #settingsContentInline #vipContent .vip-grid{grid-template-columns:1fr}#libraryModal>.library-box{padding:16px!important}}
+.gradient-picker-trigger{margin-top:8px}
+.gradient-picker-trigger .gradient-trigger-disc{background:conic-gradient(#f43f5e,#f59e0b,#84cc16,#06b6d4,#6366f1,#d946ef,#f43f5e)}
+.gradient-picker-panel{width:min(590px,calc(100vw - 28px));max-width:590px;max-height:min(88dvh,820px);padding:18px;z-index:150!important}
+.gradient-picker-panel:not([hidden]){display:flex}
+.gradient-picker-panel .gradient-editor{display:flex;max-height:calc(88dvh - 90px);overflow:auto;border:0;background:transparent;padding:4px 0 0}
+.gradient-picker-panel .gradient-color-pair{gap:14px}
+.gradient-picker-panel .gradient-color-control{padding:14px}
+.gradient-picker-panel .gradient-wheel{width:124px;height:124px}
+.gradient-picker-panel .gradient-wheel::after{inset:45px}
+html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,html.liquid-glass .settings-box,html.liquid-glass .vip-box,html.liquid-glass .image-box,html.liquid-glass .memory-box,html.liquid-glass .library-box,html.liquid-glass .context-box,html.liquid-glass .install-box{background:color-mix(in srgb,var(--panel) 30%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.9) brightness(1.08)!important;backdrop-filter:blur(34px) saturate(1.9) brightness(1.08)!important;border-color:color-mix(in srgb,var(--text) 22%,transparent)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.06),0 24px 70px rgba(0,0,0,.24),0 0 0 1px rgba(255,255,255,.055)!important}
+html.liquid-glass .settings-sidebar,html.liquid-glass .settings-dashboard,html.liquid-glass .library-item,html.liquid-glass .connector-card,html.liquid-glass .connector-intro,html.liquid-glass .vip-card,html.liquid-glass .vip-lock,html.liquid-glass .vip-stat{background:color-mix(in srgb,var(--panel) 24%,transparent)!important;-webkit-backdrop-filter:blur(24px) saturate(1.8)!important;backdrop-filter:blur(24px) saturate(1.8)!important}
+html.liquid-glass .settings-category,html.liquid-glass .settings-tile,html.liquid-glass .accent-picker-trigger,html.liquid-glass .attach-menu,html.liquid-glass .library-item-preview{background:color-mix(in srgb,var(--panel) 20%,transparent)!important;-webkit-backdrop-filter:blur(22px) saturate(1.7)!important;backdrop-filter:blur(22px) saturate(1.7)!important}
+html.liquid-glass #settingsModal .settings-content-inline .connector-card,html.liquid-glass #settingsModal .settings-content-inline .connector-intro,html.liquid-glass #settingsModal .settings-content-inline .vip-card{background:color-mix(in srgb,var(--panel) 22%,transparent)!important;background-image:none!important}
+html.liquid-glass .settings-header,html.liquid-glass .top,html.liquid-glass .settings-detail-header{background:color-mix(in srgb,var(--panel) 18%,transparent)!important}
+html.liquid-glass button,html.liquid-glass input,html.liquid-glass textarea,html.liquid-glass select{-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
+@media(max-width:600px){#libraryModal .library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#libraryModal .library-item{padding:10px}}
+
+
+/* Liquid Glass is reserved for floating controls and navigation.
+   Content cards remain solid so text never competes with moving background detail. */
+:root{
+  --glass-blur:20.6px;
+  --glass-tint:22.3%;
+  --glass-edge:.56;
+}
+.glass-strength-setting{margin:12px 0 18px;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--panel-alt);display:flex;flex-direction:column;gap:10px}
+.glass-strength-setting[hidden]{display:none!important}
+.glass-strength-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.glass-strength-heading label{font-size:.84rem;font-weight:700;color:var(--text)}
+.glass-strength-heading output{font-size:.76rem;font-weight:700;color:var(--accent-strong)}
+#glassStrength{width:100%;min-width:0;accent-color:var(--accent);cursor:pointer}
+.glass-strength-ends{display:flex;justify-content:space-between;gap:12px;color:var(--text-dim);font-size:.7rem;line-height:1.35}
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass #chat,
+html.liquid-glass .settings-header,
+html.liquid-glass .settings-sidebar,
+html.liquid-glass .settings-detail-header,
+html.liquid-glass .attach-menu,
+html.liquid-glass .accent-picker-panel,
+html.liquid-glass .gradient-picker-panel{
+  background:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important;
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.85)!important;
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.85)!important;
+  border-color:color-mix(in srgb,var(--accent) 30%,var(--border))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,var(--glass-edge)),inset 0 -1px 2px rgba(255,255,255,calc(var(--glass-edge)*.22)),0 12px 38px rgba(0,0,0,.18)!important;
+}
+/* Large information surfaces are standard materials, never see-through glass. */
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-detail-box,
+html.liquid-glass .vip-box,
+html.liquid-glass .image-box,
+html.liquid-glass .memory-box,
+html.liquid-glass .library-box,
+html.liquid-glass .context-box,
+html.liquid-glass .install-box,
+html.liquid-glass .settings-dashboard,
+html.liquid-glass .settings-content-inline,
+html.liquid-glass .settings-content-inline .settings-section,
+html.liquid-glass .connector-card,
+html.liquid-glass .connector-intro,
+html.liquid-glass .vip-card,
+html.liquid-glass .vip-lock,
+html.liquid-glass .vip-stat,
+html.liquid-glass .library-item{
+  background:var(--panel)!important;
+  background-image:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  box-shadow:0 12px 36px rgba(0,0,0,.12)!important;
+  color:var(--text)!important;
+}
+html.liquid-glass .settings-sidebar{background:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-toggle,
+html.liquid-glass .nav,
+html.liquid-glass .mini,
+html.liquid-glass .round,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .attach-menu button{
+  background:color-mix(in srgb,var(--panel) calc(var(--glass-tint) + 10%),transparent)!important;
+  -webkit-backdrop-filter:blur(calc(var(--glass-blur)*.72)) saturate(1.7)!important;
+  backdrop-filter:blur(calc(var(--glass-blur)*.72)) saturate(1.7)!important;
+  border-color:color-mix(in srgb,var(--accent) 24%,var(--border))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,calc(var(--glass-edge)*.72)),0 3px 12px rgba(0,0,0,.08)!important;
+  color:var(--text)!important;
+}
+html.liquid-glass .settings-category[aria-current="page"],
+html.liquid-glass .settings-toggle[aria-pressed="true"],
+html.liquid-glass .nav[aria-pressed="true"]{
+  background:color-mix(in srgb,var(--accent) 24%,var(--panel))!important;
+  border-color:color-mix(in srgb,var(--accent) 62%,var(--border))!important;
+}
+html.liquid-glass .settings-category *,
+html.liquid-glass .settings-tile *,
+html.liquid-glass .settings-toggle *,
+html.liquid-glass .nav *,
+html.liquid-glass .mini *,
+html.liquid-glass .round *{position:relative;z-index:1}
+html.liquid-glass .settings-content-inline p,
+html.liquid-glass .settings-content-inline small,
+html.liquid-glass .settings-content-inline label,
+html.liquid-glass .settings-content-inline strong,
+html.liquid-glass .settings-dashboard p,
+html.liquid-glass .settings-dashboard small{color:inherit}
+html.liquid-glass .settings-content-inline p,
+html.liquid-glass .settings-dashboard p{color:var(--text-dim)}
+html.liquid-glass .settings-content-inline input,
+html.liquid-glass .settings-content-inline textarea,
+html.liquid-glass .settings-content-inline select,
+html.liquid-glass .settings-dashboard input,
+html.liquid-glass .settings-dashboard textarea,
+html.liquid-glass .settings-dashboard select{
+  background:var(--panel-alt)!important;color:var(--text)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-content-inline *,
+html.liquid-glass .settings-dashboard *{min-width:0}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile{white-space:normal;overflow-wrap:anywhere;line-height:1.4}
+html.liquid-glass .settings-category{min-height:44px}
+html.liquid-glass .settings-tile{min-height:112px}
+html.liquid-glass .settings-content-inline .connector-card,
+html.liquid-glass .settings-content-inline .connector-intro{padding:16px!important;margin:0 0 14px!important}
+html.liquid-glass .settings-content-inline .connector-card *{overflow-wrap:anywhere}
+html.liquid-glass .settings-content-inline .vip-grid{gap:14px!important}
+html.liquid-glass .settings-content-inline .vip-card{padding:16px!important}
+html.liquid-glass .settings-header,
+html.liquid-glass .settings-detail-header{color:var(--text)!important}
+html.liquid-glass .settings-heading-icon,
+html.liquid-glass .settings-detail-mark{background:color-mix(in srgb,var(--accent) 18%,var(--panel))!important;color:var(--accent)!important}
+html.liquid-glass .settings-content-inline .settings-section-title{margin-bottom:18px!important}
+html.liquid-glass .stage,
+html.liquid-glass .msg.bot,
+html.liquid-glass #log,
+html.liquid-glass .library-item-name,
+html.liquid-glass .library-item-meta{background:transparent}
+html.liquid-glass .msg.bot{background:var(--panel-alt)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+@media(prefers-reduced-transparency:reduce){
+  html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,
+  html.liquid-glass .settings-header,html.liquid-glass .settings-sidebar,
+  html.liquid-glass .settings-detail-header,html.liquid-glass .attach-menu,
+  html.liquid-glass .accent-picker-panel,html.liquid-glass .gradient-picker-panel,
+  html.liquid-glass .settings-category,html.liquid-glass .settings-tile,
+  html.liquid-glass .settings-toggle,html.liquid-glass .nav,
+  html.liquid-glass .mini,html.liquid-glass .round,html.liquid-glass .accent-picker-trigger{
+    background:var(--panel)!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    box-shadow:0 0 0 1px var(--border)!important;
+  }
+}

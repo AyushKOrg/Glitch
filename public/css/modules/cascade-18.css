@@ -1,0 +1,322 @@
+
+.library-item{min-width:0;border:1px solid var(--border);border-radius:15px;background:var(--panel-alt);padding:10px;display:flex;flex-direction:column;gap:7px}
+.library-item-preview{height:112px;border-radius:10px;background:var(--panel);display:grid;place-items:center;overflow:hidden;color:var(--accent);font-size:1.2rem;font-weight:800}
+.library-item-preview img{width:100%;height:100%;object-fit:cover}
+.library-item-name{font-size:.86rem;font-weight:650;overflow-wrap:anywhere;line-height:1.35}
+.library-item-meta{font-size:.72rem;color:var(--text-dim)}
+.library-item-actions{display:flex;gap:7px;margin-top:auto}
+.library-item-actions button{flex:1;min-width:0;font-size:.75rem}
+.library-empty{grid-column:1/-1;padding:34px 18px;text-align:center;color:var(--text-dim);border:1px dashed var(--border-strong);border-radius:14px;font-size:.88rem}
+.library-chat-download{display:inline-flex;margin-top:10px;align-items:center;gap:7px}
+@media(max-width:600px){.library-box{max-height:90vh}.library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.library-item{padding:8px}.library-item-preview{height:92px}}
+
+#libraryAttach{background:var(--panel);border:1px solid var(--border);color:var(--text);display:grid;place-items:center}
+
+.connector-intro{padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--panel);font-size:.8rem;line-height:1.5;color:var(--text-dim)}
+.connector-card{display:flex;align-items:center;gap:13px;padding:13px;border:1px solid var(--border);border-radius:13px;background:var(--panel);min-width:0}
+.connector-brand{width:40px;height:40px;display:grid;place-items:center;flex:none;border-radius:12px;font-weight:850;background:var(--panel-alt);color:var(--text)}.google-brand{color:#4285f4}
+.connector-info{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}.connector-info strong{font-size:.84rem;color:var(--text)}.connector-info small,.connector-info span{font-size:.7rem;color:var(--text-dim)}.connector-muted{opacity:.65}
+@media(max-width:560px){.connector-card{flex-wrap:wrap}.connector-card .settings-button{margin-left:53px}}
+
+/* Structured Gmail results in chat */
+.gmail-result{margin:8px 0 4px;border:1px solid var(--border);border-radius:15px;overflow:hidden;background:var(--panel)}
+.gmail-result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border-bottom:1px solid var(--border)}
+.gmail-result-head strong{font-size:.96rem;color:var(--text)}
+.gmail-result-head span,.gmail-mail-date{font-size:.76rem;color:var(--text-dim)}
+.gmail-mail{padding:13px 15px;border-bottom:1px solid var(--border);min-width:0}
+.gmail-mail:last-child{border-bottom:0}
+.gmail-mail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.gmail-mail-subject{font-size:.9rem;line-height:1.4;color:var(--text);overflow-wrap:anywhere}
+.gmail-mail-date{flex:0 0 auto;text-align:right}
+.gmail-mail-sender{font-size:.8rem;color:var(--text-dim);margin-top:4px;overflow-wrap:anywhere}
+.gmail-mail-preview{font-size:.84rem;line-height:1.5;margin:8px 0 0;color:var(--text);opacity:.82;overflow-wrap:anywhere}
+@media(max-width:520px){.gmail-mail-top{display:block}.gmail-mail-date{display:block;text-align:left;margin-top:4px}}
+
+/* Settings workspace repair: keep every category inside one dialog and one
+   scrollable content pane. These rules intentionally supersede legacy modal CSS. */
+#settingsModal > .settings-shell {
+  width:min(1180px,calc(100vw - 40px)) !important;
+  max-width:1180px !important;
+  height:min(820px,calc(100dvh - 48px)) !important;
+  max-height:calc(100dvh - 48px) !important;
+  min-height:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+}
+#settingsModal .settings-layout {
+  display:grid !important;
+  grid-template-columns:246px minmax(0,1fr) !important;
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+#settingsModal .settings-sidebar {
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  justify-content:flex-start !important;
+  gap:7px !important;
+  padding:20px 14px !important;
+}
+#settingsModal .settings-category {
+  flex:0 0 auto !important;
+  min-height:46px !important;
+  max-height:none !important;
+  justify-content:flex-start !important;
+  padding:10px 12px !important;
+  font-size:.84rem !important;
+  white-space:normal !important;
+}
+#settingsModal .settings-dashboard {
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding:clamp(24px,3.2vw,42px) !important;
+}
+#settingsModal .settings-content-inline {
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:visible !important;
+}
+#settingsModal .settings-content-inline[hidden] { display:none !important; }
+#settingsModal .settings-content-inline > .settings-section,
+#settingsModal .settings-content-inline > .vip-content,
+#settingsModal .settings-content-inline > .vip-dev-tools {
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  float:none !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+#settingsModal .settings-content-inline > .settings-section { gap:22px !important; }
+#settingsModal .settings-content-inline .settings-section-title {
+  display:flex !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin:0 0 10px !important;
+}
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card {
+  width:100% !important;
+  max-width:none !important;
+}
+#settingsModal .settings-content-inline .profile-editor {
+  align-items:center !important;
+  flex-wrap:wrap !important;
+  gap:22px !important;
+}
+#settingsModal .settings-content-inline .profile-fields { flex:1 1 260px !important; min-width:0 !important; }
+#settingsModal .settings-header { flex:0 0 auto !important; }
+@media(max-width:760px) {
+  #settingsModal > .settings-shell {
+    width:calc(100vw - 20px) !important;
+    height:calc(100dvh - 24px) !important;
+    max-height:calc(100dvh - 24px) !important;
+  }
+  #settingsModal .settings-layout { grid-template-columns:76px minmax(0,1fr) !important; }
+  #settingsModal .settings-sidebar { padding:12px 7px !important; align-items:stretch !important; }
+  #settingsModal .settings-nav-label { font-size:0 !important; padding:7px 0 !important; }
+  #settingsModal .settings-category {
+    justify-content:center !important;
+    min-height:44px !important;
+    padding:8px 4px !important;
+    font-size:0 !important;
+  }
+  #settingsModal .settings-category > span { width:32px !important; height:32px !important; }
+  #settingsModal .settings-dashboard { padding:22px 18px !important; }
+}
+@media(max-width:420px) {
+  #settingsModal .settings-layout { grid-template-columns:58px minmax(0,1fr) !important; }
+  #settingsModal .settings-dashboard { padding:17px 12px !important; }
+}
+
+/* Connector panel must remain a section INSIDE the settings workspace.
+   Neutralise any legacy modal/positioning styles that can detach it. */
+#settingsModal #settingsContentInline #connectorsSettingsSection {
+  position:relative !important;
+  inset:auto !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  transform:none !important;
+  float:none !important;
+  display:flex !important;
+  flex:0 0 auto !important;
+  flex-direction:column !important;
+  align-self:stretch !important;
+  justify-self:stretch !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  z-index:auto !important;
+}
+#settingsModal #settingsContentInline #connectorsSettingsSection .settings-section-title {
+  display:flex !important;
+}
+#settingsModal #settingsContentInline #connectorsSettingsSection .connector-intro,
+#settingsModal #settingsContentInline #connectorsSettingsSection .connector-card {
+  position:relative !important;
+  inset:auto !important;
+  transform:none !important;
+  width:100% !important;
+  max-width:none !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+#settingsModal .settings-layout,
+#settingsModal .settings-dashboard,
+#settingsModal .settings-content-inline {
+  position:relative !important;
+}
+
+
+
+/* Visual correction: compact dialogs and restrained theme-aware surfaces. */
+#settingsModal > .settings-shell {
+  width: min(960px, calc(100vw - 32px)) !important;
+  max-width: 960px !important;
+  height: min(740px, calc(100dvh - 48px)) !important;
+  max-height: calc(100dvh - 48px) !important;
+}
+#settingsModal .settings-layout {
+  grid-template-columns: 216px minmax(0, 1fr) !important;
+}
+#settingsModal .settings-sidebar {
+  padding: 17px 11px !important;
+}
+#settingsModal .settings-dashboard {
+  padding: 26px !important;
+}
+#settingsModal .settings-content-inline,
+#settingsModal .settings-content-inline > .settings-section,
+#settingsModal .settings-content-inline #connectorsSettingsSection {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+#settingsModal .settings-content-inline .settings-section,
+#settingsModal .settings-content-inline .profile-editor,
+#settingsModal .settings-content-inline .profile-fields {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+#settingsModal .settings-content-inline .profile-editor {
+  align-items: flex-start !important;
+  gap: 18px !important;
+}
+#settingsModal .settings-content-inline .profile-fields {
+  flex: 1 1 220px !important;
+}
+#settingsModal .settings-content-inline .settings-section-title {
+  margin-bottom: 18px !important;
+}
+#settingsModal .settings-content-inline .settings-section,
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card,
+#settingsModal .settings-content-inline .profile-editor,
+#settingsModal .settings-content-inline .profile-fields,
+#settingsModal .settings-content-inline .settings-card,
+#settingsModal .settings-content-inline .settings-panel {
+  background-color: var(--panel) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card {
+  border-color: var(--border) !important;
+}
+#settingsModal .settings-content-inline .settings-section-title,
+#settingsModal .settings-content-inline label,
+#settingsModal .settings-content-inline strong {
+  color: var(--text) !important;
+}
+#settingsModal .settings-content-inline p,
+#settingsModal .settings-content-inline small,
+#settingsModal .settings-content-inline .muted {
+  color: var(--text-dim) !important;
+}
+#settingsModal .settings-category[aria-current="page"] {
+  background: color-mix(in srgb, var(--accent) 15%, var(--panel)) !important;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border)) !important;
+  color: var(--text) !important;
+}
+#settingsModal .settings-category:hover,
+#settingsModal .settings-category:focus-visible {
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel)) !important;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
+}
+#settingsModal .settings-category > span,
+#settingsModal .settings-heading-icon,
+#settingsModal .settings-detail-mark {
+  background: color-mix(in srgb, var(--accent) 14%, var(--panel)) !important;
+  color: var(--accent) !important;
+}
+html[data-scheme="dark"] {
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --accent-strong: color-mix(in srgb, var(--accent) 86%, white);
+}
+html[data-scheme="light"] {
+  --accent-soft: color-mix(in srgb, var(--accent) 11%, white);
+  --accent-strong: color-mix(in srgb, var(--accent) 82%, black);
+}
+
+/* Library is a focused file picker, not a full-screen-width workspace. */
+#libraryModal > .library-box {
+  width: min(760px, calc(100vw - 32px)) !important;
+  max-width: 760px !important;
+  max-height: min(78dvh, 720px) !important;
+}
+#libraryModal .library-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+}
+@media (max-width: 760px) {
+  #settingsModal > .settings-shell {
+    width: calc(100vw - 20px) !important;
+    height: calc(100dvh - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+  }
+  #settingsModal .settings-layout {
+    grid-template-columns: 70px minmax(0, 1fr) !important;
+  }
+  #settingsModal .settings-dashboard {
+    padding: 18px 14px !important;
+  }
+  #libraryModal > .library-box {
+    width: calc(100vw - 24px) !important;
+    max-width: none !important;
+  }
+}

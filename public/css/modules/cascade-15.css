@@ -1,0 +1,386 @@
+
+html.liquid-glass #chat #input::placeholder {
+  color:color-mix(in srgb,var(--text) 62%,transparent) !important;
+  opacity:1;
+}
+html.liquid-glass #chat:focus-within {
+  background:
+    linear-gradient(128deg,rgba(255,255,255,.24),rgba(255,255,255,.045) 35%,transparent 68%),
+    linear-gradient(315deg,color-mix(in srgb,var(--accent) 22%,transparent),transparent 72%),
+    rgba(255,255,255,.025) !important;
+  border-color:color-mix(in srgb,var(--accent) 72%,white 28%) !important;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255,255,255,.76),
+    0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent),
+    0 0 38px color-mix(in srgb,var(--accent) 32%,transparent),
+    0 14px 38px rgba(0,0,0,.2) !important;
+}
+html.liquid-glass[data-scheme="dark"] #chat #input::placeholder {
+  color:rgba(255,255,255,.62) !important;
+}
+html.liquid-glass[data-scheme="light"] #chat #input::placeholder {
+  color:rgba(20,24,38,.58) !important;
+}
+
+/* VIP / DEV Creative Studio */
+.creative-box { width:min(820px,calc(100vw - 32px)); max-height:min(88vh,900px); overflow:auto; }
+.creative-box .image-content { display:flex; flex-direction:column; gap:18px; }
+.creative-box .image-content > div { display:flex; flex-direction:column; gap:9px; min-width:0; }
+.creative-box textarea { width:100%; min-height:112px; resize:vertical; }
+.creative-box #presentationOutlineJson { min-height:300px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:.82rem; line-height:1.55; }
+.creative-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.creative-actions .image-status { flex:1 1 100%; }
+.creative-box .image-status { color:var(--text-dim); font-size:.86rem; line-height:1.6; }
+.creative-box button:disabled { opacity:.55; cursor:not-allowed; }
+@media(max-width:600px) {
+  .creative-box { width:calc(100vw - 18px); max-height:92vh; }
+  .creative-actions > button { flex:1 1 auto; }
+}
+
+/* ShortGPT Video Studio */
+.video-studio-box { width:min(1120px,calc(100vw - 28px)); }
+.video-studio-connect { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.video-studio-step { min-width:0; display:flex; flex-direction:column; gap:9px; padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--panel-alt); }
+.video-studio-step:first-child { grid-column:1/-1; }
+.video-studio-step strong { color:var(--text); font-size:.94rem; }
+.video-studio-step p,.video-studio-footnote { margin:0; color:var(--text-dim); font-size:.82rem; line-height:1.6; }
+.video-studio-url-row { display:flex; gap:8px; flex-wrap:wrap; }
+.video-studio-url-row input { flex:1 1 300px; min-width:0; }
+.shortgpt-frame { display:block; width:100%; min-height:68vh; border:1px solid var(--border); border-radius:14px; background:#fff; }
+.shortgpt-frame[hidden] { display:none; }
+.video-studio-footnote { margin-top:10px; }
+@media(max-width:700px) {
+  .video-studio-connect { grid-template-columns:1fr; }
+  .video-studio-step:first-child { grid-column:auto; }
+  .shortgpt-frame { min-height:65vh; }
+  .video-studio-url-row > button { flex:1 1 auto; }
+}
+/* LGI performance pass: retain the glass and cursor light, remove paint-heavy perpetual motion. */
+html[data-scheme=dark] .stage::before {
+  inset:-10% !important;
+  opacity:.9 !important;
+  filter:blur(28px) saturate(1.25) !important;
+  background-size:100% 100% !important;
+  animation:none !important;
+  transform:none !important;
+  will-change:auto !important;
+}
+html[data-scheme=dark] .stage::after {
+  filter:none !important;
+  transition:opacity .18s ease !important;
+}
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass .composer,
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-detail-box,
+html.liquid-glass .vip-box,
+html.liquid-glass .image-box,
+html.liquid-glass .memory-box {
+  -webkit-backdrop-filter:blur(16px) saturate(1.28) !important;
+  backdrop-filter:blur(16px) saturate(1.28) !important;
+}
+html.liquid-glass .composer,
+html.liquid-glass #input,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .settings-toggle {
+  -webkit-backdrop-filter:blur(10px) saturate(1.18) !important;
+  backdrop-filter:blur(10px) saturate(1.18) !important;
+}
+html.liquid-glass button,
+html.liquid-glass input,
+html.liquid-glass textarea,
+html.liquid-glass select {
+  transition:background-color .14s ease,border-color .14s ease,box-shadow .14s ease !important;
+}
+html.liquid-glass button:hover:not(:disabled) {
+  transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 5px 16px color-mix(in srgb,var(--accent) 16%,transparent) !important;
+}
+@media(max-width:700px) {
+  html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass .composer,
+  html.liquid-glass .settings-box,html.liquid-glass .settings-detail-box,
+  html.liquid-glass .vip-box,html.liquid-glass .image-box,html.liquid-glass .memory-box {
+    -webkit-backdrop-filter:blur(10px) saturate(1.15) !important;
+    backdrop-filter:blur(10px) saturate(1.15) !important;
+  }
+  html[data-scheme=dark] .stage::before { filter:blur(20px) saturate(1.15) !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before,
+  html[data-scheme=dark] .stage::after { animation:none !important; }
+  html.liquid-glass *,html.liquid-glass *::before,html.liquid-glass *::after {
+    transition-duration:.01ms !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+  }
+}
+
+
+/* Compact chat composer */
+#chat{width:min(660px,calc(100% - 2.8rem))!important;gap:5px!important;padding:5px 6px!important;border-radius:22px!important}
+#chat #input{min-height:34px!important;max-height:96px!important;padding:7px 3px!important;line-height:1.4!important;font-size:.94rem!important}
+#chat .round{width:34px!important;height:34px!important}
+#chat #attach{font-size:19px!important}
+@media(max-width:600px){#chat{width:calc(100% - 1.5rem)!important}#chat #input{max-height:88px!important}}
+
+
+/* Keep VIP sidebar entries genuinely hidden for Free accounts. The base .nav rule sets display:flex, so explicitly preserve the HTML hidden state. */
+.vip-tool-nav[hidden],
+.vip-tools-launch[hidden],
+.tool-group-label[hidden] {
+  display: none !important;
+}
+
+
+/* Phone-first layout polish: keep the chat usable on narrow touch screens. */
+@media (max-width: 760px) {
+  html, body { width:100%; min-width:0; min-height:100%; overflow:hidden; }
+  .layout { width:100%; height:100vh; height:100dvh; min-height:0; overflow:hidden; }
+  .stage { width:100%; min-width:0; min-height:0; height:100%; overflow:hidden; }
+  .side {
+    width:min(320px,88vw);
+    max-width:calc(100vw - 34px);
+    height:100vh;
+    height:100dvh;
+    padding:calc(10px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom));
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .topbar {
+    flex:0 0 auto;
+    min-height:52px;
+    padding:calc(7px + env(safe-area-inset-top)) 12px 8px;
+    gap:9px;
+  }
+  .topbar .context-indicator { display:none; }
+  .topbar .install-app-button { margin-left:auto; min-height:40px; }
+  #log {
+    width:100%;
+    min-height:0;
+    padding:16px 12px 20px;
+    gap:14px;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .msg { max-width:92%; font-size:.94rem; overflow-wrap:anywhere; }
+  .msg.bot { margin-left:30px; }
+  .msg.bot::before { left:-30px; width:23px; height:23px; }
+  .hero { max-width:100%; padding:0 18px; text-align:center; font-size:clamp(1.65rem,7vw,2.25rem); }
+  .hero-sub { max-width:100%; padding:0 20px; text-align:center; font-size:.88rem; }
+  #fileStatus { max-width:calc(100% - 24px)!important; overflow-wrap:anywhere; }
+  #chat {
+    flex:0 0 auto;
+    width:calc(100% - 20px)!important;
+    max-width:780px;
+    margin:8px auto calc(8px + env(safe-area-inset-bottom))!important;
+    padding:6px!important;
+    gap:5px!important;
+    align-items:flex-end;
+    border-radius:20px!important;
+  }
+  #chat #input {
+    min-height:40px!important;
+    max-height:min(28dvh,150px)!important;
+    padding:9px 4px!important;
+    font-size:16px!important;
+    line-height:1.4!important;
+  }
+  #chat .round {
+    width:40px!important;
+    height:40px!important;
+    min-width:40px;
+    min-height:40px;
+  }
+  #chat #attach { font-size:20px!important; }
+  .suggest { width:calc(100% - 24px); max-width:780px; margin:8px auto 0; }
+  .suggest button { min-height:42px; padding:10px 12px; }
+  .overlay {
+    align-items:flex-end;
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+    overflow-y:auto;
+  }
+  .overlay>.box,
+  .overlay>.settings-box,
+  .overlay>section {
+    width:100%!important;
+    max-width:100%!important;
+    max-height:calc(100dvh - 16px - env(safe-area-inset-top))!important;
+    margin:auto 0 0;
+    border-radius:20px 20px 14px 14px!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+  }
+  button, [role="button"], input, select, textarea { touch-action:manipulation; }
+  button { -webkit-tap-highlight-color:transparent; }
+  .code-artifact, pre, .table-wrap { max-width:100%; overflow-x:auto; }
+}
+@media (max-width: 420px) {
+  .topbar { gap:7px; padding-left:9px; padding-right:9px; }
+  .topbar strong { font-size:.96rem; }
+  .topbar .mini { min-height:40px; padding:8px 10px; }
+  #log { padding-left:9px; padding-right:9px; }
+  #chat { width:calc(100% - 12px)!important; }
+  #chat .round { width:38px!important; height:38px!important; min-width:38px; min-height:38px; }
+  .msg { max-width:94%; }
+}
+
+
+/* Touch-first layouts: keep Glitch's ambient visuals, simplify secondary controls. */
+html[data-device="phone"] #clear,
+html[data-device="phone"] #exportChat,
+html[data-device="phone"] #contextOpen,
+html[data-device="tablet"] #clear,
+html[data-device="tablet"] #exportChat,
+html[data-device="tablet"] #contextOpen {
+  display: none !important;
+}
+html[data-device="phone"] .settings-shortcuts,
+html[data-device="tablet"] .settings-shortcuts {
+  display: none !important;
+}
+@media (max-width: 900px) {
+  .side {
+    width: min(310px, 88vw);
+    padding: 12px 10px calc(14px + env(safe-area-inset-bottom));
+  }
+  .topbar {
+    min-height: 54px;
+    padding: 8px 12px;
+    gap: 9px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .topbar #menu {
+    min-width: 42px;
+    min-height: 40px;
+    padding: 8px 11px;
+    font-size: 0;
+  }
+  .topbar #menu::before {
+    content: "☰";
+    font-size: 18px;
+    line-height: 1;
+  }
+  .topbar strong { font-size: 1rem; }
+  .topbar .install-app-button {
+    min-height: 38px;
+    padding: 7px 10px;
+    font-size: .72rem;
+  }
+  #log {
+    width: 100%;
+    padding: 1rem clamp(12px, 3vw, 22px);
+    gap: .85rem;
+  }
+  .msg {
+    max-width: min(92%, 680px);
+    padding: .7rem .85rem;
+    font-size: .93rem;
+  }
+  #chat {
+    width: calc(100% - 20px) !important;
+    margin: 0 auto calc(10px + env(safe-area-inset-bottom));
+    padding: 5px;
+    gap: 4px;
+    border-radius: 22px;
+  }
+  #chat .round {
+    width: 42px;
+    height: 42px;
+  }
+  #chat #input {
+    min-height: 42px;
+    max-height: 112px !important;
+    padding: 10px 5px;
+    font-size: 16px;
+  }
+  #chips { width: calc(100% - 24px); padding-inline: 0; }
+  .hero { margin-bottom: 1rem; }
+  .hero-sub { max-width: calc(100% - 32px); margin-inline: auto; text-align: center; }
+}
+@media (max-width: 520px) {
+  #chat { width: calc(100% - 14px) !important; }
+  #chat #attach { width: 38px; height: 38px; font-size: 19px !important; }
+  #chat #mic { width: 38px; height: 38px; }
+  #chat #send { width: 40px; height: 40px; }
+  .topbar .install-app-button { padding-inline: 8px; }
+  .msg.bot { margin-left: 28px; }
+  .msg.bot::before { left: -28px; width: 22px; height: 22px; }
+}
+
+
+/* Mobile landing-page polish: prevent hero/composer overlap and reduce vertical clutter. */
+@media (max-width: 760px) {
+  html, body { max-width: 100%; overflow-x: clip; }
+  .stage { min-width: 0; width: 100%; overflow-x: clip; }
+  body.empty .stage {
+    justify-content: flex-start;
+    padding: 0 0 calc(18px + env(safe-area-inset-bottom));
+  }
+  body.empty .hero {
+    width: calc(100% - 32px);
+    margin: clamp(14px, 3vh, 26px) auto 8px;
+    font-size: clamp(1.8rem, 6.2vw, 2.45rem);
+    line-height: 1.12;
+    letter-spacing: -.045em;
+  }
+  body.empty .hero-sub {
+    width: calc(100% - 40px);
+    margin: 0 auto 18px;
+    font-size: .92rem;
+    line-height: 1.45;
+  }
+  .hero-sub .context-inline { display: none !important; }
+  #fileStatus { max-width: calc(100% - 28px); overflow-wrap: anywhere; }
+  #cognitionBuddy { display: none !important; }
+  body.empty #chat {
+    width: calc(100% - 28px) !important;
+    min-height: 66px;
+    margin: 0 auto 12px;
+    padding: 6px;
+    align-items: center;
+    border-radius: 22px;
+    gap: 5px;
+  }
+  body.empty #chat #input {
+    min-height: 44px;
+    height: 44px;
+    max-height: 104px !important;
+    padding: 10px 5px;
+    line-height: 1.4;
+    font-size: 16px;
+  }
+  body.empty #chat .round {
+    width: 42px;
+    height: 42px;
+  }
+  body.empty .suggest {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: calc(100% - 28px);
+    gap: 9px;
+    margin: 2px auto 0;
+  }
+  body.empty .suggest button {
+    min-width: 0;
+    min-height: 76px;
+    padding: 11px 12px;
+    border-radius: 15px;
+    gap: 4px;
+    overflow-wrap: anywhere;
+  }
+  body.empty .suggest button b {
+    font-size: .82rem;
+    line-height: 1.25;
+  }
+  body.empty .suggest button span {
+    font-size: .7rem;
+    line-height: 1.3;
+  }
+  #log { min-width: 0; }
+}

@@ -299,7 +299,7 @@
     if (chat.messages.length && MODES.includes(chat.mode) && chat.mode !== mode) { mode = chat.mode; try { localStorage.setItem(MODE_KEY, mode); } catch {} markMode(); }
     render(); renderHistoryList(); if (!quiet) { document.body.classList.remove('nav-open'); input.focus(); }
   }
-  function loadHistory() {
+  function loadHistory(options = {}) {
     history = []; conversations = []; activeChatId = null;
     if (user) {
       try { conversations = sanitize(JSON.parse(store().getItem(storeKey()) || 'null')); } catch {}
@@ -313,7 +313,7 @@
     }
     // Always land on a fresh empty chat, like other chat apps; old chats stay in the list.
     const fresh = makeChat(); conversations.unshift(fresh); activeChatId = fresh.id;
-    persistChats();
+    if(options.persist!==false) persistChats();
   }
 
   // ---- history sidebar ----------------------------------------------------------
@@ -1029,7 +1029,8 @@
     // Token refreshes call this again; only (re)load chats when the account really changed.
     if (changedUser) {
       quotaDone = false; pending = null;
-      // Do not render or write an empty local chat list before the cloud snapshot is fetched.
+      // Paint a usable local workspace immediately; cloud hydration must never hold the UI hostage.
+      loadHistory({persist:false}); render(); renderHistoryList();
       (async()=>{
         try { await hydrateCloudAccount(); }
         catch(error) { showToast('Cloud data could not load: '+error.message); }
@@ -1042,14 +1043,13 @@
           markMode();
           soundOn=localStorage.getItem('glitch_sfx')!=='off';syncSoundButton();
           const savedScheme=localStorage.getItem('glitch_scheme')||'dark';applySchemePreference(savedScheme,false);
-          const savedGlass=localStorage.getItem('glitch_liquid_glass')==='on';applyLiquidGlass(savedGlass,false);
+          const savedGlass=localStorage.getItem('glitch_liquid_glass')==='on';applyGlassStrength(Number(localStorage.getItem('glitch_glass_strength')||45),false);applyLiquidGlass(savedGlass,false);
           const savedTheme=localStorage.getItem('glitch_theme')||'';
           const savedAccent=localStorage.getItem('glitch_accent')||'';
           if(savedTheme==='custom'&&/^#[0-9a-f]{6}$/i.test(savedAccent)){document.documentElement.dataset.theme='custom';document.documentElement.style.setProperty('--accent',savedAccent);}
           else if(savedTheme){document.documentElement.dataset.theme=savedTheme;document.documentElement.style.removeProperty('--accent');}
         } catch {}
-        loadHistory(); render();
-        refreshVip().catch(()=>{});
+        loadHistory(); render(); renderHistoryList();
         loadMemories().catch(e => showToast('Memory could not load: ' + e.message));
       })();
     }
@@ -1786,17 +1786,31 @@
   applySchemePreference(savedScheme, false);
   schemePreference.addEventListener('change', () => { playSfx('toggle'); applySchemePreference(schemePreference.value); });
   const liquidGlassToggle = $('liquidGlassToggle');
-  function applyLiquidGlass(enabled, persist=true) {
-    const active = Boolean(enabled);
-    root.classList.toggle('liquid-glass', active);
-    liquidGlassToggle.setAttribute('aria-pressed', String(active));
-    $('liquidGlassLabel').textContent = 'Liquid Glass: ' + (active ? 'on' : 'off');
-    if (persist) { try { localStorage.setItem('glitch_liquid_glass', active ? 'on' : 'off'); } catch {} }
+  const glassStrength = $('glassStrength'), glassStrengthSetting = $('glassStrengthSetting');
+  function applyGlassStrength(value,persist=true) {
+    const amount=Math.max(0,Math.min(100,Number(value)||0));
+    root.style.setProperty('--glass-blur',(8+amount*.28).toFixed(1)+'px');
+    root.style.setProperty('--glass-tint',(7+amount*.34).toFixed(1)+'%');
+    root.style.setProperty('--glass-edge',(0.42+amount*.0032).toFixed(2));
+    glassStrength.value=String(Math.round(amount));
+    $('glassStrengthValue').textContent=amount<25?'More Clear':amount>75?'More Tinted':'Balanced';
+    if(persist){try{localStorage.setItem('glitch_glass_strength',String(Math.round(amount)));}catch{}}
   }
-  let savedLiquidGlass = false;
-  try { savedLiquidGlass = localStorage.getItem('glitch_liquid_glass') === 'on'; } catch {}
-  applyLiquidGlass(savedLiquidGlass, false);
-  liquidGlassToggle.addEventListener('click', () => { playSfx('toggle'); applyLiquidGlass(liquidGlassToggle.getAttribute('aria-pressed') !== 'true'); });
+  function applyLiquidGlass(enabled,persist=true) {
+    const active=Boolean(enabled);
+    root.classList.toggle('liquid-glass',active);
+    liquidGlassToggle.setAttribute('aria-pressed',String(active));
+    $('liquidGlassLabel').textContent='Liquid Glass: '+(active?'on':'off');
+    glassStrengthSetting.hidden=!active;
+    if(active)applyGlassStrength(glassStrength.value,false);
+    if(persist){try{localStorage.setItem('glitch_liquid_glass',active?'on':'off');}catch{}}
+  }
+  let savedLiquidGlass=false,savedGlassStrength=45;
+  try{savedLiquidGlass=localStorage.getItem('glitch_liquid_glass')==='on';savedGlassStrength=Number(localStorage.getItem('glitch_glass_strength')||45);}catch{}
+  applyGlassStrength(savedGlassStrength,false);
+  applyLiquidGlass(savedLiquidGlass,false);
+  glassStrength.addEventListener('input',()=>applyGlassStrength(glassStrength.value));
+  liquidGlassToggle.addEventListener('click',()=>{playSfx('toggle');applyLiquidGlass(liquidGlassToggle.getAttribute('aria-pressed')!=='true');});
   const systemScheme = matchMedia('(prefers-color-scheme: dark)');
   systemScheme.addEventListener?.('change', () => { if (schemePreference.value === 'system') applySchemePreference('system', false); });
   $('menu').addEventListener('click', () => document.body.classList.toggle('nav-open'));

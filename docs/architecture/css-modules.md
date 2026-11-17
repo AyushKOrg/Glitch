@@ -1,12 +1,12 @@
 # CSS source modules
 
-The original Glitch stylesheet is preserved as an ordered sequence of complete top-level CSS blocks under `src/styles/cascade/`.
+The original Glitch stylesheet is preserved as 261 ordered source fragments distributed evenly across 31 named folders.
 
-- Numbered modules preserve the exact original cascade order.
-- Each module contains complete top-level CSS rules or at-rules; no module cuts through a rule.
-- Concatenating modules in numeric order reconstructs the original stylesheet byte-for-byte.
-- `scripts/build-css.js` bundles the modules into `public/css/styles.css` during the Vercel build.
-- The browser still downloads one stylesheet; the source split does not add hundreds of runtime requests.
-- Do not alphabetize or reorder these files. Their order is part of the CSS cascade.
+- The first 13 folders contain 9 fragments each; the remaining 18 contain 8 each.
+- Every fragment contains complete top-level CSS blocks; fragments are not cut through selectors or at-rules.
+- The numeric `part-NNN.css` prefix is the authoritative cascade order across all folders.
+- `scripts/build-css.js` recursively discovers the fragments, sorts them by their numeric sequence, and bundles them into `public/css/styles.css`.
+- The browser still downloads one stylesheet; the source organization does not add runtime stylesheet requests.
+- Folder names describe broad organization areas, but the original cascade sequence is deliberately preserved rather than reordered by category.
 
-This is a source organization change only. Selectors, declarations, specificity, visual design, and cascade order are preserved.
+This is a source-layout change only. Selectors, declarations, specificity, visual design, and cascade order are unchanged.

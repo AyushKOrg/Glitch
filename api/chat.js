@@ -35,6 +35,45 @@ function isCodeWritingRequest(text) {
   return asksToCreate && codeSubject;
 }
 
+// Calendar retrieval is deterministic: avoid an unrelated web search and a model tool-call round trip.
+function isUpcomingCalendarRequest(text) {
+  const t = String(text || '').toLowerCase();
+  return /\\b(calendar|agenda)\\b/.test(t)
+    && /\\b(check|show|list|get|find|fetch|look|what|upcoming|next|events?)\\b/.test(t);
+}
+function formatUpcomingCalendarResult(raw) {
+  let data = raw;
+  if (typeof data === 'string') {
+    try { data = JSON.parse(data); }
+    catch {
+      return /^(Google connector:|Sign in and connect Google)/i.test(data)
+        ? 'I could not retrieve your calendar: ' + data.replace(/^Google connector:\\s*/i, '')
+        : 'The Calendar connector returned an unexpected response: ' + data.slice(0, 400);
+    }
+  }
+  if (!Array.isArray(data)) {
+    if (data && data.error) return 'I could not retrieve your calendar: ' + String(data.error.message || data.error);
+    return 'The Calendar connector returned an unsupported response.';
+  }
+  if (!data.length) return 'I checked your connected Google Calendar. There are no upcoming events in the primary calendar.';
+  const formatDate = (value, allDay) => {
+    if (!value) return 'Time not specified';
+    const date = new Date(allDay ? value + 'T00:00:00' : value);
+    if (Number.isNaN(date.getTime())) return String(value);
+    return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', ...(allDay ? {} : { timeStyle: 'short' }) }).format(date);
+  };
+  const lines = data.slice(0, 10).map((event, i) => {
+    const start = event.start || {}, end = event.end || {};
+    const allDay = !!start.date && !start.dateTime;
+    const when = formatDate(start.dateTime || start.date, allDay);
+    const until = end.dateTime || end.date;
+    const place = event.location ? ' · ' + String(event.location).slice(0, 120) : '';
+    const link = event.link ? '\\n' + event.link : '';
+    return (i + 1) + '. ' + String(event.summary || '(Untitled event)') + '\\n   ' + when + (until && !allDay ? ' – ' + formatDate(until, false) : '') + place + link;
+  });
+  return 'Here are your next ' + Math.min(data.length, 10) + ' upcoming calendar events:\\n\\n' + lines.join('\\n\\n');
+}
+
 // Search for nearly all factual/entity questions up front; models can also call web_search for follow-ups.
 function needsLiveSearch(text) {
   const t = String(text || '').toLowerCase().trim();
@@ -174,6 +213,17 @@ module.exports = async (req, res) => {
     await autoLearnFromChat(user, lastUserText);
     const ctx = { user, userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
     // This path guarantees latest-email retrieval even if the Flash model declines to call tools.
+    // Calendar requests bypass web search and the model tool loop to avoid wasting request time.
+    if (isUpcomingCalendarRequest(lastUserText)) {
+      res.setHeader('X-Glitch-Calendar-Path', 'direct');
+      const calendarResult = await runTool(ctx, 'google_calendar_upcoming', { max_results: 10 });
+      const reply = formatUpcomingCalendarResult(calendarResult);
+      return res.status(200).json({
+        reply,
+        mode,
+        usage: user.isAnonymous ? { used: usage.used, remaining: usage.remaining, limit: GUEST_MESSAGE_LIMIT } : null,
+      });
+    }
     if (mode === 'flash' && gmailIntent && gmailAction) {
       res.setHeader('X-Glitch-Gmail-Path', 'direct');
       console.info('[glitch-gmail] direct_path_entered', { requestedMode, effectiveMode: mode });

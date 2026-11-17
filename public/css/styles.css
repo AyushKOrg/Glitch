@@ -3805,3 +3805,53 @@ html.liquid-glass #settingsModal .settings-content-inline .vip-card *,
 html.liquid-glass #settingsModal .settings-content-inline .vip-lock *{max-width:100%;overflow-wrap:anywhere}
 html.liquid-glass .settings-content-inline .connector-card button,
 html.liquid-glass .settings-content-inline .vip-card button{align-self:flex-start;white-space:normal}
+
+
+/* Refined glass strength control: clear is genuinely transparent; tinted is visibly denser and softer. */
+.glass-strength-setting{position:relative;isolation:isolate}
+#glassStrength{
+  display:block!important;appearance:none!important;-webkit-appearance:none!important;
+  height:28px!important;min-height:28px!important;margin:2px 0!important;padding:0!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  accent-color:var(--accent);touch-action:pan-y;cursor:ew-resize;
+}
+#glassStrength::-webkit-slider-runnable-track{
+  height:7px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(255,255,255,.88),color-mix(in srgb,var(--accent) 55%,var(--panel)),var(--accent-strong));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 14%,transparent);
+}
+#glassStrength::-moz-range-track{
+  height:7px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(255,255,255,.88),color-mix(in srgb,var(--accent) 55%,var(--panel)),var(--accent-strong));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 14%,transparent);
+}
+#glassStrength::-webkit-slider-thumb{
+  appearance:none;-webkit-appearance:none;width:21px;height:21px;margin-top:-7px;
+  border:2px solid #fff;border-radius:50%;
+  background:var(--accent);box-shadow:0 2px 8px #0005,0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent);
+}
+#glassStrength::-moz-range-thumb{
+  width:17px;height:17px;border:2px solid #fff;border-radius:50%;
+  background:var(--accent);box-shadow:0 2px 8px #0005,0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent);
+}
+.glass-strength-setting:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,
+html.liquid-glass .settings-header,html.liquid-glass .settings-sidebar,
+html.liquid-glass .settings-detail-header,html.liquid-glass .attach-menu,
+html.liquid-glass .accent-picker-panel,html.liquid-glass .gradient-picker-panel{
+  background-color:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important;
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.9)!important;
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.9)!important;
+  transition:background-color .12s linear,backdrop-filter .12s linear,-webkit-backdrop-filter .12s linear;
+}
+html.liquid-glass .settings-category,html.liquid-glass .settings-tile,
+html.liquid-glass .settings-toggle,html.liquid-glass .nav,html.liquid-glass .mini,
+html.liquid-glass .round,html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .attach-menu button{
+  background-color:color-mix(in srgb,var(--panel) calc(var(--glass-tint) + 8%),transparent)!important;
+  -webkit-backdrop-filter:blur(calc(var(--glass-blur)*.82)) saturate(1.8)!important;
+  backdrop-filter:blur(calc(var(--glass-blur)*.82)) saturate(1.8)!important;
+  transition:background-color .12s linear,backdrop-filter .12s linear,-webkit-backdrop-filter .12s linear;
+}
+.accent-dropdown-option[data-palette-kind="solid"] .accent-dropdown-swatch{background:var(--theme-swatch)!important}
+.accent-dropdown-option[data-palette-kind="gradient"] .accent-dropdown-swatch{background:var(--theme-swatch)!important}

@@ -3287,3 +3287,127 @@ body.empty .suggest button:nth-child(4) { animation-delay: .21s; }
 .gmail-mail-sender{font-size:.8rem;color:var(--text-dim);margin-top:4px;overflow-wrap:anywhere}
 .gmail-mail-preview{font-size:.84rem;line-height:1.5;margin:8px 0 0;color:var(--text);opacity:.82;overflow-wrap:anywhere}
 @media(max-width:520px){.gmail-mail-top{display:block}.gmail-mail-date{display:block;text-align:left;margin-top:4px}}
+
+/* Settings workspace repair: keep every category inside one dialog and one
+   scrollable content pane. These rules intentionally supersede legacy modal CSS. */
+#settingsModal > .settings-shell {
+  width:min(1180px,calc(100vw - 40px)) !important;
+  max-width:1180px !important;
+  height:min(820px,calc(100dvh - 48px)) !important;
+  max-height:calc(100dvh - 48px) !important;
+  min-height:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+}
+#settingsModal .settings-layout {
+  display:grid !important;
+  grid-template-columns:246px minmax(0,1fr) !important;
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+#settingsModal .settings-sidebar {
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  justify-content:flex-start !important;
+  gap:7px !important;
+  padding:20px 14px !important;
+}
+#settingsModal .settings-category {
+  flex:0 0 auto !important;
+  min-height:46px !important;
+  max-height:none !important;
+  justify-content:flex-start !important;
+  padding:10px 12px !important;
+  font-size:.84rem !important;
+  white-space:normal !important;
+}
+#settingsModal .settings-dashboard {
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding:clamp(24px,3.2vw,42px) !important;
+}
+#settingsModal .settings-content-inline {
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:visible !important;
+}
+#settingsModal .settings-content-inline[hidden] { display:none !important; }
+#settingsModal .settings-content-inline > .settings-section,
+#settingsModal .settings-content-inline > .vip-content,
+#settingsModal .settings-content-inline > .vip-dev-tools {
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  float:none !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+#settingsModal .settings-content-inline > .settings-section { gap:22px !important; }
+#settingsModal .settings-content-inline .settings-section-title {
+  display:flex !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin:0 0 10px !important;
+}
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card {
+  width:100% !important;
+  max-width:none !important;
+}
+#settingsModal .settings-content-inline .profile-editor {
+  align-items:center !important;
+  flex-wrap:wrap !important;
+  gap:22px !important;
+}
+#settingsModal .settings-content-inline .profile-fields { flex:1 1 260px !important; min-width:0 !important; }
+#settingsModal .settings-header { flex:0 0 auto !important; }
+@media(max-width:760px) {
+  #settingsModal > .settings-shell {
+    width:calc(100vw - 20px) !important;
+    height:calc(100dvh - 24px) !important;
+    max-height:calc(100dvh - 24px) !important;
+  }
+  #settingsModal .settings-layout { grid-template-columns:76px minmax(0,1fr) !important; }
+  #settingsModal .settings-sidebar { padding:12px 7px !important; align-items:stretch !important; }
+  #settingsModal .settings-nav-label { font-size:0 !important; padding:7px 0 !important; }
+  #settingsModal .settings-category {
+    justify-content:center !important;
+    min-height:44px !important;
+    padding:8px 4px !important;
+    font-size:0 !important;
+  }
+  #settingsModal .settings-category > span { width:32px !important; height:32px !important; }
+  #settingsModal .settings-dashboard { padding:22px 18px !important; }
+}
+@media(max-width:420px) {
+  #settingsModal .settings-layout { grid-template-columns:58px minmax(0,1fr) !important; }
+  #settingsModal .settings-dashboard { padding:17px 12px !important; }
+}
+

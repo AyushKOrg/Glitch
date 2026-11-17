@@ -1667,8 +1667,16 @@
     $('gradientEditor').hidden=!enabled;
     if(enabled){root.style.setProperty('--accent',gradientState.a.hex);root.style.setProperty('--accent-2',gradientState.b.hex);root.style.setProperty('--accent-soft','color-mix(in srgb,'+gradientState.a.hex+' 16%,transparent)');root.style.setProperty('--accent-strong',gradientState.a.hex);}
     else {
-      root.style.removeProperty('--accent-2');root.style.removeProperty('--accent');root.style.removeProperty('--accent-soft');root.style.removeProperty('--accent-strong');
-      try{const accent=localStorage.getItem('glitch_accent');if(accent&&validHex(accent))root.style.setProperty('--accent',accent);}catch{}
+      const preset=vipActive?vipThemePaletteColors[root.dataset.theme]:null;
+      if(preset&&preset.kind==='solid'){
+        const solid=preset.colors[0];
+        root.style.setProperty('--accent',solid);root.style.setProperty('--accent-2',solid);
+        root.style.setProperty('--accent-soft','color-mix(in srgb,'+solid+' 18%,transparent)');
+        root.style.setProperty('--accent-strong',solid);
+      }else{
+        root.style.removeProperty('--accent-2');root.style.removeProperty('--accent');root.style.removeProperty('--accent-soft');root.style.removeProperty('--accent-strong');
+        try{const accent=localStorage.getItem('glitch_accent');if(accent&&validHex(accent))root.style.setProperty('--accent',accent);}catch{}
+      }
     }
     if(persist)try{localStorage.setItem('glitch_gradient',enabled?'on':'off')}catch{}
   }
@@ -1797,11 +1805,15 @@
   const glassStrength = $('glassStrength'), glassStrengthSetting = $('glassStrengthSetting');
   function applyGlassStrength(value,persist=true) {
     const amount=Math.max(0,Math.min(100,Number(value)||0));
-    root.style.setProperty('--glass-blur',(8+amount*.28).toFixed(1)+'px');
-    root.style.setProperty('--glass-tint',(7+amount*.34).toFixed(1)+'%');
-    root.style.setProperty('--glass-edge',(0.42+amount*.0032).toFixed(2));
+    // 0 = clear, low-opacity glass; 100 = strongly tinted glass with heavier blur.
+    const blur=5+amount*.34, tint=5+amount*.62, edge=.24+amount*.0058;
+    root.style.setProperty('--glass-blur',blur.toFixed(1)+'px');
+    root.style.setProperty('--glass-tint',tint.toFixed(1)+'%');
+    root.style.setProperty('--glass-edge',edge.toFixed(2));
+    root.style.setProperty('--glass-clear',((100-amount)/100).toFixed(2));
     glassStrength.value=String(Math.round(amount));
-    $('glassStrengthValue').textContent=amount<25?'More Clear':amount>75?'More Tinted':'Balanced';
+    glassStrength.setAttribute('aria-valuetext',amount<20?'More Clear':amount>80?'More Tinted with more blur':'Balanced translucency');
+    $('glassStrengthValue').textContent=amount<20?'More Clear':amount>80?'More Tinted':'Balanced';
     if(persist){try{localStorage.setItem('glitch_glass_strength',String(Math.round(amount)));}catch{}}
   }
   function applyLiquidGlass(enabled,persist=true) {

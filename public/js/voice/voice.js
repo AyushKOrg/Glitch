@@ -1,6 +1,6 @@
 // Speech recognition and spoken replies, initialized by the main application.
 (function () {
-const Voice = (() => {
+function createGlitchVoice({ $, input, getBusy, getUser, showToast }) {
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition,synth=window.speechSynthesis||null;
     const canListen=Boolean(SR),canSpeak=Boolean(synth&&window.SpeechSynthesisUtterance),KEY_SPEAK='glitch_voice_speak';
     const get=k=>{try{return localStorage.getItem(k)==='1';}catch{return false;}},put=(k,v)=>{try{localStorage.setItem(k,v?'1':'0');}catch{}};

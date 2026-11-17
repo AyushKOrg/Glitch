@@ -21,7 +21,8 @@ const INLINE_SRC = '(`[^`\\n]+`)|(\\*\\*(?!\\s)[^*\\n]+?(?<!\\s)\\*\\*)|(\\[[^\\
     try { await navigator.clipboard.writeText(t); }
     catch { const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch {} ta.remove(); }
     if (btn) { const old = btn.dataset.label || btn.textContent; btn.dataset.label = old; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = old; }, 1400); }
-  }\n    const KW = 'abstract|and|as|async|await|break|case|catch|class|const|continue|def|default|del|do|elif|else|enum|except|export|extends|false|final|finally|fn|for|from|func|function|if|implements|import|in|interface|is|lambda|let|match|new|none|not|null|of|or|pass|private|public|raise|return|self|static|struct|super|switch|this|throw|true|try|type|undefined|use|var|void|while|with|yield';
+  }
+    const KW = 'abstract|and|as|async|await|break|case|catch|class|const|continue|def|default|del|do|elif|else|enum|except|export|extends|false|final|finally|fn|for|from|func|function|if|implements|import|in|interface|is|lambda|let|match|new|none|not|null|of|or|pass|private|public|raise|return|self|static|struct|super|switch|this|throw|true|try|type|undefined|use|var|void|while|with|yield';
     function highlight(code, lang) {
     const frag = document.createDocumentFragment();
     if (code.length > 20000) { frag.append(code); return frag; }

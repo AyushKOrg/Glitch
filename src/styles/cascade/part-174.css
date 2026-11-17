@@ -1,0 +1,23 @@
+.settings-content-inline > .settings-section,
+.settings-content-inline > .vip-content {
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.settings-content-inline > .memory-settings { gap:18px; }
+.settings-content-inline .settings-section-title { display:flex; align-items:center; gap:13px; margin:0 0 24px; }
+.settings-content-inline .settings-section-title #memoryClose { margin-left:auto; flex:none; }
+.settings-content-inline .vip-content { overflow:visible; }
+.settings-content-inline .vip-hero { margin-top:0; }
+.settings-content-inline #vipStatus { margin-top:14px; }
+.settings-sidebar .settings-category[aria-current="page"] {
+  background:color-mix(in srgb,var(--accent) 17%,transparent) !important;
+  border-color:color-mix(in srgb,var(--accent) 48%,transparent) !important;
+  color:var(--accent-strong) !important;
+}

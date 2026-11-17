@@ -1,0 +1,24 @@
+@media (max-width: 420px) {
+  .topbar { gap:7px; padding-left:9px; padding-right:9px; }
+  .topbar strong { font-size:.96rem; }
+  .topbar .mini { min-height:40px; padding:8px 10px; }
+  #log { padding-left:9px; padding-right:9px; }
+  #chat { width:calc(100% - 12px)!important; }
+  #chat .round { width:38px!important; height:38px!important; min-width:38px; min-height:38px; }
+  .msg { max-width:94%; }
+}
+
+
+/* Touch-first layouts: keep Glitch's ambient visuals, simplify secondary controls. */
+html[data-device="phone"] #clear,
+html[data-device="phone"] #exportChat,
+html[data-device="phone"] #contextOpen,
+html[data-device="tablet"] #clear,
+html[data-device="tablet"] #exportChat,
+html[data-device="tablet"] #contextOpen {
+  display: none !important;
+}
+html[data-device="phone"] .settings-shortcuts,
+html[data-device="tablet"] .settings-shortcuts {
+  display: none !important;
+}

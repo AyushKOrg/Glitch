@@ -1,0 +1,27 @@
+.settings-content-inline > .settings-section {
+  padding:clamp(22px,3vw,34px) !important;
+  border:1px solid color-mix(in srgb,var(--accent) 18%,var(--border)) !important;
+  border-radius:20px !important;
+  background:color-mix(in srgb,var(--panel) 72%,var(--panel-alt)) !important;
+  box-shadow:0 12px 34px -28px rgba(0,0,0,.38) !important;
+  gap:24px !important;
+}
+.settings-content-inline .settings-section-title {
+  gap:16px !important;
+  margin:0 0 8px !important;
+}
+.settings-content-inline .settings-section-title h4 {
+  font-size:1.22rem !important;
+  letter-spacing:-.025em;
+}
+.settings-content-inline .settings-section-title p {
+  margin-top:5px !important;
+  font-size:.84rem !important;
+  line-height:1.6;
+}
+.settings-content-inline .settings-icon {
+  width:44px !important;
+  height:44px !important;
+  border-radius:14px !important;
+  font-size:21px !important;
+}

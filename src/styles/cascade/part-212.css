@@ -1,0 +1,7 @@
+.gradient-color-head{width:100%;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.gradient-color-head strong{font-size:.76rem}
+.gradient-color-head output{font:750 .68rem ui-monospace,monospace;color:var(--accent-strong)}
+.gradient-color-control>label{font-size:.69rem;font-weight:750;color:var(--text-dim)}
+.gradient-wheel{width:104px;height:104px;align-self:center;position:relative;border:4px solid var(--panel-alt);border-radius:50%;background:radial-gradient(circle,white 0%,transparent 78%),conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);cursor:crosshair;touch-action:none;box-shadow:0 4px 16px #0002}
+.gradient-wheel::after{content:"";position:absolute;inset:38px;border-radius:50%;background:var(--wheel-selected,#7c3aed);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--border);pointer-events:none}
+.gradient-wheel-marker{position:absolute;left:50%;top:8%;width:12px;height:12px;border:2px solid white;border-radius:50%;box-shadow:0 1px 4px #000b;transform:translate(-50%,-50%);pointer-events:none;z-index:1}

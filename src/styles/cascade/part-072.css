@@ -1,0 +1,8 @@
+#vipModal #vipCode{flex:1;min-width:0;padding:12px 14px;border:1px solid rgba(231,194,111,.34);border-radius:11px;background:rgba(0,0,0,.36);color:#fff;outline:none}
+#vipModal #vipCode:focus{border-color:#e7c16f;box-shadow:0 0 0 3px rgba(231,193,111,.14)}
+#vipModal #vipRedeem{background:linear-gradient(120deg,#f6d88f,#b77b25)!important;color:#211708!important;border:1px solid rgba(255,238,191,.8)!important;font-weight:850;box-shadow:0 8px 24px rgba(193,139,49,.22)!important}
+#vipModal #vipStatus{min-height:1.3em;color:#e8c77f;font-size:.8rem}
+#vipModal .vip-card,#vipModal .vip-stat{border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.055);padding:13px}
+#vipModal .vip-card label,#vipModal .vip-card strong{color:#f3d99f}
+#vipModal .vip-card small,#vipModal .vip-stat span{color:#bcb7ac}
+#vipModal .vip-card input,#vipModal .vip-card select{width:100%;margin-top:7px;padding:9px;border-radius:9px;border:1px solid rgba(255,255,255,.15);background:#17171c;color:#fff}

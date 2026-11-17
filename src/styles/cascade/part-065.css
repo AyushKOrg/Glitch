@@ -1,0 +1,13 @@
+body.sidebar-collapsed .me{width:100%;justify-content:center;margin:6px 0 0;padding:10px 0}
+body.sidebar-collapsed .avatar{width:34px;height:34px}
+.topbar #menu{display:inline-flex}
+@media(max-width:760px){
+ .side{width:min(304px,88vw);min-width:0}
+ body.sidebar-collapsed .side{width:min(304px,88vw);min-width:0;align-items:stretch}
+ body.sidebar-collapsed .side-brand{justify-content:flex-start;padding:6px 8px 12px}
+ body.sidebar-collapsed .side-brand strong,body.sidebar-collapsed .side h4,body.sidebar-collapsed .history-head,body.sidebar-collapsed .history-search,body.sidebar-collapsed .history-list,body.sidebar-collapsed .accent-picker-copy,body.sidebar-collapsed .accent-trigger-chevron,body.sidebar-collapsed .me-text,body.sidebar-collapsed #signout,body.sidebar-collapsed .vip-pill,body.sidebar-collapsed .tool-lock-label{display:initial!important}
+ body.sidebar-collapsed .side>.nav,body.sidebar-collapsed .side .modes .nav{width:100%;height:auto;justify-content:flex-start;padding:9px 10px;font-size:15px}
+ body.sidebar-collapsed .side .accent-picker-trigger{width:100%;height:auto;justify-content:flex-start;padding:11px 12px}
+ body.sidebar-collapsed .side .me{width:auto;justify-content:flex-start;margin:6px -10px -12px;padding:10px}
+ body.sidebar-collapsed #sideCollapse{position:static;width:34px;height:34px}
+}

@@ -1,0 +1,5 @@
+.nav:hover::after{transform:translateX(130%)}
+.nav.primary{box-shadow:0 3px 12px -10px var(--accent);transition:background .2s,border-color .2s,transform .2s var(--ease),box-shadow .25s}.nav.primary:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--border));box-shadow:0 7px 18px -13px var(--accent);transform:translateY(-1px)}
+.nav[aria-pressed=true]{box-shadow:inset 3px 0 0 var(--accent)}
+#log{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+.msg{transition:transform .22s var(--ease),box-shadow .22s ease,border-color .22s ease;transform-origin:bottom left}.msg.user{animation:floatIn .38s cubic-bezier(.2,.8,.2,1) both}.msg.bot{border:1px solid transparent}.msg.bot:hover{border-color:var(--border);box-shadow:0 8px 24px -22px var(--accent);transform:translateY(-1px)}.msg.user:hover{box-shadow:0 10px 24px -9px color-mix(in srgb,var(--accent) 68%,transparent)}

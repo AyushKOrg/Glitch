@@ -1,0 +1,4 @@
+.settings-shortcut>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}.settings-shortcut strong{font-size:.78rem}.settings-shortcut small{font-size:.68rem;color:var(--text-dim);line-height:1.4}.settings-shortcut>b{font-size:1.2rem;color:var(--muted)}
+.shortcut-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-strong);font-size:18px;flex:none}
+.settings-accent-heading{display:flex;flex-direction:column;gap:2px}.settings-accent-heading strong{font-size:.82rem}.settings-accent-heading span{font-size:.72rem;color:var(--text-dim)}
+.settings-section .accent-picker-wrap{padding:0!important}.settings-section .accent-picker-panel{position:relative!important;top:auto!important;left:auto!important;width:100%!important;max-height:none!important;margin-top:8px}

@@ -1,0 +1,20 @@
+html[data-scheme="light"] .suggest button span{color:#687286!important}
+html[data-scheme="light"] .accent-picker-panel{
+  background:#fff!important;color:#202638!important;border:1px solid rgba(25,32,48,.12)!important;
+  box-shadow:0 18px 48px rgba(25,32,48,.14)!important;
+}
+html[data-scheme="light"] .me,
+html[data-scheme="light"] .me-text,
+html[data-scheme="light"] .me-sub{color:#4e586b!important}
+/* Theme-aware contrast for primary sidebar actions. */
+html[data-scheme="light"] #newChat{
+  color:#172033!important;
+  background:#fff!important;
+  border:1px solid rgba(25,32,48,.16)!important;
+  box-shadow:0 4px 14px rgba(25,32,48,.08),inset 0 1px 0 #fff!important;
+}
+html[data-scheme="light"] #newChat svg{color:#172033!important;stroke:currentColor!important}
+html[data-scheme="light"] .cta,
+html[data-scheme="light"] #send{color:#fff!important}
+
+

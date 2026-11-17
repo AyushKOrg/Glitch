@@ -1,0 +1,21 @@
+/* Final legibility guard: decorative glass layers must never sit over labels or text. */
+html.liquid-glass .settings-box::before,
+html.liquid-glass .settings-box::after,
+html.liquid-glass .settings-detail-box::before,
+html.liquid-glass .settings-detail-box::after,
+html.liquid-glass .vip-box::before,
+html.liquid-glass .vip-box::after,
+html.liquid-glass .image-box::before,
+html.liquid-glass .image-box::after,
+html.liquid-glass .memory-box::before,
+html.liquid-glass .memory-box::after,
+html.liquid-glass .library-box::before,
+html.liquid-glass .library-box::after,
+html.liquid-glass .box::before,
+html.liquid-glass .box::after{content:none!important;display:none!important}
+html.liquid-glass #settingsModal .settings-content-inline,
+html.liquid-glass #settingsModal .settings-content-inline>.settings-section,
+html.liquid-glass #settingsModal .settings-content-inline .connector-card,
+html.liquid-glass #settingsModal .settings-content-inline .connector-intro,
+html.liquid-glass #settingsModal .settings-content-inline .vip-card,
+html.liquid-glass #settingsModal .settings-content-inline .vip-lock{position:relative!important;isolation:isolate;overflow:visible}

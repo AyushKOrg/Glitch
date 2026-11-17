@@ -1,0 +1,7 @@
+button,input,textarea,select{font-family:Inter,system-ui,sans-serif}button{cursor:pointer}
+button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:2px solid var(--accent)!important;outline-offset:2px}
+input[type=checkbox],input[type=radio]{appearance:auto;-webkit-appearance:auto;accent-color:var(--accent);width:17px;height:17px}input[type=range]{accent-color:var(--accent)}
+input[type=file]::file-selector-button{appearance:none;border:1px solid var(--border-strong);border-radius:8px;padding:8px 11px;background:var(--panel-alt);color:var(--text);font:650 .76rem Inter,system-ui,sans-serif}
+select option{background:var(--panel);color:var(--text)}
+.settings-detail-body .settings-section .accent-picker-wrap{padding:0!important}.settings-detail-body .settings-section .accent-picker-panel:not([hidden]){display:flex!important}
+.vip-tools-launch{margin-bottom:8px}

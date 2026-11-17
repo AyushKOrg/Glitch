@@ -1,0 +1,6 @@
+.settings-box .vip-dev-action-copy{display:flex;gap:12px;align-items:flex-start}.settings-box .vip-action-icon{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;font-size:20px;flex:none}
+.settings-box #vipRegenerate{width:100%;min-height:46px;white-space:normal}.settings-box #vipCodeVerifyForm{margin-top:2px}.settings-box #vipDevStatus,.settings-box #vipVerifyStatus{padding:3px 2px}
+.settings-box .vip-dev-heading{border-bottom:1px solid var(--border);padding-bottom:13px}
+#vipModal .vip-actions{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center;gap:12px!important;padding-top:8px}
+#vipModal .vip-actions #vipSave{min-height:46px!important;padding:12px 18px!important;font-size:.86rem!important}
+#vipModal .vip-actions #vipReset{min-height:42px!important;padding:10px 15px!important}

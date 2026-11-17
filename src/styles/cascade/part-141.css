@@ -1,0 +1,24 @@
+@media(max-width:760px) { .me{margin-top:8px}.settings-dashboard{min-height:240px;padding:28px 22px} }
+@media(prefers-reduced-motion:reduce) { .stage::before{animation:none;opacity:.8} }
+
+
+/* ===== Stronger reference-inspired atmosphere in BOTH colour schemes ===== */
+/* Light mode keeps saturated colour blooms instead of fading into plain white. */
+html:not([data-scheme=dark]) .stage {
+  background:
+    radial-gradient(ellipse at 8% 12%,color-mix(in srgb,var(--accent) 23%,transparent),transparent 43%),
+    radial-gradient(ellipse at 91% 83%,color-mix(in srgb,var(--accent-2) 22%,transparent),transparent 46%),
+    radial-gradient(ellipse at 53% 0%,rgba(255,255,255,.82),transparent 48%),
+    var(--panel);
+}
+html:not([data-scheme=dark]) .stage::before {
+  inset:-18%;
+  background:
+    radial-gradient(ellipse at 13% 18%,color-mix(in srgb,var(--accent) 34%,transparent),transparent 40%),
+    radial-gradient(ellipse at 84% 77%,color-mix(in srgb,var(--accent-2) 30%,transparent),transparent 44%),
+    radial-gradient(ellipse at 53% 5%,rgba(255,255,255,.72),transparent 46%);
+  background-size:190% 190%,190% 190%,160% 160%;
+  filter:blur(38px);
+  opacity:1;
+  animation:glitchAtmosphere 15s ease-in-out infinite alternate;
+}

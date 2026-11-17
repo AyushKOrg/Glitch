@@ -1,0 +1,27 @@
+@keyframes glitchStarTwinkle {
+  0%,100% { opacity:.42; filter:brightness(.9); }
+  45% { opacity:.78; filter:brightness(1.25); }
+  70% { opacity:.58; filter:brightness(1); }
+}
+
+/* The dark workspace follows the reference video: midnight blue, cyan light,
+   a restrained violet edge, and small stars that never compete with the chat. */
+html[data-scheme=dark] .stage {
+  background:
+    radial-gradient(ellipse at 18% 15%,rgba(0,190,220,.13),transparent 43%),
+    radial-gradient(ellipse at 86% 82%,rgba(90,65,170,.14),transparent 46%),
+    radial-gradient(ellipse at 52% 100%,rgba(0,95,135,.09),transparent 48%),
+    #090d17;
+}
+html[data-scheme=dark] .stage::before {
+  inset:-15%;
+  z-index:0;
+  background:
+    radial-gradient(ellipse at 18% 24%,rgba(0,210,225,.19),transparent 39%),
+    radial-gradient(ellipse at 84% 76%,rgba(55,112,210,.16),transparent 43%),
+    radial-gradient(ellipse at 52% 4%,rgba(125,85,205,.10),transparent 48%);
+  background-size:180% 180%,190% 190%,170% 170%;
+  filter:blur(38px);
+  opacity:.95;
+  animation:glitchNebulaDrift 24s ease-in-out infinite;
+}

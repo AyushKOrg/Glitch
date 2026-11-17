@@ -1,0 +1,6 @@
+body.sidebar-collapsed .side>.nav,body.sidebar-collapsed .side .modes .nav{justify-content:center!important;gap:0!important;padding:0!important;font-size:0!important;line-height:0!important;min-width:0!important}
+body.sidebar-collapsed .side>.nav svg,body.sidebar-collapsed .side .modes .nav svg{width:20px!important;height:20px!important;flex:none!important}
+body.sidebar-collapsed .side .accent-picker-trigger{justify-content:center!important;padding:5px!important}body.sidebar-collapsed .side .accent-trigger-disc{margin:0!important}
+body.sidebar-collapsed .side .history-list{max-height:24dvh!important;min-height:70px!important}
+body.sidebar-collapsed .side .history-item{justify-content:center!important}
+body.sidebar-collapsed .side .history-open{font-size:0!important;width:12px!important;min-width:12px!important;flex:0 0 12px!important;padding:5px 0!important}

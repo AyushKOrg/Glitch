@@ -1,0 +1,9 @@
+#accentBrightness::-moz-range-thumb{width:13px;height:13px;border:3px solid var(--panel);border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px var(--border-strong),0 2px 6px #0005}
+.accent-presets{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.accent-swatch{width:28px;height:28px;justify-self:center;border:3px solid var(--panel);border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px var(--border);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.accent-swatch:hover{transform:scale(1.14)}
+.accent-swatch.active{box-shadow:0 0 0 2px var(--accent),0 0 0 4px var(--panel)}
+@media(max-width:760px){.accent-picker-panel{max-width:100%}}
+
+/* VIP */
+[data-theme=obsidian]{--accent:#eab308;--accent-2:#f59e0b;--accent-soft:#3b2d10;--accent-strong:#facc15}

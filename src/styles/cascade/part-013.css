@@ -1,0 +1,7 @@
+.code-artifact-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;background:var(--panel-alt);border-bottom:1px solid var(--border);font-size:.78rem}
+  .code-artifact-name{font-weight:700;overflow-wrap:anywhere;color:var(--text)}
+  .code-download{border:0;border-radius:8px;padding:6px 10px;background:var(--accent);color:white;font-size:.78rem;font-weight:700;cursor:pointer}
+  .code-download:hover{filter:brightness(1.08)}
+  .code-artifact pre{margin:0;padding:12px;max-height:420px;overflow:auto;white-space:pre;tab-size:2;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--text)}
+  .download-all{margin-top:10px;border:1px solid var(--border-strong);border-radius:9px;padding:7px 11px;background:var(--panel);color:var(--text);font-size:.8rem;cursor:pointer}
+.typing{display:inline-flex;gap:4px;padding:.3rem 0}

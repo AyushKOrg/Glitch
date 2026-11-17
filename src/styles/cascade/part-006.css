@@ -1,0 +1,8 @@
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-5px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes ripple{to{transform:scale(2.6);opacity:0}}
+.layout{display:flex;height:100%;height:100dvh}
+/* sidebar */
+.side{width:268px;flex:none;background:var(--panel-alt);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:12px 10px;gap:2px;transition:transform .25s ease}
+.side-brand{display:flex;align-items:center;gap:10px;padding:6px 10px 14px}
+.side-brand img{width:32px;height:32px;border-radius:9px;animation:rise .5s var(--ease) both}
+.side-brand strong{font-size:1.05rem;font-weight:800;letter-spacing:-.01em;background:var(--grad);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shift 6s ease infinite}

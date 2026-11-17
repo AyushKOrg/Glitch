@@ -1,0 +1,7 @@
+.msg-actions{margin:6px -6px -4px;display:flex;opacity:0;transition:opacity .15s}.msg.bot:hover .msg-actions,.msg.bot:focus-within .msg-actions,.msg.bot:last-of-type .msg-actions{opacity:1}
+@media(hover:none){.msg-actions{opacity:1}}
+#fileStatus{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#fileStatus:empty{display:none}
+.attach-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--text);font-size:.8rem}
+.attach-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:1rem;line-height:1;padding:0 6px;border-radius:50%}.attach-chip button:hover{background:var(--panel)}
+.attach-note{font-size:.8rem;color:var(--text-dim)}.attach-note.err{color:var(--error)}
+.stage::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(360px circle at var(--pointer-x,50%) var(--pointer-y,35%),color-mix(in srgb,var(--accent) 9%,transparent),transparent 72%);opacity:.75;transition:opacity .25s}

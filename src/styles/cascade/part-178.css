@@ -1,0 +1,29 @@
+html.liquid-glass[data-scheme="light"] .settings-box,
+html.liquid-glass[data-scheme="light"] .settings-dashboard,
+html.liquid-glass[data-scheme="light"] .settings-sidebar {
+  background-color:rgba(245,248,255,.13) !important;
+}
+@media(max-width:700px) {
+  .settings-content-inline { padding:0; }
+  .settings-content-inline .settings-section-title { margin-bottom:17px; }
+  .settings-content-inline .vip-grid { grid-template-columns:1fr; }
+}
+
+
+/* SETTINGS SPACING PASS — give the right-hand workspace room to breathe. */
+.settings-dashboard {
+  padding:clamp(28px,4.2vw,58px) !important;
+}
+.settings-dashboard > .settings-welcome {
+  margin:0 0 30px;
+}
+.settings-content-inline {
+  display:flex !important;
+  flex-direction:column;
+  align-items:stretch;
+  gap:28px;
+  width:100%;
+  min-width:0;
+  padding:0;
+}
+.settings-content-inline[hidden] { display:none !important; }

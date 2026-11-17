@@ -1,0 +1,9 @@
+#soundToggle svg,#speakToggle svg{color:#000!important;stroke:currentColor!important}
+html[data-scheme="dark"] #soundToggle svg,html[data-scheme="dark"] #speakToggle svg{color:#fff!important}
+html[data-scheme="light"] #soundToggle svg,html[data-scheme="light"] #speakToggle svg{color:#000!important}
+html[data-scheme="light"] #soundToggle[aria-pressed="true"] svg,html[data-scheme="light"] #speakToggle[aria-pressed="true"] svg{color:#000!important}
+html[data-scheme="dark"] #soundToggle[aria-pressed="true"] svg,html[data-scheme="dark"] #speakToggle[aria-pressed="true"] svg{color:#fff!important}
+
+/* Fixed app viewport with independently scrollable chat and navigation regions. */
+html,body{height:100%;min-height:0;overflow:hidden!important}.layout{height:100dvh!important;min-height:0!important;overflow:hidden!important}
+.stage{height:100dvh!important;min-height:0!important;overflow:hidden!important}

@@ -1,0 +1,11 @@
+html.liquid-glass[data-scheme="dark"] .settings-box,
+html.liquid-glass[data-scheme="dark"] .settings-dashboard,
+html.liquid-glass[data-scheme="dark"] .settings-sidebar,
+html.liquid-glass[data-scheme="light"] .settings-box,
+html.liquid-glass[data-scheme="light"] .settings-dashboard,
+html.liquid-glass[data-scheme="light"] .settings-sidebar {
+  background:
+    linear-gradient(132deg,rgba(255,255,255,.105) 0%,rgba(255,255,255,.018) 22%,transparent 58%),
+    linear-gradient(315deg,color-mix(in srgb,var(--accent) 13%,transparent),transparent 68%),
+    color-mix(in srgb,var(--bg) var(--glass-tint),transparent) !important;
+}

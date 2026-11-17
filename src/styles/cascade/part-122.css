@@ -1,0 +1,6 @@
+.settings-nav-label{padding:10px 11px 5px;color:var(--muted);font-size:.62rem;font-weight:850;letter-spacing:.13em}
+.settings-category{display:flex;align-items:center;gap:11px;width:100%;min-height:42px;padding:9px 11px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--text);font:650 .8rem/1.3 Inter,system-ui,sans-serif;text-align:left;cursor:pointer;text-decoration:none;white-space:normal}
+.settings-category>span{width:25px;height:25px;display:grid;place-items:center;flex:none;border-radius:8px;background:var(--panel);color:var(--accent-strong);font-size:16px}
+.settings-category:hover,.settings-category:focus-visible{background:var(--accent-soft);border-color:var(--border-strong);outline:none}
+.settings-dashboard{min-width:0;padding:25px;overflow:auto;background:var(--panel)}
+.settings-welcome{padding:5px 3px 20px}

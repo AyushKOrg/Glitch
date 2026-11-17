@@ -1,0 +1,24 @@
+html[data-scheme="dark"] .side {
+  background:
+    radial-gradient(ellipse at 12% 0%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 48%),
+    radial-gradient(ellipse at 100% 100%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 52%),
+    var(--panel) !important;
+  border-right-color:color-mix(in srgb,var(--accent) 22%,var(--border)) !important;
+}
+
+/* Center the welcome composition in the available chat workspace. */
+body.empty .stage {
+  justify-content:center !important;
+  padding-top:clamp(12px,3vh,34px) !important;
+  padding-bottom:clamp(12px,3vh,34px) !important;
+}
+body.empty .hero,
+body.empty .hero-sub,
+body.empty #fileStatus,
+body.empty #chat,
+body.empty .suggest {
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+body.empty .hero { width:min(780px,calc(100% - 2.8rem)); }
+body.empty .hero-sub { width:min(780px,calc(100% - 2.8rem)); }

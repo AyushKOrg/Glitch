@@ -1,0 +1,6 @@
+.settings-kicker{font-size:.64rem;font-weight:850;letter-spacing:.14em;color:var(--accent-strong)}
+.settings-welcome h4{margin:7px 0 5px;font-size:1.35rem;letter-spacing:-.04em;color:var(--text)}.settings-welcome p{margin:0;color:var(--text-dim);font-size:.82rem;line-height:1.55}
+.settings-dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.settings-tile{position:relative;min-height:122px;padding:15px;display:flex;flex-direction:column;align-items:flex-start;gap:7px;border:1px solid var(--border);border-radius:14px;background:var(--panel-alt);color:var(--text);text-align:left;cursor:pointer;transition:transform .16s,border-color .16s,background .16s}
+.settings-tile:hover{transform:translateY(-2px);border-color:var(--accent);background:var(--accent-soft)}
+.settings-tile-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);font-size:17px}

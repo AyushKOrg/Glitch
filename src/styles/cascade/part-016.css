@@ -1,0 +1,6 @@
+#send:hover:not(:disabled){transform:translateY(-2px) scale(1.06);filter:brightness(1.08)}#send:active:not(:disabled){transform:scale(.94)}#send:disabled{opacity:.45;cursor:wait}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);animation:ripple .55s ease-out;pointer-events:none}
+.suggest{display:none;flex-direction:column;width:min(780px,calc(100% - 2.8rem));margin:.6rem auto 0}
+.suggest button{display:flex;align-items:center;gap:12px;background:none;border:0;border-radius:12px;padding:.7rem .9rem;text-align:left;color:var(--text-dim);cursor:pointer;transition:background .15s,color .15s,transform .15s var(--ease)}
+.suggest button:hover{background:var(--panel-alt);color:var(--text);transform:translateX(4px)}
+.suggest svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}

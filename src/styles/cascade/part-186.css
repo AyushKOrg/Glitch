@@ -1,0 +1,32 @@
+.settings-content-inline #vipDeveloperTools .vip-dev-action,
+.settings-content-inline #vipDeveloperTools .vip-code-verify {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch;
+  gap:22px !important;
+  width:100%;
+  min-width:0;
+  margin:0;
+  padding:28px !important;
+  border:1px solid var(--border-strong) !important;
+  border-radius:20px !important;
+  background:var(--panel-alt) !important;
+  box-shadow:0 14px 36px -28px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.045);
+}
+.settings-content-inline #vipDeveloperTools .vip-dev-action-copy {
+  display:flex;
+  align-items:flex-start;
+  gap:19px;
+  min-width:0;
+}
+.settings-content-inline #vipDeveloperTools .vip-action-icon {
+  display:grid;
+  place-items:center;
+  width:54px;
+  height:54px;
+  flex:0 0 54px;
+  border-radius:16px;
+  background:color-mix(in srgb,var(--accent) 19%,var(--panel));
+  color:var(--accent);
+  font-size:27px;
+}

@@ -1,0 +1,6 @@
+#vipModal .vip-eyebrow{display:block;color:var(--accent-strong)!important;font-size:.67rem!important;font-weight:850!important;letter-spacing:.13em!important;line-height:1.4}
+#vipModal .vip-hero-copy>strong{color:var(--text)!important;font-size:1.2rem!important;font-weight:800!important;letter-spacing:-.035em!important}
+#vipModal .vip-hero-copy>span:last-child{color:var(--text-dim)!important;font-size:.84rem!important;line-height:1.5!important}
+#vipModal .vip-lock{padding:20px!important;border:1px solid var(--border-strong)!important;border-radius:16px!important;background:var(--panel-alt)!important;color:var(--text)!important}
+#vipModal .vip-lock>strong{display:block;color:var(--text)!important;font-size:1rem!important;font-weight:800!important}
+#vipModal .vip-lock p{margin:8px 0 15px!important;color:var(--text-dim)!important;font-size:.84rem!important;line-height:1.6!important}

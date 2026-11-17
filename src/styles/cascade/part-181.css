@@ -1,0 +1,27 @@
+.settings-content-inline .settings-button {
+  min-height:44px;
+  padding:11px 17px;
+  font-size:.84rem;
+}
+.settings-content-inline .account-details {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:19px 21px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:color-mix(in srgb,var(--panel-alt) 76%,transparent);
+}
+.settings-content-inline .account-details strong { font-size:1rem; overflow-wrap:anywhere; }
+.settings-content-inline .settings-toggle-row {
+  gap:22px !important;
+  padding:20px 0 !important;
+}
+.settings-content-inline .settings-toggle-row strong,
+.settings-content-inline .settings-accent-heading strong { font-size:.94rem !important; }
+.settings-content-inline .settings-toggle-row small,
+.settings-content-inline .settings-accent-heading span { font-size:.8rem !important; line-height:1.55; }
+.settings-content-inline .settings-toggle {
+  min-height:44px;
+  padding:10px 16px !important;
+}

@@ -1,0 +1,5 @@
+.brand strong{font-size:1.4rem;font-weight:800;background:var(--grad);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shift 6s ease infinite}
+#gate p{margin:0;color:var(--text-dim);font-size:.88rem}
+#gate input{background:var(--panel-alt);border:1px solid var(--border);border-radius:10px;padding:.65rem .8rem;outline:0;transition:border-color .15s,box-shadow .15s}#gate input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.tabs{display:flex;gap:6px}.tabs button{flex:1;background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:10px;padding:8px;cursor:pointer;transition:all .15s}.tabs button[aria-pressed=true]{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft)}
+.oauth-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}

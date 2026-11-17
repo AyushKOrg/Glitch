@@ -1,0 +1,21 @@
+#settingsModal .settings-content-inline p,
+#settingsModal .settings-content-inline small,
+#settingsModal .settings-content-inline .muted {
+  color: var(--text-dim) !important;
+}
+#settingsModal .settings-category[aria-current="page"] {
+  background: color-mix(in srgb, var(--accent) 15%, var(--panel)) !important;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border)) !important;
+  color: var(--text) !important;
+}
+#settingsModal .settings-category:hover,
+#settingsModal .settings-category:focus-visible {
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel)) !important;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
+}
+#settingsModal .settings-category > span,
+#settingsModal .settings-heading-icon,
+#settingsModal .settings-detail-mark {
+  background: color-mix(in srgb, var(--accent) 14%, var(--panel)) !important;
+  color: var(--accent) !important;
+}

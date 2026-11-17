@@ -1,0 +1,9 @@
+@media(max-width:700px){.settings-shell{width:calc(100vw - 14px)!important;max-height:94dvh!important}.settings-layout{grid-template-columns:70px minmax(0,1fr)}.settings-sidebar{padding:12px 6px;align-items:stretch}.settings-nav-label{font-size:0;padding:7px 0}.settings-category{justify-content:center;padding:8px 4px;font-size:0;gap:0}.settings-category>span{width:32px;height:32px;font-size:17px}.settings-dashboard{padding:16px 12px}.settings-dashboard-grid{grid-template-columns:1fr}.settings-tile{min-height:100px}.settings-detail-body{padding:15px}}
+@media(max-width:420px){.settings-layout{grid-template-columns:58px minmax(0,1fr)}.settings-dashboard-grid{gap:8px}.settings-welcome h4{font-size:1.1rem}}
+
+
+/* Unified Glitch controls across every overlay and workspace */
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=submit]):not([type=button]),
+textarea,select{
+  font-family:Inter,system-ui,sans-serif;
+}

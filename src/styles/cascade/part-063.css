@@ -1,0 +1,8 @@
+.accent-picker-copy{flex:1;gap:3px}
+.accent-picker-copy strong{font-size:.8rem}
+.accent-picker-copy span{font-size:.68rem;line-height:1.35}
+.accent-trigger-chevron{width:15px;height:15px;flex:none;opacity:.65}
+.accent-trigger-chevron path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.sidebar-collapsed .side{width:76px;min-width:76px;padding:14px 9px;align-items:center}
+body.sidebar-collapsed .side-brand{width:100%;justify-content:center;padding:6px 0 12px}
+body.sidebar-collapsed .side-brand strong,body.sidebar-collapsed .side h4,body.sidebar-collapsed .history-head,body.sidebar-collapsed .history-search,body.sidebar-collapsed .history-list,body.sidebar-collapsed .accent-picker-copy,body.sidebar-collapsed .accent-trigger-chevron,body.sidebar-collapsed .me-text,body.sidebar-collapsed #signout,body.sidebar-collapsed .vip-pill,body.sidebar-collapsed .tool-lock-label{display:none!important}

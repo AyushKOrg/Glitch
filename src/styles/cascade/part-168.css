@@ -1,0 +1,22 @@
+html.liquid-glass .stage {
+  background:color-mix(in srgb,var(--bg) 38%,transparent) !important;
+}
+html.liquid-glass .side {
+  background:
+    linear-gradient(155deg,rgba(255,255,255,.24),rgba(255,255,255,.07) 38%,transparent 72%),
+    color-mix(in srgb,var(--panel) 32%,transparent) !important;
+}
+html.liquid-glass #chat,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .settings-toggle,
+html.liquid-glass .chip,
+html.liquid-glass .msg.bot {
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.27),rgba(255,255,255,.075) 48%,rgba(255,255,255,.018)),
+    color-mix(in srgb,var(--panel-alt) 38%,transparent) !important;
+  -webkit-backdrop-filter:blur(36px) saturate(2.2);
+  backdrop-filter:blur(36px) saturate(2.2);
+  border-color:rgba(255,255,255,.29) !important;
+}

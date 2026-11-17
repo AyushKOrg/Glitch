@@ -1,0 +1,5 @@
+[data-theme=amber]{--accent:#b45309;--accent-2:#fcd34d;--accent-soft:color-mix(in srgb,#b45309 19%,transparent);--accent-strong:#78350f;--theme-glow:color-mix(in srgb,#fcd34d 32%,transparent)}
+[data-theme=inferno]{--accent:#dc2626;--accent-2:#f97316;--accent-soft:color-mix(in srgb,#dc2626 19%,transparent);--accent-strong:#7f1d1d;--theme-glow:color-mix(in srgb,#f97316 32%,transparent)}
+[data-theme=citrus]{--accent:#65a30d;--accent-2:#facc15;--accent-soft:color-mix(in srgb,#65a30d 19%,transparent);--accent-strong:#365314;--theme-glow:color-mix(in srgb,#facc15 32%,transparent)}
+[data-theme=monsoon]{--accent:#075e70;--accent-2:#6fe7dc;--accent-soft:color-mix(in srgb,#0f766e 19%,transparent);--accent-strong:#134e4a;--theme-glow:color-mix(in srgb,#5eead4 32%,transparent)}
+[data-theme=copperhead]{--accent:#9b4b16;--accent-2:#65b7a6;--accent-soft:color-mix(in srgb,#b45309 19%,transparent);--accent-strong:#713f12;--theme-glow:color-mix(in srgb,#67a6a0 32%,transparent)}

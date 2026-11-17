@@ -1,0 +1,19 @@
+/* Slider rendering: drive every glass layer from the same live strength variable. */
+html.liquid-glass{
+  --glass-blur:19.1px;
+  --glass-tint:40%;
+  --glass-edge:.5;
+}
+html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,
+html.liquid-glass .composer,html.liquid-glass .settings-header,
+html.liquid-glass .settings-sidebar,html.liquid-glass .settings-detail-header,
+html.liquid-glass .attach-menu,html.liquid-glass .accent-picker-panel,
+html.liquid-glass .gradient-picker-panel,html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile,html.liquid-glass .settings-toggle,
+html.liquid-glass .nav,html.liquid-glass .mini,html.liquid-glass .round{
+  background-color:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important;
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.9)!important;
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.9)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,var(--glass-edge)),0 12px 36px rgba(0,0,0,.16)!important;
+  transition:background-color .08s linear,backdrop-filter .08s linear,-webkit-backdrop-filter .08s linear;
+}

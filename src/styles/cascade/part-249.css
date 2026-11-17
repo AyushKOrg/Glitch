@@ -1,0 +1,20 @@
+html.liquid-glass .settings-category[aria-current="page"],
+html.liquid-glass .settings-toggle[aria-pressed="true"],
+html.liquid-glass .nav[aria-pressed="true"]{
+  background:color-mix(in srgb,var(--accent) 24%,var(--panel))!important;
+  border-color:color-mix(in srgb,var(--accent) 62%,var(--border))!important;
+}
+html.liquid-glass .settings-category *,
+html.liquid-glass .settings-tile *,
+html.liquid-glass .settings-toggle *,
+html.liquid-glass .nav *,
+html.liquid-glass .mini *,
+html.liquid-glass .round *{position:relative;z-index:1}
+html.liquid-glass .settings-content-inline p,
+html.liquid-glass .settings-content-inline small,
+html.liquid-glass .settings-content-inline label,
+html.liquid-glass .settings-content-inline strong,
+html.liquid-glass .settings-dashboard p,
+html.liquid-glass .settings-dashboard small{color:inherit}
+html.liquid-glass .settings-content-inline p,
+html.liquid-glass .settings-dashboard p{color:var(--text-dim)}

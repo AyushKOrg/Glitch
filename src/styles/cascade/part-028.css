@@ -1,0 +1,7 @@
+#cognitionBuddy .buddy-antenna::after{content:"";position:absolute;top:-3px;left:-2px;width:6px;height:6px;border-radius:50%;background:#a5f3fc;box-shadow:0 0 8px #67e8f9}
+#cognitionBuddy .buddy-spark{position:absolute;right:-2px;top:3px;color:#fde68a;font-size:12px;animation:buddyTwinkle 1.8s ease-in-out infinite}
+#cognitionBuddy .buddy-zzz{display:none;position:absolute;right:-9px;top:-8px;color:#fbbf24;font-size:11px;font-weight:800;letter-spacing:-2px;text-shadow:0 1px 5px rgba(251,191,36,.3)}
+body.flash-mode #cognitionBuddy .buddy-spark{display:none}
+body.flash-mode #cognitionBuddy .buddy-zzz{display:block;animation:zzzFloat 2.8s ease-in-out infinite}
+@keyframes zzzFloat{0%,100%{opacity:.55;transform:translate(0,3px) scale(.9)}50%{opacity:1;transform:translate(3px,-4px) scale(1.08)}}
+@keyframes buddyDrift{0%,100%{transform:translate3d(0,0,0) rotate(-5deg)}30%{transform:translate3d(-8px,-9px,0) rotate(4deg)}65%{transform:translate3d(5px,-15px,0) rotate(-2deg)}}

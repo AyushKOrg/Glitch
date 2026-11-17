@@ -1,0 +1,13 @@
+#vipModal .vip-lounge{padding:18px!important;border:1px solid var(--border)!important;border-radius:14px!important;background:var(--panel-alt)!important;color:var(--text)!important}
+#vipModal .vip-lounge strong{color:var(--text)!important;font-size:.95rem}
+#vipModal .vip-lounge p{color:var(--text-dim)!important;font-size:.83rem!important;line-height:1.6!important}
+#vipModal .vip-sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+html[data-scheme="light"] #vipModal .vip-box,html[data-scheme="dark"] #vipModal .vip-box{background:var(--panel)!important;color:var(--text)!important}
+@media(prefers-color-scheme:dark){html:not([data-scheme="light"]) #vipModal .vip-box{background:var(--panel)!important;color:var(--text)!important}}
+@media(max-width:620px){
+#vipModal .vip-box{width:calc(100vw - 20px)!important;max-height:92dvh!important;border-radius:18px!important}
+#vipModal .vip-top{padding:17px 18px!important}#vipModal .vip-content{padding:17px 18px 22px!important;gap:15px!important}
+#vipModal .vip-hero{padding:17px!important;min-height:0!important}#vipModal .vip-dev-tools{padding:15px!important;gap:13px!important}
+#vipModal .vip-dev-action{align-items:stretch;flex-direction:column}#vipModal #vipRegenerate{width:100%}
+#vipModal .vip-grid{grid-template-columns:1fr!important}#vipModal .vip-card{min-height:0!important}
+}

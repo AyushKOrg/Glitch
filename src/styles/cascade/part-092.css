@@ -1,0 +1,6 @@
+.history-list::-webkit-scrollbar{width:4px}.history-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px}
+.spacer{flex:0 0 8px!important;min-height:8px!important}.me{margin-top:4px!important}
+@media(max-height:760px){.history-list{max-height:28dvh!important}.side>.nav,.side .modes .nav{min-height:35px!important;height:35px!important}.side-brand{min-height:42px!important}}
+body.sidebar-collapsed .side{width:72px!important;min-width:72px!important;padding-inline:8px!important}
+body.sidebar-collapsed .side-brand{justify-content:center!important;gap:0!important;padding-inline:0!important;position:relative}
+body.sidebar-collapsed .side-brand strong,body.sidebar-collapsed .side h4,body.sidebar-collapsed .tool-group-label,body.sidebar-collapsed .history-head,body.sidebar-collapsed .history-search,body.sidebar-collapsed .history-group,body.sidebar-collapsed .accent-picker-copy,body.sidebar-collapsed .accent-trigger-chevron,body.sidebar-collapsed .me-text,body.sidebar-collapsed #signout,body.sidebar-collapsed .tool-lock-label,body.sidebar-collapsed #vipNavBadge{display:none!important}

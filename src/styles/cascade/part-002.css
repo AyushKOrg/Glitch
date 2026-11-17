@@ -1,0 +1,8 @@
+[data-theme=sunset]{--accent:#f97316;--accent-2:#ef4444;--accent-soft:#fff0e6;--accent-strong:#d95c0d}
+[data-theme=ice]{--accent:#3b82f6;--accent-2:#06b6d4;--accent-soft:#e8f2ff;--accent-strong:#2266d6}
+[data-theme=crimson]{--accent:#b20d35;--accent-2:#ff526f;--accent-soft:#ffe4e9;--accent-strong:#be123c}
+[data-theme=gold]{--accent:#f2b705;--accent-2:#fff0a6;--accent-soft:#fff3d6;--accent-strong:#a85505}
+[data-theme=gold]{--accent:#d6a84b;--accent-2:#f59e0b;--accent-soft:color-mix(in srgb,#d6a84b 16%,transparent);--accent-strong:#a8791e}
+[data-theme=obsidian]{--accent:#b88a24;--accent-2:#7457c8;--accent-soft:color-mix(in srgb,#d6ad55 15%,transparent);--accent-strong:#a77b2b}
+[data-theme=cosmic]{--accent:#7138d4;--accent-2:#f05a9d;--accent-soft:color-mix(in srgb,#a855f7 17%,transparent);--accent-strong:#9333ea}
+[data-theme=aurora]{--accent:#00a878;--accent-2:#38e6c7;--accent-soft:color-mix(in srgb,#10b981 16%,transparent);--accent-strong:#059669}

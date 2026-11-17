@@ -1,0 +1,8 @@
+.nav{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;border-radius:10px;background:none;color:var(--text);text-align:left;cursor:pointer;transition:background .15s,transform .15s var(--ease)}
+.nav:hover{background:color-mix(in srgb,var(--accent) 9%,transparent)}.nav:active{transform:scale(.98)}
+.nav svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav.primary{background:var(--panel);border:1px solid var(--border);font-weight:600}
+.nav[aria-pressed=true]{background:var(--accent-soft);color:var(--accent-strong);font-weight:600}
+html[data-scheme=dark] .nav[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--text)}
+.nav.off{opacity:.5}
+.side h4{margin:18px 10px 6px;font-size:.74rem;font-weight:600;color:var(--muted)}

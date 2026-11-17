@@ -1,0 +1,7 @@
+/* Fit the navigation to the viewport; the history region flexes without a visible scrollbar. */
+.side{height:100dvh!important;max-height:100dvh!important;min-height:0!important;padding:8px 10px calc(8px + env(safe-area-inset-bottom))!important;gap:2px!important;overflow:hidden!important;overscroll-behavior:none!important;scrollbar-width:none!important}
+.side::-webkit-scrollbar{display:none!important;width:0!important}
+.side-brand{min-height:40px!important;padding:2px 6px 5px!important;margin:0!important;flex:0 0 auto!important}
+.side-brand img{width:30px!important;height:30px!important}
+#sideCollapse{width:32px!important;height:32px!important}
+.side>.nav,.side .modes .nav{min-height:35px!important;height:35px!important;padding:6px 10px!important;gap:9px!important;border-radius:10px!important;flex:0 0 auto!important;font-size:.86rem!important}

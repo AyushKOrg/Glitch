@@ -1,0 +1,10 @@
+.appearance-vip-theme>label{font-size:.78rem;font-weight:800;color:var(--text)}
+.appearance-vip-theme>select{width:100%;min-width:0}
+.appearance-vip-theme>small,.gradient-editor-heading small{font-size:.69rem;color:var(--text-dim)}
+.gradient-toggle-row{margin-top:2px}
+.gradient-editor{display:flex;flex-direction:column;gap:12px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--panel-alt)}
+.gradient-editor[hidden]{display:none!important}
+.gradient-editor-heading{display:flex;flex-direction:column;gap:2px}
+.gradient-editor-heading strong{font-size:.82rem}
+.gradient-color-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.gradient-color-control{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:11px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}

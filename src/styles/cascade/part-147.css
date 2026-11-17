@@ -1,0 +1,28 @@
+/* Star points are separate, sparse layers so the effect reads as a night sky,
+   not a tiled texture. The pointer glow remains as the first background layer. */
+html[data-scheme=dark] .stage::after {
+  z-index:1;
+  background-image:
+    radial-gradient(520px circle at var(--pointer-x,52%) var(--pointer-y,38%),rgba(0,205,225,.12),transparent 72%),
+    radial-gradient(circle at 7% 13%,rgba(218,250,255,.82) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 15% 72%,rgba(157,225,255,.72) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 23% 31%,rgba(226,248,255,.68) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 31% 87%,rgba(155,216,255,.62) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 39% 16%,rgba(224,249,255,.72) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 47% 61%,rgba(174,228,255,.62) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 56% 28%,rgba(224,249,255,.78) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 64% 82%,rgba(164,224,255,.66) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 72% 12%,rgba(226,249,255,.76) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 81% 48%,rgba(166,226,255,.66) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 91% 22%,rgba(225,249,255,.78) 0 1px,transparent 1.9px),
+    radial-gradient(circle at 94% 88%,rgba(163,222,255,.62) 0 .8px,transparent 1.7px),
+    radial-gradient(circle at 11% 43%,rgba(0,222,238,.78) 0 1.1px,transparent 2.4px),
+    radial-gradient(circle at 36% 49%,rgba(0,207,232,.68) 0 1px,transparent 2.2px),
+    radial-gradient(circle at 69% 67%,rgba(0,207,232,.72) 0 1px,transparent 2.2px),
+    radial-gradient(circle at 87% 75%,rgba(0,222,238,.72) 0 1px,transparent 2.2px);
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+  opacity:.72;
+  animation:glitchStarTwinkle 6.5s ease-in-out infinite;
+  pointer-events:none;
+}

@@ -1,0 +1,6 @@
+.settings-detail-header{display:flex;align-items:center;gap:12px;padding:18px 21px;border-bottom:1px solid var(--border);background:var(--panel-alt)}
+.settings-detail-mark{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--accent-soft);color:var(--accent-strong);font-size:18px;flex:none}
+.settings-detail-header h3{margin:0;color:var(--text);font-size:1rem;font-weight:850}.settings-detail-header p{margin:3px 0 0;color:var(--text-dim);font-size:.75rem}.settings-detail-header #settingsDetailClose{margin-left:auto;width:35px;height:35px}
+.settings-detail-body{padding:18px;overflow:auto;min-height:0}
+.settings-detail-body>.settings-section{margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;display:flex!important;gap:15px!important}
+.settings-detail-body>.settings-section .settings-section-title{display:none!important}

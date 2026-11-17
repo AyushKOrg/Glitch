@@ -1,0 +1,34 @@
+.settings-content-inline #vipDeveloperTools .vip-dev-action-copy > div { min-width:0; }
+.settings-content-inline #vipDeveloperTools .vip-dev-action strong,
+.settings-content-inline #vipDeveloperTools .vip-verify-copy strong {
+  display:block;
+  color:var(--text);
+  font-size:1.15rem;
+  line-height:1.35;
+  font-weight:850;
+}
+.settings-content-inline #vipDeveloperTools #vipRegenerate {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:64px;
+  padding:17px 22px;
+  border:0;
+  border-radius:15px;
+  font-size:1.04rem;
+  line-height:1.4;
+  white-space:normal;
+}
+.settings-content-inline #vipDeveloperTools .vip-verify-copy { margin-bottom:2px; }
+.settings-content-inline #vipDeveloperTools .vip-code-verify label:not(.vip-sr-only) {
+  font-size:1rem;
+  font-weight:700;
+}
+.settings-content-inline #vipDeveloperTools .vip-password-row {
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:14px;
+  width:100%;
+}

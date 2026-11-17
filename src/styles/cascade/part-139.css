@@ -1,0 +1,7 @@
+/* Categories are the navigation; remove the duplicate dashboard card wall. */
+.settings-dashboard { position:relative;display:flex;flex-direction:column;justify-content:center;padding:clamp(26px,4vw,54px);background:radial-gradient(ellipse at 95% 8%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 48%),radial-gradient(ellipse at 10% 92%,color-mix(in srgb,var(--accent-2) 10%,transparent),transparent 48%),var(--panel); }
+.settings-dashboard-grid,.settings-dashboard-foot { display:none!important; }
+.settings-welcome { max-width:470px;padding:0 4px; }
+.settings-kicker { display:inline-flex;align-items:center;gap:9px; }
+.settings-kicker::before { content:"";width:23px;height:2px;border-radius:2px;background:var(--grad); }
+.settings-welcome h4 { font-size:clamp(1.65rem,3vw,2.35rem);line-height:1.12;letter-spacing:-.055em;margin:14px 0 10px; }

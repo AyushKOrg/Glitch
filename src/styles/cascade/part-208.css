@@ -1,0 +1,5 @@
+[data-theme=ruby]{--accent:#9f1239;--accent-2:#fda4af;--accent-soft:color-mix(in srgb,#9f1239 19%,transparent);--accent-strong:#650d2a;--theme-glow:color-mix(in srgb,#fda4af 32%,transparent)}
+[data-theme=sakura]{--accent:#db2777;--accent-2:#fbcfe8;--accent-soft:color-mix(in srgb,#db2777 19%,transparent);--accent-strong:#9d174d;--theme-glow:color-mix(in srgb,#fbcfe8 32%,transparent)}
+[data-theme=blush]{--accent:#e879a8;--accent-2:#ffe4e6;--accent-soft:color-mix(in srgb,#e879a8 19%,transparent);--accent-strong:#be185d;--theme-glow:color-mix(in srgb,#ffe4e6 32%,transparent)}
+[data-theme=fuchsia]{--accent:#c026d3;--accent-2:#fb7185;--accent-soft:color-mix(in srgb,#c026d3 19%,transparent);--accent-strong:#86198f;--theme-glow:color-mix(in srgb,#fb7185 32%,transparent)}
+[data-theme=solar]{--accent:#ea580c;--accent-2:#fde047;--accent-soft:color-mix(in srgb,#ea580c 19%,transparent);--accent-strong:#9a3412;--theme-glow:color-mix(in srgb,#fde047 32%,transparent)}

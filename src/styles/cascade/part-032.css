@@ -1,0 +1,4 @@
+#send:focus-visible{animation:softPing .8s ease-out}
+.chip{transition:transform .2s var(--ease),border-color .2s,color .2s,box-shadow .2s}.chip:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 35%,var(--border));box-shadow:0 5px 14px -12px var(--accent)}
+.suggest button{border:1px solid transparent;transition:background .2s,color .2s,transform .22s var(--ease),border-color .2s}.suggest button:hover{border-color:var(--border);transform:translateX(5px);box-shadow:0 6px 18px -18px var(--accent)}.suggest button svg{transition:transform .22s var(--ease),color .2s}.suggest button:hover svg{transform:scale(1.12) rotate(-5deg);color:var(--accent)}
+.box{box-shadow:0 12px 30px -24px var(--accent);transform:translateY(-1px)}.code-download,.download-all{transition:transform .18s var(--ease),filter .18s,border-color .18s}.code-download:hover,.download-all:hover{transform:translateY(-1px);filter:brightness(1.06);border-color:var(--accent)}

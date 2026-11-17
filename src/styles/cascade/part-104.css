@@ -1,0 +1,6 @@
+#vipModal .vip-dev-tools[hidden],#vipModal #vipCurrentCode[hidden]{display:none!important}
+#vipModal .vip-dev-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:15px;border-bottom:1px solid var(--border)!important}
+#vipModal .vip-dev-heading>div{min-width:0}
+#vipModal .vip-dev-heading strong{display:block;margin-top:4px;color:var(--text)!important;font-size:1.08rem!important;font-weight:850!important;letter-spacing:-.025em}
+#vipModal .vip-dev-heading p,#vipModal .vip-dev-action p,#vipModal .vip-verify-copy p{margin:5px 0 0!important;color:var(--text-dim)!important;font-size:.82rem!important;line-height:1.55!important}
+#vipModal .vip-role-chip{flex:0 0 auto;padding:7px 10px;border:1px solid color-mix(in srgb,#16a34a 30%,var(--border))!important;border-radius:999px;background:color-mix(in srgb,#16a34a 10%,var(--panel))!important;color:color-mix(in srgb,#15803d 82%,var(--text))!important;font-size:.65rem;font-weight:850;letter-spacing:.08em}

@@ -1,0 +1,18 @@
+/* Refined glass strength control: clear is genuinely transparent; tinted is visibly denser and softer. */
+.glass-strength-setting{position:relative;isolation:isolate}
+#glassStrength{
+  display:block!important;appearance:none!important;-webkit-appearance:none!important;
+  height:28px!important;min-height:28px!important;margin:2px 0!important;padding:0!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  accent-color:var(--accent);touch-action:pan-y;cursor:ew-resize;
+}
+#glassStrength::-webkit-slider-runnable-track{
+  height:7px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(255,255,255,.88),color-mix(in srgb,var(--accent) 55%,var(--panel)),var(--accent-strong));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 14%,transparent);
+}
+#glassStrength::-moz-range-track{
+  height:7px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(255,255,255,.88),color-mix(in srgb,var(--accent) 55%,var(--panel)),var(--accent-strong));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 14%,transparent);
+}

@@ -1,0 +1,16 @@
+html.liquid-glass .settings-sidebar{background:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-toggle,
+html.liquid-glass .nav,
+html.liquid-glass .mini,
+html.liquid-glass .round,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .attach-menu button{
+  background:color-mix(in srgb,var(--panel) calc(var(--glass-tint) + 10%),transparent)!important;
+  -webkit-backdrop-filter:blur(calc(var(--glass-blur)*.72)) saturate(1.7)!important;
+  backdrop-filter:blur(calc(var(--glass-blur)*.72)) saturate(1.7)!important;
+  border-color:color-mix(in srgb,var(--accent) 24%,var(--border))!important;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,calc(var(--glass-edge)*.72)),0 3px 12px rgba(0,0,0,.08)!important;
+  color:var(--text)!important;
+}

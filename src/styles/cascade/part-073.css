@@ -1,0 +1,32 @@
+@media(max-width:520px){#vipModal #vipRedeemForm{flex-direction:column}#vipModal #vipRedeem{width:100%}}
+
+
+/* Light mode correction: enforce a genuinely white canvas and clean white surfaces.
+   Keep accent colour on controls, focus rings and small highlights only. */
+html[data-scheme="light"]{
+  color-scheme:light!important;
+  --bg:#fff!important;
+  --panel:#fff!important;
+  --panel-alt:#fff!important;
+  --text:#171923!important;
+  --text-dim:#505666!important;
+  --muted:#737b8c!important;
+  --border:rgba(25,32,48,.12)!important;
+  --border-strong:rgba(25,32,48,.2)!important;
+  --accent-soft:color-mix(in srgb,var(--accent) 12%,white)!important;
+}
+html[data-scheme="light"],html[data-scheme="light"] body{
+  background:#fff!important;
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#171923!important;
+}
+html[data-scheme="light"] body,
+html[data-scheme="light"] .layout,
+html[data-scheme="light"] .stage,
+html[data-scheme="light"] #log{
+  background:#fff!important;
+  background-color:#fff!important;
+  background-image:none!important;
+  color:#171923!important;
+}

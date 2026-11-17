@@ -1,0 +1,6 @@
+.accent-dropdown-trigger:hover,.accent-dropdown.open .accent-dropdown-trigger{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent),0 7px 22px color-mix(in srgb,var(--accent-2) 13%,transparent)}
+.accent-dropdown-trigger:active{transform:scale(.995)}
+.accent-dropdown-current{display:flex;align-items:center;gap:10px;min-width:0}
+.accent-dropdown-current>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.accent-dropdown-swatch{width:23px;height:23px;flex:none;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:1px solid #ffffff55;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 2px 8px color-mix(in srgb,var(--accent) 30%,transparent)}
+.accent-dropdown-chevron{width:9px;height:9px;flex:none;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(45deg) translateY(-2px);transition:transform .18s}

@@ -1,0 +1,28 @@
+#settingsModal .settings-layout {
+  grid-template-columns: 216px minmax(0, 1fr) !important;
+}
+#settingsModal .settings-sidebar {
+  padding: 17px 11px !important;
+}
+#settingsModal .settings-dashboard {
+  padding: 26px !important;
+}
+#settingsModal .settings-content-inline,
+#settingsModal .settings-content-inline > .settings-section,
+#settingsModal .settings-content-inline #connectorsSettingsSection {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+#settingsModal .settings-content-inline .settings-section,
+#settingsModal .settings-content-inline .profile-editor,
+#settingsModal .settings-content-inline .profile-fields {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+#settingsModal .settings-content-inline .profile-editor {
+  align-items: flex-start !important;
+  gap: 18px !important;
+}
+#settingsModal .settings-content-inline .profile-fields {
+  flex: 1 1 220px !important;
+}

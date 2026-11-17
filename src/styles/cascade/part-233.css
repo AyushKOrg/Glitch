@@ -1,0 +1,35 @@
+@media(max-width:420px) {
+  #settingsModal .settings-layout { grid-template-columns:58px minmax(0,1fr) !important; }
+  #settingsModal .settings-dashboard { padding:17px 12px !important; }
+}
+
+/* Connector panel must remain a section INSIDE the settings workspace.
+   Neutralise any legacy modal/positioning styles that can detach it. */
+#settingsModal #settingsContentInline #connectorsSettingsSection {
+  position:relative !important;
+  inset:auto !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  transform:none !important;
+  float:none !important;
+  display:flex !important;
+  flex:0 0 auto !important;
+  flex-direction:column !important;
+  align-self:stretch !important;
+  justify-self:stretch !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  z-index:auto !important;
+}

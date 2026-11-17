@@ -1,0 +1,8 @@
+#settingsModal #settingsContentInline #vipContent .vip-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#settingsModal #settingsContentInline #vipContent .vip-stat{padding:13px;border-radius:13px;min-width:0}
+#settingsModal #settingsContentInline #vipContent form{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+#settingsModal #settingsContentInline #vipContent form input{flex:1 1 190px;min-width:0}
+@media(max-width:620px){#settingsModal #settingsContentInline #vipContent .vip-grid{grid-template-columns:1fr}#libraryModal>.library-box{padding:16px!important}}
+.gradient-picker-trigger{margin-top:8px}
+.gradient-picker-trigger .gradient-trigger-disc{background:conic-gradient(#f43f5e,#f59e0b,#84cc16,#06b6d4,#6366f1,#d946ef,#f43f5e)}
+.gradient-picker-panel{width:min(590px,calc(100vw - 28px));max-width:590px;max-height:min(88dvh,820px);padding:18px;z-index:150!important}

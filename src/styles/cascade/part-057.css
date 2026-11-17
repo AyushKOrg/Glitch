@@ -1,0 +1,12 @@
+.image-download{display:inline-flex;align-items:center;justify-content:center;border-radius:9px;padding:9px 13px;background:var(--accent);color:white;text-decoration:none;font-size:.84rem;font-weight:700}
+#imageGenerate:disabled{opacity:.55;cursor:wait}
+
+
+/* VIP creative tools */
+.tool-box{width:min(1040px,100%);max-height:min(94vh,980px);overflow:auto;display:flex;flex-direction:column}
+.tool-box .top{position:sticky;top:0;background:var(--panel);z-index:3}
+.tool-content{padding:14px;display:flex;flex-direction:column;gap:12px}
+.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tool-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.tool-field label{font-size:.78rem;font-weight:700;color:var(--text-dim)}
+.tool-field input,.tool-field textarea{width:100%;min-width:0;padding:9px 10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel-alt);color:var(--text)}

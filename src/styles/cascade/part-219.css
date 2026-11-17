@@ -1,0 +1,26 @@
+@keyframes glitchSoftGlow {
+  0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb,var(--accent) 10%,transparent), 0 8px 24px -18px var(--accent); }
+  50% { box-shadow: 0 0 0 1px color-mix(in srgb,var(--accent) 27%,transparent), 0 12px 32px -17px var(--accent); }
+}
+@keyframes glitchFloat {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-5px) rotate(1deg); }
+}
+@keyframes glitchIconPop {
+  0% { transform: scale(.86) rotate(-8deg); }
+  65% { transform: scale(1.13) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes glitchCardEnter {
+  from { opacity: 0; transform: translateY(14px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* A smoother, more cinematic landing state */
+body.empty .hero {
+  animation: glitchHeroEnter .85s cubic-bezier(.2,.8,.2,1) both;
+}
+body.empty .hero b {
+  background-size: 240% 240%;
+  animation: shift 4.8s ease-in-out infinite;
+}

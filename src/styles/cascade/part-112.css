@@ -1,0 +1,5 @@
+.settings-header{display:flex;align-items:center;gap:13px;padding:20px 24px;border-bottom:1px solid var(--border);flex:none;background:var(--panel)}
+.settings-heading-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-strong);font-size:22px}
+.settings-header h3{margin:0;font-size:1.12rem;font-weight:850;letter-spacing:-.03em}.settings-header p{margin:3px 0 0;color:var(--text-dim);font-size:.82rem}.settings-header #settingsClose{margin-left:auto;width:36px;height:36px}
+.settings-content{padding:20px 24px 26px;overflow:auto;min-height:0;display:flex;flex-direction:column;gap:15px;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+.settings-section{padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--panel-alt);display:flex;flex-direction:column;gap:14px}

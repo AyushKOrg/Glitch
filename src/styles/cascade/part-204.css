@@ -1,0 +1,5 @@
+/* Complete 31-theme palette system: every preset has its own accent pair and contrast tone. */
+[data-theme=gold]{--accent:#d6a12b;--accent-2:#fff0a6;--accent-soft:color-mix(in srgb,#d6a12b 19%,transparent);--accent-strong:#6f4b08;--theme-glow:color-mix(in srgb,#fff0a6 32%,transparent)}
+[data-theme=obsidian]{--accent:#f1c75b;--accent-2:#a78bfa;--accent-soft:color-mix(in srgb,#f1c75b 19%,transparent);--accent-strong:#f8df9a;--theme-glow:color-mix(in srgb,#a78bfa 32%,transparent)}
+[data-theme=champagne]{--accent:#c6a66b;--accent-2:#fff4d0;--accent-soft:color-mix(in srgb,#c6a66b 19%,transparent);--accent-strong:#8b7043;--theme-glow:color-mix(in srgb,#fff4d0 32%,transparent)}
+[data-theme=rosegold]{--accent:#b86d68;--accent-2:#f4b5a5;--accent-soft:color-mix(in srgb,#b86d68 19%,transparent);--accent-strong:#85434b;--theme-glow:color-mix(in srgb,#f4b5a5 32%,transparent)}

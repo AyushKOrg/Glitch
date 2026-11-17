@@ -1,0 +1,9 @@
+body.busy #stopBtn{display:block}
+
+/* ===== visual upgrade layer ===== */
+:root{--sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;--tk-c:#8a8fa3;--tk-s:#0f9f6e;--tk-n:#d9730d;--tk-k:#7c3aed;--tk-f:#2563eb}
+html[data-scheme=dark]{--tk-c:#7a7f94;--tk-s:#5fd3a4;--tk-n:#f5a65b;--tk-k:#c4a1ff;--tk-f:#7db4ff}
+@media(prefers-color-scheme:dark){html:not([data-scheme=light]){--tk-c:#7a7f94;--tk-s:#5fd3a4;--tk-n:#f5a65b;--tk-k:#c4a1ff;--tk-f:#7db4ff}}
+html,body{font-family:var(--sans);font-feature-settings:"cv11","ss01"}
+.md-code pre,.md-code code,.code-artifact pre{font-family:var(--mono)!important;font-size:12.5px;line-height:1.65}
+.md-code{border-radius:14px;background:color-mix(in srgb,var(--panel) 70%,var(--panel-alt));box-shadow:0 10px 30px -24px rgba(0,0,0,.5)}

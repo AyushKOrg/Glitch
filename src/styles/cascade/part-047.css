@@ -1,0 +1,13 @@
+.quota-ico{font-size:2rem;margin:0 auto 2px}.quota-box .mini{padding:10px}.quota-later{border-color:transparent!important;background:none!important}
+.msg.err.quota-end{border-radius:14px;text-align:center;max-width:min(520px,92%)}
+.doc-artifact pre{white-space:pre-wrap;word-break:break-word;font-family:var(--sans)!important;font-size:.92rem!important;line-height:1.65!important;padding:14px 16px;max-height:460px}
+.doc-artifact .code-download::before{content:"⬇ "}
+/* two logos: the dark tile on dark themes, the light tile on light themes (follows the Light / dark button, or the OS setting) */
+.logo-light{display:none}
+html[data-scheme=light] .logo-dark{display:none}
+html[data-scheme=light] .logo-light{display:inline-block}
+html[data-scheme=light] .msg.bot::before{background-image:url(/logo-light.png)}
+@media(prefers-color-scheme:light){
+ html:not([data-scheme=dark]) .logo-dark{display:none}
+ html:not([data-scheme=dark]) .logo-light{display:inline-block}
+ html:not([data-scheme=dark]) .msg.bot::before{background-image:url(/logo-light.png)}}

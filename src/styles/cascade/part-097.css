@@ -1,0 +1,8 @@
+.memory-edit:hover,.memory-delete:hover{border-color:var(--accent);background:var(--accent-soft)}
+.memory-row.editing{display:flex;flex-direction:column;align-items:stretch}
+.memory-row.editing textarea{width:100%;min-height:80px;padding:10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel-alt);color:var(--text);resize:vertical}
+.context-box,.install-box{display:flex;flex-direction:column;overflow:hidden}
+.context-summary,.install-status{padding:16px 22px;color:var(--text-dim);font-size:.84rem;line-height:1.5;border-bottom:1px solid var(--border)}
+.context-list{padding:14px 22px 22px;overflow:auto;display:flex;flex-direction:column;gap:10px;min-height:100px}
+.context-row{padding:12px 14px;border:1px solid var(--border);border-radius:11px;background:var(--panel-alt)}
+.context-row strong{font-size:.76rem;color:var(--accent-strong)}

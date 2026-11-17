@@ -1,0 +1,9 @@
+.layout{background:var(--bg)!important}
+.side{background:var(--panel-alt)!important;border-right:1px solid var(--border)!important;box-shadow:none!important}
+.stage{background:var(--panel)!important;background-image:none!important}
+.topbar{background:var(--panel)!important;background-image:none!important;border-bottom:1px solid var(--border)!important;box-shadow:none!important}
+#chat{background:var(--panel-alt)!important;background-image:none!important;border:1px solid var(--border-strong)!important;box-shadow:none!important}
+.msg.bot{background:var(--panel-alt)!important;background-image:none!important;border:1px solid var(--border)!important;box-shadow:none!important}
+.msg.user{background:var(--accent)!important;background-image:none!important;color:#fff!important;box-shadow:none!important}
+#gate{background:var(--bg)!important}
+#gate::before,#gate::after{display:none!important}

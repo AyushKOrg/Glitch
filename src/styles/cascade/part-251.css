@@ -1,0 +1,14 @@
+html.liquid-glass .settings-content-inline .connector-card *{overflow-wrap:anywhere}
+html.liquid-glass .settings-content-inline .vip-grid{gap:14px!important}
+html.liquid-glass .settings-content-inline .vip-card{padding:16px!important}
+html.liquid-glass .settings-header,
+html.liquid-glass .settings-detail-header{color:var(--text)!important}
+html.liquid-glass .settings-heading-icon,
+html.liquid-glass .settings-detail-mark{background:color-mix(in srgb,var(--accent) 18%,var(--panel))!important;color:var(--accent)!important}
+html.liquid-glass .settings-content-inline .settings-section-title{margin-bottom:18px!important}
+html.liquid-glass .stage,
+html.liquid-glass .msg.bot,
+html.liquid-glass #log,
+html.liquid-glass .library-item-name,
+html.liquid-glass .library-item-meta{background:transparent}
+html.liquid-glass .msg.bot{background:var(--panel-alt)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}

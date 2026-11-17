@@ -1,0 +1,24 @@
+html.liquid-glass button:hover:not(:disabled) {
+  transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 5px 16px color-mix(in srgb,var(--accent) 16%,transparent) !important;
+}
+@media(max-width:700px) {
+  html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass .composer,
+  html.liquid-glass .settings-box,html.liquid-glass .settings-detail-box,
+  html.liquid-glass .vip-box,html.liquid-glass .image-box,html.liquid-glass .memory-box {
+    -webkit-backdrop-filter:blur(10px) saturate(1.15) !important;
+    backdrop-filter:blur(10px) saturate(1.15) !important;
+  }
+  html[data-scheme=dark] .stage::before { filter:blur(20px) saturate(1.15) !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before,
+  html[data-scheme=dark] .stage::after { animation:none !important; }
+  html.liquid-glass *,html.liquid-glass *::before,html.liquid-glass *::after {
+    transition-duration:.01ms !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+  }
+}
+
+

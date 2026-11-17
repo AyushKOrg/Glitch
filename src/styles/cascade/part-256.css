@@ -1,0 +1,19 @@
+#glassStrength::-webkit-slider-thumb{
+  appearance:none;-webkit-appearance:none;width:21px;height:21px;margin-top:-7px;
+  border:2px solid #fff;border-radius:50%;
+  background:var(--accent);box-shadow:0 2px 8px #0005,0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent);
+}
+#glassStrength::-moz-range-thumb{
+  width:17px;height:17px;border:2px solid #fff;border-radius:50%;
+  background:var(--accent);box-shadow:0 2px 8px #0005,0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent);
+}
+.glass-strength-setting:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,
+html.liquid-glass .settings-header,html.liquid-glass .settings-sidebar,
+html.liquid-glass .settings-detail-header,html.liquid-glass .attach-menu,
+html.liquid-glass .accent-picker-panel,html.liquid-glass .gradient-picker-panel{
+  background-color:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important;
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.9)!important;
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.9)!important;
+  transition:background-color .12s linear,backdrop-filter .12s linear,-webkit-backdrop-filter .12s linear;
+}

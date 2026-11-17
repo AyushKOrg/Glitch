@@ -1,0 +1,6 @@
+.settings-detail-body .vip-dev-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 14px;border-bottom:1px solid var(--border)}
+.settings-detail-body .vip-dev-heading strong{display:block;margin-top:5px;color:var(--text);font-size:1.05rem;font-weight:850;letter-spacing:-.025em}
+.settings-detail-body .vip-dev-heading p,.settings-detail-body .vip-dev-action p,.settings-detail-body .vip-verify-copy p{margin:5px 0 0;color:var(--text-dim);font-size:.8rem;line-height:1.55}
+.settings-detail-body .vip-eyebrow{color:var(--accent-strong);font-size:.65rem;font-weight:850;letter-spacing:.12em}
+.settings-detail-body #vipRegenerate{width:100%;min-height:46px;border:1px solid var(--accent-strong);border-radius:10px;background:var(--accent-strong);color:#fff;font-weight:800;white-space:normal}
+.settings-detail-body #vipRegenerate:hover{filter:brightness(1.08)}

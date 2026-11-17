@@ -9,5 +9,8 @@
   "dependencies": {
     "nodemailer": "^7.0.10",
     "pptxgenjs": "^4.0.1"
+  },
+  "scripts": {
+    "build": "node scripts/build-css.js"
   }
 }

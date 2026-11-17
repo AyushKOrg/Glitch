@@ -1,0 +1,10 @@
+body.sidebar-collapsed #sideCollapse{position:static;order:2;margin:0;width:40px;height:34px;align-self:center;opacity:1}
+body.sidebar-collapsed #sideCollapse svg{transform:rotate(180deg)}
+body.sidebar-collapsed .side>.nav,body.sidebar-collapsed .side .modes .nav{
+  width:100%;min-width:0;height:46px;min-height:46px;justify-content:center;align-items:center;
+  padding:0;margin:0;font-size:0;gap:0;border-radius:14px;
+}
+body.sidebar-collapsed .side>.nav svg,body.sidebar-collapsed .side .modes .nav svg{width:20px;height:20px;flex:none}
+body.sidebar-collapsed .side .modes{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:7px}
+body.sidebar-collapsed .accent-picker-wrap{width:100%;padding:0}
+body.sidebar-collapsed .accent-picker-trigger{width:100%;height:46px;min-height:46px;justify-content:center;padding:4px;border-radius:14px}

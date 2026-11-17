@@ -1,0 +1,26 @@
+@keyframes borderFlow{to{background-position:200% center}}
+@keyframes starTwinkle{0%,100%{opacity:.2}50%{opacity:.8}}
+.stage{isolation:isolate;overflow:hidden}
+
+/* Ambient gradient atmosphere — layered over the existing Glitch UI, never replacing it. */
+@keyframes glitchAmbientDrift{
+  0%,100%{background-position:0% 0%,100% 100%,50% 50%;opacity:.72}
+  50%{background-position:100% 35%,0% 65%,100% 0%;opacity:1}
+}
+@keyframes glitchAmbientGlow{
+  0%,100%{opacity:.48;transform:scale(1)}
+  50%{opacity:.82;transform:scale(1.045)}
+}
+.stage{background:
+  radial-gradient(ellipse at 12% 8%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 43%),
+  radial-gradient(ellipse at 92% 88%,color-mix(in srgb,var(--accent-2) 8%,transparent),transparent 42%),
+  var(--panel)}
+.stage::before{
+  content:"";position:absolute;inset:-12%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 18% 18%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 38%),
+    radial-gradient(ellipse at 82% 76%,color-mix(in srgb,var(--accent-2) 16%,transparent),transparent 42%),
+    radial-gradient(ellipse at 54% 4%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 46%);
+  background-size:180% 180%,190% 190%,160% 160%;
+  filter:blur(22px);animation:glitchAmbientDrift 22s ease-in-out infinite alternate;
+}

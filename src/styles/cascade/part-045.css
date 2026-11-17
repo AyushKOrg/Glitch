@@ -1,0 +1,8 @@
+.memory-box{width:min(560px,100%);max-height:min(82vh,760px);overflow:auto;display:flex;flex-direction:column}
+.memory-box .top{align-items:flex-start;gap:12px}.memory-box h3{margin:0;font-size:1.15rem}.memory-box .top p{margin:4px 0 0;color:var(--text-dim);font-size:.82rem}
+#memoryForm{padding:16px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--border)}
+#memoryForm label{font-size:.82rem;font-weight:650}
+#memoryInput{width:100%;resize:vertical;min-height:76px;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel-alt);outline:0}
+#memoryInput:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.memory-form-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:.75rem}
+.memory-form-foot .cta{padding:8px 14px}

@@ -1,0 +1,19 @@
+.accent-dropdown-option[aria-selected=true] .option-check{opacity:1}
+@media(prefers-reduced-motion:reduce){.accent-dropdown-trigger,.accent-dropdown-option,.accent-dropdown-chevron{transition:none}.accent-dropdown.open .accent-dropdown-menu{animation:none}}
+
+
+/* Glitch motion polish — subtle, theme-aware UI animation pass */
+@keyframes glitchHeroEnter {
+  0% { opacity: 0; transform: translateY(22px) scale(.975); filter: blur(7px); }
+  65% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes glitchSubtitleEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes glitchSheen {
+  0% { transform: translateX(-130%) skewX(-18deg); opacity: 0; }
+  18% { opacity: .55; }
+  55%, 100% { transform: translateX(170%) skewX(-18deg); opacity: 0; }
+}

@@ -1,0 +1,18 @@
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme="dark"] .stage::after { filter:blur(2px) saturate(1.4); }
+}
+
+/* Requested reset: use the selected accent palette for the workspace atmosphere. */
+html[data-scheme="dark"] .stage {
+  background:
+    radial-gradient(ellipse at 16% 16%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 46%),
+    radial-gradient(ellipse at 86% 82%,color-mix(in srgb,var(--accent-2) 17%,transparent),transparent 48%),
+    radial-gradient(ellipse at 52% 100%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 52%),
+    var(--bg) !important;
+}
+html[data-scheme="dark"] .stage::before {
+  background:
+    radial-gradient(ellipse at 18% 24%,color-mix(in srgb,var(--accent) 29%,transparent),transparent 42%),
+    radial-gradient(ellipse at 84% 76%,color-mix(in srgb,var(--accent-2) 24%,transparent),transparent 46%),
+    radial-gradient(ellipse at 52% 4%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 50%) !important;
+}

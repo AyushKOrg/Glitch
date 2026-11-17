@@ -1,0 +1,9 @@
+.swatch.active{box-shadow:0 0 15px color-mix(in srgb,var(--accent) 35%,transparent)}
+@media(prefers-reduced-motion:reduce){.side-brand img{animation:none}}
+
+/* dark mode: the pastel --accent-soft is a light-mode colour; use a translucent accent so light text stays readable */
+html[data-scheme=dark]{--accent-soft:color-mix(in srgb,var(--accent) 22%,transparent)}
+@media(prefers-color-scheme:dark){html:not([data-scheme=light]){--accent-soft:color-mix(in srgb,var(--accent) 22%,transparent)}}
+
+.msg-regen{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;cursor:pointer;padding:3px 8px;border-radius:6px}.msg-regen:hover{background:var(--accent-soft);color:var(--text)}
+#stopBtn{display:none;position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:20;border:1px solid var(--border-strong);background:var(--panel);color:var(--text);padding:8px 18px;border-radius:999px;cursor:pointer;font:inherit;font-size:.85rem;box-shadow:0 6px 24px rgba(0,0,0,.18)}

@@ -1,0 +1,60 @@
+@media (max-width: 900px) {
+  .side {
+    width: min(310px, 88vw);
+    padding: 12px 10px calc(14px + env(safe-area-inset-bottom));
+  }
+  .topbar {
+    min-height: 54px;
+    padding: 8px 12px;
+    gap: 9px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .topbar #menu {
+    min-width: 42px;
+    min-height: 40px;
+    padding: 8px 11px;
+    font-size: 0;
+  }
+  .topbar #menu::before {
+    content: "☰";
+    font-size: 18px;
+    line-height: 1;
+  }
+  .topbar strong { font-size: 1rem; }
+  .topbar .install-app-button {
+    min-height: 38px;
+    padding: 7px 10px;
+    font-size: .72rem;
+  }
+  #log {
+    width: 100%;
+    padding: 1rem clamp(12px, 3vw, 22px);
+    gap: .85rem;
+  }
+  .msg {
+    max-width: min(92%, 680px);
+    padding: .7rem .85rem;
+    font-size: .93rem;
+  }
+  #chat {
+    width: calc(100% - 20px) !important;
+    margin: 0 auto calc(10px + env(safe-area-inset-bottom));
+    padding: 5px;
+    gap: 4px;
+    border-radius: 22px;
+  }
+  #chat .round {
+    width: 42px;
+    height: 42px;
+  }
+  #chat #input {
+    min-height: 42px;
+    max-height: 112px !important;
+    padding: 10px 5px;
+    font-size: 16px;
+  }
+  #chips { width: calc(100% - 24px); padding-inline: 0; }
+  .hero { margin-bottom: 1rem; }
+  .hero-sub { max-width: calc(100% - 32px); margin-inline: auto; text-align: center; }
+}

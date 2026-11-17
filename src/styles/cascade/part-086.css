@@ -1,0 +1,6 @@
+#vipModal .vip-dev-tools[hidden]{display:none!important}
+#vipModal .vip-dev-tools>div:first-child strong{font-size:.9rem;color:#16a34a}#vipModal .vip-dev-tools p{margin:4px 0 0;color:var(--text-dim);font-size:.78rem}
+#vipModal .vip-code-verify{display:flex;flex-direction:column;gap:7px;padding-top:10px;border-top:1px solid var(--border)}#vipModal .vip-code-verify label{font-size:.78rem;font-weight:700;color:var(--text)}
+#vipModal .vip-code-verify input{width:100%;min-width:0;padding:10px 12px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel);color:var(--text)}
+#vipModal .vip-current-code{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid #22c55e77;border-radius:11px;background:color-mix(in srgb,#22c55e 7%,var(--panel))}#vipModal .vip-current-code[hidden]{display:none!important}
+#vipModal .vip-current-code span{display:block;margin-bottom:5px;color:var(--text-dim);font-size:.72rem}

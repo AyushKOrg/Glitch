@@ -45,5 +45,6 @@
       "path": "/api/vip-rotate",
       "schedule": "30 18 * * *"
     }
-  ]
+  ],
+  "buildCommand": "npm run build"
 }

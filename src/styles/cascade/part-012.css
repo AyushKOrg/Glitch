@@ -1,0 +1,7 @@
+.msg.user{align-self:flex-end;background:var(--grad);color:var(--on-accent);border-bottom-right-radius:4px;box-shadow:0 6px 16px -8px color-mix(in srgb,var(--accent) 60%,transparent)}
+.msg.bot{align-self:flex-start;background:var(--panel-alt);margin-left:38px;border-bottom-left-radius:4px}
+.msg.bot::before{content:"";position:absolute;left:-38px;bottom:0;width:28px;height:28px;border-radius:50%;background:url(/logo.png) center/cover;box-shadow:0 0 0 1px var(--border)}
+.msg.err{align-self:center;color:var(--error);background:var(--error-soft);border-radius:999px;font-size:.8rem;padding:.4rem .9rem;animation:msgin .35s var(--ease),shake .5s ease .35s}
+.msg .tag{display:block;margin-top:6px;font-size:.74rem;opacity:.7}
+  .code-artifact{margin:12px 0 4px;border:1px solid var(--border-strong);border-radius:12px;overflow:hidden;background:var(--panel);white-space:normal}
+  

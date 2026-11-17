@@ -1,0 +1,8 @@
+.logo-light{box-shadow:0 0 0 1px var(--border)}
+
+/* Click-to-open colour selector, with the existing drag-to-pick wheel preserved. */
+.accent-picker-wrap{position:relative}
+.color-wheel-trigger{width:54px;height:54px;flex:none;position:relative;border:3px solid var(--panel);border-radius:50%;padding:0;cursor:pointer;background:radial-gradient(circle,var(--accent) 0 28%,transparent 30%),conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);box-shadow:0 3px 12px -5px rgba(0,0,0,.5);transition:transform .18s var(--ease),box-shadow .18s}
+.color-wheel-trigger:hover{transform:scale(1.06);box-shadow:0 5px 18px -5px var(--accent)}
+.color-wheel-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.color-wheel-trigger-core{position:absolute;inset:19px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px var(--border)}

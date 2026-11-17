@@ -1,0 +1,13 @@
+@media(prefers-reduced-motion:no-preference){
+  .stage{background-size:150% 150%;animation:shift 20s ease-in-out infinite}
+  .side-brand img{animation:logoPulse 3.8s ease-in-out infinite}
+  .accent-trigger-disc{animation:logoPulse 3s ease-in-out infinite}
+}
+
+/* Glitch recovery pass: tools remain discoverable, theme backgrounds stay neutral. */
+html[data-scheme=dark],html[data-scheme=dark] body{background:#000!important;background-color:#000!important}
+html[data-scheme=dark] body,html[data-scheme=dark] .stage{background:#000!important;background-image:none!important}
+html[data-scheme=light],html[data-scheme=light] body{background:#fff!important;background-color:#fff!important}
+html[data-scheme=light] body,html[data-scheme=light] .stage{background:#fff!important;background-image:none!important}
+body{animation:none!important}
+.stage{background:#000!important;background-image:none!important}

@@ -1,0 +1,4 @@
+.settings-tile strong{font-size:.82rem}.settings-tile small{color:var(--text-dim);font-size:.7rem;line-height:1.4}.settings-tile>b{position:absolute;right:14px;top:17px;color:var(--muted);font-size:1.2rem}
+.settings-dashboard-foot{display:flex;align-items:center;gap:10px;margin-top:17px;padding:13px 14px;border:1px solid var(--border);border-radius:12px;color:var(--text-dim);font-size:.73rem}
+.settings-foot-icon{width:27px;height:27px;display:grid;place-items:center;border-radius:8px;background:var(--accent-soft);color:var(--accent-strong)}
+.settings-detail-box{width:min(600px,calc(100vw - 24px))!important;max-height:min(86dvh,760px)!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;background:var(--panel)!important;color:var(--text)!important;border:1px solid var(--border-strong)!important;border-radius:20px!important;box-shadow:0 28px 90px #0005!important}

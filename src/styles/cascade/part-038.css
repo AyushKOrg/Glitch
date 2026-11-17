@@ -1,0 +1,10 @@
+.side-brand img{animation:logoPulse 4.8s ease-in-out infinite}
+.side-brand strong{filter:drop-shadow(0 5px 15px color-mix(in srgb,var(--accent) 18%,transparent))}
+.nav.primary::before{content:"";position:absolute;inset:-1px auto -1px -55%;width:42%;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 18%,white),transparent);transform:skewX(-18deg);pointer-events:none}
+.nav.primary:hover::before{animation:spectralSweep .8s ease}
+#chat{border:1px solid color-mix(in srgb,var(--accent) 18%,var(--border));background:color-mix(in srgb,var(--panel) 94%,transparent)}
+#send:not(:disabled){background:var(--grad);background-size:200% 200%;animation:shift 5s ease infinite}
+#send svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+.msg.bot{box-shadow:0 8px 28px -28px var(--accent)}
+.msg.user{position:relative;overflow:hidden}
+.msg.user::after{content:"";position:absolute;inset:-40% auto -40% -70%;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);pointer-events:none}

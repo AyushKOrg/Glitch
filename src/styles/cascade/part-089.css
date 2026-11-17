@@ -1,0 +1,7 @@
+.accent-hex-row>label{font-size:.76rem;font-weight:700;color:var(--text-dim)}
+.accent-hex-controls{display:flex;gap:7px}.accent-hex-controls input{flex:1;min-width:0;width:0;padding:9px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--panel-alt);color:var(--text);font:600 .82rem ui-monospace,monospace;text-transform:uppercase}
+.accent-hex-controls button{padding:8px 12px;border:1px solid var(--accent-strong);border-radius:8px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:750;cursor:pointer}.accent-hex-row small{font-size:.66rem;color:var(--muted)}
+@media(max-width:760px){.side{overflow-x:hidden!important;overflow-y:auto!important}.accent-picker-panel{width:min(292px,calc(88vw - 24px))!important;max-height:62dvh!important}}
+
+
+#soundToggle[aria-pressed="true"],#speakToggle[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 22%,var(--panel))!important;border:1px solid var(--accent)!important;color:var(--text)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent),0 3px 12px color-mix(in srgb,var(--accent) 15%,transparent)!important;opacity:1!important}

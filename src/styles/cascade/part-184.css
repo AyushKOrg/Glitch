@@ -1,0 +1,30 @@
+@media(max-width:420px) {
+  .settings-dashboard { padding:18px 12px !important; }
+  .settings-content-inline > .settings-section { padding:17px 14px !important; }
+  .settings-content-inline .profile-editor { flex-direction:column; }
+}
+
+
+/* Developer console: give each task its own generous workspace instead of
+   inheriting the compact legacy modal layout. */
+.settings-content-inline > #vipDeveloperTools {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch;
+  gap:30px !important;
+  width:100%;
+  min-width:0;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.settings-content-inline #vipDeveloperTools .vip-dev-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:0 0 24px;
+  border-bottom:1px solid var(--border);
+}

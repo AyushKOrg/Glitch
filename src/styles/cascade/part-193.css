@@ -1,0 +1,21 @@
+.video-studio-url-row { display:flex; gap:8px; flex-wrap:wrap; }
+.video-studio-url-row input { flex:1 1 300px; min-width:0; }
+.shortgpt-frame { display:block; width:100%; min-height:68vh; border:1px solid var(--border); border-radius:14px; background:#fff; }
+.shortgpt-frame[hidden] { display:none; }
+.video-studio-footnote { margin-top:10px; }
+@media(max-width:700px) {
+  .video-studio-connect { grid-template-columns:1fr; }
+  .video-studio-step:first-child { grid-column:auto; }
+  .shortgpt-frame { min-height:65vh; }
+  .video-studio-url-row > button { flex:1 1 auto; }
+}
+/* LGI performance pass: retain the glass and cursor light, remove paint-heavy perpetual motion. */
+html[data-scheme=dark] .stage::before {
+  inset:-10% !important;
+  opacity:.9 !important;
+  filter:blur(28px) saturate(1.25) !important;
+  background-size:100% 100% !important;
+  animation:none !important;
+  transform:none !important;
+  will-change:auto !important;
+}

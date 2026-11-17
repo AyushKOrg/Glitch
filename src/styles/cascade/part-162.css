@@ -1,0 +1,13 @@
+html[data-scheme=dark] .stage::before {
+  inset:-26%;
+  opacity:1;
+  filter:blur(58px) saturate(1.8) contrast(1.12);
+  background-image:
+    radial-gradient(ellipse 70% 52% at 76% 18%, color-mix(in srgb,var(--accent) 88%,transparent) 0%, color-mix(in srgb,var(--accent) 42%,transparent) 40%, transparent 76%),
+    radial-gradient(ellipse 68% 56% at 17% 86%, color-mix(in srgb,var(--accent-2) 84%,transparent) 0%, color-mix(in srgb,var(--accent-2) 38%,transparent) 42%, transparent 78%),
+    radial-gradient(ellipse 62% 52% at 91% 88%, color-mix(in srgb,var(--accent) 66%,#d51b9a 34%) 0%, color-mix(in srgb,var(--accent) 28%,transparent) 44%, transparent 80%),
+    radial-gradient(ellipse 62% 48% at 8% 8%, color-mix(in srgb,var(--accent-2) 56%,#f18a36 44%) 0%, color-mix(in srgb,var(--accent-2) 24%,transparent) 44%, transparent 78%);
+  background-size:220% 210%,215% 220%,220% 215%,210% 220%;
+  animation:glitchLiquidTide 25s cubic-bezier(.42,0,.58,1) infinite;
+  will-change:background-position,transform;
+}

@@ -1,0 +1,9 @@
+html[data-gradient=off]{--accent-2:var(--accent);--grad:linear-gradient(135deg,var(--accent),var(--accent))}
+html[data-gradient=off] .stage::before,html[data-gradient=off] .stage::after{opacity:0!important}
+
+
+/* Accent-driven custom VIP theme dropdown (native option popup replaced). */
+.appearance-vip-theme{position:relative}
+.custom-select-source{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;opacity:0!important;pointer-events:none!important}
+.accent-dropdown{position:relative;width:100%;z-index:8}
+.accent-dropdown-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--accent) 48%,var(--border-strong));border-radius:11px;background:linear-gradient(115deg,color-mix(in srgb,var(--accent) 13%,var(--panel)),color-mix(in srgb,var(--accent-2) 13%,var(--panel)));color:var(--text);font:700 .82rem Inter,system-ui,sans-serif;text-align:left;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff20,0 3px 12px color-mix(in srgb,var(--accent) 10%,transparent);transition:border-color .18s,box-shadow .18s,transform .18s}

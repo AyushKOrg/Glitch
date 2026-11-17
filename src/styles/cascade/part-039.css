@@ -1,0 +1,9 @@
+.msg.user:hover::after{animation:spectralSweep .9s ease}
+/* voice */
+#mic{background:none;color:var(--text-dim);border:0;transition:background .15s,color .15s,transform .2s var(--ease)}#mic:hover{background:var(--border);color:var(--text)}#mic[hidden]{display:none}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}50%{box-shadow:0 0 0 9px transparent}}
+#speakToggle[aria-pressed=false]{opacity:.65}#speakToggle[aria-pressed=true] svg{color:var(--accent)}
+.msg-listen{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.74rem;cursor:pointer;padding:3px 8px;border-radius:6px}.msg-listen:hover{background:var(--accent-soft);color:var(--text)}
+@media(prefers-reduced-motion:reduce){}
+#soundToggle[aria-pressed=false]{opacity:.65}
+#soundToggle[aria-pressed=true] svg{color:var(--accent)}

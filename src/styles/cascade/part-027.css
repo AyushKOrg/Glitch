@@ -1,0 +1,6 @@
+#cognitionBuddy .buddy-body::before{left:12px}#cognitionBuddy .buddy-body::after{right:12px}
+body.flash-mode #cognitionBuddy .buddy-body::before,body.flash-mode #cognitionBuddy .buddy-body::after{top:20px;width:7px;height:2px;border-radius:50%;background:#35405f;box-shadow:none}
+body.flash-mode #cognitionBuddy .buddy-mouth{top:29px;width:6px;height:3px;border-bottom:1.5px solid #405080;border-radius:0 0 8px 8px}
+#cognitionBuddy .buddy-mouth{position:absolute;left:50%;top:28px;width:7px;height:4px;border-bottom:1.5px solid #405080;border-radius:0 0 8px 8px;transform:translateX(-50%)}
+#cognitionBuddy .buddy-blush{position:absolute;top:26px;left:8px;width:6px;height:3px;border-radius:50%;background:#ff9dbb;opacity:.85;box-shadow:20px 0 #ff9dbb}
+#cognitionBuddy .buddy-antenna{position:absolute;left:23px;top:0;width:2px;height:10px;background:#9b9cff;border-radius:2px}

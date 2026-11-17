@@ -1,0 +1,8 @@
+.md-code-head{background:color-mix(in srgb,var(--panel-alt) 80%,transparent);text-transform:uppercase;letter-spacing:.06em;font-size:.68rem}
+.md-code pre{margin:0;padding:12px 14px;overflow:auto}
+.tk-c{color:var(--tk-c);font-style:italic}.tk-s{color:var(--tk-s)}.tk-n{color:var(--tk-n)}.tk-k{color:var(--tk-k);font-weight:500}.tk-f{color:var(--tk-f)}
+.msg.bot{max-width:min(720px,94%);background:color-mix(in srgb,var(--panel-alt) 86%,transparent);font-weight:450}
+.msg.bot p{margin:.2em 0 .6em}.msg.bot h3,.msg.bot h4,.msg.bot h5{letter-spacing:-.01em;margin:.9em 0 .3em}
+.msg.bot a{color:var(--accent-strong);text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent);text-underline-offset:3px}
+html[data-scheme=dark] .msg.bot a{color:var(--tk-f)}
+.hero{font-size:clamp(1.9rem,5vw,3rem);font-weight:700;letter-spacing:-.035em;margin-bottom:.4rem}

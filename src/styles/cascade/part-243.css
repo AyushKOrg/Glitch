@@ -1,0 +1,7 @@
+.gradient-picker-panel:not([hidden]){display:flex}
+.gradient-picker-panel .gradient-editor{display:flex;max-height:calc(88dvh - 90px);overflow:auto;border:0;background:transparent;padding:4px 0 0}
+.gradient-picker-panel .gradient-color-pair{gap:14px}
+.gradient-picker-panel .gradient-color-control{padding:14px}
+.gradient-picker-panel .gradient-wheel{width:124px;height:124px}
+.gradient-picker-panel .gradient-wheel::after{inset:45px}
+html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,html.liquid-glass .settings-box,html.liquid-glass .vip-box,html.liquid-glass .image-box,html.liquid-glass .memory-box,html.liquid-glass .library-box,html.liquid-glass .context-box,html.liquid-glass .install-box{background:color-mix(in srgb,var(--panel) 30%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.9) brightness(1.08)!important;backdrop-filter:blur(34px) saturate(1.9) brightness(1.08)!important;border-color:color-mix(in srgb,var(--text) 22%,transparent)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.06),0 24px 70px rgba(0,0,0,.24),0 0 0 1px rgba(255,255,255,.055)!important}

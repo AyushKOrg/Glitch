@@ -1,0 +1,9 @@
+.vip-box{width:min(650px,100%);max-height:min(88vh,820px);overflow:auto;display:flex;flex-direction:column}
+.vip-box .top{position:sticky;top:0;background:var(--panel);z-index:2}
+.vip-box h3{margin:0;font-size:1.15rem}.vip-box .top p{margin:4px 0 0;color:var(--text-dim);font-size:.82rem}
+.vip-content{padding:16px;display:flex;flex-direction:column;gap:14px}
+.vip-hero{padding:16px;border-radius:14px;background:linear-gradient(120deg,#3b2607,#9a5b08 52%,#f4c45e);color:#fff7db;box-shadow:0 12px 32px -20px #d97706}
+.vip-hero strong{display:block;font-size:1.15rem}.vip-hero span{font-size:.82rem;opacity:.9}
+.vip-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vip-card{min-width:0;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-alt);display:flex;flex-direction:column;gap:7px}
+.vip-card label,.vip-card strong{font-size:.82rem;font-weight:700}

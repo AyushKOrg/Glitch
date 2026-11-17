@@ -1,0 +1,20 @@
+html[data-scheme="light"] .vip-box .vip-hero span,
+html[data-scheme="light"] .vip-box .vip-lock p,
+html[data-scheme="light"] .vip-box .vip-card small,
+html[data-scheme="light"] .vip-box .vip-stat span{color:#625b4d!important}
+html[data-scheme="light"] .vip-box .vip-lock,
+html[data-scheme="light"] .vip-box .vip-card,
+html[data-scheme="light"] .vip-box .vip-stat{
+  background:#fff!important;border-color:rgba(135,103,40,.18)!important;color:#302a1e!important;
+}
+html[data-scheme="light"] .vip-box #vipCode{
+  background:#fff!important;color:#202638!important;border-color:rgba(135,103,40,.28)!important;
+}
+html[data-scheme="light"] .vip-box .vip-card input,
+html[data-scheme="light"] .vip-box .vip-card select{
+  background:#fff!important;color:#202638!important;border-color:rgba(25,32,48,.18)!important;
+}
+html[data-scheme="light"] .suggest button{
+  background:#fff!important;color:#30394d!important;border:1px solid rgba(25,32,48,.1)!important;
+  box-shadow:0 5px 18px rgba(25,32,48,.045)!important;
+}

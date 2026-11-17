@@ -1,0 +1,35 @@
+.glass-strength-setting input#glassStrength::-webkit-slider-thumb{
+  appearance:none!important;-webkit-appearance:none!important;width:21px!important;height:21px!important;
+  margin-top:-7px!important;border:2px solid #fff!important;border-radius:50%!important;
+  background:var(--accent)!important;box-shadow:0 2px 9px #0007!important;
+}
+.glass-strength-setting input#glassStrength::-moz-range-thumb{
+  width:17px!important;height:17px!important;border:2px solid #fff!important;border-radius:50%!important;
+  background:var(--accent)!important;box-shadow:0 2px 9px #0007!important;
+}
+
+
+/* FINAL GLASS TRANSPARENCY OVERRIDE
+   Keep all optical effects fixed; only the panel's material opacity follows the slider.
+   These selectors intentionally outrank the older theme/scheme-specific fixed backgrounds. */
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-dashboard,
+html.liquid-glass .settings-sidebar,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-content-inline .settings-section,
+html.liquid-glass .settings-content-inline .vip-content,
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass .composer,
+html.liquid-glass #chat,
+html.liquid-glass .box,
+html.liquid-glass .chip,
+html.liquid-glass .msg.bot {
+  background:
+    linear-gradient(132deg,rgba(255,255,255,.105) 0%,rgba(255,255,255,.018) 22%,transparent 58%),
+    linear-gradient(315deg,color-mix(in srgb,var(--accent) 13%,transparent),transparent 68%),
+    color-mix(in srgb,var(--bg) var(--glass-tint),transparent) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(2.8) brightness(1.12) !important;
+  backdrop-filter:blur(30px) saturate(2.8) brightness(1.12) !important;
+}

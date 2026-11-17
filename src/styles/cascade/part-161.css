@@ -1,0 +1,21 @@
+html.liquid-glass button,
+html.liquid-glass input,
+html.liquid-glass textarea,
+html.liquid-glass select {
+  transition:background-color .24s ease,border-color .24s ease,box-shadow .24s ease,transform .24s ease;
+}
+html.liquid-glass button:hover:not(:disabled) {
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 8px 26px color-mix(in srgb,var(--accent) 20%,transparent);
+}
+html.liquid-glass .settings-toggle[aria-pressed="true"] {
+  background:color-mix(in srgb,var(--accent) 24%,transparent);
+  border-color:color-mix(in srgb,var(--accent) 58%,var(--border-strong));
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before { animation:none!important; }
+  html.liquid-glass *,html.liquid-glass *::before,html.liquid-glass *::after { scroll-behavior:auto!important; transition-duration:.01ms!important; }
+}
+
+
+/* --- Refined theme-reactive liquid atmosphere and cursor light --- */
+html[data-scheme=dark] .stage { background:#070810 !important; }

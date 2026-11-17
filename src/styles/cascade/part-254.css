@@ -1,0 +1,12 @@
+html.liquid-glass #settingsModal .settings-content-inline .connector-card,
+html.liquid-glass #settingsModal .settings-content-inline .connector-intro,
+html.liquid-glass #settingsModal .settings-content-inline .vip-card,
+html.liquid-glass #settingsModal .settings-content-inline .vip-lock{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+html.liquid-glass #settingsModal .settings-content-inline .connector-card *,
+html.liquid-glass #settingsModal .settings-content-inline .connector-intro *,
+html.liquid-glass #settingsModal .settings-content-inline .vip-card *,
+html.liquid-glass #settingsModal .settings-content-inline .vip-lock *{max-width:100%;overflow-wrap:anywhere}
+html.liquid-glass .settings-content-inline .connector-card button,
+html.liquid-glass .settings-content-inline .vip-card button{align-self:flex-start;white-space:normal}
+
+

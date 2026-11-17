@@ -1,0 +1,13 @@
+html.liquid-glass .settings-header,html.liquid-glass .top,html.liquid-glass .settings-detail-header{background:color-mix(in srgb,var(--panel) 18%,transparent)!important}
+html.liquid-glass button,html.liquid-glass input,html.liquid-glass textarea,html.liquid-glass select{-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
+@media(max-width:600px){#libraryModal .library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#libraryModal .library-item{padding:10px}}
+
+
+/* Liquid Glass is reserved for floating controls and navigation.
+   Content cards remain solid so text never competes with moving background detail. */
+:root{
+  --glass-blur:20.6px;
+  --glass-tint:22.3%;
+  --glass-edge:.56;
+}
+.glass-strength-setting{margin:12px 0 18px;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--panel-alt);display:flex;flex-direction:column;gap:10px}

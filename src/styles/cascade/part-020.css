@@ -1,0 +1,9 @@
+.oauth-btn{min-height:44px;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel-alt);color:var(--text);font:600 .88rem inherit;cursor:pointer;transition:border-color .18s,background .18s,transform .18s}
+.oauth-btn:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px)}
+.oauth-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.oauth-btn:disabled{opacity:.55;cursor:wait;transform:none}
+.oauth-btn svg{width:19px;height:19px;flex:0 0 19px}
+.oauth-divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
+.oauth-divider::before,.oauth-divider::after{content:"";height:1px;flex:1;background:var(--border)}
+@media(max-width:460px){.oauth-buttons{grid-template-columns:1fr}.oauth-btn{min-height:42px}}
+

@@ -1,0 +1,13 @@
+html.liquid-glass .settings-category,html.liquid-glass .settings-tile,
+html.liquid-glass .settings-toggle,html.liquid-glass .nav,html.liquid-glass .mini,
+html.liquid-glass .round,html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .attach-menu button{
+  background-color:color-mix(in srgb,var(--panel) calc(var(--glass-tint) + 8%),transparent)!important;
+  -webkit-backdrop-filter:blur(calc(var(--glass-blur)*.82)) saturate(1.8)!important;
+  backdrop-filter:blur(calc(var(--glass-blur)*.82)) saturate(1.8)!important;
+  transition:background-color .12s linear,backdrop-filter .12s linear,-webkit-backdrop-filter .12s linear;
+}
+.accent-dropdown-option[data-palette-kind="solid"] .accent-dropdown-swatch{background:var(--theme-swatch)!important}
+.accent-dropdown-option[data-palette-kind="gradient"] .accent-dropdown-swatch{background:var(--theme-swatch)!important}
+
+

@@ -1,0 +1,28 @@
+#settingsModal #settingsContentInline #connectorsSettingsSection .settings-section-title {
+  display:flex !important;
+}
+#settingsModal #settingsContentInline #connectorsSettingsSection .connector-intro,
+#settingsModal #settingsContentInline #connectorsSettingsSection .connector-card {
+  position:relative !important;
+  inset:auto !important;
+  transform:none !important;
+  width:100% !important;
+  max-width:none !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+#settingsModal .settings-layout,
+#settingsModal .settings-dashboard,
+#settingsModal .settings-content-inline {
+  position:relative !important;
+}
+
+
+
+/* Visual correction: compact dialogs and restrained theme-aware surfaces. */
+#settingsModal > .settings-shell {
+  width: min(960px, calc(100vw - 32px)) !important;
+  max-width: 960px !important;
+  height: min(740px, calc(100dvh - 48px)) !important;
+  max-height: calc(100dvh - 48px) !important;
+}

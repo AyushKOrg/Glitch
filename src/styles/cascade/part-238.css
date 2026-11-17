@@ -1,0 +1,37 @@
+html[data-scheme="dark"] {
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --accent-strong: color-mix(in srgb, var(--accent) 86%, white);
+}
+html[data-scheme="light"] {
+  --accent-soft: color-mix(in srgb, var(--accent) 11%, white);
+  --accent-strong: color-mix(in srgb, var(--accent) 82%, black);
+}
+
+/* Library is a focused file picker, not a full-screen-width workspace. */
+#libraryModal > .library-box {
+  width: min(760px, calc(100vw - 32px)) !important;
+  max-width: 760px !important;
+  max-height: min(78dvh, 720px) !important;
+}
+#libraryModal .library-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+}
+@media (max-width: 760px) {
+  #settingsModal > .settings-shell {
+    width: calc(100vw - 20px) !important;
+    height: calc(100dvh - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+  }
+  #settingsModal .settings-layout {
+    grid-template-columns: 70px minmax(0, 1fr) !important;
+  }
+  #settingsModal .settings-dashboard {
+    padding: 18px 14px !important;
+  }
+  #libraryModal > .library-box {
+    width: calc(100vw - 24px) !important;
+    max-width: none !important;
+  }
+}
+
+

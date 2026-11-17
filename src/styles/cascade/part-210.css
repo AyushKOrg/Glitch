@@ -1,0 +1,8 @@
+[data-theme=pearl]{--accent:#8295a8;--accent-2:#f7e8ff;--accent-soft:color-mix(in srgb,#94a3b8 19%,transparent);--accent-strong:#475569;--theme-glow:color-mix(in srgb,#f5d0fe 32%,transparent)}
+[data-theme=circuit]{--accent:#57a600;--accent-2:#25c8ff;--accent-soft:color-mix(in srgb,#84cc16 19%,transparent);--accent-strong:#3f6212;--theme-glow:color-mix(in srgb,#38bdf8 32%,transparent)}
+
+/* Appearance shortcut and independent two-colour gradient controls */
+.sidebar-appearance-shortcut{flex:none;margin:0 0 7px;border:1px solid var(--border);background:var(--panel);font-size:.8rem;font-weight:700}
+.sidebar-appearance-shortcut svg{color:var(--accent-strong)}
+.appearance-vip-theme{display:flex;flex-direction:column;gap:7px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-alt)}
+.appearance-vip-theme[hidden]{display:none!important}

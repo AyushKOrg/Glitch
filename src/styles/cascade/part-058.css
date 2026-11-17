@@ -1,0 +1,8 @@
+.tool-toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.tool-toolbar .mini{padding:8px 10px}
+.tool-status{min-height:1.25em;font-size:.78rem;color:var(--text-dim)}
+.editor-stage{display:grid;place-items:center;min-height:240px;max-height:52vh;overflow:auto;padding:12px;border:1px dashed var(--border-strong);border-radius:12px;background:var(--panel-alt)}
+#editorCanvas{display:block;max-width:100%;max-height:48vh;object-fit:contain;background:repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 50%/18px 18px;border-radius:4px}
+.editor-range{width:100%;accent-color:var(--accent)}
+{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+ textarea{width:100%;height:220px;resize:vertical;padding:10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel-alt);color:var(--text);font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}

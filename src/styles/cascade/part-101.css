@@ -1,0 +1,4 @@
+#vipModal .vip-content::-webkit-scrollbar{width:6px}#vipModal .vip-content::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px}
+#vipModal .vip-hero{display:flex!important;align-items:center!important;gap:16px!important;min-height:122px!important;padding:22px!important;border-radius:17px!important;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--border))!important;background:linear-gradient(115deg,var(--accent-soft),var(--panel-alt) 75%)!important;box-shadow:none!important;color:var(--text)!important}
+#vipModal .vip-hero-mark{display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border-radius:16px;background:var(--panel)!important;border:1px solid var(--border)!important;color:var(--accent-strong)!important;font-size:27px;font-weight:800}
+#vipModal .vip-hero-copy{display:flex;flex-direction:column;gap:5px;min-width:0}

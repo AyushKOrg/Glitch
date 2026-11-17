@@ -1,0 +1,7 @@
+#toBottom{position:fixed;right:max(18px,calc(50% - 400px));bottom:104px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border-strong);background:var(--panel);color:var(--text);cursor:pointer;z-index:19;box-shadow:0 8px 24px -8px rgba(0,0,0,.35);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s,transform .2s var(--ease)}
+body.away #toBottom{opacity:1;pointer-events:auto;transform:none}body.empty #toBottom{display:none}
+.history-item{transition:background .18s,transform .2s var(--ease)}.history-item:hover{transform:translateX(2px)}
+@media(max-width:760px){body.empty .suggest{grid-template-columns:1fr}.hero{font-size:2rem}#toBottom{right:16px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+

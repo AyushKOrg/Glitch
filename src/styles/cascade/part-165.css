@@ -1,0 +1,21 @@
+/* Use the existing right-hand settings pane as the content area; no second modal/card. */
+.settings-content-inline { min-width:0; width:100%; }
+.settings-content-inline[hidden] { display:none !important; }
+.settings-content-inline > .settings-section,
+.settings-content-inline > .vip-dev-tools {
+  display:block;
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.settings-content-inline .settings-section-title { margin-bottom:24px; }
+.settings-content-inline .settings-section-title h4 { font-size:1.12rem; }
+.settings-content-inline .settings-section-title p { max-width:560px; }
+.settings-sidebar { justify-content:space-evenly; gap:10px; padding:22px 14px; }
+.settings-category { min-height:50px; flex:1 1 0; max-height:66px; padding:12px 13px; }
+.settings-nav-label { padding-top:14px; padding-bottom:8px; }

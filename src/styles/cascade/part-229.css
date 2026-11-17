@@ -1,0 +1,20 @@
+.gmail-mail:last-child{border-bottom:0}
+.gmail-mail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.gmail-mail-subject{font-size:.9rem;line-height:1.4;color:var(--text);overflow-wrap:anywhere}
+.gmail-mail-date{flex:0 0 auto;text-align:right}
+.gmail-mail-sender{font-size:.8rem;color:var(--text-dim);margin-top:4px;overflow-wrap:anywhere}
+.gmail-mail-preview{font-size:.84rem;line-height:1.5;margin:8px 0 0;color:var(--text);opacity:.82;overflow-wrap:anywhere}
+@media(max-width:520px){.gmail-mail-top{display:block}.gmail-mail-date{display:block;text-align:left;margin-top:4px}}
+
+/* Settings workspace repair: keep every category inside one dialog and one
+   scrollable content pane. These rules intentionally supersede legacy modal CSS. */
+#settingsModal > .settings-shell {
+  width:min(1180px,calc(100vw - 40px)) !important;
+  max-width:1180px !important;
+  height:min(820px,calc(100dvh - 48px)) !important;
+  max-height:calc(100dvh - 48px) !important;
+  min-height:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+}

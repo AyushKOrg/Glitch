@@ -1,0 +1,29 @@
+.settings-content-inline .profile-editor {
+  align-items:center;
+  gap:26px !important;
+  padding:10px 0;
+}
+.settings-content-inline .profile-preview {
+  width:88px !important;
+  height:88px !important;
+}
+.settings-content-inline .profile-fields {
+  gap:12px !important;
+  max-width:680px;
+}
+.settings-content-inline .profile-fields input,
+.settings-content-inline .settings-select,
+.settings-content-inline input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),
+.settings-content-inline textarea,
+.settings-content-inline select {
+  min-height:48px;
+  padding:12px 15px !important;
+  border-radius:12px !important;
+  font-size:.9rem !important;
+}
+.settings-content-inline textarea { min-height:120px; line-height:1.6; }
+.settings-content-inline .settings-actions,
+.settings-content-inline .profile-picture-actions {
+  gap:12px !important;
+  margin-top:6px;
+}

@@ -1,0 +1,6 @@
+#gate{background:var(--bg);overflow:hidden;z-index:50}
+#gate::before,#gate::after{content:"";position:absolute;width:46vw;height:46vw;max-width:520px;max-height:520px;border-radius:50%;filter:blur(70px);opacity:.35;background:var(--grad);animation:blob 14s ease-in-out infinite}
+#gate::before{top:-12%;left:-10%}#gate::after{bottom:-14%;right:-8%;animation-delay:-7s;animation-direction:reverse}
+#gate form{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;width:min(400px,100%);padding:2rem}
+#gate form>*{animation:rise .5s var(--ease) both}#gate form>:nth-child(2){animation-delay:.06s}#gate form>:nth-child(3){animation-delay:.1s}#gate form>:nth-child(4){animation-delay:.14s}#gate form>:nth-child(5){animation-delay:.18s}
+.brand{display:flex;align-items:center;gap:.7rem}.brand img{width:40px;height:40px;border-radius:11px;animation:rise .6s var(--ease)}

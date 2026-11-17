@@ -1,0 +1,11 @@
+.context-row p{margin:5px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.82rem;line-height:1.5;color:var(--text)}
+.install-help{padding:20px 24px;color:var(--text);line-height:1.6}.install-help ol{padding-left:22px}.install-help li{margin:8px 0}.install-help p{color:var(--text-dim);font-size:.82rem}
+.install-app-button{margin-left:auto!important}.context-indicator{margin-left:auto;color:var(--text-dim);font-size:.72rem}
+.context-inline{display:inline-block;margin-left:5px;color:var(--text-dim);font-size:.76rem}
+.install-app-button[hidden],#installAppSide[hidden]{display:none!important}
+@media(max-width:760px){.context-indicator{display:none}.install-app-button{margin-left:auto!important}}
+
+#mic[aria-pressed="true"]{background:var(--accent)!important;color:#fff!important;border-color:var(--accent-strong)!important}
+
+/* VIP / Developer settings — rebuilt as a coherent, theme-aware settings surface. */
+#vipModal.overlay{padding:clamp(12px,3vw,28px);background:rgba(8,12,22,.62);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}

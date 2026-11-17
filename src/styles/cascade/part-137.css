@@ -1,0 +1,8 @@
+.avatar { width:43px;height:43px;font-size:.96rem;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,var(--panel)),0 5px 16px -8px var(--accent); }
+.me-text { display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0; }
+#who { font-size:.88rem;line-height:1.2;max-width:100%; }
+#accountBadge { align-self:flex-start;margin:0;font-size:.58rem;letter-spacing:.09em; }
+.vip-tagline { max-width:100%;font-size:.65rem;line-height:1.2; }
+.me-sub { min-width:0;font-size:.68rem;line-height:1.2; }
+#quota { overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.me .settings-open { flex:none;width:41px;height:41px;padding:0!important;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--border-strong))!important;border-radius:13px!important;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 15%,var(--panel)),var(--panel))!important;color:var(--text)!important;box-shadow:0 5px 18px -12px var(--accent),inset 0 1px 0 color-mix(in srgb,white 28%,transparent);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease; }

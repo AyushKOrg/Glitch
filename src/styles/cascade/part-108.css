@@ -1,0 +1,7 @@
+#vipModal .vip-code-actions{display:flex;gap:8px;flex-wrap:wrap}
+#vipModal .vip-code-actions button,#vipModal #vipReset{min-height:36px;padding:8px 11px!important;border:1px solid var(--border-strong)!important;border-radius:9px!important;background:var(--panel)!important;color:var(--text)!important;font-size:.75rem!important;font-weight:750!important}
+#vipModal #vipStatus{min-height:1.35em;color:var(--text-dim)!important;font-size:.82rem!important;line-height:1.5}
+#vipModal .vip-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px!important}
+#vipModal .vip-stat{padding:16px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:var(--panel-alt)!important;text-align:center}
+#vipModal .vip-stat b{display:block;color:var(--text)!important;font-size:1.25rem!important}
+#vipModal .vip-stat span{color:var(--text-dim)!important;font-size:.75rem!important}

@@ -1,0 +1,7 @@
+.hero-sub{display:none;text-align:center;margin:0 0 1.8rem;color:var(--text-dim);font-size:1.02rem;animation:floatIn .9s cubic-bezier(.2,.8,.2,1) .1s both}
+body.empty .hero-sub{display:block}
+#chat{border-radius:28px;background:color-mix(in srgb,var(--panel-alt) 80%,transparent);padding:7px 7px 7px 10px}
+body.empty .suggest{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:min(780px,calc(100% - 2.8rem))}
+.suggest button{flex-direction:column;align-items:flex-start;gap:3px;padding:14px 16px;border:1px solid var(--border);border-radius:16px;background:color-mix(in srgb,var(--panel-alt) 70%,transparent)}
+.suggest button b{font-weight:600;color:var(--text);font-size:.92rem}.suggest button span{font-size:.8rem;color:var(--muted)}
+.suggest button:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 45%,var(--border));box-shadow:0 14px 30px -20px var(--accent);background:var(--panel)}

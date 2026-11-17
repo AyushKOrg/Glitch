@@ -1,0 +1,7 @@
+#vipModal .vip-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:13px!important}
+#vipModal .vip-card{min-height:145px!important;padding:17px!important;gap:10px!important;border:1px solid var(--border)!important;border-radius:13px!important;background:var(--panel-alt)!important}
+#vipModal .vip-card label,#vipModal .vip-card strong{color:var(--text)!important;font-size:.85rem!important}
+#vipModal .vip-card small{color:var(--text-dim)!important;font-size:.77rem!important;line-height:1.5!important}
+#vipModal .vip-card input,#vipModal .vip-card select{padding:11px 12px!important;border:1px solid var(--border-strong)!important;border-radius:9px!important;background:var(--panel)!important;color:var(--text)!important}
+#vipModal .vip-actions{display:flex;gap:10px;flex-wrap:wrap}
+#vipModal .vip-actions .cta{min-height:42px;padding:10px 16px!important;border-radius:10px!important;background:var(--accent-strong)!important;color:#fff!important;animation:none!important}

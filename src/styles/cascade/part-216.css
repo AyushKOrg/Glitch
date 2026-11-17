@@ -1,0 +1,5 @@
+.accent-dropdown.open .accent-dropdown-chevron{transform:rotate(225deg) translate(-2px,-1px)}
+.accent-dropdown-menu{position:absolute;top:calc(100% + 8px);left:0;right:0;max-height:min(390px,55vh);overflow:auto;padding:7px;border:1px solid color-mix(in srgb,var(--accent) 38%,var(--border-strong));border-radius:14px;background:color-mix(in srgb,var(--panel) 94%,var(--accent) 6%);box-shadow:0 18px 45px #0004,0 0 0 1px color-mix(in srgb,var(--accent-2) 13%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:none;overscroll-behavior:contain}
+.accent-dropdown.open .accent-dropdown-menu{display:block;animation:rise .16s ease both}
+.accent-dropdown-group-label{padding:9px 9px 5px;color:var(--accent-strong);font-size:.65rem;font-weight:850;letter-spacing:.09em;text-transform:uppercase}
+.accent-dropdown-option{display:flex;align-items:center;gap:10px;width:100%;padding:8px 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text);font:600 .77rem Inter,system-ui,sans-serif;text-align:left;cursor:pointer;transition:background .14s,border-color .14s,transform .14s}

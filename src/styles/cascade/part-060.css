@@ -1,0 +1,8 @@
+.side h4{margin:17px 10px 7px;letter-spacing:.075em;text-transform:uppercase;font-size:.66rem}
+.history-head{margin:20px 8px 8px;padding-top:12px;border-top:1px solid var(--border)}
+.history-head h4{letter-spacing:.075em;text-transform:uppercase;font-size:.66rem}
+.history-search{padding:0 4px 8px}
+.history-search input{height:36px;border-radius:11px;background:var(--panel);border-color:var(--border);padding:8px 11px}
+.history-list{flex:1 1 220px;min-height:130px;max-height:none;overflow:auto;overscroll-behavior:contain;padding:3px 3px 12px;gap:5px;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+.history-group{margin:14px 9px 5px;font-size:.65rem;letter-spacing:.09em;text-transform:uppercase;font-weight:750;color:var(--muted)}
+.history-item{position:relative;gap:3px;padding:2px;border:1px solid transparent;border-radius:12px;transition:background .16s,border-color .16s}

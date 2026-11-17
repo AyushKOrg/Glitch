@@ -1,0 +1,18 @@
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before { animation:none!important; }
+}
+
+
+/* Visibility correction: make the reference's flowing colour currents unmistakable. */
+html[data-scheme=dark] .stage::before {
+  inset:-18%;
+  opacity:1;
+  filter:blur(44px) saturate(1.22);
+  background-image:
+    radial-gradient(ellipse 66% 48% at 77% 20%, rgba(20,91,101,.82) 0%, rgba(17,70,78,.56) 42%, transparent 78%),
+    radial-gradient(ellipse 64% 52% at 18% 88%, rgba(13,91,82,.78) 0%, rgba(13,66,62,.5) 44%, transparent 80%),
+    radial-gradient(ellipse 62% 52% at 92% 91%, rgba(112,42,76,.72) 0%, rgba(82,32,59,.48) 44%, transparent 80%),
+    radial-gradient(ellipse 58% 46% at 7% 8%, rgba(105,65,49,.58) 0%, rgba(78,49,42,.36) 44%, transparent 80%);
+  background-size:190% 185%,185% 190%,190% 185%,180% 190%;
+  animation:glitchReferenceCurrent 36s ease-in-out infinite alternate;
+}

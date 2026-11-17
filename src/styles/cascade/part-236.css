@@ -1,0 +1,23 @@
+#settingsModal .settings-content-inline .settings-section-title {
+  margin-bottom: 18px !important;
+}
+#settingsModal .settings-content-inline .settings-section,
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card,
+#settingsModal .settings-content-inline .profile-editor,
+#settingsModal .settings-content-inline .profile-fields,
+#settingsModal .settings-content-inline .settings-card,
+#settingsModal .settings-content-inline .settings-panel {
+  background-color: var(--panel) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card {
+  border-color: var(--border) !important;
+}
+#settingsModal .settings-content-inline .settings-section-title,
+#settingsModal .settings-content-inline label,
+#settingsModal .settings-content-inline strong {
+  color: var(--text) !important;
+}

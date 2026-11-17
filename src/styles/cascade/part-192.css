@@ -1,0 +1,14 @@
+.creative-box .image-status { color:var(--text-dim); font-size:.86rem; line-height:1.6; }
+.creative-box button:disabled { opacity:.55; cursor:not-allowed; }
+@media(max-width:600px) {
+  .creative-box { width:calc(100vw - 18px); max-height:92vh; }
+  .creative-actions > button { flex:1 1 auto; }
+}
+
+/* ShortGPT Video Studio */
+.video-studio-box { width:min(1120px,calc(100vw - 28px)); }
+.video-studio-connect { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.video-studio-step { min-width:0; display:flex; flex-direction:column; gap:9px; padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--panel-alt); }
+.video-studio-step:first-child { grid-column:1/-1; }
+.video-studio-step strong { color:var(--text); font-size:.94rem; }
+.video-studio-step p,.video-studio-footnote { margin:0; color:var(--text-dim); font-size:.82rem; line-height:1.6; }

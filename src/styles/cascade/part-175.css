@@ -1,0 +1,31 @@
+#settingsDetailModal,#memoryModal { display:none !important; }
+
+/* Clear, colour-rich Liquid Glass: transparent surfaces, vivid refraction and crisp edges.
+   Avoid the milky white layer used by the earlier pass. */
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-dashboard,
+html.liquid-glass .settings-sidebar,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-content-inline .settings-section,
+html.liquid-glass .settings-content-inline .vip-content,
+html.liquid-glass .side,
+html.liquid-glass .topbar,
+html.liquid-glass .composer,
+html.liquid-glass #chat,
+html.liquid-glass .box,
+html.liquid-glass .chip,
+html.liquid-glass .msg.bot {
+  background:
+    linear-gradient(132deg,rgba(255,255,255,.105) 0%,rgba(255,255,255,.018) 22%,transparent 58%),
+    linear-gradient(315deg,color-mix(in srgb,var(--accent) 13%,transparent),transparent 68%),
+    color-mix(in srgb,var(--bg) 19%,transparent) !important;
+  -webkit-backdrop-filter:blur(30px) saturate(2.8) brightness(1.12);
+  backdrop-filter:blur(30px) saturate(2.8) brightness(1.12);
+  border-color:color-mix(in srgb,var(--accent) 48%,rgba(255,255,255,.48)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.56),
+    inset 0 0 0 1px color-mix(in srgb,var(--accent) 17%,transparent),
+    0 18px 48px rgba(0,0,0,.22),
+    0 0 28px color-mix(in srgb,var(--accent) 13%,transparent) !important;
+}

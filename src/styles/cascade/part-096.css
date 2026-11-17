@@ -1,0 +1,9 @@
+/* Show/hide control for every password field. */
+.password-field{position:relative;display:flex;align-items:center;width:100%;min-width:0}
+.password-field>input{width:100%;min-width:0;padding-right:46px!important;box-sizing:border-box}
+.password-visibility{position:absolute;right:7px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:34px;height:34px;padding:6px;border:0;border-radius:8px;background:transparent;color:var(--text-dim);cursor:pointer}
+.password-visibility:hover{background:var(--accent-soft);color:var(--text)}
+.password-visibility svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#vipRedeemForm .password-field{flex:1 1 auto}
+.memory-actions{display:flex;gap:8px;flex:0 0 auto}
+.memory-edit,.memory-delete{border:1px solid var(--border-strong);border-radius:8px;background:var(--panel);color:var(--text);padding:7px 11px;font-size:.75rem;font-weight:700;cursor:pointer}

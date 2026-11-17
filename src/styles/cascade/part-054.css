@@ -1,0 +1,7 @@
+.vip-card small{color:var(--muted);font-size:.72rem}
+.vip-card select,.vip-card input{width:100%;min-width:0;padding:8px 9px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel);color:var(--text)}
+.vip-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vip-lock{padding:14px;border:1px dashed color-mix(in srgb,#d99a08 60%,var(--border));border-radius:12px;background:color-mix(in srgb,#f59e0b 6%,var(--panel))}
+.vip-lock form{display:flex;gap:8px;margin-top:10px}.vip-lock input{flex:1;min-width:0;padding:10px;border:1px solid var(--border-strong);border-radius:9px;background:var(--panel);color:var(--text)}
+#vipStatus{font-size:.8rem;color:var(--text-dim);min-height:1.2em}.vip-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vip-stat{padding:12px;border-radius:11px;background:var(--panel-alt);border:1px solid var(--border)}

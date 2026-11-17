@@ -1,0 +1,9 @@
+.vip-stat b{display:block;font-size:1.2rem}.vip-stat span{font-size:.72rem;color:var(--muted)}
+.vip-lounge{padding:14px;border-radius:12px;border:1px solid color-mix(in srgb,#d99a08 30%,var(--border));background:linear-gradient(135deg,color-mix(in srgb,#f59e0b 8%,var(--panel)),var(--panel))}
+.vip-lounge p{margin:5px 0;color:var(--text-dim);font-size:.84rem}
+body.vip-neon .stage::after{background:radial-gradient(420px circle at var(--pointer-x,50%) var(--pointer-y,35%),rgba(34,211,238,.18),transparent 72%)}
+body.vip-orbit .msg.bot{box-shadow:0 0 0 1px color-mix(in srgb,#eab308 20%,transparent),0 10px 34px -22px #d97706}
+body.vip-active .me{border-top-color:rgba(234,179,8,.4)}
+body.vip-active #avatar{box-shadow:0 0 0 2px #eab308,0 0 18px rgba(234,179,8,.3)}
+@media(max-width:520px){.vip-grid{grid-template-columns:1fr}.vip-lock form{flex-direction:column}.vip-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+

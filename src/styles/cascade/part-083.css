@@ -1,0 +1,9 @@
+@media(max-width:760px){.side{overflow:hidden!important}body.nav-open .side{box-shadow:none!important}}
+
+
+.dev-pill{display:inline-flex;align-items:center;margin-left:6px;padding:2px 7px;border-radius:999px;background:linear-gradient(110deg,#bbf7d0,#22c55e);color:#052e16;font-size:.62rem;font-weight:950;letter-spacing:.1em;vertical-align:middle}.dev-pill[hidden],.vip-dev-tools[hidden]{display:none!important}.vip-dev-tools{padding:13px;border:1px solid #22c55e66;border-radius:12px;background:color-mix(in srgb,#22c55e 8%,var(--panel));display:flex;flex-direction:column;gap:7px}.vip-dev-tools p{margin:0;color:var(--text-dim);font-size:.8rem}
+
+
+/* Standard solid-surface interface: glass effects removed. */
+html,body{background:var(--bg)!important;background-color:var(--bg)!important;background-image:none!important}
+body{animation:none!important}

@@ -1,0 +1,29 @@
+.code-artifact:hover, .vip-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb,var(--accent) 45%,var(--border-strong));
+  box-shadow: 0 14px 30px -24px color-mix(in srgb,var(--accent) 65%,transparent);
+}
+.suggest button {
+  position: relative;
+  overflow: hidden;
+  transition: background .22s ease, color .22s ease, transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease;
+}
+.suggest button::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 42%;
+  background: linear-gradient(100deg,transparent,color-mix(in srgb,var(--accent) 9%,transparent),transparent);
+  transform: translateX(-140%);
+  pointer-events: none;
+}
+.suggest button:hover::after {
+  animation: glitchSheen .8s ease both;
+}
+.suggest button:hover {
+  box-shadow: 0 8px 22px -20px var(--accent);
+}
+#chat {
+  position: relative;
+  isolation: isolate;
+}

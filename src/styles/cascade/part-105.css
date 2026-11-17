@@ -1,0 +1,5 @@
+html[data-scheme="dark"] #vipModal .vip-role-chip{color:#86efac!important}
+#vipModal .vip-dev-action{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px;border:1px solid var(--border)!important;border-radius:13px;background:var(--panel)!important}
+#vipModal .vip-dev-action>div{min-width:0}
+#vipModal .vip-dev-action strong,#vipModal .vip-verify-copy strong{color:var(--text)!important;font-size:.9rem!important;font-weight:800!important}
+#vipModal #vipRegenerate,#vipModal #vipRedeem{flex:0 0 auto;min-height:42px;padding:10px 16px!important;border:1px solid var(--accent-strong)!important;border-radius:10px!important;background:var(--accent-strong)!important;color:#fff!important;font-size:.82rem!important;font-weight:800!important;box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 20%,transparent)!important;animation:none!important;white-space:normal}

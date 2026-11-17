@@ -1,0 +1,12 @@
+{width:100%;height:360px;border:1px solid var(--border-strong);border-radius:10px;background:white}
+.vip-tool-nav{border:1px solid color-mix(in srgb,#a78bfa 38%,var(--border))}
+.vip-tool-nav .tool-lock-label{margin-left:auto;font-size:.66rem;color:#d99a08;font-weight:800;letter-spacing:.05em}
+body.vip-active .vip-tool-nav .tool-lock-label{color:#16a34a}
+@media(max-width:700px){.tool-grid{grid-template-columns:1fr}}
+
+
+/* Expanded, collapsible navigation and a cleaner conversation archive. */
+.side{width:304px;min-width:304px;overflow:hidden;padding:14px 12px;gap:4px}
+.side-brand{min-height:54px;padding:6px 8px 12px}
+#sideCollapse{margin-left:auto;flex:none;width:34px;height:34px;display:grid;place-items:center;padding:0;border-radius:10px}
+#sideCollapse svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}

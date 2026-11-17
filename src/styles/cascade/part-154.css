@@ -1,0 +1,20 @@
+/* Hovered controls catch the accent light, as in the reference recording. */
+.stage button:not(:disabled),
+.stage input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=range]),
+.stage textarea,
+.stage select {
+  transition:border-color .2s ease, box-shadow .22s ease, background-color .22s ease, filter .22s ease;
+}
+.stage button:hover:not(:disabled),
+.stage button:focus-visible,
+.stage input:hover:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=range]),
+.stage input:focus,
+.stage textarea:hover,
+.stage textarea:focus,
+.stage select:hover,
+.stage select:focus {
+  border-color:color-mix(in srgb,var(--accent) 68%,var(--border-strong)) !important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),
+             0 0 22px -9px color-mix(in srgb,var(--accent) 82%,transparent) !important;
+  filter:brightness(1.08);
+}

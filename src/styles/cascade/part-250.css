@@ -1,0 +1,19 @@
+html.liquid-glass .settings-content-inline input,
+html.liquid-glass .settings-content-inline textarea,
+html.liquid-glass .settings-content-inline select,
+html.liquid-glass .settings-dashboard input,
+html.liquid-glass .settings-dashboard textarea,
+html.liquid-glass .settings-dashboard select{
+  background:var(--panel-alt)!important;color:var(--text)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-content-inline *,
+html.liquid-glass .settings-dashboard *{min-width:0}
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-tile{white-space:normal;overflow-wrap:anywhere;line-height:1.4}
+html.liquid-glass .settings-category{min-height:44px}
+html.liquid-glass .settings-tile{min-height:112px}
+html.liquid-glass .settings-content-inline .connector-card,
+html.liquid-glass .settings-content-inline .connector-intro{padding:16px!important;margin:0 0 14px!important}

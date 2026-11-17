@@ -1,0 +1,29 @@
+.settings-content-inline .settings-accent-heading {
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  margin-top:12px;
+}
+.settings-content-inline .accent-picker-wrap { margin-top:8px; gap:18px !important; }
+.settings-content-inline .memory-settings form {
+  display:flex;
+  flex-direction:column;
+  gap:13px !important;
+}
+.settings-content-inline .memory-form-foot {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+  padding-top:5px;
+}
+.settings-content-inline .memory-list { display:flex; flex-direction:column; gap:14px !important; }
+.settings-content-inline .vip-content {
+  display:flex !important;
+  flex-direction:column;
+  gap:24px !important;
+  padding:0 !important;
+}
+.settings-content-inline .vip-hero { padding:25px !important; border-radius:18px !important; }
+.settings-content-inline .vip-grid { gap:16px !important; }

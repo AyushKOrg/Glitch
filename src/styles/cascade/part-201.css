@@ -1,0 +1,27 @@
+@media (max-width: 360px) {
+  .topbar { gap: 7px; padding-inline: 8px; }
+  .topbar img { flex-basis: 26px; width: 26px; height: 26px; min-width: 26px; }
+  .topbar .install-app-button { padding-inline: 7px; font-size: .68rem; }
+}
+
+
+/* Enforce the requested clean touch landing screen regardless of body state. */
+@media screen and (max-width: 760px) {
+  .suggest,
+  .suggest button {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  .suggest {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+
+/* Additional VIP/DEV preset palettes — intentionally grouped by colour family */
+[data-theme=champagne]{--accent:#e8c98b;--accent-2:#fff7df;--accent-soft:color-mix(in srgb,#d8bd83 17%,transparent);--accent-strong:#9f8147}

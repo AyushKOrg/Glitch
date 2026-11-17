@@ -1,0 +1,22 @@
+html.liquid-glass .settings-dashboard {
+  background:
+    radial-gradient(ellipse at 88% 8%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 48%),
+    radial-gradient(ellipse at 8% 94%,color-mix(in srgb,var(--accent-2) 13%,transparent),transparent 46%),
+    color-mix(in srgb,var(--bg) 15%,transparent) !important;
+}
+html.liquid-glass .settings-sidebar {
+  background:color-mix(in srgb,var(--bg) 24%,transparent) !important;
+  border-right-color:color-mix(in srgb,var(--accent) 35%,transparent) !important;
+}
+html.liquid-glass .settings-tile,
+html.liquid-glass .settings-category,
+html.liquid-glass .settings-toggle,
+html.liquid-glass .accent-picker-trigger,
+html.liquid-glass .settings-content-inline input:not([type=range]),
+html.liquid-glass .settings-content-inline textarea,
+html.liquid-glass .settings-content-inline select {
+  background-color:color-mix(in srgb,var(--bg) 23%,transparent) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(2.7);
+  backdrop-filter:blur(22px) saturate(2.7);
+  border-color:color-mix(in srgb,var(--accent) 42%,rgba(255,255,255,.34)) !important;
+}

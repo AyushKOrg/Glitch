@@ -1,0 +1,7 @@
+/* refined motion + depth */
+@keyframes aurora{0%,100%{background-position:0% 50%;opacity:.42}50%{background-position:100% 50%;opacity:.7}}
+@keyframes floatIn{from{opacity:0;transform:translateY(18px) scale(.985);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes orbitGlow{0%,100%{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 10%,transparent),0 12px 32px -22px var(--accent)}50%{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 16px 42px -20px var(--accent)}}
+@keyframes softPing{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 28%,transparent)}100%{box-shadow:0 0 0 8px transparent}}
+@keyframes spectralSweep{0%{transform:translateX(-120%) rotate(12deg);opacity:0}15%{opacity:.55}75%{opacity:.22}100%{transform:translateX(130%) rotate(12deg);opacity:0}}
+@keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 9px color-mix(in srgb,var(--accent) 60%,transparent))}}

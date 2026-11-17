@@ -1,0 +1,11 @@
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:1}
+select option{background:var(--panel);color:var(--text)}
+input[type=checkbox],input[type=radio]{accent-color:var(--accent)}
+input[type=range]{accent-color:var(--accent)}
+button,select,input,textarea{font-family:Inter,system-ui,sans-serif}
+button:disabled{opacity:.55;cursor:not-allowed}
+.vip-tools-launch[hidden],.settings-contact[hidden],.settings-nav-label[hidden],.settings-dev-only[hidden],.settings-free-only[hidden]{display:none!important}
+.settings-category svg,.settings-tile svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.settings-sidebar::-webkit-scrollbar,.settings-dashboard::-webkit-scrollbar,.settings-detail-body::-webkit-scrollbar{width:6px}
+.settings-sidebar::-webkit-scrollbar-thumb,.settings-dashboard::-webkit-scrollbar-thumb,.settings-detail-body::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px}
+

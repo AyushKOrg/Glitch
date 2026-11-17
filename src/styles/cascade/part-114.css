@@ -1,0 +1,5 @@
+.profile-fields input,.settings-select{width:100%;min-width:0;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--panel);color:var(--text);outline:none}
+.profile-fields input:focus,.settings-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.profile-picture-actions,.settings-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.settings-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:9px 13px;border-radius:10px;border:1px solid var(--border-strong);font-size:.78rem;font-weight:750;cursor:pointer;text-decoration:none}
+.settings-button.primary{background:var(--accent-strong);color:#fff;border-color:var(--accent-strong)}.settings-button.secondary{background:var(--panel);color:var(--text)}.settings-button.subtle{background:transparent;color:var(--text-dim)}

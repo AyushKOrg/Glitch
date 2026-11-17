@@ -1,0 +1,8 @@
+html[data-scheme=light] .stage{background:#fff!important;background-image:none!important}
+.tool-group-label{margin-top:14px!important;color:var(--muted)!important;font-size:.68rem!important;font-weight:800!important;letter-spacing:.13em!important}
+.vip-tool-nav{position:relative;min-height:42px}
+.vip-nav .vip-pill{margin-left:auto}
+#vipModal .vip-box{width:min(590px,100%);max-height:min(88dvh,780px);overflow:auto;border-radius:24px;border:1px solid rgba(226,184,91,.42)!important;background:linear-gradient(145deg,rgba(26,25,31,.98),rgba(12,13,19,.98))!important;box-shadow:0 30px 100px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.16)!important;color:#f8f5ed}
+#vipModal .top{padding:20px 22px;border-bottom:1px solid rgba(226,184,91,.2)}
+#vipModal .top h3{font-size:1.25rem;letter-spacing:-.025em;color:#f7d58b}
+#vipModal .top p{color:#b9b5aa}

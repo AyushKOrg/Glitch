@@ -1,0 +1,4 @@
+.settings-section-title{display:flex;align-items:center;gap:12px}.settings-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:var(--accent-soft);color:var(--accent-strong);font-size:19px;flex:none}
+.settings-section-title h4{margin:0;font-size:.92rem;font-weight:800;color:var(--text)}.settings-section-title p{margin:2px 0 0;color:var(--text-dim);font-size:.76rem}
+.profile-editor{display:flex;align-items:center;gap:17px}.profile-preview{width:72px;height:72px;border-radius:50%;background:var(--grad);background-size:cover;background-position:center;display:grid;place-items:center;color:white;font-size:1.4rem;font-weight:800;flex:none;border:3px solid var(--panel);box-shadow:0 0 0 1px var(--border-strong)}
+.profile-fields{min-width:0;flex:1;display:flex;flex-direction:column;gap:7px}.profile-fields label,.settings-field-label{font-size:.78rem;font-weight:750;color:var(--text)}

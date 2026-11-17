@@ -1,0 +1,21 @@
+html[data-scheme="light"] .box p,
+html[data-scheme="light"] .box label,
+html[data-scheme="light"] .box small,
+html[data-scheme="light"] .box h3,
+html[data-scheme="light"] .box h4{color:inherit}
+html[data-scheme="light"] .tool-box,
+html[data-scheme="light"] .image-box,
+html[data-scheme="light"] .memory-box,
+html[data-scheme="light"] .quota-box{background:#fff!important;color:#202638!important}
+html[data-scheme="light"] .editor-stage,
+html[data-scheme="light"] .code-artifact{
+  background:#f8f9fc!important;color:#202638!important;border-color:rgba(25,32,48,.12)!important;
+}
+html[data-scheme="light"] .vip-box{
+  background:linear-gradient(145deg,#fffdf8,#fff)!important;
+  color:#272319!important;
+}
+html[data-scheme="light"] .vip-box .vip-hero{
+  background:linear-gradient(125deg,#fff4d6,#fffaf0)!important;
+}
+html[data-scheme="light"] .vip-box .vip-hero strong{color:#80530c!important}

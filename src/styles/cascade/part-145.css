@@ -1,0 +1,22 @@
+html[data-scheme=dark] .settings-dashboard {
+  background:
+    radial-gradient(ellipse at 94% 5%,color-mix(in srgb,var(--accent) 25%,transparent),transparent 48%),
+    radial-gradient(ellipse at 8% 96%,color-mix(in srgb,var(--accent-2) 22%,transparent),transparent 48%),
+    var(--panel);
+}
+/* Keep the supplied CSS's soft, drifting blob motion but respect reduced motion. */
+@media(prefers-reduced-motion:reduce) {
+  html:not([data-scheme=dark]) .stage::before,
+  html[data-scheme=dark] .stage::before { animation:none; }
+}
+
+
+/* ===== Video-matched cosmic atmosphere: cyan nebula + quiet starfield ===== */
+@keyframes glitchNebulaDrift {
+  0%,100% { background-position: 0% 50%,100% 50%,50% 0%; transform:scale(1); }
+  50% { background-position: 100% 45%,0% 55%,58% 100%; transform:scale(1.035); }
+}
+@keyframes glitchStarDrift {
+  0%,100% { background-position: 0% 0%,100% 100%,15% 85%,85% 15%; opacity:.52; }
+  50% { background-position: 100% 65%,0% 35%,30% 65%,70% 35%; opacity:.82; }
+}

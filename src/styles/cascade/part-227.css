@@ -1,0 +1,8 @@
+.library-chat-download{display:inline-flex;margin-top:10px;align-items:center;gap:7px}
+@media(max-width:600px){.library-box{max-height:90vh}.library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.library-item{padding:8px}.library-item-preview{height:92px}}
+
+#libraryAttach{background:var(--panel);border:1px solid var(--border);color:var(--text);display:grid;place-items:center}
+
+.connector-intro{padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--panel);font-size:.8rem;line-height:1.5;color:var(--text-dim)}
+.connector-card{display:flex;align-items:center;gap:13px;padding:13px;border:1px solid var(--border);border-radius:13px;background:var(--panel);min-width:0}
+.connector-brand{width:40px;height:40px;display:grid;place-items:center;flex:none;border-radius:12px;font-weight:850;background:var(--panel-alt);color:var(--text)}

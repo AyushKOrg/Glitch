@@ -1,0 +1,18 @@
+/* Dark mode gets a richer, more visible neon haze without washing out text. */
+html[data-scheme=dark] .stage {
+  background:
+    radial-gradient(ellipse at 8% 12%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 43%),
+    radial-gradient(ellipse at 91% 83%,color-mix(in srgb,var(--accent-2) 25%,transparent),transparent 46%),
+    var(--panel);
+}
+html[data-scheme=dark] .stage::before {
+  inset:-20%;
+  background:
+    radial-gradient(ellipse at 13% 18%,color-mix(in srgb,var(--accent) 38%,transparent),transparent 40%),
+    radial-gradient(ellipse at 84% 77%,color-mix(in srgb,var(--accent-2) 34%,transparent),transparent 44%),
+    radial-gradient(ellipse at 53% 5%,color-mix(in srgb,#fff 10%,transparent),transparent 46%);
+  background-size:190% 190%,190% 190%,160% 160%;
+  filter:blur(42px);
+  opacity:1;
+  animation:glitchAtmosphere 15s ease-in-out infinite alternate;
+}

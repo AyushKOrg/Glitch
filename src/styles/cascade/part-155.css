@@ -1,0 +1,43 @@
+.stage #chat:hover {
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent),
+             0 0 30px -12px color-mix(in srgb,var(--accent) 76%,transparent),
+             0 12px 40px -34px rgba(0,0,0,.45);
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-scheme=dark] .stage::before { animation:none!important; }
+}
+
+/* Reference-video background recreation: muted, liquid colour currents over plum charcoal. */
+@keyframes glitchReferenceCurrent {
+  0% {
+    background-position: 0% 48%, 100% 44%, 18% 100%, 82% 0%;
+  }
+  50% {
+    background-position: 42% 56%, 58% 50%, 58% 42%, 38% 64%;
+  }
+  100% {
+    background-position: 100% 52%, 0% 58%, 88% 0%, 12% 100%;
+  }
+}
+html[data-scheme=dark] .stage {
+  background-color:#1e1c26 !important;
+  background-image:none !important;
+}
+html[data-scheme=dark] .stage::before {
+  content:"";
+  position:absolute;
+  inset:-24%;
+  z-index:0;
+  pointer-events:none;
+  filter:blur(58px) saturate(.92);
+  opacity:.82;
+  background-image:
+    radial-gradient(ellipse 56% 42% at 77% 20%, rgba(17,48,57,.88) 0%, rgba(17,48,57,.36) 46%, transparent 78%),
+    radial-gradient(ellipse 54% 44% at 18% 88%, rgba(13,48,49,.78) 0%, rgba(13,48,49,.3) 48%, transparent 80%),
+    radial-gradient(ellipse 52% 46% at 92% 91%, rgba(65,25,48,.76) 0%, rgba(65,25,48,.3) 48%, transparent 80%),
+    radial-gradient(ellipse 48% 40% at 7% 8%, rgba(65,39,34,.58) 0%, rgba(65,39,34,.22) 48%, transparent 80%);
+  background-size:190% 185%,185% 190%,190% 185%,180% 190%;
+  background-repeat:no-repeat;
+  animation:glitchReferenceCurrent 42s ease-in-out infinite alternate;
+  will-change:background-position;
+}

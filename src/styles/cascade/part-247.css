@@ -1,0 +1,25 @@
+/* Large information surfaces are standard materials, never see-through glass. */
+html.liquid-glass .settings-box,
+html.liquid-glass .settings-detail-box,
+html.liquid-glass .vip-box,
+html.liquid-glass .image-box,
+html.liquid-glass .memory-box,
+html.liquid-glass .library-box,
+html.liquid-glass .context-box,
+html.liquid-glass .install-box,
+html.liquid-glass .settings-dashboard,
+html.liquid-glass .settings-content-inline,
+html.liquid-glass .settings-content-inline .settings-section,
+html.liquid-glass .connector-card,
+html.liquid-glass .connector-intro,
+html.liquid-glass .vip-card,
+html.liquid-glass .vip-lock,
+html.liquid-glass .vip-stat,
+html.liquid-glass .library-item{
+  background:var(--panel)!important;
+  background-image:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  box-shadow:0 12px 36px rgba(0,0,0,.12)!important;
+  color:var(--text)!important;
+}

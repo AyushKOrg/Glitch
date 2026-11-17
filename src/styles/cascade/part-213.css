@@ -1,0 +1,7 @@
+.gradient-hex-row{width:100%;display:flex;gap:5px}
+.gradient-hex-row input{width:0;min-width:0;flex:1;padding:8px!important;font:750 .72rem ui-monospace,monospace!important}
+.gradient-hex-row button{padding:7px 9px;border:1px solid var(--border-strong);border-radius:8px;background:var(--accent-soft);color:var(--text);font-size:.7rem;font-weight:800}
+.gradient-presets{width:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.gradient-presets button{width:100%;aspect-ratio:1;border:2px solid var(--panel);border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px var(--border);cursor:pointer}
+.gradient-presets button:hover,.gradient-presets button:focus-visible{transform:scale(1.12);box-shadow:0 0 0 2px var(--accent)}
+@media(max-width:520px){.gradient-color-pair{grid-template-columns:1fr}.gradient-color-control{display:grid;grid-template-columns:1fr 1fr;align-items:center}.gradient-color-head,.gradient-color-control>label,.gradient-hex-row,.gradient-presets{grid-column:1/-1}.gradient-wheel{grid-column:1/-1;width:112px;height:112px}.gradient-wheel::after{inset:42px}}

@@ -1,0 +1,7 @@
+.stage { isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 10% 7%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 44%),radial-gradient(ellipse at 92% 88%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 46%),var(--panel); }
+.stage::before {
+ content:"";position:absolute;inset:-16%;z-index:0;pointer-events:none;
+ background:radial-gradient(ellipse at 16% 20%,color-mix(in srgb,var(--accent) 23%,transparent),transparent 39%),radial-gradient(ellipse at 82% 78%,color-mix(in srgb,var(--accent-2) 21%,transparent),transparent 43%),radial-gradient(ellipse at 54% 4%,color-mix(in srgb,white 11%,transparent),transparent 46%);
+ background-size:180% 180%,190% 190%,160% 160%;filter:blur(34px);animation:glitchAtmosphere 19s ease-in-out infinite alternate;
+}
+html[data-scheme=dark] .stage::before { background:radial-gradient(ellipse at 16% 20%,color-mix(in srgb,var(--accent) 25%,transparent),transparent 39%),radial-gradient(ellipse at 82% 78%,color-mix(in srgb,var(--accent-2) 23%,transparent),transparent 43%),radial-gradient(ellipse at 54% 4%,color-mix(in srgb,#fff 7%,transparent),transparent 46%); }

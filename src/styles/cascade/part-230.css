@@ -1,0 +1,35 @@
+#settingsModal .settings-layout {
+  display:grid !important;
+  grid-template-columns:246px minmax(0,1fr) !important;
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+#settingsModal .settings-sidebar {
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  justify-content:flex-start !important;
+  gap:7px !important;
+  padding:20px 14px !important;
+}
+#settingsModal .settings-category {
+  flex:0 0 auto !important;
+  min-height:46px !important;
+  max-height:none !important;
+  justify-content:flex-start !important;
+  padding:10px 12px !important;
+  font-size:.84rem !important;
+  white-space:normal !important;
+}
+#settingsModal .settings-dashboard {
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding:clamp(24px,3.2vw,42px) !important;
+}

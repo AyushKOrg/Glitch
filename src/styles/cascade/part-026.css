@@ -1,0 +1,5 @@
+body.cognition-mode #cognitionBuddy{display:block;animation:buddyDrift 4.2s ease-in-out infinite}
+body.flash-mode #cognitionBuddy{display:block;animation:buddySleep 4.8s ease-in-out infinite;filter:drop-shadow(0 5px 10px rgba(251,146,60,.2))}
+@keyframes buddySleep{0%,100%{transform:translate3d(0,0,0) rotate(-3deg)}50%{transform:translate3d(0,3px,0) rotate(2deg)}}
+#cognitionBuddy .buddy-body{position:absolute;inset:7px 5px 5px;border:1px solid rgba(255,255,255,.72);border-radius:46% 46% 43% 43%;background:linear-gradient(145deg,#b9f4ff 0%,#8b9bff 58%,#c6a5ff 100%);box-shadow:inset -5px -5px 10px rgba(73,74,173,.18),0 0 0 3px rgba(125,211,252,.12)}
+#cognitionBuddy .buddy-body::before,#cognitionBuddy .buddy-body::after{content:"";position:absolute;top:17px;width:5px;height:7px;border-radius:50%;background:#26345d;box-shadow:0 1px 0 rgba(255,255,255,.8)}

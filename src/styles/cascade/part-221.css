@@ -1,0 +1,26 @@
+#attach:hover, #mic:hover, #send:hover:not(:disabled) {
+  box-shadow: 0 7px 22px -9px color-mix(in srgb,var(--accent) 65%,transparent);
+}
+.side-brand img {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .35s ease;
+}
+.side-brand:hover img {
+  transform: rotate(-7deg) scale(1.08);
+  filter: drop-shadow(0 5px 10px color-mix(in srgb,var(--accent) 35%,transparent));
+}
+.history-item {
+  transition: transform .2s ease, background .2s ease;
+}
+.history-item:hover {
+  transform: translateX(3px);
+}
+.msg.bot {
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.msg.bot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 24px -18px color-mix(in srgb,var(--accent) 45%,transparent);
+}
+.code-artifact, .vip-card, .appearance-vip-theme {
+  transition: transform .24s cubic-bezier(.2,.8,.2,1), border-color .24s ease, box-shadow .24s ease;
+}

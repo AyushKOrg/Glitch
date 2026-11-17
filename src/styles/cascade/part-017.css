@@ -1,0 +1,7 @@
+body.empty .stage{justify-content:center;padding-bottom:6vh}body.empty #log{display:none}body.empty .hero{display:block}body.empty #chat{margin-bottom:0}body.empty .suggest{display:flex}
+.overlay{position:fixed;inset:0;background:rgba(10,10,20,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:40}.overlay.open{display:flex}
+.voice-language{display:flex;flex-direction:column;gap:4px;padding:4px 10px 9px}.voice-language label{font-size:.7rem;color:var(--muted)}.voice-language select{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);padding:6px 8px;font-size:.76rem}
+@media(max-width:520px){}
+
+.box,#gate form{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 50px -20px rgba(20,20,30,.3);animation:msgin .4s var(--ease)}
+.box .top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}

@@ -1,0 +1,5 @@
+[data-theme=arctic]{--accent:#38bdf8;--accent-2:#a5b4fc;--accent-soft:color-mix(in srgb,#38bdf8 19%,transparent);--accent-strong:#1d4ed8;--theme-glow:color-mix(in srgb,#a5b4fc 32%,transparent)}
+[data-theme=ocean]{--accent:#0369a1;--accent-2:#2dd4bf;--accent-soft:color-mix(in srgb,#0369a1 19%,transparent);--accent-strong:#164e63;--theme-glow:color-mix(in srgb,#2dd4bf 32%,transparent)}
+[data-theme=sapphire]{--accent:#1d4ed8;--accent-2:#93c5fd;--accent-soft:color-mix(in srgb,#1d4ed8 19%,transparent);--accent-strong:#1e3a8a;--theme-glow:color-mix(in srgb,#93c5fd 32%,transparent)}
+[data-theme=glacier]{--accent:#67e8f9;--accent-2:#e0f2fe;--accent-soft:color-mix(in srgb,#67e8f9 19%,transparent);--accent-strong:#0e7490;--theme-glow:color-mix(in srgb,#e0f2fe 32%,transparent)}
+[data-theme=crimson]{--accent:#be123c;--accent-2:#fb7185;--accent-soft:color-mix(in srgb,#be123c 19%,transparent);--accent-strong:#881337;--theme-glow:color-mix(in srgb,#fb7185 32%,transparent)}

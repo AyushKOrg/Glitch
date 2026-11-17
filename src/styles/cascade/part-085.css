@@ -1,0 +1,7 @@
+#sideCollapse{background:var(--panel)!important;border:1px solid var(--border)!important;box-shadow:none!important}
+
+
+.account-pill{display:inline-flex;align-items:center;justify-content:center;margin-left:7px;padding:2px 8px;border:1px solid transparent;border-radius:999px;font-size:.62rem;font-weight:900;letter-spacing:.1em;line-height:1.45;vertical-align:middle}
+.account-pill[hidden]{display:none!important}.account-pill.free{background:#e2e8f0;color:#334155;border-color:#cbd5e1}.account-pill.vip{background:#fef3c7;color:#78350f;border-color:#fcd34d}.account-pill.dev{background:#dcfce7;color:#14532d;border-color:#86efac}
+#vipOpen{display:flex!important}#vipDevOpen{display:flex;align-items:center;border-color:#22c55e66;color:var(--text)}#vipDevOpen[hidden]{display:none!important}#vipDevOpen svg{color:#16a34a}
+#vipModal .vip-dev-tools{display:flex;flex-direction:column;gap:11px;padding:15px;border:1px solid #22c55e66;border-radius:14px;background:var(--panel-alt)}

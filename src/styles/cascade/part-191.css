@@ -1,0 +1,15 @@
+html.liquid-glass[data-scheme="dark"] #chat #input::placeholder {
+  color:rgba(255,255,255,.62) !important;
+}
+html.liquid-glass[data-scheme="light"] #chat #input::placeholder {
+  color:rgba(20,24,38,.58) !important;
+}
+
+/* VIP / DEV Creative Studio */
+.creative-box { width:min(820px,calc(100vw - 32px)); max-height:min(88vh,900px); overflow:auto; }
+.creative-box .image-content { display:flex; flex-direction:column; gap:18px; }
+.creative-box .image-content > div { display:flex; flex-direction:column; gap:9px; min-width:0; }
+.creative-box textarea { width:100%; min-height:112px; resize:vertical; }
+.creative-box #presentationOutlineJson { min-height:300px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:.82rem; line-height:1.55; }
+.creative-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.creative-actions .image-status { flex:1 1 100%; }

@@ -1,0 +1,10 @@
+body.sidebar-collapsed .side .history-open::before{content:"◌";font-size:16px;line-height:1;color:var(--text-dim)}
+body.sidebar-collapsed .side .history-actions{display:none!important}
+body.sidebar-collapsed .side .me{justify-content:center!important;padding-inline:0!important}body.sidebar-collapsed .side .avatar{margin:auto!important}
+body.sidebar-collapsed .side-brand .mini{position:absolute;right:0;top:3px}
+@media(max-width:760px){body.sidebar-collapsed .side{width:min(290px,86vw)!important}}
+
+/* Roomier cards and a readable developer heading in both themes. */
+.box .top{padding:18px 22px!important}
+.memory-box,.context-box,.install-box,.vip-box{width:min(680px,calc(100vw - 28px))!important;max-height:min(88dvh,900px)!important}
+.memory-box #memoryForm,.memory-box .memory-list{padding:20px 22px!important}.memory-list{gap:13px!important}

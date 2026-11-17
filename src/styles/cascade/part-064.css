@@ -1,0 +1,10 @@
+body.sidebar-collapsed .side-brand img{width:34px;height:34px}
+body.sidebar-collapsed #sideCollapse{position:absolute;top:19px;right:8px;width:25px;height:25px;background:var(--panel);opacity:.9}
+body.sidebar-collapsed #sideCollapse svg{transform:rotate(180deg)}
+body.sidebar-collapsed .side>.nav{width:48px;height:46px;justify-content:center;padding:0;font-size:0;gap:0}
+body.sidebar-collapsed .side>.nav svg{width:19px;height:19px}
+body.sidebar-collapsed .side .modes{width:100%;display:flex;flex-direction:column;align-items:center}
+body.sidebar-collapsed .side .modes .nav{width:48px;height:44px;justify-content:center;padding:0;font-size:0}
+body.sidebar-collapsed .accent-picker-wrap{width:100%;padding:8px 0}
+body.sidebar-collapsed .accent-picker-trigger{width:48px;height:48px;justify-content:center;padding:3px;border-radius:14px}
+body.sidebar-collapsed .accent-trigger-disc{width:35px;height:35px}

@@ -1,0 +1,5 @@
+.settings-button:hover,.settings-shortcut:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+.inline-status{display:block;min-height:1.25em;color:var(--text-dim);font-size:.77rem;line-height:1.45;overflow-wrap:anywhere}
+.account-details{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border:1px solid var(--border);border-radius:11px;background:var(--panel)}.account-detail-label{font-size:.68rem;color:var(--text-dim)}.account-details strong{font-size:.85rem;overflow-wrap:anywhere}
+.settings-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.settings-shortcut{min-width:0;display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel);color:var(--text);text-align:left;text-decoration:none;cursor:pointer;transition:background .15s,border-color .15s}

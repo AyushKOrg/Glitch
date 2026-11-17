@@ -1,0 +1,25 @@
+html[data-scheme="light"] .nav[aria-pressed=true]{
+  background:color-mix(in srgb,var(--accent) 12%,white)!important;
+  color:var(--accent-strong)!important;
+}
+html[data-scheme="light"] .hero,
+html[data-scheme="light"] .hero-sub{color:#202638!important}
+html[data-scheme="light"] #chat{
+  background:#fff!important;
+  background-image:none!important;
+  border:1px solid rgba(25,32,48,.14)!important;
+  box-shadow:0 12px 38px rgba(25,32,48,.09),inset 0 1px 0 #fff!important;
+  
+}
+html[data-scheme="light"] #input,
+html[data-scheme="light"] #histSearch,
+html[data-scheme="light"] input:not([type=range]):not([type=checkbox]):not([type=radio]),
+html[data-scheme="light"] textarea,
+html[data-scheme="light"] select{
+  background:#fff!important;
+  color:#171923!important;
+  border-color:rgba(25,32,48,.18)!important;
+}
+html[data-scheme="light"] #input::placeholder,
+html[data-scheme="light"] input::placeholder,
+html[data-scheme="light"] textarea::placeholder{color:#858c9b!important}

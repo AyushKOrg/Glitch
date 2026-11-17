@@ -1,0 +1,19 @@
+@media(prefers-reduced-transparency:reduce){
+  html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,
+  html.liquid-glass .settings-header,html.liquid-glass .settings-sidebar,
+  html.liquid-glass .settings-detail-header,html.liquid-glass .attach-menu,
+  html.liquid-glass .accent-picker-panel,html.liquid-glass .gradient-picker-panel,
+  html.liquid-glass .settings-category,html.liquid-glass .settings-tile,
+  html.liquid-glass .settings-toggle,html.liquid-glass .nav,
+  html.liquid-glass .mini,html.liquid-glass .round,html.liquid-glass .accent-picker-trigger{
+    background:var(--panel)!important;
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    box-shadow:0 0 0 1px var(--border)!important;
+  }
+}
+@media(max-width:620px){
+  .glass-strength-setting{padding:12px}
+  .glass-strength-ends{font-size:.66rem}
+}
+
+

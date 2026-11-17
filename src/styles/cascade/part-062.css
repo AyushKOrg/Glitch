@@ -1,0 +1,4 @@
+.accent-picker-trigger{width:100%;min-width:0;display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 94%,var(--accent) 6%),var(--panel));color:var(--text);text-align:left;cursor:pointer;box-shadow:0 5px 18px -15px var(--accent);transition:border-color .18s,transform .18s,box-shadow .18s}
+.accent-picker-trigger:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 45%,var(--border));box-shadow:0 9px 24px -16px var(--accent)}
+.accent-trigger-disc{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:13px;background:conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);box-shadow:inset 0 0 0 2px var(--panel),0 2px 8px #0002}
+.accent-trigger-disc span{width:24px;height:24px;border-radius:50%;background:var(--accent);border:2px solid var(--panel);box-shadow:0 0 0 1px #0002}

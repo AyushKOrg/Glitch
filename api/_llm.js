@@ -64,8 +64,10 @@ async function webSearch(ctx, query) {
 async function runTool(ctx, name, args) {
   args = args && typeof args === 'object' ? args : {};
   if (name === 'web_search') return webSearch(ctx, String(args.query || '').slice(0, 300));
-  if (name.startsWith('google_') && ctx.user) return runGoogleTool(ctx.user, name, args);
-  if (name.startsWith('google_')) return 'Sign in and connect Google in Settings → Connectors first.';
+  // Gmail is declared to the model as `gmail_search` (without the google_ prefix).
+  // Route that exact public tool name to the same authenticated Google connector.
+  if ((name === 'gmail_search' || name.startsWith('google_')) && ctx.user) return runGoogleTool(ctx.user, name, args);
+  if (name === 'gmail_search' || name.startsWith('google_')) return 'Sign in and connect Google in Settings → Connectors first.';
   return `Unknown tool: ${name}`;
 }
 

@@ -3460,3 +3460,119 @@ body.empty .suggest button:nth-child(4) { animation-delay: .21s; }
   position:relative !important;
 }
 
+
+
+/* Visual correction: compact dialogs and restrained theme-aware surfaces. */
+#settingsModal > .settings-shell {
+  width: min(960px, calc(100vw - 32px)) !important;
+  max-width: 960px !important;
+  height: min(740px, calc(100dvh - 48px)) !important;
+  max-height: calc(100dvh - 48px) !important;
+}
+#settingsModal .settings-layout {
+  grid-template-columns: 216px minmax(0, 1fr) !important;
+}
+#settingsModal .settings-sidebar {
+  padding: 17px 11px !important;
+}
+#settingsModal .settings-dashboard {
+  padding: 26px !important;
+}
+#settingsModal .settings-content-inline,
+#settingsModal .settings-content-inline > .settings-section,
+#settingsModal .settings-content-inline #connectorsSettingsSection {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+#settingsModal .settings-content-inline .settings-section,
+#settingsModal .settings-content-inline .profile-editor,
+#settingsModal .settings-content-inline .profile-fields {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+#settingsModal .settings-content-inline .profile-editor {
+  align-items: flex-start !important;
+  gap: 18px !important;
+}
+#settingsModal .settings-content-inline .profile-fields {
+  flex: 1 1 220px !important;
+}
+#settingsModal .settings-content-inline .settings-section-title {
+  margin-bottom: 18px !important;
+}
+#settingsModal .settings-content-inline .settings-section,
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card,
+#settingsModal .settings-content-inline .profile-editor,
+#settingsModal .settings-content-inline .profile-fields,
+#settingsModal .settings-content-inline .settings-card,
+#settingsModal .settings-content-inline .settings-panel {
+  background-color: var(--panel) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+#settingsModal .settings-content-inline .connector-intro,
+#settingsModal .settings-content-inline .connector-card {
+  border-color: var(--border) !important;
+}
+#settingsModal .settings-content-inline .settings-section-title,
+#settingsModal .settings-content-inline label,
+#settingsModal .settings-content-inline strong {
+  color: var(--text) !important;
+}
+#settingsModal .settings-content-inline p,
+#settingsModal .settings-content-inline small,
+#settingsModal .settings-content-inline .muted {
+  color: var(--text-dim) !important;
+}
+#settingsModal .settings-category[aria-current="page"] {
+  background: color-mix(in srgb, var(--accent) 15%, var(--panel)) !important;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border)) !important;
+  color: var(--text) !important;
+}
+#settingsModal .settings-category:hover,
+#settingsModal .settings-category:focus-visible {
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel)) !important;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
+}
+#settingsModal .settings-category > span,
+#settingsModal .settings-heading-icon,
+#settingsModal .settings-detail-mark {
+  background: color-mix(in srgb, var(--accent) 14%, var(--panel)) !important;
+  color: var(--accent) !important;
+}
+html[data-scheme="dark"] {
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --accent-strong: color-mix(in srgb, var(--accent) 86%, white);
+}
+html[data-scheme="light"] {
+  --accent-soft: color-mix(in srgb, var(--accent) 11%, white);
+  --accent-strong: color-mix(in srgb, var(--accent) 82%, black);
+}
+
+/* Library is a focused file picker, not a full-screen-width workspace. */
+#libraryModal > .library-box {
+  width: min(760px, calc(100vw - 32px)) !important;
+  max-width: 760px !important;
+  max-height: min(78dvh, 720px) !important;
+}
+#libraryModal .library-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+}
+@media (max-width: 760px) {
+  #settingsModal > .settings-shell {
+    width: calc(100vw - 20px) !important;
+    height: calc(100dvh - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+  }
+  #settingsModal .settings-layout {
+    grid-template-columns: 70px minmax(0, 1fr) !important;
+  }
+  #settingsModal .settings-dashboard {
+    padding: 18px 14px !important;
+  }
+  #libraryModal > .library-box {
+    width: calc(100vw - 24px) !important;
+    max-width: none !important;
+  }
+}

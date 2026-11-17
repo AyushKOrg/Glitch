@@ -1126,7 +1126,13 @@
     });
     if (note) { const n = document.createElement('span'); n.className = 'attach-note' + (isErr ? ' err' : ''); n.textContent = note; box.append(n); }
   }
-  $('attach').addEventListener('click', () => $('filePicker').click());
+  const attachMenu=$('attachMenu'),attachButton=$('attach');
+  function closeAttachMenu(){attachMenu.hidden=true;attachButton.setAttribute('aria-expanded','false');}
+  attachButton.addEventListener('click',()=>{const open=attachMenu.hidden;attachMenu.hidden=!open;attachButton.setAttribute('aria-expanded',String(open));});
+  $('uploadFromChat').addEventListener('click',()=>{closeAttachMenu();$('filePicker').click();});
+  $('libraryFromChat').addEventListener('click',()=>{closeAttachMenu();openLibrary(true);});
+  document.addEventListener('pointerdown',event=>{if(!event.target.closest('.composer-attach-wrap'))closeAttachMenu();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAttachMenu();});
   $('filePicker').addEventListener('change', async (e) => {
     const files = Array.from(e.target.files || []); e.target.value = '';
     reading++; sendBtn.disabled = true;
@@ -1251,7 +1257,7 @@
     libraryCache=data||[];$('libraryStatus').textContent=libraryCache.length+' item'+(libraryCache.length===1?'':'s')+' · Private to your account';renderLibraryItems();
   }
   $('libraryOpen').addEventListener('click',()=>openLibrary(false));
-  $('libraryAttach').addEventListener('click',()=>openLibrary(true));
+  
   $('libraryClose').addEventListener('click',()=>libraryModal.classList.remove('open'));
   libraryModal.addEventListener('click',e=>{if(e.target===libraryModal)libraryModal.classList.remove('open');});
   $('librarySearch').addEventListener('input',renderLibraryItems);
@@ -1550,6 +1556,12 @@
     accentBrightness.value=String(Math.round(brightness));
     accentBrightnessValue.textContent=Math.round(brightness)+'%';
   }
+  const gradientPickerToggle=$('gradientPickerToggle'),gradientPickerPanel=$('gradientPickerPanel');
+  function closeGradientPicker(){gradientPickerPanel.hidden=true;gradientPickerToggle.setAttribute('aria-expanded','false');}
+  gradientPickerToggle.addEventListener('click',()=>{const open=gradientPickerPanel.hidden;gradientPickerPanel.hidden=!open;gradientPickerToggle.setAttribute('aria-expanded',String(open));if(open)gradientPickerPanel.querySelector('.gradient-wheel')?.focus();});
+  $('gradientPickerClose').addEventListener('click',closeGradientPicker);
+  gradientPickerPanel.addEventListener('click',event=>{if(event.target===gradientPickerPanel)closeGradientPicker();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')closeGradientPicker();});
   const accentPickerToggle = $('accentPickerToggle');
   const accentPickerPanel = $('accentPickerPanel');
   accentPickerToggle.addEventListener('click', () => {
@@ -1704,13 +1716,13 @@
     closeVipThemeDropdown(true);
   }
   const vipThemePaletteColors={
-    gold:['#d6a12b','#fff0a6'],obsidian:['#f1c75b','#a78bfa'],champagne:['#c6a66b','#fff4d0'],rosegold:['#b86d68','#f4b5a5'],titanium:['#8e9baa','#edf3f8'],carbon:['#a5b4c7','#64748b'],
-    aurora:['#00b894','#55e6c1'],emerald:['#087f5b','#b7e36b'],jade:['#168b83','#9be7cf'],toxic:['#a3e635','#d9ff36'],
-    cosmic:['#7c3aed','#f472b6'],amethyst:['#9333ea','#c4b5fd'],ultraviolet:['#5b21b6','#e879f9'],lavender:['#9b8afb','#fbcfe8'],
-    arctic:['#38bdf8','#a5b4fc'],ocean:['#0369a1','#2dd4bf'],sapphire:['#1d4ed8','#93c5fd'],glacier:['#67e8f9','#e0f2fe'],
-    crimson:['#be123c','#fb7185'],ruby:['#9f1239','#fda4af'],sakura:['#db2777','#fbcfe8'],blush:['#e879a8','#ffe4e6'],fuchsia:['#c026d3','#fb7185'],
-    solar:['#ea580c','#fde047'],amber:['#b45309','#fcd34d'],inferno:['#dc2626','#f97316'],citrus:['#65a30d','#facc15'],
-    monsoon:['#0f766e','#5eead4'],copperhead:['#b45309','#67a6a0'],pearl:['#94a3b8','#f5d0fe'],circuit:['#84cc16','#38bdf8']
+    gold:['#f2b705','#fff0a6'],obsidian:['#b88a24','#7457c8'],champagne:['#e8c98b','#fff7df'],rosegold:['#bd6474','#f6b5a6'],titanium:['#7f91a8','#dbe5ef'],carbon:['#c0c9d6','#38485e'],
+    aurora:['#00a878','#38e6c7'],emerald:['#006b46','#b5f36b'],jade:['#008f9c','#8de2d0'],toxic:['#b6f000','#ecff46'],
+    cosmic:['#7138d4','#f05a9d'],amethyst:['#9d4edd','#d9b3ff'],ultraviolet:['#4c1d95','#ec38bc'],lavender:['#b5a1ff','#f6c8f3'],
+    arctic:['#18a7e0','#b8d8ff'],ocean:['#005b96','#00c2a8'],sapphire:['#1539c7','#72a8ff'],glacier:['#42d9e8','#f0fdff'],
+    crimson:['#b20d35','#ff526f'],ruby:['#780b32','#e83e70'],sakura:['#ed4c9b','#ffc1dc'],blush:['#f28cae','#ffe7ed'],fuchsia:['#b517c9','#ff4bd8'],
+    solar:['#ff6b00','#ffe033'],amber:['#a65d00','#ffd166'],inferno:['#d71920','#ff8c42'],citrus:['#78a800','#e5ff39'],
+    monsoon:['#075e70','#6fe7dc'],copperhead:['#9b4b16','#65b7a6'],pearl:['#8295a8','#f7e8ff'],circuit:['#57a600','#25c8ff']
   };
   [...vipThemeSelect.children].forEach(group=>{
     if(group.tagName==='OPTGROUP'){

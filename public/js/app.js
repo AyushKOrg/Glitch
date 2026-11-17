@@ -1997,7 +1997,7 @@
   markMode(); render(); renderHistoryList();
   let cfg = null;
   try {
-    const response = await fetch('/api/config', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+    const response = await fetch('/api/config', { cache: 'no-store', signal: AbortSignal.timeout(7000) });
     if (!response.ok) throw new Error('Configuration endpoint returned HTTP ' + response.status + '.');
     cfg = await response.json();
     if (!cfg.configured) {
@@ -2035,7 +2035,7 @@
       authInitError = 'Glitch could not restore the saved login. Check that cookies and site storage are enabled, then reload. Your account has not been deleted.';
       $('who').textContent = 'Session unavailable';
       openGate(authInitError);
-    }, 12000);
+    }, 9500);
   } catch (error) {
     authInitError = 'Authentication setup failed: ' + (error && error.message ? error.message : 'unknown error') + '. Check Vercel environment variables and /vendor/supabase.js.';
     openGate(authInitError);

@@ -5,20 +5,20 @@ html[data-scheme=dark]{--bg:#0f0f14;--panel:#17171f;--panel-alt:#1e1e28;--border
 [data-theme=matrix]{--accent:#10b981;--accent-2:#06b6d4;--accent-soft:#e3fbf3;--accent-strong:#0a9468}
 [data-theme=sunset]{--accent:#f97316;--accent-2:#ef4444;--accent-soft:#fff0e6;--accent-strong:#d95c0d}
 [data-theme=ice]{--accent:#3b82f6;--accent-2:#06b6d4;--accent-soft:#e8f2ff;--accent-strong:#2266d6}
-[data-theme=crimson]{--accent:#e11d48;--accent-2:#e11d48;--accent-soft:#ffe4e9;--accent-strong:#be123c}
-[data-theme=gold]{--accent:#d97706;--accent-2:#d97706;--accent-soft:#fff3d6;--accent-strong:#a85505}
+[data-theme=crimson]{--accent:#b20d35;--accent-2:#ff526f;--accent-soft:#ffe4e9;--accent-strong:#be123c}
+[data-theme=gold]{--accent:#f2b705;--accent-2:#fff0a6;--accent-soft:#fff3d6;--accent-strong:#a85505}
 [data-theme=gold]{--accent:#d6a84b;--accent-2:#f59e0b;--accent-soft:color-mix(in srgb,#d6a84b 16%,transparent);--accent-strong:#a8791e}
-[data-theme=obsidian]{--accent:#d6ad55;--accent-2:#f5e1a4;--accent-soft:color-mix(in srgb,#d6ad55 15%,transparent);--accent-strong:#a77b2b}
-[data-theme=cosmic]{--accent:#a855f7;--accent-2:#ec4899;--accent-soft:color-mix(in srgb,#a855f7 17%,transparent);--accent-strong:#9333ea}
-[data-theme=aurora]{--accent:#10b981;--accent-2:#22d3ee;--accent-soft:color-mix(in srgb,#10b981 16%,transparent);--accent-strong:#059669}
-[data-theme=emerald]{--accent:#059669;--accent-2:#a3e635;--accent-soft:color-mix(in srgb,#059669 16%,transparent);--accent-strong:#047857}
+[data-theme=obsidian]{--accent:#b88a24;--accent-2:#7457c8;--accent-soft:color-mix(in srgb,#d6ad55 15%,transparent);--accent-strong:#a77b2b}
+[data-theme=cosmic]{--accent:#7138d4;--accent-2:#f05a9d;--accent-soft:color-mix(in srgb,#a855f7 17%,transparent);--accent-strong:#9333ea}
+[data-theme=aurora]{--accent:#00a878;--accent-2:#38e6c7;--accent-soft:color-mix(in srgb,#10b981 16%,transparent);--accent-strong:#059669}
+[data-theme=emerald]{--accent:#006b46;--accent-2:#b5f36b;--accent-soft:color-mix(in srgb,#059669 16%,transparent);--accent-strong:#047857}
 [data-theme=crimson]{--accent:#e11d48;--accent-2:#fb7185;--accent-soft:color-mix(in srgb,#e11d48 16%,transparent);--accent-strong:#be123c}
-[data-theme=arctic]{--accent:#38bdf8;--accent-2:#818cf8;--accent-soft:color-mix(in srgb,#38bdf8 17%,transparent);--accent-strong:#2563eb}
-[data-theme=sakura]{--accent:#ec4899;--accent-2:#f9a8d4;--accent-soft:color-mix(in srgb,#ec4899 16%,transparent);--accent-strong:#be185d}
-[data-theme=solar]{--accent:#f97316;--accent-2:#facc15;--accent-soft:color-mix(in srgb,#f97316 17%,transparent);--accent-strong:#c2410c}
-[data-theme=ocean]{--accent:#0284c7;--accent-2:#2dd4bf;--accent-soft:color-mix(in srgb,#0284c7 17%,transparent);--accent-strong:#0369a1}
-[data-theme=amethyst]{--accent:#8b5cf6;--accent-2:#c084fc;--accent-soft:color-mix(in srgb,#8b5cf6 17%,transparent);--accent-strong:#6d28d9}
-[data-theme=carbon]{--accent:#94a3b8;--accent-2:#64748b;--accent-soft:color-mix(in srgb,#94a3b8 17%,transparent);--accent-strong:#475569}
+[data-theme=arctic]{--accent:#18a7e0;--accent-2:#b8d8ff;--accent-soft:color-mix(in srgb,#38bdf8 17%,transparent);--accent-strong:#2563eb}
+[data-theme=sakura]{--accent:#ed4c9b;--accent-2:#ffc1dc;--accent-soft:color-mix(in srgb,#ec4899 16%,transparent);--accent-strong:#be185d}
+[data-theme=solar]{--accent:#ff6b00;--accent-2:#ffe033;--accent-soft:color-mix(in srgb,#f97316 17%,transparent);--accent-strong:#c2410c}
+[data-theme=ocean]{--accent:#005b96;--accent-2:#00c2a8;--accent-soft:color-mix(in srgb,#0284c7 17%,transparent);--accent-strong:#0369a1}
+[data-theme=amethyst]{--accent:#9d4edd;--accent-2:#d9b3ff;--accent-soft:color-mix(in srgb,#8b5cf6 17%,transparent);--accent-strong:#6d28d9}
+[data-theme=carbon]{--accent:#c0c9d6;--accent-2:#38485e;--accent-soft:color-mix(in srgb,#94a3b8 17%,transparent);--accent-strong:#475569}
 [data-theme=rose]{--accent:#ec4899;--accent-2:#f43f5e;--accent-soft:#ffe8f1;--accent-strong:#be185d}
 [data-theme=midnight]{--accent:#4f46e5;--accent-2:#4f46e5;--accent-soft:#e9eaff;--accent-strong:#3730a3}
 [data-theme=lime]{--accent:#84cc16;--accent-2:#10b981;--accent-soft:#effbdc;--accent-strong:#4d7c0f}
@@ -2927,21 +2927,21 @@ html[data-device="tablet"] .settings-shortcuts {
 
 
 /* Additional VIP/DEV preset palettes — intentionally grouped by colour family */
-[data-theme=champagne]{--accent:#d8bd83;--accent-2:#fff0c2;--accent-soft:color-mix(in srgb,#d8bd83 17%,transparent);--accent-strong:#9f8147}
-[data-theme=rosegold]{--accent:#c98278;--accent-2:#f2b6a8;--accent-soft:color-mix(in srgb,#c98278 17%,transparent);--accent-strong:#a65350}
-[data-theme=titanium]{--accent:#a8b4c2;--accent-2:#e2e8f0;--accent-soft:color-mix(in srgb,#a8b4c2 18%,transparent);--accent-strong:#64748b}
-[data-theme=jade]{--accent:#0f9f78;--accent-2:#6ee7b7;--accent-soft:color-mix(in srgb,#0f9f78 17%,transparent);--accent-strong:#047857}
-[data-theme=toxic]{--accent:#a3e635;--accent-2:#22c55e;--accent-soft:color-mix(in srgb,#a3e635 18%,transparent);--accent-strong:#4d7c0f}
-[data-theme=ultraviolet]{--accent:#7c3aed;--accent-2:#d946ef;--accent-soft:color-mix(in srgb,#7c3aed 17%,transparent);--accent-strong:#6d28d9}
-[data-theme=lavender]{--accent:#a78bfa;--accent-2:#f0abfc;--accent-soft:color-mix(in srgb,#a78bfa 17%,transparent);--accent-strong:#7c3aed}
-[data-theme=sapphire]{--accent:#2563eb;--accent-2:#60a5fa;--accent-soft:color-mix(in srgb,#2563eb 17%,transparent);--accent-strong:#1d4ed8}
-[data-theme=glacier]{--accent:#67e8f9;--accent-2:#bfdbfe;--accent-soft:color-mix(in srgb,#67e8f9 18%,transparent);--accent-strong:#0891b2}
-[data-theme=ruby]{--accent:#be123c;--accent-2:#fb7185;--accent-soft:color-mix(in srgb,#be123c 17%,transparent);--accent-strong:#9f1239}
-[data-theme=blush]{--accent:#f472b6;--accent-2:#fecdd3;--accent-soft:color-mix(in srgb,#f472b6 17%,transparent);--accent-strong:#db2777}
-[data-theme=fuchsia]{--accent:#d946ef;--accent-2:#fb7185;--accent-soft:color-mix(in srgb,#d946ef 17%,transparent);--accent-strong:#a21caf}
-[data-theme=amber]{--accent:#f59e0b;--accent-2:#fcd34d;--accent-soft:color-mix(in srgb,#f59e0b 17%,transparent);--accent-strong:#b45309}
-[data-theme=inferno]{--accent:#ea580c;--accent-2:#dc2626;--accent-soft:color-mix(in srgb,#ea580c 17%,transparent);--accent-strong:#c2410c}
-[data-theme=citrus]{--accent:#ca8a04;--accent-2:#bef264;--accent-soft:color-mix(in srgb,#ca8a04 17%,transparent);--accent-strong:#854d0e}
+[data-theme=champagne]{--accent:#e8c98b;--accent-2:#fff7df;--accent-soft:color-mix(in srgb,#d8bd83 17%,transparent);--accent-strong:#9f8147}
+[data-theme=rosegold]{--accent:#bd6474;--accent-2:#f6b5a6;--accent-soft:color-mix(in srgb,#c98278 17%,transparent);--accent-strong:#a65350}
+[data-theme=titanium]{--accent:#7f91a8;--accent-2:#dbe5ef;--accent-soft:color-mix(in srgb,#a8b4c2 18%,transparent);--accent-strong:#64748b}
+[data-theme=jade]{--accent:#008f9c;--accent-2:#8de2d0;--accent-soft:color-mix(in srgb,#0f9f78 17%,transparent);--accent-strong:#047857}
+[data-theme=toxic]{--accent:#b6f000;--accent-2:#ecff46;--accent-soft:color-mix(in srgb,#a3e635 18%,transparent);--accent-strong:#4d7c0f}
+[data-theme=ultraviolet]{--accent:#4c1d95;--accent-2:#ec38bc;--accent-soft:color-mix(in srgb,#7c3aed 17%,transparent);--accent-strong:#6d28d9}
+[data-theme=lavender]{--accent:#b5a1ff;--accent-2:#f6c8f3;--accent-soft:color-mix(in srgb,#a78bfa 17%,transparent);--accent-strong:#7c3aed}
+[data-theme=sapphire]{--accent:#1539c7;--accent-2:#72a8ff;--accent-soft:color-mix(in srgb,#2563eb 17%,transparent);--accent-strong:#1d4ed8}
+[data-theme=glacier]{--accent:#42d9e8;--accent-2:#f0fdff;--accent-soft:color-mix(in srgb,#67e8f9 18%,transparent);--accent-strong:#0891b2}
+[data-theme=ruby]{--accent:#780b32;--accent-2:#e83e70;--accent-soft:color-mix(in srgb,#be123c 17%,transparent);--accent-strong:#9f1239}
+[data-theme=blush]{--accent:#f28cae;--accent-2:#ffe7ed;--accent-soft:color-mix(in srgb,#f472b6 17%,transparent);--accent-strong:#db2777}
+[data-theme=fuchsia]{--accent:#b517c9;--accent-2:#ff4bd8;--accent-soft:color-mix(in srgb,#d946ef 17%,transparent);--accent-strong:#a21caf}
+[data-theme=amber]{--accent:#a65d00;--accent-2:#ffd166;--accent-soft:color-mix(in srgb,#f59e0b 17%,transparent);--accent-strong:#b45309}
+[data-theme=inferno]{--accent:#d71920;--accent-2:#ff8c42;--accent-soft:color-mix(in srgb,#ea580c 17%,transparent);--accent-strong:#c2410c}
+[data-theme=citrus]{--accent:#78a800;--accent-2:#e5ff39;--accent-soft:color-mix(in srgb,#ca8a04 17%,transparent);--accent-strong:#854d0e}
 
 
 /* Complete 31-theme palette system: every preset has its own accent pair and contrast tone. */
@@ -2972,10 +2972,10 @@ html[data-device="tablet"] .settings-shortcuts {
 [data-theme=amber]{--accent:#b45309;--accent-2:#fcd34d;--accent-soft:color-mix(in srgb,#b45309 19%,transparent);--accent-strong:#78350f;--theme-glow:color-mix(in srgb,#fcd34d 32%,transparent)}
 [data-theme=inferno]{--accent:#dc2626;--accent-2:#f97316;--accent-soft:color-mix(in srgb,#dc2626 19%,transparent);--accent-strong:#7f1d1d;--theme-glow:color-mix(in srgb,#f97316 32%,transparent)}
 [data-theme=citrus]{--accent:#65a30d;--accent-2:#facc15;--accent-soft:color-mix(in srgb,#65a30d 19%,transparent);--accent-strong:#365314;--theme-glow:color-mix(in srgb,#facc15 32%,transparent)}
-[data-theme=monsoon]{--accent:#0f766e;--accent-2:#5eead4;--accent-soft:color-mix(in srgb,#0f766e 19%,transparent);--accent-strong:#134e4a;--theme-glow:color-mix(in srgb,#5eead4 32%,transparent)}
-[data-theme=copperhead]{--accent:#b45309;--accent-2:#67a6a0;--accent-soft:color-mix(in srgb,#b45309 19%,transparent);--accent-strong:#713f12;--theme-glow:color-mix(in srgb,#67a6a0 32%,transparent)}
-[data-theme=pearl]{--accent:#94a3b8;--accent-2:#f5d0fe;--accent-soft:color-mix(in srgb,#94a3b8 19%,transparent);--accent-strong:#475569;--theme-glow:color-mix(in srgb,#f5d0fe 32%,transparent)}
-[data-theme=circuit]{--accent:#84cc16;--accent-2:#38bdf8;--accent-soft:color-mix(in srgb,#84cc16 19%,transparent);--accent-strong:#3f6212;--theme-glow:color-mix(in srgb,#38bdf8 32%,transparent)}
+[data-theme=monsoon]{--accent:#075e70;--accent-2:#6fe7dc;--accent-soft:color-mix(in srgb,#0f766e 19%,transparent);--accent-strong:#134e4a;--theme-glow:color-mix(in srgb,#5eead4 32%,transparent)}
+[data-theme=copperhead]{--accent:#9b4b16;--accent-2:#65b7a6;--accent-soft:color-mix(in srgb,#b45309 19%,transparent);--accent-strong:#713f12;--theme-glow:color-mix(in srgb,#67a6a0 32%,transparent)}
+[data-theme=pearl]{--accent:#8295a8;--accent-2:#f7e8ff;--accent-soft:color-mix(in srgb,#94a3b8 19%,transparent);--accent-strong:#475569;--theme-glow:color-mix(in srgb,#f5d0fe 32%,transparent)}
+[data-theme=circuit]{--accent:#57a600;--accent-2:#25c8ff;--accent-soft:color-mix(in srgb,#84cc16 19%,transparent);--accent-strong:#3f6212;--theme-glow:color-mix(in srgb,#38bdf8 32%,transparent)}
 
 /* Appearance shortcut and independent two-colour gradient controls */
 .sidebar-appearance-shortcut{flex:none;margin:0 0 7px;border:1px solid var(--border);background:var(--panel);font-size:.8rem;font-weight:700}
@@ -3576,3 +3576,57 @@ html[data-scheme="light"] {
     max-width: none !important;
   }
 }
+
+
+.composer-attach-wrap{position:relative;display:flex;align-items:center;flex:none;z-index:30}
+#chat #attach{flex:none}
+.attach-menu{position:absolute;left:0;bottom:calc(100% + 12px);width:min(250px,calc(100vw - 36px));padding:7px;border:1px solid var(--border-strong);border-radius:16px;background:color-mix(in srgb,var(--panel) 82%,transparent);-webkit-backdrop-filter:blur(28px) saturate(1.7);backdrop-filter:blur(28px) saturate(1.7);box-shadow:0 18px 55px #0004;display:flex;flex-direction:column;gap:5px}
+.attach-menu[hidden]{display:none!important}
+.attach-menu button{display:flex;align-items:center;gap:11px;width:100%;padding:11px;border:0;border-radius:11px;background:transparent;color:var(--text);text-align:left;cursor:pointer}
+.attach-menu button:hover{background:var(--accent-soft)}
+.attach-menu button>span:first-child{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:var(--accent-soft);color:var(--accent);font-size:1.1rem}
+.attach-menu button>span:last-child{display:flex;flex-direction:column;gap:2px}
+.attach-menu strong{font-size:.8rem}.attach-menu small{font-size:.68rem;color:var(--text-dim)}
+#libraryModal>.library-box{width:min(720px,calc(100vw - 32px))!important;max-width:720px!important;padding:22px!important}
+#libraryModal .library-toolbar{gap:12px;margin:18px 0 16px;align-items:center}
+#libraryModal .library-toolbar input{min-width:0;min-height:44px;padding:12px 14px}
+#libraryModal .library-toolbar span{line-height:1.45;flex:1 1 100%;padding:0 2px}
+#libraryModal .library-grid{gap:16px;padding:4px 3px 14px;align-content:start}
+#libraryModal .library-item{gap:10px;padding:13px;border-radius:17px}
+#libraryModal .library-item-preview{height:124px;margin-bottom:2px}
+#libraryModal .library-item-name{line-height:1.45;min-height:2.5em}
+#libraryModal .library-item-meta{line-height:1.4}
+#libraryModal .library-item-actions{gap:9px;padding-top:5px}
+#libraryModal .library-item-actions button{min-height:36px;padding:8px 9px}
+#settingsModal #settingsContentInline #vipContent,
+#settingsModal #settingsContentInline #vipContent #vipLock,
+#settingsModal #settingsContentInline #vipContent #vipUnlocked{display:flex;flex-direction:column;gap:18px;min-width:0}
+#settingsModal #settingsContentInline #vipContent .vip-hero,
+#settingsModal #settingsContentInline #vipContent .vip-lock,
+#settingsModal #settingsContentInline #vipContent .vip-stats,
+#settingsModal #settingsContentInline #vipContent .vip-grid,
+#settingsModal #settingsContentInline #vipContent .vip-card{margin:0;min-width:0}
+#settingsModal #settingsContentInline #vipContent .vip-lock,
+#settingsModal #settingsContentInline #vipContent .vip-card{padding:17px;border-radius:15px}
+#settingsModal #settingsContentInline #vipContent .vip-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#settingsModal #settingsContentInline #vipContent .vip-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#settingsModal #settingsContentInline #vipContent .vip-stat{padding:13px;border-radius:13px;min-width:0}
+#settingsModal #settingsContentInline #vipContent form{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+#settingsModal #settingsContentInline #vipContent form input{flex:1 1 190px;min-width:0}
+@media(max-width:620px){#settingsModal #settingsContentInline #vipContent .vip-grid{grid-template-columns:1fr}#libraryModal>.library-box{padding:16px!important}}
+.gradient-picker-trigger{margin-top:8px}
+.gradient-picker-trigger .gradient-trigger-disc{background:conic-gradient(#f43f5e,#f59e0b,#84cc16,#06b6d4,#6366f1,#d946ef,#f43f5e)}
+.gradient-picker-panel{width:min(590px,calc(100vw - 28px));max-width:590px;max-height:min(88dvh,820px);padding:18px;z-index:150!important}
+.gradient-picker-panel:not([hidden]){display:flex}
+.gradient-picker-panel .gradient-editor{display:flex;max-height:calc(88dvh - 90px);overflow:auto;border:0;background:transparent;padding:4px 0 0}
+.gradient-picker-panel .gradient-color-pair{gap:14px}
+.gradient-picker-panel .gradient-color-control{padding:14px}
+.gradient-picker-panel .gradient-wheel{width:124px;height:124px}
+.gradient-picker-panel .gradient-wheel::after{inset:45px}
+html.liquid-glass .side,html.liquid-glass .topbar,html.liquid-glass #chat,html.liquid-glass .settings-box,html.liquid-glass .vip-box,html.liquid-glass .image-box,html.liquid-glass .memory-box,html.liquid-glass .library-box,html.liquid-glass .context-box,html.liquid-glass .install-box{background:color-mix(in srgb,var(--panel) 30%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.9) brightness(1.08)!important;backdrop-filter:blur(34px) saturate(1.9) brightness(1.08)!important;border-color:color-mix(in srgb,var(--text) 22%,transparent)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(255,255,255,.06),0 24px 70px rgba(0,0,0,.24),0 0 0 1px rgba(255,255,255,.055)!important}
+html.liquid-glass .settings-sidebar,html.liquid-glass .settings-dashboard,html.liquid-glass .library-item,html.liquid-glass .connector-card,html.liquid-glass .connector-intro,html.liquid-glass .vip-card,html.liquid-glass .vip-lock,html.liquid-glass .vip-stat{background:color-mix(in srgb,var(--panel) 24%,transparent)!important;-webkit-backdrop-filter:blur(24px) saturate(1.8)!important;backdrop-filter:blur(24px) saturate(1.8)!important}
+html.liquid-glass .settings-category,html.liquid-glass .settings-tile,html.liquid-glass .accent-picker-trigger,html.liquid-glass .attach-menu,html.liquid-glass .library-item-preview{background:color-mix(in srgb,var(--panel) 20%,transparent)!important;-webkit-backdrop-filter:blur(22px) saturate(1.7)!important;backdrop-filter:blur(22px) saturate(1.7)!important}
+html.liquid-glass #settingsModal .settings-content-inline .connector-card,html.liquid-glass #settingsModal .settings-content-inline .connector-intro,html.liquid-glass #settingsModal .settings-content-inline .vip-card{background:color-mix(in srgb,var(--panel) 22%,transparent)!important;background-image:none!important}
+html.liquid-glass .settings-header,html.liquid-glass .top,html.liquid-glass .settings-detail-header{background:color-mix(in srgb,var(--panel) 18%,transparent)!important}
+html.liquid-glass button,html.liquid-glass input,html.liquid-glass textarea,html.liquid-glass select{-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
+@media(max-width:600px){#libraryModal .library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#libraryModal .library-item{padding:10px}}

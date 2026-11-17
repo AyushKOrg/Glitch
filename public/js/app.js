@@ -208,7 +208,7 @@
   }
   async function hydrateCloudAccount() {
     if(!user) return false;
-    const result=await api('/api/account-data');
+    const result=await api('/api/account-data',{signal:AbortSignal.timeout(8000)});
     if(!result.ok) throw new Error(result.data.error||'Could not load your cloud account data.');
     const cloud=result.data.data;
     cloudHydrating=true;
@@ -1031,9 +1031,11 @@
       quotaDone = false; pending = null;
       // Paint a usable local workspace immediately; cloud hydration must never hold the UI hostage.
       loadHistory({persist:false}); render(); renderHistoryList();
+      // These independent profile requests run alongside cloud hydration, never behind it.
+      loadMemories().catch(e => console.warn('[Glitch memory init]',e));
       (async()=>{
         try { await hydrateCloudAccount(); }
-        catch(error) { showToast('Cloud data could not load: '+error.message); }
+        catch(error) { console.warn('[Glitch cloud hydration]',error); }
         // Re-apply values after cloud hydration; the initial page boot may have read
         // stale device-local preferences before the account snapshot arrived.
         paintProfile();
@@ -1050,7 +1052,6 @@
           else if(savedTheme){document.documentElement.dataset.theme=savedTheme;document.documentElement.style.removeProperty('--accent');}
         } catch {}
         loadHistory(); render(); renderHistoryList();
-        loadMemories().catch(e => showToast('Memory could not load: ' + e.message));
       })();
     }
     refreshVip().catch(() => setVipState(false));

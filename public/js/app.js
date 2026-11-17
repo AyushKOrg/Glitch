@@ -1728,13 +1728,39 @@
     closeVipThemeDropdown(true);
   }
   // Explicitly varied palette system: "solid" presets stay single-hue; "gradient" presets blend two distinct hues.
+  // Thirty-one distinct hue identities. The second colour is only used for gradient presets.
   const vipThemePaletteColors={
-    gold:{colors:['#e2a900','#fff0a6'],kind:'solid'},obsidian:{colors:['#d6a84b','#7554c8'],kind:'gradient'},champagne:{colors:['#c6a66b','#fff4d0'],kind:'solid'},rosegold:{colors:['#bd6474','#f6b5a6'],kind:'gradient'},titanium:{colors:['#8293a7','#dce6f0'],kind:'solid'},carbon:{colors:['#202b3b','#9aabc0'],kind:'gradient'},copperhead:{colors:['#a64b16','#56a9a0'],kind:'gradient'},pearl:{colors:['#d9e1eb','#a78bfa'],kind:'gradient'},
-    aurora:{colors:['#00b894','#55e6c1'],kind:'gradient'},emerald:{colors:['#087f5b','#b7e36b'],kind:'solid'},jade:{colors:['#087f8c','#9be7cf'],kind:'solid'},toxic:{colors:['#a3e635','#eaff35'],kind:'gradient'},monsoon:{colors:['#075e70','#6fe7dc'],kind:'gradient'},circuit:{colors:['#57a600','#25c8ff'],kind:'gradient'},
-    cosmic:{colors:['#7c3aed','#f472b6'],kind:'gradient'},amethyst:{colors:['#7e22ce','#c4b5fd'],kind:'solid'},ultraviolet:{colors:['#35106e','#e879f9'],kind:'gradient'},lavender:{colors:['#a78bfa','#fbcfe8'],kind:'solid'},
-    arctic:{colors:['#0e7490','#a5b4fc'],kind:'gradient'},ocean:{colors:['#075985','#2dd4bf'],kind:'gradient'},sapphire:{colors:['#1d4ed8','#93c5fd'],kind:'solid'},glacier:{colors:['#22d3ee','#ecfeff'],kind:'gradient'},
-    crimson:{colors:['#991b1b','#fb7185'],kind:'solid'},ruby:{colors:['#780b32','#e83e70'],kind:'gradient'},sakura:{colors:['#db2777','#fbcfe8'],kind:'gradient'},blush:{colors:['#f28cae','#ffe7ed'],kind:'solid'},fuchsia:{colors:['#a21caf','#ff4bd8'],kind:'solid'},
-    solar:{colors:['#ea580c','#fde047'],kind:'gradient'},amber:{colors:['#a65d00','#ffd166'],kind:'solid'},inferno:{colors:['#b91c1c','#ff8c42'],kind:'gradient'},citrus:{colors:['#4d7c0f','#d9ff36'],kind:'gradient'}
+    gold:{colors:['#e0aa00','#fff0a8'],kind:'solid'},
+    obsidian:{colors:['#30384f','#a78bfa'],kind:'gradient'},
+    champagne:{colors:['#d6b887','#fff2d7'],kind:'solid'},
+    rosegold:{colors:['#c45b79','#ffd0d9'],kind:'gradient'},
+    titanium:{colors:['#718096','#dbe4ee'],kind:'solid'},
+    carbon:{colors:['#222831','#ff6b35'],kind:'gradient'},
+    copperhead:{colors:['#b45309','#14b8a6'],kind:'gradient'},
+    pearl:{colors:['#e5e7eb','#a3b4c8'],kind:'solid'},
+    aurora:{colors:['#00a878','#72f1b8'],kind:'gradient'},
+    emerald:{colors:['#047857','#6ee7b7'],kind:'solid'},
+    jade:{colors:['#0f766e','#5eead4'],kind:'solid'},
+    toxic:{colors:['#84cc16','#eaff00'],kind:'gradient'},
+    monsoon:{colors:['#0369a1','#67e8f9'],kind:'gradient'},
+    circuit:{colors:['#65a30d','#22d3ee'],kind:'gradient'},
+    cosmic:{colors:['#6d28d9','#f0abfc'],kind:'gradient'},
+    amethyst:{colors:['#9333ea','#d8b4fe'],kind:'solid'},
+    ultraviolet:{colors:['#4c1d95','#ec4899'],kind:'gradient'},
+    lavender:{colors:['#8b5cf6','#f5d0fe'],kind:'solid'},
+    arctic:{colors:['#0891b2','#bae6fd'],kind:'gradient'},
+    ocean:{colors:['#1e40af','#06b6d4'],kind:'gradient'},
+    sapphire:{colors:['#1d4ed8','#93c5fd'],kind:'solid'},
+    glacier:{colors:['#06b6d4','#e0f2fe'],kind:'gradient'},
+    crimson:{colors:['#b91c1c','#fca5a5'],kind:'solid'},
+    ruby:{colors:['#9f1239','#fb7185'],kind:'gradient'},
+    sakura:{colors:['#db2777','#fbcfe8'],kind:'gradient'},
+    blush:{colors:['#f472b6','#fce7f3'],kind:'solid'},
+    fuchsia:{colors:['#c026d3','#f0abfc'],kind:'solid'},
+    solar:{colors:['#ea580c','#fde047'],kind:'gradient'},
+    amber:{colors:['#b45309','#fbbf24'],kind:'solid'},
+    inferno:{colors:['#dc2626','#fb923c'],kind:'gradient'},
+    citrus:{colors:['#65a30d','#bef264'],kind:'gradient'}
   };
   [...vipThemeSelect.children].forEach(group=>{
     if(group.tagName==='OPTGROUP'){
@@ -1806,11 +1832,13 @@
   function applyGlassStrength(value,persist=true) {
     const amount=Math.max(0,Math.min(100,Number(value)||0));
     // 0 = clear, low-opacity glass; 100 = strongly tinted glass with heavier blur.
-    const blur=5+amount*.34, tint=5+amount*.62, edge=.24+amount*.0058;
+    const blur=2+amount*.38, tint=2+amount*.78, edge=.18+amount*.0065;
     root.style.setProperty('--glass-blur',blur.toFixed(1)+'px');
     root.style.setProperty('--glass-tint',tint.toFixed(1)+'%');
     root.style.setProperty('--glass-edge',edge.toFixed(2));
     root.style.setProperty('--glass-clear',((100-amount)/100).toFixed(2));
+    root.style.setProperty('--glass-strength',String(Math.round(amount)));
+    root.dataset.glassStrength=String(Math.round(amount));
     glassStrength.value=String(Math.round(amount));
     glassStrength.setAttribute('aria-valuetext',amount<20?'More Clear':amount>80?'More Tinted with more blur':'Balanced translucency');
     $('glassStrengthValue').textContent=amount<20?'More Clear':amount>80?'More Tinted':'Balanced';
@@ -1829,7 +1857,7 @@
   try{savedLiquidGlass=localStorage.getItem('glitch_liquid_glass')==='on';savedGlassStrength=Number(localStorage.getItem('glitch_glass_strength')||45);}catch{}
   applyGlassStrength(savedGlassStrength,false);
   applyLiquidGlass(savedLiquidGlass,false);
-  glassStrength.addEventListener('input',()=>applyGlassStrength(glassStrength.value));
+  ['input','change'].forEach(type=>glassStrength.addEventListener(type,()=>applyGlassStrength(glassStrength.value)));
   liquidGlassToggle.addEventListener('click',()=>{playSfx('toggle');applyLiquidGlass(liquidGlassToggle.getAttribute('aria-pressed')!=='true');});
   const systemScheme = matchMedia('(prefers-color-scheme: dark)');
   systemScheme.addEventListener?.('change', () => { if (schemePreference.value === 'system') applySchemePreference('system', false); });

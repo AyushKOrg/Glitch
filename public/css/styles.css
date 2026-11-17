@@ -3273,3 +3273,17 @@ body.empty .suggest button:nth-child(4) { animation-delay: .21s; }
 .connector-brand{width:40px;height:40px;display:grid;place-items:center;flex:none;border-radius:12px;font-weight:850;background:var(--panel-alt);color:var(--text)}.google-brand{color:#4285f4}
 .connector-info{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}.connector-info strong{font-size:.84rem;color:var(--text)}.connector-info small,.connector-info span{font-size:.7rem;color:var(--text-dim)}.connector-muted{opacity:.65}
 @media(max-width:560px){.connector-card{flex-wrap:wrap}.connector-card .settings-button{margin-left:53px}}
+
+/* Structured Gmail results in chat */
+.gmail-result{margin:8px 0 4px;border:1px solid var(--border);border-radius:15px;overflow:hidden;background:var(--panel)}
+.gmail-result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border-bottom:1px solid var(--border)}
+.gmail-result-head strong{font-size:.96rem;color:var(--text)}
+.gmail-result-head span,.gmail-mail-date{font-size:.76rem;color:var(--text-dim)}
+.gmail-mail{padding:13px 15px;border-bottom:1px solid var(--border);min-width:0}
+.gmail-mail:last-child{border-bottom:0}
+.gmail-mail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.gmail-mail-subject{font-size:.9rem;line-height:1.4;color:var(--text);overflow-wrap:anywhere}
+.gmail-mail-date{flex:0 0 auto;text-align:right}
+.gmail-mail-sender{font-size:.8rem;color:var(--text-dim);margin-top:4px;overflow-wrap:anywhere}
+.gmail-mail-preview{font-size:.84rem;line-height:1.5;margin:8px 0 0;color:var(--text);opacity:.82;overflow-wrap:anywhere}
+@media(max-width:520px){.gmail-mail-top{display:block}.gmail-mail-date{display:block;text-align:left;margin-top:4px}}

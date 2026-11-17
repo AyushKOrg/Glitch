@@ -298,7 +298,7 @@
   });
 
   // ---- safe markdown: built with DOM nodes, so model text is never parsed as HTML ----------------
-  const { copyText, renderBotContent } = window.GlitchMessageRenderer.create({ downloadLibraryItem });
+  const { copyText, renderBotContent } = window.GlitchMessageRenderer.create({ downloadLibraryItem: (...args) => downloadLibraryItem(...args) });
 
   const Voice = window.GlitchVoice.init({ $, input, getBusy: () => busy, getUser: () => user, showToast });
 

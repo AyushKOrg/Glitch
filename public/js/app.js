@@ -668,7 +668,9 @@
     vipPersonality=['default','witty','mentor','coder','chill'].includes(p.personality)?p.personality:'default';
     vipSoundPack=['classic','soft','arcade'].includes(p.sound)?p.sound:'classic';
     document.documentElement.dataset.theme=theme;
-    try{localStorage.removeItem('glitch_theme');localStorage.removeItem('glitch_accent')}catch{}
+    const themePalette=vipThemePaletteColors[theme]||{kind:'solid'};
+    document.documentElement.dataset.themeStyle=themePalette.kind;
+    try{localStorage.removeItem('glitch_theme');localStorage.removeItem('glitch_accent');localStorage.setItem('glitch_gradient',themePalette.kind==='gradient'?'on':'off')}catch{}
     if(gradientState)applyGradientSettings(false);
     document.body.classList.toggle('vip-stars',effect==='stars');
     document.body.classList.toggle('vip-neon',effect==='neon');
@@ -734,7 +736,7 @@
   $('vipReset').addEventListener('click',()=>{
     if(!vipActive)return;
     try{localStorage.removeItem(vipPrefsKey())}catch{}
-    $('vipTheme').value='gold';syncVipThemeDropdown();$('vipEffect').value='stars';$('vipPersonality').value='default';$('vipSound').value='classic';$('vipAvatar').value='';
+    $('vipTheme').value='gold';syncVipThemeDropdown();root.dataset.themeStyle='solid';try{localStorage.setItem('glitch_gradient','off')}catch{}applyGradientSettings(false);$('vipEffect').value='stars';$('vipPersonality').value='default';$('vipSound').value='classic';$('vipAvatar').value='';
     applyVipPrefs(true);
   });
   function runVipCommand(raw){
@@ -1658,6 +1660,7 @@
   }
   function applyGradientSettings(persist=true){
     let enabled=true;try{enabled=localStorage.getItem('glitch_gradient')!=='off'}catch{}
+    if(vipActive&&root.dataset.themeStyle==='solid')enabled=false;
     root.dataset.gradient=enabled?'on':'off';
     $('gradientToggle').setAttribute('aria-pressed',String(enabled));
     $('gradientToggleLabel').textContent='Gradient: '+(enabled?'on':'off');
@@ -1716,14 +1719,14 @@
     syncVipThemeDropdown();
     closeVipThemeDropdown(true);
   }
+  // Explicitly varied palette system: "solid" presets stay single-hue; "gradient" presets blend two distinct hues.
   const vipThemePaletteColors={
-    gold:['#f2b705','#fff0a6'],obsidian:['#b88a24','#7457c8'],champagne:['#e8c98b','#fff7df'],rosegold:['#bd6474','#f6b5a6'],titanium:['#7f91a8','#dbe5ef'],carbon:['#c0c9d6','#38485e'],
-    aurora:['#00a878','#38e6c7'],emerald:['#006b46','#b5f36b'],jade:['#008f9c','#8de2d0'],toxic:['#b6f000','#ecff46'],
-    cosmic:['#7138d4','#f05a9d'],amethyst:['#9d4edd','#d9b3ff'],ultraviolet:['#4c1d95','#ec38bc'],lavender:['#b5a1ff','#f6c8f3'],
-    arctic:['#18a7e0','#b8d8ff'],ocean:['#005b96','#00c2a8'],sapphire:['#1539c7','#72a8ff'],glacier:['#42d9e8','#f0fdff'],
-    crimson:['#b20d35','#ff526f'],ruby:['#780b32','#e83e70'],sakura:['#ed4c9b','#ffc1dc'],blush:['#f28cae','#ffe7ed'],fuchsia:['#b517c9','#ff4bd8'],
-    solar:['#ff6b00','#ffe033'],amber:['#a65d00','#ffd166'],inferno:['#d71920','#ff8c42'],citrus:['#78a800','#e5ff39'],
-    monsoon:['#075e70','#6fe7dc'],copperhead:['#9b4b16','#65b7a6'],pearl:['#8295a8','#f7e8ff'],circuit:['#57a600','#25c8ff']
+    gold:{colors:['#e2a900','#fff0a6'],kind:'solid'},obsidian:{colors:['#d6a84b','#7554c8'],kind:'gradient'},champagne:{colors:['#c6a66b','#fff4d0'],kind:'solid'},rosegold:{colors:['#bd6474','#f6b5a6'],kind:'gradient'},titanium:{colors:['#8293a7','#dce6f0'],kind:'solid'},carbon:{colors:['#202b3b','#9aabc0'],kind:'gradient'},copperhead:{colors:['#a64b16','#56a9a0'],kind:'gradient'},pearl:{colors:['#d9e1eb','#a78bfa'],kind:'gradient'},
+    aurora:{colors:['#00b894','#55e6c1'],kind:'gradient'},emerald:{colors:['#087f5b','#b7e36b'],kind:'solid'},jade:{colors:['#087f8c','#9be7cf'],kind:'solid'},toxic:{colors:['#a3e635','#eaff35'],kind:'gradient'},monsoon:{colors:['#075e70','#6fe7dc'],kind:'gradient'},circuit:{colors:['#57a600','#25c8ff'],kind:'gradient'},
+    cosmic:{colors:['#7c3aed','#f472b6'],kind:'gradient'},amethyst:{colors:['#7e22ce','#c4b5fd'],kind:'solid'},ultraviolet:{colors:['#35106e','#e879f9'],kind:'gradient'},lavender:{colors:['#a78bfa','#fbcfe8'],kind:'solid'},
+    arctic:{colors:['#0e7490','#a5b4fc'],kind:'gradient'},ocean:{colors:['#075985','#2dd4bf'],kind:'gradient'},sapphire:{colors:['#1d4ed8','#93c5fd'],kind:'solid'},glacier:{colors:['#22d3ee','#ecfeff'],kind:'gradient'},
+    crimson:{colors:['#991b1b','#fb7185'],kind:'solid'},ruby:{colors:['#780b32','#e83e70'],kind:'gradient'},sakura:{colors:['#db2777','#fbcfe8'],kind:'gradient'},blush:{colors:['#f28cae','#ffe7ed'],kind:'solid'},fuchsia:{colors:['#a21caf','#ff4bd8'],kind:'solid'},
+    solar:{colors:['#ea580c','#fde047'],kind:'gradient'},amber:{colors:['#a65d00','#ffd166'],kind:'solid'},inferno:{colors:['#b91c1c','#ff8c42'],kind:'gradient'},citrus:{colors:['#4d7c0f','#d9ff36'],kind:'gradient'}
   };
   [...vipThemeSelect.children].forEach(group=>{
     if(group.tagName==='OPTGROUP'){
@@ -1737,7 +1740,7 @@
     button.innerHTML='<span class="accent-dropdown-swatch" aria-hidden="true"></span><span></span><span class="option-check" aria-hidden="true"></span>';
     const themeColors=vipThemePaletteColors[option.value];
     const swatch=button.querySelector('.accent-dropdown-swatch');
-    if(themeColors)swatch.style.setProperty('--theme-swatch','linear-gradient(135deg,'+themeColors[0]+','+themeColors[1]+')');
+    if(themeColors){swatch.style.setProperty('--theme-swatch',themeColors.kind==='solid'?themeColors.colors[0]:'linear-gradient(135deg,'+themeColors.colors[0]+' 0%, '+themeColors.colors[1]+' 100%)');button.dataset.paletteKind=themeColors.kind;}
     button.children[1].textContent=option.textContent;
     button.addEventListener('click',()=>chooseVipTheme(option.value));
     button.addEventListener('keydown',event=>{
@@ -1764,14 +1767,18 @@
 
   // Choosing a VIP preset also loads that preset's own two palette colours into the gradient editor.
   $('vipTheme').addEventListener('change',()=>{
-    root.style.removeProperty('--accent');root.style.removeProperty('--accent-2');
+    root.style.removeProperty('--accent');root.style.removeProperty('--accent-2');root.style.removeProperty('--accent-soft');root.style.removeProperty('--accent-strong');
     root.dataset.theme=$('vipTheme').value;
+    const themePalette=vipThemePaletteColors[$('vipTheme').value]||{colors:['#e2a900','#fff0a6'],kind:'solid'};
+    root.dataset.themeStyle=themePalette.kind;
+    // A preset's own style is authoritative: solid presets cannot be silently overridden by the global gradient.
+    try{localStorage.setItem('glitch_gradient',themePalette.kind==='gradient'?'on':'off')}catch{}
     const palette=getComputedStyle(root);
-    const first=validHex(palette.getPropertyValue('--accent').trim())||'#d6a12b';
-    const second=validHex(palette.getPropertyValue('--accent-2').trim())||first;
+    const first=themePalette.colors[0],second=themePalette.colors[1];
     Object.assign(gradientState.a,gradientHsv(first),{hex:first});
     Object.assign(gradientState.b,gradientHsv(second),{hex:second});
-    renderGradientColor('a',true);renderGradientColor('b',true);
+    renderGradientColor('a',false);renderGradientColor('b',false);
+    applyGradientSettings(false);
     saveVipPrefs();
   });
   applyGradientSettings(false);

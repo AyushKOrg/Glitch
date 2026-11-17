@@ -104,14 +104,14 @@ function formatLatestGmailResult(raw) {
     : [];
   if (!messages.length) return 'I checked your connected Gmail, but the API returned no messages.';
   const header = (m, name) => (m.headers || m.payload?.headers || []).find((h) => String(h.name || '').toLowerCase() === name.toLowerCase())?.value || '';
-  const lines = messages.slice(0, 10).map((m, i) => {
-    const from = header(m, 'From') || 'Unknown sender';
-    const subject = header(m, 'Subject') || '(no subject)';
-    const date = header(m, 'Date') || (m.internalDate ? new Date(Number(m.internalDate)).toISOString() : 'Date unavailable');
-    const snippet = String(m.snippet || '').replace(/\s+/g, ' ').trim();
-    return (i + 1) + '. **' + subject + '**\n   - From: ' + from + '\n   - Date: ' + date + (snippet ? '\n   - Preview: ' + snippet.slice(0, 320) : '');
-  });
-  return 'I checked your connected Gmail. Here are the ' + messages.length + ' newest messages returned by Gmail (newest first):\n\n' + lines.join('\n\n');
+  const items = messages.slice(0, 10).map((m) => ({
+    from: header(m, 'From') || 'Unknown sender',
+    subject: header(m, 'Subject') || '(no subject)',
+    date: header(m, 'Date') || '',
+    timestamp: Number(m.internalDate) || 0,
+    snippet: String(m.snippet || '').replace(/\s+/g, ' ').trim().slice(0, 320)
+  }));
+  return '[[GLITCH_GMAIL_RESULT:' + JSON.stringify({ count: Number(data.count) || messages.length, messages: items }) + ']]';
 }
 
 function clean(raw) {

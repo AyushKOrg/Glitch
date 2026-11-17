@@ -3,8 +3,6 @@ const MAX_STEPS = 6;
 const DEADLINE_MS = 48000;
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-ultra-550b-a55b:free';
-const { searchWeb } = require('./_search');
-const { runGoogleTool } = require('../lib/connectors');
 
 const PERSONA = `You are Glitch: sharp, funny, confident, practical, and a little chaotic. Only discuss your creators when the user directly asks who created, built, or developed Glitch, or when that information is genuinely necessary to answer their question. In that case, explain briefly and naturally that Aayush is Glitch's original creator and Aarav co-developed the current version. Otherwise, do not bring up Aayush, Aarav, your creator, or development credits at all—not in greetings, introductions, routine answers, jokes, or sign-offs. Never repeat creator credits just to fill space. Do not invent additional contributors, dates, or roles, and do not claim either person did work beyond those stated roles. Your signature vibe is playful roast-comedy: witty comebacks, dry sarcasm, cheeky teasing, and the occasional savage one-liner. Do not sound like a bland corporate helpdesk. When the user's tone is casual, feel free to roast their harmless choices, goofy phrasing, questionable logic, overconfidence, or code in a funny way—then still give genuinely useful help. Keep roasts clever and proportionate, not relentlessly hostile. Never target protected traits, appearance, body, disability, trauma, family, identity, or personal vulnerabilities; never use slurs, threats, or degrading abuse. Do not roast someone who seems upset, vulnerable, or is discussing health, grief, safety, bullying, or another serious topic: switch immediately to sincere, respectful support. Never let a joke replace the answer. Answer the likely intent first; if a term is unfamiliar, search for it and explain what the evidence says. If search fails, do NOT stop at announcing a technical problem or ask the user to explain a recognizable name/topic. First give the best-effort answer based on your existing knowledge, label what is unverified, and then briefly mention that live verification failed. For a named entity or product, explain the most likely referent and distinguish confirmed facts from rumors; ask a follow-up only if multiple interpretations remain genuinely plausible after that. Talk like a real person, not a manual: use casual slang naturally (bro, ngl, lowkey, cooked, skill issue, bet, no cap) and match the user's own slang and energy. When the user is being lazy, vague, repetitive or sends something obviously dumb, you can act properly annoyed and roast them hard, with mild swearing (damn, hell, crap, ass, bullshit, pissed off) for flavour. Keep it playful and aimed at what they did, never at who they are. Never use slurs of any kind, including shortened, censored or reclaimed versions, and if asked to, refuse that one thing in character and carry on. Keep swearing mild and occasional, not every sentence. Drop the attitude completely for serious topics. Be especially considerate on health, grief, safety, or other serious topics.
 
@@ -17,90 +15,8 @@ const MODE_NOTE = {
   cognition: `Mode: cognition. Think carefully; prefer correctness and depth for reasoning and code. Use web_search whenever external information would help answer accurately, including casual factual questions, unfamiliar names or products, recommendations, comparisons, and verification—not just current-events questions. Use search results and clearly distinguish verified information from uncertainty.\nWhen the user asks you to create, edit, or generate code files, produce complete usable file contents, not just snippets. Put EVERY file in its own fenced code block and include a filename in the opening fence using this exact format: \`\`\`python filename=main.py\n...code...\n\`\`\`. Use the correct language label and a safe, descriptive filename with extension (examples: \`\`\`html filename=index.html\`\`, \`\`\`javascript filename=app.js\`\`, \`\`\`json filename=package.json\`\`). Keep explanations outside the code blocks. For multi-file projects, include every required file and practical setup instructions. The website will display a Download file button for each named code block, so do not omit filenames. Never claim a file was uploaded to a remote server; the download is generated in the user's browser.`,
 };
 
-const TOOLS = [
-  {
-    name: 'web_search',
-    description: 'Search Google for information whenever external facts, context, verification, recommendations, or current details would improve the answer. Returns a concise summary and source URLs.',
-    parameters: {
-      type: 'object',
-      properties: { query: { type: 'string', description: 'What to look up' } },
-      required: ['query'],
-    },
-  },
-
-  {name:'google_drive_search',description:'Search the connected user’s Google Drive files by name (read-only).',parameters:{type:'object',properties:{query:{type:'string'}},required:['query']}},
-  {name:'gmail_search',description:'Search the connected user’s Gmail messages and return sender, subject and snippets (read-only).',parameters:{type:'object',properties:{query:{type:'string'}},required:['query']}},
-  {name:'google_calendar_upcoming',description:'Read upcoming primary Google Calendar events.',parameters:{type:'object',properties:{max_results:{type:'integer'}}}},
-  {name:'google_doc_read',description:'Read a Google Doc by ID.',parameters:{type:'object',properties:{document_id:{type:'string'}},required:['document_id']}},
-  {name:'google_sheet_read',description:'Read a Google Sheets range by spreadsheet ID.',parameters:{type:'object',properties:{spreadsheet_id:{type:'string'},range:{type:'string'}},required:['spreadsheet_id']}},
-  {name:'google_form_read',description:'Read a Google Form structure and questions by form ID (read-only).',parameters:{type:'object',properties:{form_id:{type:'string'}},required:['form_id']}},
-  {name:'google_form_responses',description:'Read recent responses to a Google Form by form ID (read-only; only when the connected account has permission).',parameters:{type:'object',properties:{form_id:{type:'string'},page_size:{type:'integer'}},required:['form_id']}},
-  {name:'google_slides_read',description:'Read slide text from a Google Slides presentation by presentation ID (read-only).',parameters:{type:'object',properties:{presentation_id:{type:'string'}},required:['presentation_id']}},
-
-  {name:'google_drive_download_text',description:'Read text content from a Drive file by ID.',parameters:{type:'object',properties:{file_id:{type:'string'}},required:['file_id']}},
-  {name:'google_drive_upload_text',description:'Create a text file in Drive from supplied content.',parameters:{type:'object',properties:{name:{type:'string'},mime_type:{type:'string'},content:{type:'string'},parent_id:{type:'string'}},required:['name','content']}},
-  {name:'google_drive_trash',description:'Move a Drive file to trash only when the user explicitly asks.',parameters:{type:'object',properties:{file_id:{type:'string'}},required:['file_id']}},
-  {name:'gmail_create_draft',description:'Create a Gmail draft without sending it.',parameters:{type:'object',properties:{to:{type:'string'},subject:{type:'string'},body:{type:'string'}},required:['to','subject','body']}},
-  {name:'google_calendar_delete',description:'Delete a calendar event only when the user explicitly asks.',parameters:{type:'object',properties:{event_id:{type:'string'}},required:['event_id']}},
-  {name:'google_drive_create',description:'Create a Drive file or blank Google Workspace document when explicitly requested.',parameters:{type:'object',properties:{name:{type:'string'},mime_type:{type:'string'},parent_id:{type:'string'}},required:['name'] }},
-  {name:'google_drive_update',description:'Rename a Drive file when explicitly requested.',parameters:{type:'object',properties:{file_id:{type:'string'},name:{type:'string'}},required:['file_id','name']}},
-  {name:'google_doc_create',description:'Create a Google Doc with optional initial text.',parameters:{type:'object',properties:{title:{type:'string'},text:{type:'string'}}}},
-  {name:'google_doc_append',description:'Append text to a Google Doc.',parameters:{type:'object',properties:{document_id:{type:'string'},text:{type:'string'}},required:['document_id','text']}},
-  {name:'google_sheet_update',description:'Write values to a Google Sheets range.',parameters:{type:'object',properties:{spreadsheet_id:{type:'string'},range:{type:'string'},values:{type:'array',items:{type:'array',items:{type:'string'}}}},required:['spreadsheet_id','range','values']}},
-  {name:'google_calendar_create',description:'Create a Google Calendar event.',parameters:{type:'object',properties:{summary:{type:'string'},description:{type:'string'},location:{type:'string'},start:{type:'object'},end:{type:'object'}},required:['summary','start','end']}},
-  {name:'google_calendar_update',description:'Update a Google Calendar event.',parameters:{type:'object',properties:{event_id:{type:'string'},summary:{type:'string'},description:{type:'string'},location:{type:'string'},start:{type:'object'},end:{type:'object'}},required:['event_id']}},
-  {name:'gmail_send',description:'Send email only when directly instructed by the user.',parameters:{type:'object',properties:{to:{type:'string'},subject:{type:'string'},body:{type:'string'}},required:['to','subject','body']}},
-  {name:'google_slides_batch_update',description:'Update a Google Slides presentation using API batch requests.',parameters:{type:'object',properties:{presentation_id:{type:'string'},requests:{type:'array',items:{type:'object',properties:{}}}},required:['presentation_id','requests']}},
-  {name:'google_forms_batch_update',description:'Update a Google Form using API batch requests.',parameters:{type:'object',properties:{form_id:{type:'string'},requests:{type:'array',items:{type:'object',properties:{}}}},required:['form_id','requests']}},
-  {name:'weather_current',description:'Get current conditions and forecast using the free Open-Meteo weather service.',parameters:{type:'object',properties:{location:{type:'string'},days:{type:'integer'}},required:['location']}},
-];
-
-async function weatherCurrent(location, days=3) {
-  const query=String(location||'').trim().slice(0,120);
-  if(!query) return 'A location is required.';
-  const geo=await fetch('https://geocoding-api.open-meteo.com/v1/search?'+new URLSearchParams({name:query,count:'1',language:'en',format:'json'}),{signal:AbortSignal.timeout(10000)});
-  const gd=await geo.json(), place=gd.results&&gd.results[0];
-  if(!place) return 'I could not find that location.';
-  const params=new URLSearchParams({latitude:String(place.latitude),longitude:String(place.longitude),current:'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m',daily:'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max',forecast_days:String(Math.min(7,Math.max(1,Number(days)||3))),timezone:'auto'});
-  const r=await fetch('https://api.open-meteo.com/v1/forecast?'+params,{signal:AbortSignal.timeout(10000)});
-  const d=await r.json();
-  if(!r.ok) return 'The weather service returned an error.';
-  return JSON.stringify({location:[place.name,place.admin1,place.country].filter(Boolean).join(', '),current:d.current,daily:d.daily,timezone:d.timezone});
-}
-
-// ---- tool execution ---------------------------------------------------------
-// ctx.searchCache remembers results for this request, so a failed search is not retried by the model's
-// own tool calls (which previously burned the whole step budget on repeated failures).
-function recentUserContext(ctx) {
-  return (ctx.recentUserMessages || []).slice(-3, -1).map((t) => `- ${String(t).slice(0, 200)}`).join('\n');
-}
-
-async function webSearch(ctx, query) {
-  ctx.searchCache = ctx.searchCache || new Map();
-  const key = String(query).toLowerCase();
-  if (ctx.searchCache.has(key)) return ctx.searchCache.get(key);
-  // If a search already failed in this request, don't try again: tell the model to answer from knowledge.
-  if (ctx.searchFailedText) return ctx.searchFailedText;
-
-  const res = await searchWeb(query, recentUserContext(ctx));
-  const text = res.ok
-    ? res.text
-    : `SEARCH_UNAVAILABLE: ${res.text} Do NOT call web_search again. Give the best-effort answer from existing knowledge, clearly say what cannot be verified live, and do not respond only with an apology or ask the user to explain a recognizable topic.`;
-  if (res.ok) ctx.searchCache.set(key, text);
-  else ctx.searchFailedText = text;
-  return text;
-}
-
-async function runTool(ctx, name, args) {
-  args = args && typeof args === 'object' ? args : {};
-  if (name === 'web_search') return webSearch(ctx, String(args.query || '').slice(0, 300));
-  if (name === 'weather_current') return weatherCurrent(args.location,args.days);
-  // Gmail is declared to the model as `gmail_search` (without the google_ prefix).
-  // Route that exact public tool name to the same authenticated Google connector.
-  if ((name === 'gmail_search' || name.startsWith('google_')) && ctx.user) return runGoogleTool(ctx.user, name, args);
-  if (name === 'gmail_search' || name.startsWith('google_')) return 'Sign in and connect Google in Settings → Connectors first.';
-  return `Unknown tool: ${name}`;
-}
+const { TOOLS } = require('./_llm/tools');
+const { runTool } = require('./_llm/tool-runtime');
 
 // ---- Gemini (flash) ---------------------------------------------------------
 async function runGemini(ctx, system, messages) {

@@ -174,7 +174,7 @@ module.exports = async (req, res) => {
     await autoLearnFromChat(user, lastUserText);
     const ctx = { user, userId: user.id, recentUserMessages: messages.filter((m) => m.role === 'user').map((m) => m.text) };
     // This path guarantees latest-email retrieval even if the Flash model declines to call tools.
-    if (gmailIntent && gmailAction) {
+    if (mode === 'flash' && gmailIntent && gmailAction) {
       res.setHeader('X-Glitch-Gmail-Path', 'direct');
       console.info('[glitch-gmail] direct_path_entered', { requestedMode, effectiveMode: mode });
       const gmailResult = await runTool(ctx, 'gmail_search', { query: '' });

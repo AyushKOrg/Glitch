@@ -1,5 +1,5 @@
 // Optional Tavily search provider.
-const { short } = require('./_shared/text');
+const { short } = require('../_shared/text');
 const tavilyKey = () => process.env.TAVILY_API_KEY || '';
 // ---- 2. Tavily (optional) -----------------------------------------------------
 async function tavily(query, deadline, attempts) {

@@ -1,5 +1,5 @@
 // Google Search grounding provider and model cooldown state.
-const { short } = require('./_shared/text');
+const { short } = require('../_shared/text');
 
 // ---- 1. Google Search grounding ---------------------------------------------
 async function googleGrounded(query, context, deadline, attempts) {

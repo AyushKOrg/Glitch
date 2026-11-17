@@ -1556,9 +1556,9 @@ ync () => {
     if (gmailActionMatch) {
       try {
         const data = JSON.parse(gmailActionMatch[1]);
-        actionText = 'Gmail inbox — ' + (data.count || data.messages.length) + ' newest messages\\n\\n' + data.messages.map((m, i) =>
-          (i + 1) + '. ' + (m.subject || '(no subject)') + '\\nFrom: ' + (m.from || 'Unknown sender') + '\\nDate: ' + (m.date || (m.timestamp ? new Date(Number(m.timestamp)).toLocaleString() : 'Date unavailable')) + (m.snippet ? '\\n' + m.snippet : '')
-        ).join('\\n\\n');
+        actionText = 'Gmail inbox — ' + (data.count || data.messages.length) + ' newest messages\n\n' + data.messages.map((m, i) =>
+          (i + 1) + '. ' + (m.subject || '(no subject)') + '\nFrom: ' + (m.from || 'Unknown sender') + '\nDate: ' + (m.date || (m.timestamp ? new Date(Number(m.timestamp)).toLocaleString() : 'Date unavailable')) + (m.snippet ? '\n' + m.snippet : '')
+        ).join('\n\n');
       } catch {}
     }
     const el = document.createElement('div');
@@ -1573,8 +1573,8 @@ ync () => {
     if (role === 'bot' && text) {
       const bar = document.createElement('div'); bar.className = 'msg-actions';
       const cp = document.createElement('button'); cp.type = 'button'; cp.className = 'msg-copy'; cp.textContent = 'Copy'; cp.setAttribute('aria-label', 'Copy reply');
-      cp.addEventListener('click', () => copyText(text, cp)); bar.appendChild(cp);
-      if (Voice.canSpeak) { const ls = document.createElement('button'); ls.type = 'button'; ls.className = 'msg-listen'; ls.textContent = 'Listen'; ls.setAttribute('aria-label', 'Read this reply aloud'); ls.addEventListener('click', () => Voice.toggleSpeak(text, ls)); bar.appendChild(ls); }
+      cp.addEventListener('click', () => copyText(actionText, cp)); bar.appendChild(cp);
+      if (Voice.canSpeak) { const ls = document.createElement('button'); ls.type = 'button'; ls.className = 'msg-listen'; ls.textContent = 'Listen'; ls.setAttribute('aria-label', 'Read this reply aloud'); ls.addEventListener('click', () => Voice.toggleSpeak(actionText, ls)); bar.appendChild(ls); }
       el.appendChild(bar);
     }
     if (tag) { const t = document.createElement('span'); t.className = 'tag'; t.textContent = tag; el.appendChild(t); }

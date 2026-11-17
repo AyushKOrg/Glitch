@@ -3686,7 +3686,7 @@ html.liquid-glass .library-item{
   box-shadow:0 12px 36px rgba(0,0,0,.12)!important;
   color:var(--text)!important;
 }
-html.liquid-glass .settings-sidebar{background:color-mix(in srgb,var(--panel) 78%,transparent)!important}
+html.liquid-glass .settings-sidebar{background:color-mix(in srgb,var(--panel) var(--glass-tint),transparent)!important}
 html.liquid-glass .settings-category,
 html.liquid-glass .settings-tile,
 html.liquid-glass .settings-toggle,

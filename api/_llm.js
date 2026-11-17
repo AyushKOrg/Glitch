@@ -51,7 +51,7 @@ const TOOLS = [
   {name:'google_calendar_update',description:'Update a Google Calendar event.',parameters:{type:'object',properties:{event_id:{type:'string'},summary:{type:'string'},description:{type:'string'},location:{type:'string'},start:{type:'object'},end:{type:'object'}},required:['event_id']}},
   {name:'gmail_send',description:'Send email only when directly instructed by the user.',parameters:{type:'object',properties:{to:{type:'string'},subject:{type:'string'},body:{type:'string'}},required:['to','subject','body']}},
   {name:'google_slides_batch_update',description:'Update a Google Slides presentation using API batch requests.',parameters:{type:'object',properties:{presentation_id:{type:'string'},requests:{type:'array',items:{type:'object',properties:{}}}},required:['presentation_id','requests']}},
-  {name:'google_forms_batch_update',description:'Update a Google Form using API batch requests.',parameters:{type:'object',properties:{form_id:{type:'string'},requests:{type:'array'}},required:['form_id','requests']}},
+  {name:'google_forms_batch_update',description:'Update a Google Form using API batch requests.',parameters:{type:'object',properties:{form_id:{type:'string'},requests:{type:'array',items:{type:'object',properties:{}}}},required:['form_id','requests']}},
   {name:'weather_current',description:'Get current conditions and forecast using the free Open-Meteo weather service.',parameters:{type:'object',properties:{location:{type:'string'},days:{type:'integer'}},required:['location']}},
 ];
 
